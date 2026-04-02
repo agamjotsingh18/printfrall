@@ -11,7 +11,7 @@ const TermsConditions = () => {
         <Divider sx={{ mb: 2 }} />
 
         <Typography variant="body1" paragraph>
-          Welcome to Print Fusion. By accessing or using our services, you agree to be bound by these Terms and Conditions.
+          Welcome to PrintfrAll. By accessing or using our services, you agree to be bound by these Terms and Conditions.
         </Typography>
 
         <Typography variant="h5" color="primary" sx={{ mt: 3 }}>
@@ -32,7 +32,7 @@ const TermsConditions = () => {
           Intellectual Property
         </Typography>
         <Typography variant="body1" paragraph>
-          All content on this website, including designs, text, and graphics, is owned by Print Fusion and protected by copyright laws.
+          All content on this website, including designs, text, and graphics, is owned by PrintfrAll and protected by copyright laws.
         </Typography>
 
         <Typography variant="h5" color="primary" sx={{ mt: 3 }}>
@@ -51,7 +51,7 @@ const TermsConditions = () => {
           Limitation of Liability
         </Typography>
         <Typography variant="body1" paragraph>
-          Print Fusion shall not be liable for any indirect, incidental, or consequential damages resulting from the use of our services.
+          PrintfrAll shall not be liable for any indirect, incidental, or consequential damages resulting from the use of our services.
         </Typography>
       </Box>
     </Container>

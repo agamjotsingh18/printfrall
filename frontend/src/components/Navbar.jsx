@@ -26,8 +26,8 @@ import SearchIcon from "@mui/icons-material/Search";
 import CloseIcon from "@mui/icons-material/Close";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import products from "../data/AllProducts";
-import logo from "../assets/printogether-logo-nb.png";
-import logop from "../assets/printogether-favicon.jpeg";
+import logo from "../assets/long-white.svg";
+import logop from "../assets/long.png";
 
 const Navbar = ({ cartItems, addToCart, removeFromCart }) => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -38,7 +38,7 @@ const Navbar = ({ cartItems, addToCart, removeFromCart }) => {
   const searchResultsRef = useRef(null); // Ref for the search results dropdown
 
   const theme = useTheme();
-  const isIpadView = useMediaQuery(theme.breakpoints.between("sm", "md")); // Check for iPad view
+  const isIpadView = useMediaQuery(theme.breakpoints.between("sm", "md")); 
 
   const toggleDrawer = (open) => (event) => {
     if (event.type === "keydown" && (event.key === "Tab" || event.key === "Shift")) {
@@ -72,7 +72,7 @@ const Navbar = ({ cartItems, addToCart, removeFromCart }) => {
 
   const handleEmailClick = (event) => {
     event.stopPropagation(); // Prevent drawer from closing
-    window.location.href = "mailto:printfusionindia@gmail.com"; // Redirect to email
+    window.location.href = "mailto:printfrall@gmail.com"; 
   };
 
   // Close search results dropdown when clicking outside
@@ -115,7 +115,7 @@ const Navbar = ({ cartItems, addToCart, removeFromCart }) => {
     >
       {/* Logo */}
       <Box sx={{ textAlign: "center", p: 2 }}>
-  <img src={logop} alt="Printogether Logo" style={{ height: "60px" }} />
+  <img src={logop} alt="Printfrall Logo" style={{ height: "20px" }} />
 </Box>
 
       {/* Navigation Links */}
@@ -277,7 +277,7 @@ const Navbar = ({ cartItems, addToCart, removeFromCart }) => {
         >
           <EmailIcon sx={{ color: "#333" }} />
           <Typography variant="body1" sx={{ color: "#333" }}>
-            printfusionindia@gmail.com
+            printfrall@gmail.com
           </Typography>
         </Box>
       </Box>
@@ -323,7 +323,7 @@ const Navbar = ({ cartItems, addToCart, removeFromCart }) => {
         <Toolbar sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           {/* Logo */}
           <Box sx={{ display: "flex", alignItems: "center" }}>
-    <img src={logo} alt="Printogether Logo" style={{ height: "50px", marginRight: "10px" }} />
+    <img src={logo} alt="PrintfrAll Logo" style={{ height: "26px", marginRight: "10px" }} />
   </Box>
 
           {/* Cart Icon for Mobile */}

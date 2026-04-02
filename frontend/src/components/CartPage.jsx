@@ -3,7 +3,7 @@ import React from "react";
 // import { Link } from "react-router-dom";
 import { Box, Typography, Button, IconButton, Paper, Container } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import EmptyCartPage from "./EmptyCartPage"; // Import the EmptyCartPage
+import EmptyCartPage from "./EmptyCartPage"; 
 
 const CartPage = ({ cartItems, removeFromCart }) => {
   // Function to generate WhatsApp message
@@ -22,7 +22,7 @@ const CartPage = ({ cartItems, removeFromCart }) => {
   return (
     <Container sx={{ p: 3, maxWidth: 1200, margin: "0 auto" }}>
       {cartItems.length === 0 ? (
-        <EmptyCartPage /> // Render the EmptyCartPage if the cart is empty
+        <EmptyCartPage />
       ) : (
         <Box>
           <Typography variant="h4" sx={{ fontWeight: "bold", mb: 4, textAlign: "center" }}>
@@ -94,8 +94,8 @@ const CartPage = ({ cartItems, removeFromCart }) => {
                 "&:hover": { background: "#ff8c42" },
               }}
               component="a"
-              href={generateWhatsAppMessage()} // Link to WhatsApp
-              target="_blank" // Open in a new tab
+              href={generateWhatsAppMessage()} 
+              target="_blank" 
               rel="noopener noreferrer"
             >
               Proceed to Checkout

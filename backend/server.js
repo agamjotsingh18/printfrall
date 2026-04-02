@@ -9,7 +9,6 @@ const PORT = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
-// Nodemailer configuration
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
@@ -18,13 +17,12 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-// Email endpoint
 app.post("/send-email", (req, res) => {
   const { name, email, message } = req.body;
 
   const mailOptions = {
-    from: process.env.EMAIL_USER, // Use the email from .env
-    to: process.env.EMAIL_USER, // Send to yourself (or another email)
+    from: process.env.EMAIL_USER, 
+    to: process.env.EMAIL_USER, 
     subject: `New Message from ${name}`,
     text: `
       Name: ${name}
@@ -44,13 +42,12 @@ app.post("/send-email", (req, res) => {
   });
 });
 
-// Newsletter Subscription Endpoint
 app.post("/subscribe", (req, res) => {
   const { email } = req.body;
 
   const mailOptions = {
     from: process.env.EMAIL_USER,
-    to: process.env.EMAIL_USER, // Or your newsletter email
+    to: process.env.EMAIL_USER, 
     subject: "New Newsletter Subscription",
     text: `New subscriber: ${email}`,
   };

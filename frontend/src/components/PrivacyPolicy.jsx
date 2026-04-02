@@ -10,7 +10,7 @@ const PrivacyPolicy = () => {
         </Typography>
         <Divider sx={{ mb: 2 }} />
         <Typography variant="body1" paragraph>
-          At Print Fusion, we are committed to protecting your privacy. This Privacy Policy explains how we collect, use, and safeguard your personal information.
+          At PrintfrAll, we are committed to protecting your privacy. This Privacy Policy explains how we collect, use, and safeguard your personal information.
         </Typography>
         
         <Typography variant="h6" color="secondary" sx={{ mt: 3 }}>

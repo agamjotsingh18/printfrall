@@ -7,7 +7,7 @@ function About() {
       <div className="about-content">
         <h1>Our Journey</h1>
         <p>
-          At <span className="highlight">Print Fusion</span>, quality is not just a goal—it's our perfection. 
+          At <span className="highlight">PrintfrAll</span>, quality is not just a goal—it's our perfection. 
           Started in <span className="highlight">2008</span> with no expertise and countless difficulties, 
           we’ve grown into a trusted name in the printing industry. Today, we proudly collaborate with 
           big brands like <span className="highlight">Nestle, ITC, Dabur</span>, and many more, delivering 

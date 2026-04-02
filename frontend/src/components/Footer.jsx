@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { Box, Typography } from "@mui/material";
-import { FaInstagram, FaEnvelope, FaFacebookF, FaLinkedinIn, FaPinterestP, FaPhoneAlt } from "react-icons/fa";
-import logo from "../assets/printogether-logo-nb.png";
-import logoMobile from "../assets/printogether-favicon.jpeg";
+import { FaInstagram, FaEnvelope, FaFacebookF, FaLinkedinIn, FaPinterestP, FaPhoneAlt, FaYoutube } from "react-icons/fa";
+import logo from "../assets/printfrall-light.png";
+import logoMobile from "../assets/printfrall-light.png";
 import "../styles/Footer.css";
 import ToastNotification from "./ToastNotification";
 
@@ -41,7 +41,7 @@ const Footer = () => {
         <Box className="footer-logo-container">
           <picture>
             <source srcSet={logoMobile} media="(max-width: 768px)" />
-            <img src={logo} alt="Print Fusion Logo" className="footer-logo" />
+            <img src={logo} alt="PrintfrAll Logo" className="footer-logo" />
           </picture>
         </Box>
 
@@ -49,7 +49,7 @@ const Footer = () => {
         <Box className="footer-column">
           <Typography className="footer-heading">Our Company</Typography>
           <a href="/about">About us</a>
-          <a href="mailto:printfusionindia@gmail.com?subject=Job Application">Careers</a>
+          <a href="mailto:printfrall@gmail.com?subject=Job Application">Careers</a>
           <a href="/blog">Blog</a>
         </Box>
 
@@ -70,13 +70,13 @@ const Footer = () => {
           </Box>
           <Box className="contact-item">
             <FaEnvelope className="contact-icon" />
-            <a href="mailto:printfusionindia@gmail.com">printfusionindia@gmail.com</a>
+            <a href="mailto:printfrall@gmail.com">printfrall@gmail.com</a>
           </Box>
           
           <Box className="map-container">
             <iframe
-              title="Print Fusion Location"
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3501.972890009255!2d77.04530989999999!3d28.6305746!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390d05362adfb89b%3A0x8f8e3e7bb27db4d0!2sPrint%20Fusion!5e0!3m2!1sen!2sin!4v1741737484226!5m2!1sen!2sin" 
+              title="PrintfrAll Location"
+              src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d14008.363149579323!2d77.039266!3d28.627041!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390d05362adfb89b%3A0x8f8e3e7bb27db4d0!2sPrintfrAll!5e0!3m2!1sen!2sin!4v1775120276665!5m2!1sen!2sin" 
               width="100%"
               height="150"
               style={{ border: 0, borderRadius: "8px" }}
@@ -104,16 +104,19 @@ const Footer = () => {
 
           <Typography className="footer-heading social-heading">Follow us</Typography>
           <Box className="footer-social">
-            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+            <a href="https://instagram.com/printfrall" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
               <FaInstagram className="social-icon instagram" />
             </a>
-            <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+            <a href="https://facebook.com/" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
               <FaFacebookF className="social-icon facebook" />
             </a>
             <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
               <FaLinkedinIn className="social-icon linkedin" />
             </a>
-            <a href="https://pinterest.com" target="_blank" rel="noopener noreferrer" aria-label="Pinterest">
+            <a href="https://youtube.com/PrintfrAll" target="_blank" rel="noopener noreferrer" aria-label="Youtube">
+              <FaYoutube className="social-icon youtube" />
+            </a>
+            <a href="https://pinterest.com/printfrall" target="_blank" rel="noopener noreferrer" aria-label="Pinterest">
               <FaPinterestP className="social-icon pinterest" />
             </a>
           </Box>
@@ -122,7 +125,7 @@ const Footer = () => {
 
       {/* Copyright Section */}
       <Typography className="footer-text">
-        © {new Date().getFullYear()} <a href="/" className="footer-brand">Print Fusion</a>. All rights reserved.
+        © {new Date().getFullYear()} <a href="/" className="footer-brand">PrintfrAll</a>. All rights reserved.
       </Typography>
 
       {/* Toast Notification */}
