@@ -49,13 +49,13 @@ const Contact = () => {
         <Box className="contact-details">
           <Typography variant="body1"><strong>📍 Address:</strong> F-17 Mohan Garden, Pipal Wala Rd,<br/> Uttam Nagar, New Delhi, India</Typography>
           {/* <Typography variant="body1"><strong>📞 Phone:</strong> +91 9319042075</Typography>
-          <Typography variant="body1"><strong>📧 Email:</strong> printfusionindia@gmail.com</Typography> */}
+          <Typography variant="body1"><strong>📧 Email:</strong> printfrall@gmail.com</Typography> */}
           <Box>
                       <a href="tel:+919319042075" className="contact-pm"><FaPhoneAlt /> +91 9319042075</a>
                     </Box>
                     <Box>
                       <a className="contact-pm" href="
-                      mailto:printfusionindia@gmail.com"><FaEnvelope /> printfusionindia@gmail.com</a>
+                      mailto:printfrall@gmail.com"><FaEnvelope /> printfrall@gmail.com</a>
                     </Box>
         </Box>
 
