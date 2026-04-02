@@ -20,7 +20,7 @@ const Contact = () => {
     }
   
     try {
-      const response = await fetch("https://print-fusion.onrender.com/send-email", {
+      const response = await fetch("https://printfrall.onrender.com/send-email", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
