@@ -8,29 +8,47 @@ import ToastNotification from "./ToastNotification";
 const Footer = () => {
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubscribe = (e) => {
+  const API_URL = process.env.REACT_APP_API_URL || "https://printfrall.onrender.com";
+
+  const handleSubscribe = async (e) => {
     e.preventDefault();
     const email = e.target.email.value;
 
-    fetch("https://printfrall.onrender.com/subscribe", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email }),
-    })
-      .then((response) => response.text())
-      .then((data) => {
-        setToastMessage(data);
-        setShowToast(true);
-        e.target.reset();
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-        setToastMessage("Failed to subscribe. Please try again.");
-        setShowToast(true);
+    if (!email) {
+      setToastMessage("Please enter an email address");
+      setShowToast(true);
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      const response = await fetch(`${API_URL}/subscribe`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email }),
       });
+
+      const data = await response.text();
+      
+      if (response.ok) {
+        setToastMessage(data || "Successfully subscribed!");
+        e.target.reset();
+      } else {
+        setToastMessage(data || "Failed to subscribe. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      setToastMessage("Network error. Please check your connection and try again.");
+    } finally {
+      setIsLoading(false);
+      setShowToast(true);
+      setTimeout(() => setShowToast(false), 3000);
+    }
   };
 
   return (
@@ -93,9 +111,10 @@ const Footer = () => {
               placeholder="Enter your email"
               className="newsletter-input"
               required
+              disabled={isLoading}
             />
-            <button type="submit" className="newsletter-button">
-              Subscribe
+            <button type="submit" className="newsletter-button" disabled={isLoading}>
+              {isLoading ? "Subscribing..." : "Subscribe"}
             </button>
           </form>
 
@@ -130,7 +149,7 @@ const Footer = () => {
         open={showToast}
         message={toastMessage}
         onClose={() => setShowToast(false)}
-        severity={toastMessage.includes("subscribed") ? "success" : "error"}
+        severity={toastMessage.includes("subscribed") || toastMessage.includes("Successfully") ? "success" : "error"}
       />
     </Box>
   );
