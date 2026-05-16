@@ -8,252 +8,407 @@ import {
   Grid,
   Snackbar,
   IconButton,
+  Chip,
+  Divider,
 } from "@mui/material";
-import { AddShoppingCart, Close } from "@mui/icons-material";
-import triFoldBrochureImg from "../assets/tri-fold-brochure.png"; // Main image
-import triFoldBrochureImg2 from "../assets/tri-fold-brochure.png"; // Extra image 1
-import triFoldBrochureImg3 from "../assets/tri-fold-brochure.png"; // Extra image 2
-import triFoldBrochureImg4 from "../assets/tri-fold-brochure.png"; // Extra image 3
-import triFoldBrochureImg5 from "../assets/tri-fold-brochure.png"; // Extra image 4
-import Zoom from "react-medium-image-zoom"; // For zoom functionality
-import "react-medium-image-zoom/dist/styles.css"; // Zoom styles
+import {
+  AddShoppingCart,
+  Close,
+  InfoOutlined,
+  AutoStories,
+  WorkspacePremium,
+  Inventory,
+  AutoAwesome,
+} from "@mui/icons-material";
+import Zoom from "react-medium-image-zoom";
+import "react-medium-image-zoom/dist/styles.css";
+
+// Asset paths kept exactly as requested
+import triFoldBrochureImg from "../assets/tri-fold-brochure.png";
+import triFoldBrochureImg2 from "../assets/tri-fold-brochure-1.png";
+import triFoldBrochureImg3 from "../assets/tri-fold-brochure-2.png";
+import triFoldBrochureImg4 from "../assets/tri-fold-brochure-3.png";
 
 const TriFoldBrochure = ({ addToCart }) => {
-  // Define price mapping for each size and material combination
-  const priceMapping = {
-    "A4 (210x297 mm)": { "Glossy Paper": 120, "Matte Paper": 140, "Premium Paper": 160 },
-    "A5 (148x210 mm)": { "Glossy Paper": 100, "Matte Paper": 120, "Premium Paper": 140 },
-    "DL (99x210 mm)": { "Glossy Paper": 80, "Matte Paper": 90, "Premium Paper": 100 },
-  };
+  // Size options
+  const sizeOptions = [
+    { id: "A4", label: "A4 Tri-Fold", open: "24.9 x 11.7 in", moq: 5, price: 150 },
+    { id: "A5", label: "A5 Tri-Fold", open: "17.4 x 8.3 in", moq: 5, price: 120 },
+    { id: "DL", label: "DL Tri-Fold", open: "11.7 x 8.3 in", moq: 5, price: 90 },
+  ];
 
-  // Most popular size and material (default selection)
-  const defaultSize = "A4 (210x297 mm)";
-  const defaultMaterial = "Glossy Paper";
+  const paperCategories = [
+    { name: "Standard Papers", desc: "Glossy/Matte finishes" },
+    { name: "Eco-Friendly Papers", desc: "Recycled/Sustainable stock" },
+    { name: "Premium Textured Papers", desc: "Tactile, high-end feel" },
+    { name: "Laminated Brochures", desc: "Added durability and protection" },
+  ];
 
-  const [selectedSize, setSelectedSize] = useState(defaultSize);
-  const [selectedMaterial, setSelectedMaterial] = useState(defaultMaterial);
-  const [mainImage, setMainImage] = useState(triFoldBrochureImg); // State for main image
-  const [snackbarOpen, setSnackbarOpen] = useState(false); // State for Snackbar
+  // Product features (for specifications panel)
+  const productFeatures = [
+    "Full‑colour CMYK digital printing",
+    "Tri‑fold format – compact yet spacious when opened",
+    "Choice of standard, eco‑friendly, premium textured, or laminated paper",
+    "Crisp folding with precise alignment",
+    "Ideal for corporate profiles, menus, event programs, and product catalogs",
+    "Minimum order: 5 units – perfect for small businesses",
+    "Free design check – we ensure correct bleeds and safety margins",
+  ];
 
-  const triFoldBrochureDetails = {
-    name: "Tri-Fold Brochure",
-    image: triFoldBrochureImg,
-    description:
-      "High-quality tri-fold brochures for all your marketing needs. Perfect for events, promotions, and branding campaigns.",
-    features: [
-      "High-resolution printing",
-      "Custom designs and sizes",
-      "Quick turnaround time",
-      "Durable and vibrant prints",
-    ],
-    sizes: ["A4 (210x297 mm)", "A5 (148x210 mm)", "DL (99x210 mm)"],
-    materials: ["Glossy Paper", "Matte Paper", "Premium Paper"],
-    extraImages: [triFoldBrochureImg2, triFoldBrochureImg3, triFoldBrochureImg4, triFoldBrochureImg5], // Extra images
-  };
+  // State
+  const [selectedSize, setSelectedSize] = useState(sizeOptions[0]); // A4 default
+  const [selectedPaper, setSelectedPaper] = useState(paperCategories[0]);
+  const [mainImage, setMainImage] = useState(triFoldBrochureImg);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
 
-  // Calculate price based on selected size and material
-  const price = priceMapping[selectedSize][selectedMaterial];
+  const thumbnailImages = [
+    triFoldBrochureImg,
+    triFoldBrochureImg2,
+    triFoldBrochureImg3,
+    triFoldBrochureImg4,
+  ];
 
   const handleAddToCart = () => {
     const item = {
-      ...triFoldBrochureDetails,
-      selectedSize,
-      selectedMaterial,
-      price, // Use the dynamically calculated price
-      quantity: 1, // Default quantity
+      name: "Custom Tri-Fold Brochure",
+      size: selectedSize.label,
+      openFormat: selectedSize.open,
+      paperType: selectedPaper.name,
+      price: selectedSize.price,
+      quantity: selectedSize.moq,
+      image: mainImage,
     };
-
-    addToCart(item); // Add the item to the cart
-    setSnackbarOpen(true); // Show Snackbar for confirmation
+    addToCart(item);
+    setSnackbarOpen(true);
   };
 
-  const handleCloseSnackbar = () => {
-    setSnackbarOpen(false);
-  };
+  const handleCloseSnackbar = () => setSnackbarOpen(false);
 
   return (
-    <Container sx={{ py: 6, maxWidth: 1200, margin: "40px auto 0 auto" }}>
-      <Grid container spacing={4}>
-        {/* Image Section */}
+    <Container
+      sx={{
+        py: 6,
+        maxWidth: 1200,
+        margin: "40px auto 0 auto",
+        px: { xs: 2, md: 3 },
+      }}
+    >
+      <Grid container spacing={5}>
+        {/* Left Side: Gallery */}
         <Grid item xs={12} md={6}>
           <Paper
             sx={{
               p: 2,
-              borderRadius: "10px",
-              boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.1)",
+              borderRadius: "16px",
+              boxShadow: "0px 8px 24px rgba(0, 0, 0, 0.08)",
+              bgcolor: "#fff",
+              position: "relative",
             }}
           >
-            {/* Main Image with Zoom */}
+            <Box
+              sx={{
+                position: "absolute",
+                top: 20,
+                left: 20,
+                zIndex: 10,
+                display: "flex",
+                gap: 1,
+              }}
+            >
+              <Chip
+                label={`MOQ: ${selectedSize.moq} UNITS`}
+                size="small"
+                icon={<WorkspacePremium />}
+                sx={{
+                  bgcolor: "#19485D",
+                  color: "white",
+                  fontWeight: "bold",
+                  borderRadius: "40px",
+                }}
+              />
+              <Chip
+                label="FULL COLOR"
+                size="small"
+                icon={<AutoAwesome />}
+                sx={{
+                  bgcolor: "#70CB97",
+                  color: "white",
+                  fontWeight: "bold",
+                  borderRadius: "40px",
+                }}
+              />
+            </Box>
+
             <Zoom>
               <img
                 src={mainImage}
-                alt={triFoldBrochureDetails.name}
+                alt="Tri-Fold Brochure Preview"
                 style={{
                   width: "100%",
-                  borderRadius: "10px",
-                  cursor: "zoom-in",
-                  maxHeight: "400px",
-                  objectFit: "cover",
+                  borderRadius: "12px",
+                  height: "450px",
+                  objectFit: "contain",
                 }}
               />
             </Zoom>
 
-            {/* Extra Images Gallery */}
+            {/* Thumbnail Gallery */}
             <Box
               sx={{
                 display: "flex",
                 gap: 2,
                 mt: 2,
-                overflowX: "auto", // Horizontal scroll for small screens
-                "&::-webkit-scrollbar": { display: "none" }, // Hide scrollbar
+                overflowX: "auto",
+                "&::-webkit-scrollbar": { display: "none" },
               }}
             >
-              {triFoldBrochureDetails.extraImages.map((image, index) => (
+              {thumbnailImages.map((image, index) => (
                 <Paper
                   key={index}
                   onClick={() => setMainImage(image)}
                   sx={{
                     p: 1,
-                    borderRadius: "8px",
-                    boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+                    borderRadius: "12px",
                     cursor: "pointer",
-                    border: mainImage === image ? "2px solid #ff6600" : "none",
-                    "&:hover": { border: "2px solid #ff6600" },
-                    flexShrink: 0, // Prevent shrinking on small screens
+                    border:
+                      mainImage === image ? "2px solid #70CB97" : "1px solid #e0e7ed",
+                    flexShrink: 0,
+                    transition: "all 0.2s",
+                    "&:hover": { transform: "translateY(-2px)" },
                   }}
                 >
                   <img
                     src={image}
-                    alt={`Tri-Fold Brochure ${index + 1}`}
+                    alt={`View ${index + 1}`}
                     style={{
-                      width: "100px",
-                      height: "100px",
-                      borderRadius: "6px",
+                      width: "80px",
+                      height: "80px",
                       objectFit: "cover",
+                      borderRadius: "8px",
                     }}
                   />
                 </Paper>
               ))}
             </Box>
           </Paper>
+
+          {/* Design Guidelines Note (green‑themed) */}
+          <Paper
+            sx={{
+              p: 2,
+              mt: 3,
+              borderRadius: "16px",
+              bgcolor: "#f0f9f3",
+              border: "1px solid #70CB97",
+            }}
+          >
+            <Typography
+              variant="subtitle2"
+              sx={{
+                fontWeight: "bold",
+                display: "flex",
+                alignItems: "center",
+                gap: 1,
+                color: "#19485D",
+              }}
+            >
+              <InfoOutlined fontSize="small" /> Design Guidelines
+            </Typography>
+            <Typography variant="caption" color="text.secondary" display="block" sx={{ mt: 1, color: "#5a6e7a" }}>
+              • Open Format Size for {selectedSize.id}: <strong>{selectedSize.open}</strong>
+              <br />
+              • Please use the bleed size in your design to avoid white edges.
+              <br />
+              • Keep images and text within the safety area for perfect folding.
+            </Typography>
+          </Paper>
         </Grid>
 
-        {/* Details Section */}
+        {/* Right Side: Configuration */}
         <Grid item xs={12} md={6}>
-          <Typography variant="h4" sx={{ fontWeight: "bold", mb: 2 }}>
-            {triFoldBrochureDetails.name}
-          </Typography>
-          <Typography variant="h5" sx={{ color: "#ff6600", fontWeight: "bold", mb: 3 }}>
-            ₹{price} {/* Display dynamic price */}
-          </Typography>
-          <Typography variant="body1" sx={{ mb: 3 }}>
-            {triFoldBrochureDetails.description}
-          </Typography>
-
-          {/* Features */}
-          <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2 }}>
-            Features:
-          </Typography>
-          <ul style={{ marginLeft: "20px", marginBottom: "20px" }}>
-            {triFoldBrochureDetails.features.map((feature, index) => (
-              <li key={index}>
-                <Typography variant="body1">{feature}</Typography>
-              </li>
-            ))}
-          </ul>
-
-          {/* Sizes */}
-          <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2 }}>
-            Available Sizes:
-          </Typography>
-          <Box
+          <Typography
+            variant="h4"
             sx={{
-              display: "flex",
-              gap: 2,
-              mb: 3,
-              flexWrap: "wrap", // Wrap sizes on small screens
+              fontWeight: 700,
+              mb: 1,
+              color: "#19485D",
+              fontSize: { xs: "1.8rem", md: "2.5rem" },
             }}
           >
-            {triFoldBrochureDetails.sizes.map((size, index) => (
+            Professional Tri-Fold Brochures
+          </Typography>
+
+          <Box sx={{ display: "flex", alignItems: "baseline", gap: 2, flexWrap: "wrap", mb: 1 }}>
+            <Typography variant="h5" sx={{ color: "#70CB97", fontWeight: "bold" }}>
+              ₹{selectedSize.price}
+            </Typography>
+            <Typography variant="body2" sx={{ color: "#5a6e7a" }}>
+              / brochure (MOQ: {selectedSize.moq})
+            </Typography>
+          </Box>
+
+          <Typography variant="body1" sx={{ mb: 3, color: "#1e2a32", lineHeight: 1.6 }}>
+            Engage, inform, and inspire with compact yet spacious marketing tools. Our tri-folds are
+            the perfect canvas for corporate presentations, restaurant menus, or event details.
+          </Typography>
+
+          <Divider sx={{ mb: 3 }} />
+
+          {/* Size Selection (pill‑shaped) */}
+          <Typography
+            variant="h6"
+            sx={{
+              fontWeight: 600,
+              mb: 2,
+              color: "#19485D",
+              fontSize: "1.1rem",
+              display: "flex",
+              alignItems: "center",
+              gap: 1,
+            }}
+          >
+            <AutoStories fontSize="small" /> Select Format Size
+          </Typography>
+          <Box sx={{ display: "flex", gap: 1.5, mb: 4, flexWrap: "wrap" }}>
+            {sizeOptions.map((size) => (
               <Paper
-                key={index}
+                key={size.id}
                 onClick={() => setSelectedSize(size)}
                 sx={{
+                  flex: 1,
                   p: 1.5,
-                  borderRadius: "8px",
                   textAlign: "center",
-                  fontWeight: "bold",
-                  boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+                  borderRadius: "40px",
+                  fontWeight: 600,
                   cursor: "pointer",
-                  backgroundColor: selectedSize === size ? "#ff6600" : "white",
-                  color: selectedSize === size ? "white" : "inherit",
-                  flex: "1 1 100px", // Flexible sizing for responsiveness
+                  bgcolor: selectedSize.id === size.id ? "#70CB97" : "#fff",
+                  color: selectedSize.id === size.id ? "#fff" : "#19485D",
+                  border: "1px solid #e0e7ed",
+                  transition: "all 0.2s",
+                  "&:hover": {
+                    bgcolor: selectedSize.id === size.id ? "#5cb67f" : "#f0f9f3",
+                    transform: "translateY(-2px)",
+                  },
                 }}
               >
-                {size}
+                <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                  {size.id}
+                </Typography>
+                <Typography variant="caption" sx={{ display: "block", opacity: 0.8 }}>
+                  Tri-Fold
+                </Typography>
               </Paper>
             ))}
           </Box>
 
-          {/* Materials */}
-          <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2 }}>
-            Available Materials:
+          {/* Paper Type & Material (pill‑shaped cards) */}
+          <Typography
+            variant="h6"
+            sx={{ fontWeight: 600, mb: 2, color: "#19485D", fontSize: "1.1rem" }}
+          >
+            Paper Type & Material
           </Typography>
-          <Box
+          <Box sx={{ display: "flex", gap: 1.5, mb: 4, flexWrap: "wrap" }}>
+            {paperCategories.map((paper) => (
+              <Paper
+                key={paper.name}
+                onClick={() => setSelectedPaper(paper)}
+                sx={{
+                  flex: "1 1 calc(50% - 12px)",
+                  p: 1.5,
+                  px: 2.5,
+                  borderRadius: "40px",
+                  textAlign: "center",
+                  fontWeight: 600,
+                  cursor: "pointer",
+                  bgcolor: selectedPaper.name === paper.name ? "#70CB97" : "#fff",
+                  color: selectedPaper.name === paper.name ? "#fff" : "#19485D",
+                  border: "1px solid #e0e7ed",
+                  transition: "all 0.2s",
+                  "&:hover": {
+                    bgcolor: selectedPaper.name === paper.name ? "#5cb67f" : "#f0f9f3",
+                    transform: "translateY(-2px)",
+                  },
+                }}
+              >
+                <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                  {paper.name}
+                </Typography>
+                <Typography variant="caption" sx={{ display: "block", opacity: 0.8 }}>
+                  {paper.desc}
+                </Typography>
+              </Paper>
+            ))}
+          </Box>
+
+          {/* Specifications Panel */}
+          <Paper
             sx={{
-              display: "flex",
-              gap: 2,
+              p: 3,
+              bgcolor: "#f8fafc",
               mb: 4,
-              flexWrap: "wrap", // Wrap materials on small screens
+              borderRadius: "16px",
+              border: "1px solid #e0e7ed",
             }}
           >
-            {triFoldBrochureDetails.materials.map((material, index) => (
-              <Paper
-                key={index}
-                onClick={() => setSelectedMaterial(material)}
-                sx={{
-                  p: 1.5,
-                  borderRadius: "8px",
-                  textAlign: "center",
-                  fontWeight: "bold",
-                  boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
-                  cursor: "pointer",
-                  backgroundColor: selectedMaterial === material ? "#ff6600" : "white",
-                  color: selectedMaterial === material ? "white" : "inherit",
-                  flex: "1 1 100px", // Flexible sizing for responsiveness
-                }}
-              >
-                {material}
-              </Paper>
+            <Typography variant="subtitle1" sx={{ fontWeight: 700, mb: 2, color: "#19485D" }}>
+              Printing Specifications:
+            </Typography>
+            {productFeatures.map((feature, i) => (
+              <Box key={i} sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
+                <Inventory sx={{ fontSize: 16, color: "#70CB97" }} />
+                <Typography variant="body2" sx={{ color: "#5a6e7a" }}>
+                  {feature}
+                </Typography>
+              </Box>
             ))}
-          </Box>
+          </Paper>
 
-          {/* Add to Cart Button */}
           <Button
             variant="contained"
+            fullWidth
             startIcon={<AddShoppingCart />}
             sx={{
-              background: "#ff6600",
+              background: "#70CB97",
               color: "white",
-              fontWeight: "bold",
-              fontSize: "16px",
-              padding: "12px 24px",
-              "&:hover": { background: "#ff8c42" },
-              width: { xs: "100%", md: "auto" }, // Full width on small screens
+              fontWeight: 700,
+              fontSize: "1rem",
+              py: 1.8,
+              borderRadius: "40px",
+              textTransform: "none",
+              boxShadow: "0px 4px 12px rgba(112, 203, 151, 0.3)",
+              "&:hover": {
+                background: "#5cb67f",
+                transform: "translateY(-2px)",
+                boxShadow: "0px 6px 16px rgba(112, 203, 151, 0.4)",
+              },
             }}
             onClick={handleAddToCart}
           >
-            Add to Cart
+            Order Minimum {selectedSize.moq} Brochures – ₹{selectedSize.price * selectedSize.moq}
           </Button>
+
+          <Typography
+            variant="caption"
+            sx={{ display: "block", mt: 2, textAlign: "center", color: "#5a6e7a" }}
+          >
+            * Powered by PrintfrAll High-Impact Branding Solutions.
+          </Typography>
         </Grid>
       </Grid>
 
-      {/* Snackbar for Notifications */}
       <Snackbar
         open={snackbarOpen}
         autoHideDuration={3000}
         onClose={handleCloseSnackbar}
-        message="Item added to cart!"
+        message="✓ Brochures added to selection!"
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        sx={{
+          "& .MuiSnackbarContent-root": {
+            backgroundColor: "#19485D",
+            borderRadius: "40px",
+          },
+        }}
         action={
           <IconButton size="small" color="inherit" onClick={handleCloseSnackbar}>
             <Close fontSize="small" />

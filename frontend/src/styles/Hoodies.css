@@ -5,28 +5,28 @@
 }
 
 .hoodie-link {
-    text-decoration: none; /* Remove underline */
-    color: inherit; /* Inherit text color */
-    display: block; /* Make the link cover the entire hoodie area */
-  }
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
 
 .section-title {
     font-size: 2.5rem;
     font-weight: bold;
     margin-bottom: 10px;
-    color: #333;
+    color: #19485D; /* Deep teal from logo */
 }
 
 .hoodie-price {
     font-size: 1rem;
     font-weight: bold;
-    color: #ff6600;
+    color: #70CB97; /* Brand green */
     margin-top: 5px;
-  }
+}
 
 .section-subtitle {
     font-size: 1.2rem;
-    color: #666;
+    color: #5a6e7a; /* Muted neutral */
     margin-bottom: 40px;
 }
 
@@ -39,7 +39,7 @@
 }
 
 .hoodie-item {
-    flex: 1 1 300px; /* Flex-grow, flex-shrink, flex-basis */
+    flex: 1 1 300px;
     max-width: 300px;
     border-radius: 15px;
     overflow: hidden;
@@ -61,7 +61,7 @@
 .hoodie-image {
     width: 100%;
     height: 200px;
-    object-fit: contain; /* Show full image without cropping */
+    object-fit: contain;
     border-radius: 10px;
     margin-bottom: 15px;
 }
@@ -70,14 +70,14 @@
     font-size: 1.25rem;
     font-weight: bold;
     margin-top: 10px;
-    color: #333;
+    color: #19485D; /* Deep teal */
 }
 
 .back-button {
     display: inline-block;
     margin-top: 40px;
     padding: 12px 30px;
-    background-color: #ff6600;
+    background-color: #70CB97; /* Brand green */
     color: #fff;
     text-decoration: none;
     font-weight: bold;
@@ -86,13 +86,13 @@
 }
 
 .back-button:hover {
-    background-color: #e65c00;
+    background-color: #5cb67f; /* Darker green */
 }
 
 /* Responsive Design */
 @media (max-width: 768px) {
     .hoodie-item {
-        flex: 1 1 100%; /* Full width on smaller screens */
+        flex: 1 1 100%;
         max-width: 100%;
     }
 

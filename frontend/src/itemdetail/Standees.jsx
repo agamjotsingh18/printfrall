@@ -8,128 +8,182 @@ import {
   Grid,
   Snackbar,
   IconButton,
+  Chip,
+  Divider,
 } from "@mui/material";
-import { AddShoppingCart, Close } from "@mui/icons-material";
-import standeeImg from "../assets/standees.png"; // Main image
-import standeeImg2 from "../assets/standees.png"; // Extra image 1
-import standeeImg3 from "../assets/standees.png"; // Extra image 2
-import standeeImg4 from "../assets/standees.png"; // Extra image 3
-import standeeImg5 from "../assets/standees.png"; // Extra image 4
-import Zoom from "react-medium-image-zoom"; // For zoom functionality
-import "react-medium-image-zoom/dist/styles.css"; // Zoom styles
+import {
+  AddShoppingCart,
+  Close,
+  EventAvailable,
+  WorkspacePremium,
+  Inventory,
+} from "@mui/icons-material";
+import Zoom from "react-medium-image-zoom";
+import "react-medium-image-zoom/dist/styles.css";
+
+// Asset paths kept exactly as requested
+import standeeImg from "../assets/standees.png";
+import standeeImg2 from "../assets/standees-1.png";
+import standeeImg3 from "../assets/standees-2.png";
+import standeeImg4 from "../assets/standees-3.png";
+import standeeImg5 from "../assets/standees-4.png";
 
 const Standees = ({ addToCart }) => {
-  // Define price mapping for each size and material combination
-  const priceMapping = {
-    "Small (2x3 ft)": { "Glossy Paper": 300, "Matte Paper": 350, "Premium Paper": 400 },
-    "Medium (3x4 ft)": { "Glossy Paper": 500, "Matte Paper": 550, "Premium Paper": 600 },
-    "Large (4x6 ft)": { "Glossy Paper": 700, "Matte Paper": 750, "Premium Paper": 800 },
-  };
+  // Size options
+  const sizeOptions = [
+    { label: "2 x 5 ft", basePrice: 1200 },
+    { label: "2.5 x 6 ft", basePrice: 1650 },
+    { label: "3 x 6 ft", basePrice: 1950 },
+  ];
 
-  // Most popular size and material (default selection)
-  const defaultSize = "Medium (3x4 ft)";
-  const defaultMaterial = "Glossy Paper";
+  // Product features (full list for specifications panel)
+  const productFeatures = [
+    "Material: 180GSM Photomatt PP Film (Non‑tearable)",
+    "Base: Portable Standard Aluminum Roll‑up Stand",
+    "Print Type: High‑vibrancy Inkjet Digital Printing",
+    "Setup: User‑friendly roll‑up design for quick assembly",
+    "Usage: Optimized for indoor events (1‑2 day duration)",
+    "Finish: Sophisticated matte finish for high readability",
+    "Customization: Full‑color vibrant graphics",
+    "Includes carrying case for easy transport",
+  ];
 
-  const [selectedSize, setSelectedSize] = useState(defaultSize);
-  const [selectedMaterial, setSelectedMaterial] = useState(defaultMaterial);
-  const [mainImage, setMainImage] = useState(standeeImg); // State for main image
-  const [snackbarOpen, setSnackbarOpen] = useState(false); // State for Snackbar
+  // State
+  const [selectedSize, setSelectedSize] = useState(sizeOptions[1]); // 2.5x6 ft default
+  const [mainImage, setMainImage] = useState(standeeImg);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
 
-  const standeeDetails = {
-    name: "Standees",
-    image: standeeImg,
+  const productDetails = {
+    name: "Event Standees",
     description:
-      "High-quality standees for all your marketing needs. Perfect for events, promotions, and branding campaigns.",
-    features: [
-      "High-resolution printing",
-      "Custom designs and sizes",
-      "Quick turnaround time",
-      "Durable and vibrant prints",
-    ],
-    sizes: ["Small (2x3 ft)", "Medium (3x4 ft)", "Large (4x6 ft)"],
-    materials: ["Glossy Paper", "Matte Paper", "Premium Paper"],
-    extraImages: [standeeImg2, standeeImg3, standeeImg4, standeeImg5], // Extra images
+      "Budget‑friendly yet impactful solutions for showcasing your brand or events. Printed on high‑quality 180GSM photo‑matte, non‑tearable PP film, these roll‑up standees offer a sophisticated zero‑glare finish. Designed for portability, the standard aluminum base allows for effortless setup in restaurants, retail stores, or trade shows.",
   };
 
-  // Calculate price based on selected size and material
-  const price = priceMapping[selectedSize][selectedMaterial];
+  const thumbnailImages = [
+    standeeImg,
+    standeeImg2,
+    standeeImg3,
+    standeeImg4,
+    standeeImg5,
+  ];
 
   const handleAddToCart = () => {
     const item = {
-      ...standeeDetails,
-      selectedSize,
-      selectedMaterial,
-      price, // Use the dynamically calculated price
-      quantity: 1, // Default quantity
+      name: productDetails.name,
+      image: mainImage,
+      description: productDetails.description,
+      selectedSize: selectedSize.label,
+      material: "180GSM Photomatt PP film",
+      price: selectedSize.basePrice,
+      quantity: 1,
     };
-
-    addToCart(item); // Add the item to the cart
-    setSnackbarOpen(true); // Show Snackbar for confirmation
+    addToCart(item);
+    setSnackbarOpen(true);
   };
 
-  const handleCloseSnackbar = () => {
-    setSnackbarOpen(false);
-  };
+  const handleCloseSnackbar = () => setSnackbarOpen(false);
 
   return (
-    <Container sx={{ py: 6, maxWidth: 1200, margin: "40px auto 0 auto" }}>
-      <Grid container spacing={4}>
-        {/* Image Section */}
+    <Container
+      sx={{
+        py: 6,
+        maxWidth: 1200,
+        margin: "40px auto 0 auto",
+        px: { xs: 2, md: 3 },
+      }}
+    >
+      <Grid container spacing={5}>
+        {/* Left Side: Gallery */}
         <Grid item xs={12} md={6}>
           <Paper
             sx={{
               p: 2,
-              borderRadius: "10px",
-              boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.1)",
+              borderRadius: "16px",
+              boxShadow: "0px 8px 24px rgba(0, 0, 0, 0.08)",
+              bgcolor: "#fff",
+              position: "relative",
             }}
           >
-            {/* Main Image with Zoom */}
+            <Box
+              sx={{
+                position: "absolute",
+                top: 20,
+                left: 20,
+                zIndex: 10,
+                display: "flex",
+                gap: 1,
+              }}
+            >
+              <Chip
+                label="180GSM PP FILM"
+                size="small"
+                icon={<WorkspacePremium />}
+                sx={{
+                  bgcolor: "#19485D",
+                  color: "white",
+                  fontWeight: "bold",
+                  borderRadius: "40px",
+                }}
+              />
+              <Chip
+                label="INDOOR USE"
+                size="small"
+                icon={<EventAvailable />}
+                sx={{
+                  bgcolor: "#70CB97",
+                  color: "white",
+                  fontWeight: "bold",
+                  borderRadius: "40px",
+                }}
+              />
+            </Box>
+
             <Zoom>
               <img
                 src={mainImage}
-                alt={standeeDetails.name}
+                alt="Event Standee Preview"
                 style={{
                   width: "100%",
-                  borderRadius: "10px",
-                  cursor: "zoom-in",
-                  maxHeight: "400px",
-                  objectFit: "cover",
+                  borderRadius: "12px",
+                  height: "450px",
+                  objectFit: "contain",
                 }}
               />
             </Zoom>
 
-            {/* Extra Images Gallery */}
+            {/* Thumbnail Gallery */}
             <Box
               sx={{
                 display: "flex",
                 gap: 2,
                 mt: 2,
-                overflowX: "auto", // Horizontal scroll for small screens
-                "&::-webkit-scrollbar": { display: "none" }, // Hide scrollbar
+                overflowX: "auto",
+                "&::-webkit-scrollbar": { display: "none" },
               }}
             >
-              {standeeDetails.extraImages.map((image, index) => (
+              {thumbnailImages.map((image, index) => (
                 <Paper
                   key={index}
                   onClick={() => setMainImage(image)}
                   sx={{
                     p: 1,
-                    borderRadius: "8px",
-                    boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+                    borderRadius: "12px",
                     cursor: "pointer",
-                    border: mainImage === image ? "2px solid #ff6600" : "none",
-                    "&:hover": { border: "2px solid #ff6600" },
-                    flexShrink: 0, // Prevent shrinking on small screens
+                    border:
+                      mainImage === image ? "2px solid #70CB97" : "1px solid #e0e7ed",
+                    flexShrink: 0,
+                    transition: "all 0.2s",
+                    "&:hover": { transform: "translateY(-2px)" },
                   }}
                 >
                   <img
                     src={image}
-                    alt={`Standee ${index + 1}`}
+                    alt={`View ${index + 1}`}
                     style={{
-                      width: "100px",
-                      height: "100px",
-                      borderRadius: "6px",
+                      width: "80px",
+                      height: "80px",
                       objectFit: "cover",
+                      borderRadius: "8px",
                     }}
                   />
                 </Paper>
@@ -138,122 +192,135 @@ const Standees = ({ addToCart }) => {
           </Paper>
         </Grid>
 
-        {/* Details Section */}
+        {/* Right Side: Customization */}
         <Grid item xs={12} md={6}>
-          <Typography variant="h4" sx={{ fontWeight: "bold", mb: 2 }}>
-            {standeeDetails.name}
-          </Typography>
-          <Typography variant="h5" sx={{ color: "#ff6600", fontWeight: "bold", mb: 3 }}>
-            ₹{price} {/* Display dynamic price */}
-          </Typography>
-          <Typography variant="body1" sx={{ mb: 3 }}>
-            {standeeDetails.description}
-          </Typography>
-
-          {/* Features */}
-          <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2 }}>
-            Features:
-          </Typography>
-          <ul style={{ marginLeft: "20px", marginBottom: "20px" }}>
-            {standeeDetails.features.map((feature, index) => (
-              <li key={index}>
-                <Typography variant="body1">{feature}</Typography>
-              </li>
-            ))}
-          </ul>
-
-          {/* Sizes */}
-          <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2 }}>
-            Available Sizes:
-          </Typography>
-          <Box
+          <Typography
+            variant="h4"
             sx={{
-              display: "flex",
-              gap: 2,
-              mb: 3,
-              flexWrap: "wrap", // Wrap sizes on small screens
+              fontWeight: 700,
+              mb: 1,
+              color: "#19485D",
+              fontSize: { xs: "1.8rem", md: "2.5rem" },
             }}
           >
-            {standeeDetails.sizes.map((size, index) => (
+            {productDetails.name}
+          </Typography>
+
+          <Box sx={{ display: "flex", alignItems: "baseline", gap: 2, flexWrap: "wrap", mb: 1 }}>
+            <Typography variant="h5" sx={{ color: "#70CB97", fontWeight: "bold" }}>
+              ₹{selectedSize.basePrice}
+            </Typography>
+            <Typography variant="body2" sx={{ color: "#5a6e7a" }}>
+              (per standee)
+            </Typography>
+          </Box>
+
+          <Typography variant="body1" sx={{ mb: 3, color: "#1e2a32", lineHeight: 1.6 }}>
+            {productDetails.description}
+          </Typography>
+
+          <Divider sx={{ mb: 3 }} />
+
+          {/* Size Selection (pill‑shaped) */}
+          <Typography
+            variant="h6"
+            sx={{ fontWeight: 600, mb: 2, color: "#19485D", fontSize: "1.1rem" }}
+          >
+            Select Standee Size
+          </Typography>
+          <Box sx={{ display: "flex", gap: 1.5, mb: 4, flexWrap: "wrap" }}>
+            {sizeOptions.map((size) => (
               <Paper
-                key={index}
+                key={size.label}
                 onClick={() => setSelectedSize(size)}
                 sx={{
+                  flex: 1,
                   p: 1.5,
-                  borderRadius: "8px",
                   textAlign: "center",
-                  fontWeight: "bold",
-                  boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+                  borderRadius: "40px",
+                  fontWeight: 600,
                   cursor: "pointer",
-                  backgroundColor: selectedSize === size ? "#ff6600" : "white",
-                  color: selectedSize === size ? "white" : "inherit",
-                  flex: "1 1 100px", // Flexible sizing for responsiveness
+                  bgcolor: selectedSize.label === size.label ? "#70CB97" : "#fff",
+                  color: selectedSize.label === size.label ? "#fff" : "#19485D",
+                  border: "1px solid #e0e7ed",
+                  transition: "all 0.2s",
+                  "&:hover": {
+                    bgcolor: selectedSize.label === size.label ? "#5cb67f" : "#f0f9f3",
+                    transform: "translateY(-2px)",
+                  },
                 }}
               >
-                {size}
+                {size.label}
               </Paper>
             ))}
           </Box>
-
-          {/* Materials */}
-          <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2 }}>
-            Available Materials:
-          </Typography>
-          <Box
+          <Paper
             sx={{
-              display: "flex",
-              gap: 2,
+              p: 3,
+              bgcolor: "#f8fafc",
               mb: 4,
-              flexWrap: "wrap", // Wrap materials on small screens
+              borderRadius: "16px",
+              border: "1px solid #e0e7ed",
             }}
           >
-            {standeeDetails.materials.map((material, index) => (
-              <Paper
-                key={index}
-                onClick={() => setSelectedMaterial(material)}
-                sx={{
-                  p: 1.5,
-                  borderRadius: "8px",
-                  textAlign: "center",
-                  fontWeight: "bold",
-                  boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
-                  cursor: "pointer",
-                  backgroundColor: selectedMaterial === material ? "#ff6600" : "white",
-                  color: selectedMaterial === material ? "white" : "inherit",
-                  flex: "1 1 100px", // Flexible sizing for responsiveness
-                }}
-              >
-                {material}
-              </Paper>
+            <Typography variant="subtitle1" sx={{ fontWeight: 700, mb: 2, color: "#19485D" }}>
+              Key Features:
+            </Typography>
+            {productFeatures.map((feature, i) => (
+              <Box key={i} sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
+                <Inventory sx={{ fontSize: 16, color: "#70CB97" }} />
+                <Typography variant="body2" sx={{ color: "#5a6e7a" }}>
+                  {feature}
+                </Typography>
+              </Box>
             ))}
-          </Box>
+          </Paper>
 
-          {/* Add to Cart Button */}
           <Button
             variant="contained"
+            fullWidth
             startIcon={<AddShoppingCart />}
             sx={{
-              background: "#ff6600",
+              background: "#70CB97",
               color: "white",
-              fontWeight: "bold",
-              fontSize: "16px",
-              padding: "12px 24px",
-              "&:hover": { background: "#ff8c42" },
-              width: { xs: "100%", md: "auto" }, // Full width on small screens
+              fontWeight: 700,
+              fontSize: "1rem",
+              py: 1.8,
+              borderRadius: "40px",
+              textTransform: "none",
+              boxShadow: "0px 4px 12px rgba(112, 203, 151, 0.3)",
+              "&:hover": {
+                background: "#5cb67f",
+                transform: "translateY(-2px)",
+                boxShadow: "0px 6px 16px rgba(112, 203, 151, 0.4)",
+              },
             }}
             onClick={handleAddToCart}
           >
-            Add to Cart
+            Add to Selection – ₹{selectedSize.basePrice}
           </Button>
+
+          <Typography
+            variant="caption"
+            sx={{ display: "block", mt: 2, textAlign: "center", color: "#5a6e7a" }}
+          >
+            * Includes standard aluminum base and carrying case.
+          </Typography>
         </Grid>
       </Grid>
 
-      {/* Snackbar for Notifications */}
       <Snackbar
         open={snackbarOpen}
         autoHideDuration={3000}
         onClose={handleCloseSnackbar}
-        message="Item added to cart!"
+        message="✓ Standee added to cart!"
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        sx={{
+          "& .MuiSnackbarContent-root": {
+            backgroundColor: "#19485D",
+            borderRadius: "40px",
+          },
+        }}
         action={
           <IconButton size="small" color="inherit" onClick={handleCloseSnackbar}>
             <Close fontSize="small" />

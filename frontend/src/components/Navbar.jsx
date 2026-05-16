@@ -15,7 +15,6 @@ import {
   Collapse,
   Badge,
   useMediaQuery,
-  useTheme,
 } from "@mui/material";
 import { Link } from "react-router-dom";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -28,6 +27,7 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import products from "../data/AllProducts";
 import logo from "../assets/long-white.svg";
 import logop from "../assets/long.png";
+import { useTheme } from '@mui/material/styles';
 
 const Navbar = ({ cartItems, addToCart, removeFromCart }) => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -35,10 +35,11 @@ const Navbar = ({ cartItems, addToCart, removeFromCart }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const searchInputRef = useRef(null);
-  const searchResultsRef = useRef(null); // Ref for the search results dropdown
+  const searchResultsRef = useRef(null);
 
   const theme = useTheme();
-  const isIpadView = useMediaQuery(theme.breakpoints.between("sm", "md")); 
+  const isIpadView = useMediaQuery(theme.breakpoints.between("sm", "md"));
+  const isDesktop = useMediaQuery(theme.breakpoints.up("lg"));
 
   const toggleDrawer = (open) => (event) => {
     if (event.type === "keydown" && (event.key === "Tab" || event.key === "Shift")) {
@@ -66,16 +67,15 @@ const Navbar = ({ cartItems, addToCart, removeFromCart }) => {
   };
 
   const handlePhoneClick = (event) => {
-    event.stopPropagation(); // Prevent drawer from closing
-    window.location.href = "tel:9319042075"; // Redirect to phone call
+    event.stopPropagation();
+    window.location.href = "tel:9319042075";
   };
 
   const handleEmailClick = (event) => {
-    event.stopPropagation(); // Prevent drawer from closing
-    window.location.href = "mailto:printfrall@gmail.com"; 
+    event.stopPropagation();
+    window.location.href = "mailto:printfrall@gmail.com";
   };
 
-  // Close search results dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (
@@ -88,14 +88,12 @@ const Navbar = ({ cartItems, addToCart, removeFromCart }) => {
         setSearchResults([]);
       }
     };
-
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
 
-  // Auto-focus on search input when search bar opens
   useEffect(() => {
     if (isSearchOpen && searchInputRef.current) {
       searchInputRef.current.focus();
@@ -113,30 +111,27 @@ const Navbar = ({ cartItems, addToCart, removeFromCart }) => {
       }}
       role="presentation"
     >
-      {/* Logo */}
       <Box sx={{ textAlign: "center", p: 2 }}>
-  <img src={logop} alt="Printfrall Logo" style={{ height: "20px" }} />
-</Box>
+        <img src={logop} alt="Printfrall Logo" style={{ height: "20px" }} />
+      </Box>
 
-      {/* Navigation Links */}
       <List sx={{ flex: 1 }}>
         <ListItem
           button
           component={Link}
           to="/"
-          sx={{ "&:hover": { background: "#ff6600", color: "white" } }}
-          onClick={(e) => e.stopPropagation()} // Prevent drawer from closing
+          sx={{ "&:hover": { background: theme.palette.secondary.main, color: "white" } }}
+          onClick={(e) => e.stopPropagation()}
         >
           <ListItemText primary="Home" sx={{ color: "#333", fontWeight: 600 }} />
         </ListItem>
 
-        {/* Services Dropdown */}
         <ListItem
           button
           component={Link}
           to="/services"
-          sx={{ "&:hover": { background: "#ff6600", color: "white" } }}
-          onClick={(e) => e.stopPropagation()} // Prevent drawer from closing
+          sx={{ "&:hover": { background: theme.palette.secondary.main, color: "white" } }}
+          onClick={(e) => e.stopPropagation()}
         >
           <ListItemText primary="Services" sx={{ color: "#333", fontWeight: 600 }} />
         </ListItem>
@@ -145,22 +140,23 @@ const Navbar = ({ cartItems, addToCart, removeFromCart }) => {
           button
           component={Link}
           to="/portfolio"
-          sx={{ "&:hover": { background: "#ff6600", color: "white" } }}
-          onClick={(e) => e.stopPropagation()} // Prevent drawer from closing
+          sx={{ "&:hover": { background: theme.palette.secondary.main, color: "white" } }}
+          onClick={(e) => e.stopPropagation()}
         >
           <ListItemText primary="Portfolio" sx={{ color: "#333", fontWeight: 600 }} />
         </ListItem>
+
         <ListItem
           button
           component={Link}
           to="/about"
-          sx={{ "&:hover": { background: "#ff6600", color: "white" } }}
-          onClick={(e) => e.stopPropagation()} // Prevent drawer from closing
+          sx={{ "&:hover": { background: theme.palette.secondary.main, color: "white" } }}
+          onClick={(e) => e.stopPropagation()}
         >
           <ListItemText primary="About" sx={{ color: "#333", fontWeight: 600 }} />
         </ListItem>
+
         <ListItem>
-          {/* Search Bar for Mobile */}
           <Box sx={{ p: 2 }} onClick={(e) => e.stopPropagation()}>
             <Paper
               component="form"
@@ -173,7 +169,7 @@ const Navbar = ({ cartItems, addToCart, removeFromCart }) => {
                 p: "2px 10px",
                 boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
               }}
-              onClick={(e) => e.stopPropagation()} // Prevent drawer from closing
+              onClick={(e) => e.stopPropagation()}
             >
               <InputBase
                 placeholder="Search products..."
@@ -181,11 +177,11 @@ const Navbar = ({ cartItems, addToCart, removeFromCart }) => {
                 value={searchQuery}
                 onChange={(e) => handleSearch(e.target.value)}
                 inputRef={searchInputRef}
-                onClick={(e) => e.stopPropagation()} // Prevent drawer from closing
+                onClick={(e) => e.stopPropagation()}
               />
               <IconButton
                 onClick={(e) => {
-                  e.stopPropagation(); // Prevent drawer from closing
+                  e.stopPropagation();
                   toggleSearch();
                 }}
                 sx={{ color: "#333" }}
@@ -194,7 +190,6 @@ const Navbar = ({ cartItems, addToCart, removeFromCart }) => {
               </IconButton>
             </Paper>
 
-            {/* Search Results Dropdown */}
             {searchQuery && (
               <Box
                 sx={{
@@ -206,7 +201,7 @@ const Navbar = ({ cartItems, addToCart, removeFromCart }) => {
                   maxHeight: "300px",
                   overflowY: "auto",
                 }}
-                onClick={(e) => e.stopPropagation()} // Prevent drawer from closing
+                onClick={(e) => e.stopPropagation()}
               >
                 {searchResults.length > 0 ? (
                   searchResults.map((result, index) => (
@@ -214,7 +209,7 @@ const Navbar = ({ cartItems, addToCart, removeFromCart }) => {
                       key={index}
                       to={result.link}
                       style={{ textDecoration: "none", color: "inherit" }}
-                      onClick={(e) => e.stopPropagation()} // Prevent drawer from closing
+                      onClick={(e) => e.stopPropagation()}
                     >
                       <Box
                         sx={{
@@ -240,7 +235,6 @@ const Navbar = ({ cartItems, addToCart, removeFromCart }) => {
 
       <hr style={{ border: "1px solid #ddd", margin: "20px auto", width: "75%" }} />
 
-      {/* Contact Section */}
       <Box sx={{ p: 3 }}>
         <Typography variant="h6" sx={{ color: "#333", fontWeight: "bold", mb: 2 }}>
           Need Assistance?
@@ -258,7 +252,7 @@ const Navbar = ({ cartItems, addToCart, removeFromCart }) => {
           }}
           href="https://wa.me/9319042075"
           target="_blank"
-          onClick={(e) => e.stopPropagation()} // Prevent drawer from closing
+          onClick={(e) => e.stopPropagation()}
         >
           WhatsApp Us
         </Button>
@@ -284,7 +278,6 @@ const Navbar = ({ cartItems, addToCart, removeFromCart }) => {
 
       <hr style={{ border: "1px solid #ddd", margin: "20px auto", width: "75%" }} />
 
-      {/* Additional Links */}
       <Box sx={{ p: 3 }}>
         <Typography variant="h6" sx={{ color: "#333", fontWeight: "bold", mb: 2 }}>
           Who are we?
@@ -294,8 +287,8 @@ const Navbar = ({ cartItems, addToCart, removeFromCart }) => {
             button
             component={Link}
             to="/about"
-            sx={{ "&:hover": { background: "#ff6600", color: "white" } }}
-            onClick={(e) => e.stopPropagation()} // Prevent drawer from closing
+            sx={{ "&:hover": { background: theme.palette.secondary.main, color: "white" } }}
+            onClick={(e) => e.stopPropagation()}
           >
             <ListItemText primary="About" />
           </ListItem>
@@ -303,8 +296,8 @@ const Navbar = ({ cartItems, addToCart, removeFromCart }) => {
             button
             component={Link}
             to="/portfolio"
-            sx={{ "&:hover": { background: "#ff6600", color: "white" } }}
-            onClick={(e) => e.stopPropagation()} // Prevent drawer from closing
+            sx={{ "&:hover": { background: theme.palette.secondary.main, color: "white" } }}
+            onClick={(e) => e.stopPropagation()}
           >
             <ListItemText primary="Work Portfolio" />
           </ListItem>
@@ -315,18 +308,19 @@ const Navbar = ({ cartItems, addToCart, removeFromCart }) => {
 
   return (
     <>
-      {/* Navbar */}
-      <AppBar
-        position="fixed"
-        sx={{ background: "linear-gradient(135deg, #ff6600, #ff8c42)", boxShadow: "none" }}
-      >
-        <Toolbar sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          {/* Logo */}
+      <AppBar position="fixed" sx={{ backgroundColor: theme.palette.primary.main }}>
+        <Toolbar sx={{ 
+          display: "flex", 
+          justifyContent: "space-between", 
+          alignItems: "center",
+          px: { xs: 2, sm: 3, md: 4, lg: 6 }
+        }}>
+          {/* Logo Section */}
           <Box sx={{ display: "flex", alignItems: "center" }}>
-    <img src={logo} alt="PrintfrAll Logo" style={{ height: "26px", marginRight: "10px" }} />
-  </Box>
+            <img src={logo} alt="PrintfrAll Logo" style={{ height: "26px", marginRight: "10px" }} />
+          </Box>
 
-          {/* Cart Icon for Mobile */}
+          {/* Mobile Menu Icons */}
           <Box sx={{ display: { xs: "flex", md: "none" }, alignItems: "center", gap: 1 }}>
             <IconButton
               component={Link}
@@ -348,11 +342,11 @@ const Navbar = ({ cartItems, addToCart, removeFromCart }) => {
             </IconButton>
           </Box>
 
-          {/* Navigation Links for Desktop */}
+          {/* Desktop Navigation Links - Centered */}
           <Box
             sx={{
               display: { xs: "none", md: "flex" },
-              gap: 3,
+              gap: { md: 2, lg: 3 },
               position: "absolute",
               left: "50%",
               transform: "translateX(-50%)",
@@ -363,8 +357,9 @@ const Navbar = ({ cartItems, addToCart, removeFromCart }) => {
               to="/"
               sx={{
                 color: "white",
-                fontSize: "16px",
+                fontSize: { md: "14px", lg: "16px" },
                 textTransform: "none",
+                whiteSpace: "nowrap",
                 "&:hover": { background: "rgba(255, 255, 255, 0.1)" },
               }}
             >
@@ -375,8 +370,9 @@ const Navbar = ({ cartItems, addToCart, removeFromCart }) => {
               to="/services"
               sx={{
                 color: "white",
-                fontSize: "16px",
+                fontSize: { md: "14px", lg: "16px" },
                 textTransform: "none",
+                whiteSpace: "nowrap",
                 "&:hover": { background: "rgba(255, 255, 255, 0.1)" },
               }}
             >
@@ -387,8 +383,9 @@ const Navbar = ({ cartItems, addToCart, removeFromCart }) => {
               to="/portfolio"
               sx={{
                 color: "white",
-                fontSize: "16px",
+                fontSize: { md: "14px", lg: "16px" },
                 textTransform: "none",
+                whiteSpace: "nowrap",
                 "&:hover": { background: "rgba(255, 255, 255, 0.1)" },
               }}
             >
@@ -399,8 +396,9 @@ const Navbar = ({ cartItems, addToCart, removeFromCart }) => {
               to="/about"
               sx={{
                 color: "white",
-                fontSize: "16px",
+                fontSize: { md: "14px", lg: "16px" },
                 textTransform: "none",
+                whiteSpace: "nowrap",
                 "&:hover": { background: "rgba(255, 255, 255, 0.1)" },
               }}
             >
@@ -408,12 +406,12 @@ const Navbar = ({ cartItems, addToCart, removeFromCart }) => {
             </Button>
           </Box>
 
-          {/* Search Icon and Search Bar for Desktop */}
+          {/* Desktop Right Section */}
           <Box
             sx={{
               display: { xs: "none", md: "flex" },
               alignItems: "center",
-              gap: 2,
+              gap: { md: 1, lg: 2 },
               position: "relative",
             }}
             onMouseEnter={() => setIsSearchOpen(true)}
@@ -429,25 +427,35 @@ const Navbar = ({ cartItems, addToCart, removeFromCart }) => {
                   setSearchResults([]);
                 }
               }}
-              sx={{ color: "white" }}
+              sx={{ color: "white", p: { md: 0.5, lg: 1 } }}
             >
               {isSearchOpen ? <CloseIcon /> : <SearchIcon />}
             </IconButton>
+            
             <Collapse in={isSearchOpen} orientation="horizontal">
               <Paper
                 component="form"
                 sx={{
                   display: "flex",
                   alignItems: "center",
-                  width: isIpadView ? "200px" : "300px", // Adjust width for iPad view
+                  width: isDesktop ? "200px" : (isIpadView ? "50px" : "200px"),
                   background: "rgba(255, 255, 255, 0.2)",
                   borderRadius: "25px",
-                  p: "2px 10px",
+                  p: "2px 8px",
+                  transition: "width 0.3s ease",
                 }}
               >
                 <InputBase
-                  placeholder="Search products..."
-                  sx={{ ml: 1, flex: 1, color: "white" }}
+                  placeholder="Search..."
+                  sx={{ 
+                    ml: 1, 
+                    flex: 1, 
+                    color: "white",
+                    fontSize: { md: "13px", lg: "14px" },
+                    "& input::placeholder": {
+                      fontSize: { md: "12px", lg: "13px" },
+                    }
+                  }}
                   value={searchQuery}
                   onChange={(e) => handleSearch(e.target.value)}
                   inputRef={searchInputRef}
@@ -455,7 +463,6 @@ const Navbar = ({ cartItems, addToCart, removeFromCart }) => {
               </Paper>
             </Collapse>
 
-            {/* Search Results Dropdown */}
             {isSearchOpen && searchQuery && (
               <Box
                 ref={searchResultsRef}
@@ -463,7 +470,7 @@ const Navbar = ({ cartItems, addToCart, removeFromCart }) => {
                   position: "absolute",
                   top: "56px",
                   left: "0",
-                  width: isIpadView ? "200px" : "300px", // Adjust width for iPad view
+                  width: isDesktop ? "180px" : (isIpadView ? "160px" : "200px"),
                   background: "white",
                   color: "black",
                   boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.1)",
@@ -479,50 +486,53 @@ const Navbar = ({ cartItems, addToCart, removeFromCart }) => {
                       key={index}
                       to={result.link}
                       style={{ textDecoration: "none", color: "inherit" }}
+                      onClick={() => {
+                        setIsSearchOpen(false);
+                        setSearchQuery("");
+                        setSearchResults([]);
+                      }}
                     >
                       <Box
                         sx={{
-                          p: 2,
+                          p: 1.5,
                           borderBottom: "1px solid #ddd",
                           "&:hover": { background: "#f9f9f9" },
                         }}
                       >
-                        <Typography>{result.name}</Typography>
+                        <Typography variant="body2">{result.name}</Typography>
                       </Box>
                     </Link>
                   ))
                 ) : (
-                  <Box sx={{ p: 2 }}>
-                    <Typography>No results found</Typography>
+                  <Box sx={{ p: 1.5 }}>
+                    <Typography variant="body2">No results found</Typography>
                   </Box>
                 )}
               </Box>
             )}
 
-            {/* Add to Cart Icon for Desktop */}
             <IconButton
               component={Link}
               to="/cart"
-              sx={{ color: "white", "&:hover": { transform: "scale(1.1)" } }}
+              sx={{ color: "white", "&:hover": { transform: "scale(1.1)" }, p: { md: 0.5, lg: 1 } }}
             >
               <Badge badgeContent={cartItems.length} color="error">
-                <ShoppingCartIcon />
+                <ShoppingCartIcon sx={{ fontSize: { md: "20px", lg: "24px" } }} />
               </Badge>
             </IconButton>
 
-            {/* Contact Button for Desktop */}
             <Button
               component={Link}
               to="/contact"
               variant="contained"
               sx={{
-                background: "white",
-                fontWeight: "bold",
-                color: "#ff6600",
-                textTransform: "none",
-                fontSize: "16px",
-                display: { xs: "none", md: "block" },
-                "&:hover": { background: "#ff8c42", color: "white", fontWeight: "bold" },
+                bgcolor: theme.palette.secondary.main,
+                color: "white",
+                fontSize: { md: "12px", lg: "14px" },
+                px: { md: 1.5, lg: 2 },
+                py: { md: 0.75, lg: 1 },
+                whiteSpace: "nowrap",
+                '&:hover': { bgcolor: theme.palette.secondary.dark },
               }}
             >
               Contact Us
@@ -531,7 +541,6 @@ const Navbar = ({ cartItems, addToCart, removeFromCart }) => {
         </Toolbar>
       </AppBar>
 
-      {/* Drawer for Mobile */}
       <Drawer anchor="left" open={isDrawerOpen} onClose={toggleDrawer(false)}>
         {drawerContent()}
       </Drawer>

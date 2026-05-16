@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import { Box, Typography } from "@mui/material";
 import { FaInstagram, FaEnvelope, FaFacebookF, FaLinkedinIn, FaPinterestP, FaPhoneAlt, FaYoutube } from "react-icons/fa";
-import logo from "../assets/printfrall-light.png";
-import logoMobile from "../assets/printfrall-light.png";
+import logo from "../assets/long-white.svg";
 import "../styles/Footer.css";
 import ToastNotification from "./ToastNotification";
 
@@ -14,7 +13,7 @@ const Footer = () => {
     e.preventDefault();
     const email = e.target.email.value;
 
-    fetch("http://localhost:5000/subscribe", {
+    fetch("https://printfrall.onrender.com/subscribe", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -37,12 +36,10 @@ const Footer = () => {
   return (
     <Box className="footer">
       <Box className="footer-container">
-        {/* Logo Section - Different logo for mobile */}
+        {/* Logo Section with Tagline */}
         <Box className="footer-logo-container">
-          <picture>
-            <source srcSet={logoMobile} media="(max-width: 768px)" />
-            <img src={logo} alt="PrintfrAll Logo" className="footer-logo" />
-          </picture>
+          <img src={logo} alt="PrintfrAll Logo" className="footer-logo" />
+          <Typography className="footer-tagline">Your Printing Partner</Typography>
         </Box>
 
         {/* Our Company */}

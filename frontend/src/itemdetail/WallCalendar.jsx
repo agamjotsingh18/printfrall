@@ -8,123 +8,188 @@ import {
   Grid,
   Snackbar,
   IconButton,
+  Chip,
+  TextField,
+  InputAdornment,
 } from "@mui/material";
-import { AddShoppingCart, Close } from "@mui/icons-material";
-import wallCalendarImg from "../assets/wall-calendar.png"; // Main image
-import wallCalendarImg2 from "../assets/wall-calendar.png"; // Extra image 1
-import wallCalendarImg3 from "../assets/wall-calendar.png"; // Extra image 2
-import wallCalendarImg4 from "../assets/wall-calendar.png"; // Extra image 3
-import wallCalendarImg5 from "../assets/wall-calendar.png"; // Extra image 4
-import Zoom from "react-medium-image-zoom"; // For zoom functionality
-import "react-medium-image-zoom/dist/styles.css"; // Zoom styles
+import { AddShoppingCart, Close, CalendarMonth, WorkspacePremium } from "@mui/icons-material";
+import Zoom from "react-medium-image-zoom";
+import "react-medium-image-zoom/dist/styles.css";
+
+// ========== MAIN PRODUCT IMAGE ==========
+import mainImg from "../assets/wall-calendar.png";
+
+// ========== EXTRA ANGLES ==========
+import img2 from "../assets/wall-calendar.png";
+import img3 from "../assets/wall-calendar-1.png";
+import img4 from "../assets/wall-calendar-2.png";
+import img5 from "../assets/wall-calendar-3.png";
 
 const WallCalendar = ({ addToCart }) => {
-  // Define price mapping for each material
   const priceMapping = {
-    "Standard Paper": 250,
-    "Premium Paper": 300,
-    "Glossy Paper": 350,
+    "210 GSM Glossy Card Stock": 350,
   };
 
-  // Most popular material (default selection)
-  const defaultMaterial = "Standard Paper";
+  const defaultMaterial = "210 GSM Glossy Card Stock";
 
   const [selectedMaterial, setSelectedMaterial] = useState(defaultMaterial);
-  const [mainImage, setMainImage] = useState(wallCalendarImg); // State for main image
-  const [snackbarOpen, setSnackbarOpen] = useState(false); // State for Snackbar
+  const [mainImage, setMainImage] = useState(mainImg);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
 
-  const wallCalendarDetails = {
-    name: "Wall Calendar",
-    image: wallCalendarImg,
-    description:
-      "Stylish and functional wall calendars for organizing your year. Perfect for home, office, or gifting purposes.",
-    features: [
-      "High-quality printing",
-      "Customizable designs",
-      "Available in various paper types",
-      "Durable and vibrant prints",
-    ],
-    materials: ["Standard Paper", "Premium Paper", "Glossy Paper"],
-    extraImages: [wallCalendarImg2, wallCalendarImg3, wallCalendarImg4, wallCalendarImg5], // Extra images
+  // Custom quantity state
+  const [selectedOption, setSelectedOption] = useState("Single");
+  const [customQuantity, setCustomQuantity] = useState(1);
+
+  const unitPrice = priceMapping[defaultMaterial]; // ₹350
+
+  const packOptions = [
+    { label: "Single", value: "Single", price: unitPrice, quantity: 1 },
+    { label: "Pack of 5", value: "Pack of 5", price: unitPrice * 5 * 0.95, quantity: 1 }, // 5% discount -> ₹1663
+    { label: "Pack of 10", value: "Pack of 10", price: unitPrice * 10 * 0.9, quantity: 1 }, // 10% discount -> ₹3150
+    { label: "Custom", value: "Custom", price: null, quantity: null },
+  ];
+
+  const getTotalPrice = () => {
+    if (selectedOption === "Custom") {
+      return unitPrice * customQuantity;
+    }
+    const option = packOptions.find((opt) => opt.value === selectedOption);
+    return option ? option.price : unitPrice;
   };
 
-  // Calculate price based on selected material
-  const price = priceMapping[selectedMaterial];
+  const price = getTotalPrice();
+
+  const handleOptionChange = (optionValue) => {
+    setSelectedOption(optionValue);
+    if (optionValue !== "Custom") {
+      setCustomQuantity(1);
+    }
+  };
+
+  const calendarDetails = {
+    name: "Poster Calendars",
+    image: mainImg,
+    description:
+      "Get a full view of your year with our premium A3 Poster Calendars. Printed on high-quality 210 GSM glossy card stock, these calendars are a unique and useful gift for friends, family, or business associates.",
+    features: [
+      "Size: A3 (28.5 cm x 43.81 cm) for a full year view",
+      "Material: Premium 210 GSM Glossy Card Stock",
+      "Customizable with favorite photos, messages, or logos",
+      "High-resolution vibrant color printing",
+      "Explore a wide range of personal or business designs",
+      "Durable card stock that holds shape on your wall",
+      "Perfect for corporate branding and personalized gifting",
+    ],
+    tags: ["Full Year View", "A3 Size", "Glossy Finish"],
+    extraImages: [img2, img3, img4, img5],
+  };
 
   const handleAddToCart = () => {
-    const item = {
-      ...wallCalendarDetails,
-      selectedMaterial,
-      price, // Use the dynamically calculated price
-      quantity: 1, // Default quantity
-    };
-
-    addToCart(item); // Add the item to the cart
-    setSnackbarOpen(true); // Show Snackbar for confirmation
+    let item;
+    if (selectedOption === "Custom") {
+      item = {
+        name: "Poster Calendars",
+        image: mainImg,
+        description: calendarDetails.description,
+        features: calendarDetails.features,
+        tags: calendarDetails.tags,
+        selectedSize: `${customQuantity} calendars`,
+        selectedMaterial: selectedMaterial,
+        price: price,
+        quantity: customQuantity,
+      };
+    } else {
+      const option = packOptions.find((opt) => opt.value === selectedOption);
+      item = {
+        ...calendarDetails,
+        selectedSize: option.label,
+        selectedMaterial: selectedMaterial,
+        price: option.price,
+        quantity: 1,
+      };
+    }
+    addToCart(item);
+    setSnackbarOpen(true);
   };
 
-  const handleCloseSnackbar = () => {
-    setSnackbarOpen(false);
-  };
+  const handleCloseSnackbar = () => setSnackbarOpen(false);
 
   return (
-    <Container sx={{ py: 6, maxWidth: 1200, margin: "40px auto 0 auto" }}>
+    <Container sx={{ py: 6, maxWidth: 1200, margin: "40px auto 0 auto", px: { xs: 2, md: 3 } }}>
       <Grid container spacing={4}>
-        {/* Image Section */}
+        {/* Image Gallery */}
         <Grid item xs={12} md={6}>
           <Paper
             sx={{
               p: 2,
-              borderRadius: "10px",
-              boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.1)",
+              borderRadius: "16px",
+              boxShadow: "0px 8px 24px rgba(0, 0, 0, 0.08)",
+              bgcolor: "#fff",
             }}
           >
-            {/* Main Image with Zoom */}
+            <Box sx={{ display: "flex", gap: 1, mb: 2 }}>
+              {calendarDetails.tags.map((tag, idx) => (
+                <Chip
+                  key={idx}
+                  label={tag}
+                  size="small"
+                  icon={tag === "Full Year View" ? <CalendarMonth fontSize="small" /> : <WorkspacePremium fontSize="small" />}
+                  sx={{
+                    backgroundColor: "rgba(112, 203, 151, 0.1)",
+                    color: "#70CB97",
+                    fontWeight: "bold",
+                    borderRadius: 2,
+                  }}
+                />
+              ))}
+            </Box>
+
             <Zoom>
               <img
                 src={mainImage}
-                alt={wallCalendarDetails.name}
+                alt={calendarDetails.name}
                 style={{
                   width: "100%",
-                  borderRadius: "10px",
+                  borderRadius: "12px",
                   cursor: "zoom-in",
                   maxHeight: "400px",
-                  objectFit: "cover",
+                  objectFit: "contain",
                 }}
               />
             </Zoom>
 
-            {/* Extra Images Gallery */}
+            {/* Thumbnail Gallery */}
             <Box
               sx={{
                 display: "flex",
                 gap: 2,
                 mt: 2,
-                overflowX: "auto", // Horizontal scroll for small screens
-                "&::-webkit-scrollbar": { display: "none" }, // Hide scrollbar
+                overflowX: "auto",
+                "&::-webkit-scrollbar": { display: "none" },
               }}
             >
-              {wallCalendarDetails.extraImages.map((image, index) => (
+              {calendarDetails.extraImages.map((img, idx) => (
                 <Paper
-                  key={index}
-                  onClick={() => setMainImage(image)}
+                  key={idx}
+                  onClick={() => setMainImage(img)}
                   sx={{
                     p: 1,
-                    borderRadius: "8px",
-                    boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+                    borderRadius: "10px",
                     cursor: "pointer",
-                    border: mainImage === image ? "2px solid #ff6600" : "none",
-                    "&:hover": { border: "2px solid #ff6600" },
-                    flexShrink: 0, // Prevent shrinking on small screens
+                    border:
+                      mainImage === img ? "2px solid #70CB97" : "2px solid transparent",
+                    "&:hover": { border: "2px solid #70CB97" },
+                    flexShrink: 0,
+                    transition: "all 0.2s",
                   }}
                 >
                   <img
-                    src={image}
-                    alt={`Wall Calendar ${index + 1}`}
+                    src={img}
+                    alt={`view ${idx + 1}`}
                     style={{
-                      width: "100px",
-                      height: "100px",
-                      borderRadius: "6px",
+                      width: "90px",
+                      height: "90px",
+                      borderRadius: "8px",
                       objectFit: "cover",
                     }}
                   />
@@ -134,94 +199,180 @@ const WallCalendar = ({ addToCart }) => {
           </Paper>
         </Grid>
 
-        {/* Details Section */}
+        {/* Product Details */}
         <Grid item xs={12} md={6}>
-          <Typography variant="h4" sx={{ fontWeight: "bold", mb: 2 }}>
-            {wallCalendarDetails.name}
-          </Typography>
-          <Typography variant="h5" sx={{ color: "#ff6600", fontWeight: "bold", mb: 3 }}>
-            ₹{price} {/* Display dynamic price */}
-          </Typography>
-          <Typography variant="body1" sx={{ mb: 3 }}>
-            {wallCalendarDetails.description}
+          <Typography
+            variant="h4"
+            sx={{ fontWeight: 700, mb: 1, color: "#19485D", fontSize: { xs: "1.8rem", md: "2.5rem" } }}
+          >
+            {calendarDetails.name}
           </Typography>
 
-          {/* Features */}
-          <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2 }}>
-            Features:
+          <Typography
+            variant="h5"
+            sx={{ color: "#70CB97", fontWeight: "bold", mb: 3, fontSize: { xs: "1.5rem", md: "2rem" } }}
+          >
+            ₹{Math.round(price)}
           </Typography>
-          <ul style={{ marginLeft: "20px", marginBottom: "20px" }}>
-            {wallCalendarDetails.features.map((feature, index) => (
-              <li key={index}>
-                <Typography variant="body1">{feature}</Typography>
+
+          <Typography
+            variant="body1"
+            sx={{ mb: 3, color: "#1e2a32", lineHeight: 1.6 }}
+          >
+            {calendarDetails.description}
+          </Typography>
+
+          <Typography
+            variant="h6"
+            sx={{ fontWeight: 600, mb: 2, color: "#19485D", fontSize: { xs: "1.2rem", md: "1.5rem" } }}
+          >
+            Product Highlights:
+          </Typography>
+          <Box component="ul" sx={{ ml: 2, mb: 3, listStyleType: "none", p: 0 }}>
+            {calendarDetails.features.map((feature, idx) => (
+              <li key={idx} style={{ marginBottom: "8px" }}>
+                <Typography variant="body1" sx={{ display: "flex", alignItems: "center", color: "#5a6e7a" }}>
+                  <span
+                    style={{
+                      display: "inline-block",
+                      width: "6px",
+                      height: "6px",
+                      backgroundColor: "#70CB97",
+                      borderRadius: "50%",
+                      marginRight: "8px",
+                    }}
+                  ></span>
+                  {feature}
+                </Typography>
               </li>
             ))}
-          </ul>
+          </Box>
 
-          {/* Materials */}
-          <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2 }}>
-            Available Materials:
-          </Typography>
-          <Box
-            sx={{
-              display: "flex",
-              gap: 2,
-              mb: 4,
-              flexWrap: "wrap", // Wrap materials on small screens
-            }}
+          {/* Purchase Option (Quantity) */}
+          <Typography
+            variant="h6"
+            sx={{ fontWeight: 600, mb: 2, color: "#19485D", fontSize: { xs: "1.2rem", md: "1.5rem" } }}
           >
-            {wallCalendarDetails.materials.map((material, index) => (
+            Select Quantity / Pack:
+          </Typography>
+          <Box sx={{ display: "flex", gap: 2, mb: 3, flexWrap: "wrap" }}>
+            {packOptions.map((option) => (
               <Paper
-                key={index}
-                onClick={() => setSelectedMaterial(material)}
+                key={option.value}
+                onClick={() => handleOptionChange(option.value)}
                 sx={{
                   p: 1.5,
-                  borderRadius: "8px",
+                  px: 2.5,
+                  borderRadius: "40px",
                   textAlign: "center",
-                  fontWeight: "bold",
-                  boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+                  fontWeight: 600,
                   cursor: "pointer",
-                  backgroundColor: selectedMaterial === material ? "#ff6600" : "white",
-                  color: selectedMaterial === material ? "white" : "inherit",
-                  flex: "1 1 100px", // Flexible sizing for responsiveness
+                  bgcolor: selectedOption === option.value ? "#70CB97" : "#fff",
+                  color: selectedOption === option.value ? "#fff" : "#19485D",
+                  border: "1px solid #e0e7ed",
+                  transition: "all 0.2s",
+                  "&:hover": {
+                    bgcolor: selectedOption === option.value ? "#5cb67f" : "#f0f9f3",
+                    transform: "translateY(-2px)",
+                  },
                 }}
               >
-                {material}
+                {option.label}
               </Paper>
             ))}
           </Box>
 
-          {/* Add to Cart Button */}
+          {/* Custom Quantity Input */}
+          {selectedOption === "Custom" && (
+            <Box sx={{ mb: 4 }}>
+              <Typography variant="body2" sx={{ mb: 1, color: "#19485D", fontWeight: 500 }}>
+                Enter number of calendars:
+              </Typography>
+              <TextField
+                type="number"
+                value={customQuantity}
+                onChange={(e) => setCustomQuantity(Math.max(1, parseInt(e.target.value) || 1))}
+                InputProps={{
+                  endAdornment: <InputAdornment position="end">calendars</InputAdornment>,
+                }}
+                sx={{
+                  width: "200px",
+                  "& .MuiOutlinedInput-root": {
+                    borderRadius: "40px",
+                    "& fieldset": { borderColor: "#e0e7ed" },
+                    "&:hover fieldset": { borderColor: "#70CB97" },
+                    "&.Mui-focused fieldset": { borderColor: "#70CB97" },
+                  },
+                }}
+              />
+              <Typography variant="caption" sx={{ display: "block", mt: 1, color: "#5a6e7a" }}>
+                Unit price: ₹{unitPrice} per calendar
+              </Typography>
+            </Box>
+          )}
+
+          {/* Paper Type (Material) */}
+          <Typography
+            variant="h6"
+            sx={{ fontWeight: 600, mb: 2, color: "#19485D", fontSize: { xs: "1.2rem", md: "1.5rem" } }}
+          >
+            Paper Type:
+          </Typography>
+          <Box sx={{ mb: 4 }}>
+            <Paper
+              sx={{
+                p: 1.5,
+                px: 2.5,
+                borderRadius: "40px",
+                textAlign: "center",
+                fontWeight: 600,
+                backgroundColor: "#70CB97",
+                color: "white",
+                border: "1px solid #e0e7ed",
+                display: "inline-block",
+              }}
+            >
+              {selectedMaterial}
+            </Paper>
+          </Box>
+
           <Button
             variant="contained"
             startIcon={<AddShoppingCart />}
             sx={{
-              background: "#ff6600",
+              background: "#70CB97",
               color: "white",
-              fontWeight: "bold",
-              fontSize: "16px",
-              padding: "12px 24px",
-              "&:hover": { background: "#ff8c42" },
-              width: { xs: "100%", md: "auto" }, // Full width on small screens
+              fontWeight: 700,
+              fontSize: { xs: "0.9rem", md: "1rem" },
+              padding: { xs: "12px 20px", md: "12px 28px" },
+              borderRadius: "40px",
+              textTransform: "none",
+              boxShadow: "0px 4px 12px rgba(112, 203, 151, 0.3)",
+              "&:hover": { background: "#5cb67f", transform: "translateY(-2px)" },
+              width: { xs: "100%", md: "auto" },
             }}
             onClick={handleAddToCart}
           >
-            Add to Cart
+            Add to Cart – ₹{Math.round(price)}
           </Button>
+
+          <Typography
+            variant="body2"
+            sx={{ mt: 2, color: "#5a6e7a", fontStyle: "italic", textAlign: "center" }}
+          >
+            * Same Day Delivery available in select cities. Personalization powered by PrintfrAll.
+          </Typography>
         </Grid>
       </Grid>
 
-      {/* Snackbar for Notifications */}
       <Snackbar
         open={snackbarOpen}
         autoHideDuration={3000}
         onClose={handleCloseSnackbar}
-        message="Item added to cart!"
-        action={
-          <IconButton size="small" color="inherit" onClick={handleCloseSnackbar}>
-            <Close fontSize="small" />
-          </IconButton>
-        }
+        message="✓ Poster Calendar added to cart!"
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        sx={{ "& .MuiSnackbarContent-root": { backgroundColor: "#19485D", borderRadius: "40px" } }}
+        action={<IconButton size="small" color="inherit" onClick={handleCloseSnackbar}><Close fontSize="small" /></IconButton>}
       />
     </Container>
   );

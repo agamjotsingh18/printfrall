@@ -10,32 +10,31 @@ import {
   IconButton,
 } from "@mui/material";
 import { AddShoppingCart, Close } from "@mui/icons-material";
-import bigSquareDesktopCalendarImg from "../assets/big-square-desktop-calendar.png"; // Main image
-import bigSquareDesktopCalendarImg2 from "../assets/big-square-desktop-calendar.png"; // Extra image 1
-import bigSquareDesktopCalendarImg3 from "../assets/big-square-desktop-calendar.png"; // Extra image 2
-import bigSquareDesktopCalendarImg4 from "../assets/big-square-desktop-calendar.png"; // Extra image 3
-import bigSquareDesktopCalendarImg5 from "../assets/big-square-desktop-calendar.png"; // Extra image 4
-import Zoom from "react-medium-image-zoom"; // For zoom functionality
-import "react-medium-image-zoom/dist/styles.css"; // Zoom styles
+import Zoom from "react-medium-image-zoom";
+import "react-medium-image-zoom/dist/styles.css";
+
+import mainImg from "../assets/big-square-calendar-1.jpeg";
+import img2 from "../assets/big-square-calendar-2.png";
+import img3 from "../assets/big-square-calendar-3.png";
+import img4 from "../assets/big-square-calendar-4.png";
+import img5 from "../assets/big-square-calendar-5.png";
+
 
 const BigSquareDesktopCalendar = ({ addToCart }) => {
-  // Define price mapping for each material
   const priceMapping = {
     "Standard Paper": 300,
     "Premium Paper": 350,
     "Glossy Paper": 400,
   };
 
-  // Most popular material (default selection)
   const defaultMaterial = "Standard Paper";
-
   const [selectedMaterial, setSelectedMaterial] = useState(defaultMaterial);
-  const [mainImage, setMainImage] = useState(bigSquareDesktopCalendarImg); // State for main image
-  const [snackbarOpen, setSnackbarOpen] = useState(false); // State for Snackbar
+  const [mainImage, setMainImage] = useState(mainImg);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
 
-  const bigSquareDesktopCalendarDetails = {
+  const details = {
     name: "Big Square Desktop Calendar",
-    image: bigSquareDesktopCalendarImg,
+    image: mainImg,
     description:
       "Large and stylish square desktop calendars for organizing your year. Perfect for office desks, home use, or gifting purposes.",
     features: [
@@ -45,48 +44,44 @@ const BigSquareDesktopCalendar = ({ addToCart }) => {
       "Durable and vibrant prints",
     ],
     materials: ["Standard Paper", "Premium Paper", "Glossy Paper"],
-    extraImages: [bigSquareDesktopCalendarImg2, bigSquareDesktopCalendarImg3, bigSquareDesktopCalendarImg4, bigSquareDesktopCalendarImg5], // Extra images
+    extraImages: [img2, img3, img4, img5],
   };
 
-  // Calculate price based on selected material
   const price = priceMapping[selectedMaterial];
 
   const handleAddToCart = () => {
     const item = {
-      ...bigSquareDesktopCalendarDetails,
+      ...details,
       selectedMaterial,
-      price, // Use the dynamically calculated price
-      quantity: 1, // Default quantity
+      price,
+      quantity: 1,
     };
-
-    addToCart(item); // Add the item to the cart
-    setSnackbarOpen(true); // Show Snackbar for confirmation
+    addToCart(item);
+    setSnackbarOpen(true);
   };
 
-  const handleCloseSnackbar = () => {
-    setSnackbarOpen(false);
-  };
+  const handleCloseSnackbar = () => setSnackbarOpen(false);
 
   return (
-    <Container sx={{ py: 6, maxWidth: 1200, margin: "40px auto 0 auto" }}>
+    <Container sx={{ py: 6, maxWidth: 1200, margin: "40px auto 0 auto", px: { xs: 2, md: 3 } }}>
       <Grid container spacing={4}>
-        {/* Image Section */}
+        {/* Image Gallery */}
         <Grid item xs={12} md={6}>
           <Paper
             sx={{
               p: 2,
-              borderRadius: "10px",
-              boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.1)",
+              borderRadius: "16px",
+              boxShadow: "0px 8px 24px rgba(0, 0, 0, 0.08)",
+              bgcolor: "#fff",
             }}
           >
-            {/* Main Image with Zoom */}
             <Zoom>
               <img
                 src={mainImage}
-                alt={bigSquareDesktopCalendarDetails.name}
+                alt={details.name}
                 style={{
                   width: "100%",
-                  borderRadius: "10px",
+                  borderRadius: "12px",
                   cursor: "zoom-in",
                   maxHeight: "400px",
                   objectFit: "cover",
@@ -94,37 +89,37 @@ const BigSquareDesktopCalendar = ({ addToCart }) => {
               />
             </Zoom>
 
-            {/* Extra Images Gallery */}
             <Box
               sx={{
                 display: "flex",
                 gap: 2,
                 mt: 2,
-                overflowX: "auto", // Horizontal scroll for small screens
-                "&::-webkit-scrollbar": { display: "none" }, // Hide scrollbar
+                overflowX: "auto",
+                "&::-webkit-scrollbar": { display: "none" },
               }}
             >
-              {bigSquareDesktopCalendarDetails.extraImages.map((image, index) => (
+              {details.extraImages.map((img, idx) => (
                 <Paper
-                  key={index}
-                  onClick={() => setMainImage(image)}
+                  key={idx}
+                  onClick={() => setMainImage(img)}
                   sx={{
                     p: 1,
-                    borderRadius: "8px",
-                    boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+                    borderRadius: "10px",
                     cursor: "pointer",
-                    border: mainImage === image ? "2px solid #ff6600" : "none",
-                    "&:hover": { border: "2px solid #ff6600" },
-                    flexShrink: 0, // Prevent shrinking on small screens
+                    border:
+                      mainImage === img ? "2px solid #70CB97" : "2px solid transparent",
+                    "&:hover": { border: "2px solid #70CB97" },
+                    flexShrink: 0,
+                    transition: "all 0.2s",
                   }}
                 >
                   <img
-                    src={image}
-                    alt={`Big Square Desktop Calendar ${index + 1}`}
+                    src={img}
+                    alt={`view ${idx + 1}`}
                     style={{
-                      width: "100px",
-                      height: "100px",
-                      borderRadius: "6px",
+                      width: "90px",
+                      height: "90px",
+                      borderRadius: "8px",
                       objectFit: "cover",
                     }}
                   />
@@ -134,56 +129,82 @@ const BigSquareDesktopCalendar = ({ addToCart }) => {
           </Paper>
         </Grid>
 
-        {/* Details Section */}
+        {/* Product Details */}
         <Grid item xs={12} md={6}>
-          <Typography variant="h4" sx={{ fontWeight: "bold", mb: 2 }}>
-            {bigSquareDesktopCalendarDetails.name}
-          </Typography>
-          <Typography variant="h5" sx={{ color: "#ff6600", fontWeight: "bold", mb: 3 }}>
-            ₹{price} {/* Display dynamic price */}
-          </Typography>
-          <Typography variant="body1" sx={{ mb: 3 }}>
-            {bigSquareDesktopCalendarDetails.description}
+          <Typography
+            variant="h4"
+            sx={{ fontWeight: 700, mb: 2, color: "#19485D", fontSize: { xs: "1.8rem", md: "2.5rem" } }}
+          >
+            {details.name}
           </Typography>
 
-          {/* Features */}
-          <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2 }}>
+          <Typography
+            variant="h5"
+            sx={{ color: "#70CB97", fontWeight: "bold", mb: 3, fontSize: { xs: "1.5rem", md: "2rem" } }}
+          >
+            ₹{price}
+          </Typography>
+
+          <Typography
+            variant="body1"
+            sx={{ mb: 3, color: "#1e2a32", lineHeight: 1.6 }}
+          >
+            {details.description}
+          </Typography>
+
+          <Typography
+            variant="h6"
+            sx={{ fontWeight: 600, mb: 2, color: "#19485D", fontSize: { xs: "1.2rem", md: "1.5rem" } }}
+          >
             Features:
           </Typography>
-          <ul style={{ marginLeft: "20px", marginBottom: "20px" }}>
-            {bigSquareDesktopCalendarDetails.features.map((feature, index) => (
-              <li key={index}>
-                <Typography variant="body1">{feature}</Typography>
+          <Box component="ul" sx={{ ml: 2, mb: 3, listStyleType: "none", p: 0 }}>
+            {details.features.map((feature, idx) => (
+              <li key={idx} style={{ marginBottom: "8px" }}>
+                <Typography variant="body1" sx={{ display: "flex", alignItems: "center", color: "#5a6e7a" }}>
+                  <span
+                    style={{
+                      display: "inline-block",
+                      width: "6px",
+                      height: "6px",
+                      backgroundColor: "#70CB97",
+                      borderRadius: "50%",
+                      marginRight: "8px",
+                    }}
+                  ></span>
+                  {feature}
+                </Typography>
               </li>
             ))}
-          </ul>
+          </Box>
 
           {/* Materials */}
-          <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2 }}>
+          <Typography
+            variant="h6"
+            sx={{ fontWeight: 600, mb: 2, color: "#19485D", fontSize: { xs: "1.2rem", md: "1.5rem" } }}
+          >
             Available Materials:
           </Typography>
-          <Box
-            sx={{
-              display: "flex",
-              gap: 2,
-              mb: 4,
-              flexWrap: "wrap", // Wrap materials on small screens
-            }}
-          >
-            {bigSquareDesktopCalendarDetails.materials.map((material, index) => (
+          <Box sx={{ display: "flex", gap: 2, mb: 4, flexWrap: "wrap" }}>
+            {details.materials.map((material, idx) => (
               <Paper
-                key={index}
+                key={idx}
                 onClick={() => setSelectedMaterial(material)}
                 sx={{
                   p: 1.5,
-                  borderRadius: "8px",
+                  px: 2.5,
+                  borderRadius: "40px",
                   textAlign: "center",
-                  fontWeight: "bold",
-                  boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+                  fontWeight: 600,
                   cursor: "pointer",
-                  backgroundColor: selectedMaterial === material ? "#ff6600" : "white",
-                  color: selectedMaterial === material ? "white" : "inherit",
-                  flex: "1 1 100px", // Flexible sizing for responsiveness
+                  bgcolor: selectedMaterial === material ? "#70CB97" : "#fff",
+                  color: selectedMaterial === material ? "#fff" : "#19485D",
+                  border: "1px solid #e0e7ed",
+                  transition: "all 0.2s",
+                  "&:hover": {
+                    bgcolor: selectedMaterial === material ? "#5cb67f" : "#f0f9f3",
+                    transform: "translateY(-2px)",
+                  },
                 }}
               >
                 {material}
@@ -191,18 +212,24 @@ const BigSquareDesktopCalendar = ({ addToCart }) => {
             ))}
           </Box>
 
-          {/* Add to Cart Button */}
           <Button
             variant="contained"
             startIcon={<AddShoppingCart />}
             sx={{
-              background: "#ff6600",
+              background: "#70CB97",
               color: "white",
-              fontWeight: "bold",
-              fontSize: "16px",
-              padding: "12px 24px",
-              "&:hover": { background: "#ff8c42" },
-              width: { xs: "100%", md: "auto" }, // Full width on small screens
+              fontWeight: 700,
+              fontSize: { xs: "0.9rem", md: "1rem" },
+              padding: { xs: "12px 20px", md: "12px 28px" },
+              borderRadius: "40px",
+              textTransform: "none",
+              boxShadow: "0px 4px 12px rgba(112, 203, 151, 0.3)",
+              "&:hover": {
+                background: "#5cb67f",
+                transform: "translateY(-2px)",
+              },
+              width: { xs: "100%", md: "auto" },
+              transition: "all 0.2s ease",
             }}
             onClick={handleAddToCart}
           >
@@ -211,12 +238,18 @@ const BigSquareDesktopCalendar = ({ addToCart }) => {
         </Grid>
       </Grid>
 
-      {/* Snackbar for Notifications */}
       <Snackbar
         open={snackbarOpen}
         autoHideDuration={3000}
         onClose={handleCloseSnackbar}
-        message="Item added to cart!"
+        message="✓ Item added to cart!"
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        sx={{
+          "& .MuiSnackbarContent-root": {
+            backgroundColor: "#19485D",
+            borderRadius: "40px",
+          },
+        }}
         action={
           <IconButton size="small" color="inherit" onClick={handleCloseSnackbar}>
             <Close fontSize="small" />

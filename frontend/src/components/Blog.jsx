@@ -5,8 +5,6 @@ import ThreeDPrinting from "../assets/3d-printing.avif"
 import EcoPrinting from  "../assets/eco-printing.webp";
 import BusinessCardDesign from  "../assets/business-card-design.webp";
 
-
-
 const blogPosts = [
   {
     title: "The Future of 3D Printing",
@@ -31,7 +29,9 @@ const blogPosts = [
 const Blog = () => {
   return (
     <Box className="blog-page" sx={{ marginTop: "50px", paddingBottom: "50px" }}>
-      <Typography className="blog-title"  sx={{ fontSize: "30px", color: "#ff6600", fontWeight:"bolder" }}>Latest from Our Blog</Typography>
+      <Typography className="blog-title" sx={{ fontWeight: "bolder" }}>
+        Latest from Our Blog
+      </Typography>
       <Box className="blog-container" sx={{ marginTop: "50px" }}>
         {blogPosts.map((post, index) => (
           <Card className="blog-card" key={index}>

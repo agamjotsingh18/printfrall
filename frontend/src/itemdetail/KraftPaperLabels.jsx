@@ -12,9 +12,9 @@ import {
 import { AddShoppingCart, Close } from "@mui/icons-material";
 import kraftPaperLabelsImg from "../assets/kraft-paper-labels.png"; // Main image
 import kraftPaperLabelsImg2 from "../assets/kraft-paper-labels.png"; // Extra image 1
-import kraftPaperLabelsImg3 from "../assets/kraft-paper-labels.png"; // Extra image 2
-import kraftPaperLabelsImg4 from "../assets/kraft-paper-labels.png"; // Extra image 3
-import kraftPaperLabelsImg5 from "../assets/kraft-paper-labels.png"; // Extra image 4
+import kraftPaperLabelsImg3 from "../assets/kraft-paper-labels-1.png"; // Extra image 2
+import kraftPaperLabelsImg4 from "../assets/kraft-paper-labels-2.png"; // Extra image 3
+import kraftPaperLabelsImg5 from "../assets/kraft-paper-labels-3.png"; // Extra image 4
 import Zoom from "react-medium-image-zoom"; // For zoom functionality
 import "react-medium-image-zoom/dist/styles.css"; // Zoom styles
 

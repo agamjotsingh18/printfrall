@@ -8,60 +8,61 @@ import {
   Grid,
   Snackbar,
   IconButton,
-  Chip
+  Chip,
 } from "@mui/material";
-import { AddShoppingCart, Close, LocalFlorist } from "@mui/icons-material";
-import floralBottleImg from "../assets/floral-ss-bottle.png";
-import floralBottleImg2 from "../assets/floral-ss-bottle.png";
-import floralBottleImg3 from "../assets/floral-ss-bottle.png";
+import { AddShoppingCart, Close, LocalDrink } from "@mui/icons-material";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
 
+// ========== MAIN BOTTLE IMAGE ==========
+import mainImg from "../assets/floral-bottle-2.png";
+
+// ========== EXTRA ANGLES ==========
+import img2 from "../assets/floral-bottle-1.png";
+import img3 from "../assets/floral-ss-bottle.png";
+
 const FloralSSBottle = ({ addToCart }) => {
+  // Price mapping
   const priceMapping = {
-    "500ml": 899,
-    "750ml": 1099,
+    "1000ml": 650,
   };
 
-  const availableDesigns = [
-    "Rose Gold Floral", 
-    "Silver Vine", 
-    "Gold Blossom"
-  ];
-
-  const defaultSize = "500ml";
-  const defaultDesign = "Rose Gold Floral";
+  // Available options
+  const availableColors = ["Black", "White"];
+  const defaultSize = "1000ml";
+  const defaultColor = "Black";
 
   const [selectedSize, setSelectedSize] = useState(defaultSize);
-  const [selectedDesign, setSelectedDesign] = useState(defaultDesign);
-  const [mainImage, setMainImage] = useState(floralBottleImg);
+  const [selectedColor, setSelectedColor] = useState(defaultColor);
+  const [mainImage, setMainImage] = useState(mainImg);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
-  const floralBottleDetails = {
-    name: "Floral Stainless Steel Bottle",
-    image: floralBottleImg,
+  const bottleDetails = {
+    name: "Flora Plus SS Bottle",
+    image: mainImg,
     description:
-      "Elegant stainless steel water bottle featuring beautiful floral designs. Keeps beverages hot for 12 hours or cold for 24 hours. Perfect for corporate gifting or personal use.",
+      "Personalize your bottle for any occasion – perfect for work, travel, fitness, and more! This single-wall stainless steel bottle is built for reliable, long-term use while helping you cut down on plastic waste.",
     features: [
-      "Double-walled vacuum insulation",
-      "18/8 food-grade stainless steel",
-      "Hand-painted floral designs",
-      "Leak-proof flip-top lid",
-      "Copper insulation layer",
-      "Corporate branding options"
+      "1000ml High Capacity",
+      "Single-wall premium stainless steel",
+      "Customize with brand logo or name",
+      "Digital printing for vibrant results",
+      "Practical & stylish for corporate gifting",
+      "Order from as low as 1 unit",
     ],
-    sizes: ["500ml", "750ml"],
-    extraImages: [floralBottleImg2, floralBottleImg3],
-    tags: ["Elegant", "Floral", "Insulated"]
+    sizes: ["1000ml"],
+    colors: availableColors,
+    extraImages: [img2, img3],
+    tags: ["Eco-Friendly", "1000ml", "Customizable"],
   };
 
   const price = priceMapping[selectedSize];
 
   const handleAddToCart = () => {
     const item = {
-      ...floralBottleDetails,
+      ...bottleDetails,
       selectedSize,
-      selectedDesign,
+      selectedColor,
       price,
       quantity: 1,
     };
@@ -69,101 +70,255 @@ const FloralSSBottle = ({ addToCart }) => {
     setSnackbarOpen(true);
   };
 
-  const handleCloseSnackbar = () => {
-    setSnackbarOpen(false);
-  };
+  const handleCloseSnackbar = () => setSnackbarOpen(false);
 
   return (
-    <Container sx={{ py: 6, maxWidth: 1200, margin: "40px auto 0 auto", px: { xs: 2, md: 3 }}}>
+    <Container sx={{ py: 6, maxWidth: 1200, margin: "40px auto 0 auto", px: { xs: 2, md: 3 } }}>
       <Grid container spacing={4}>
+        {/* Image Gallery */}
         <Grid item xs={12} md={6}>
-          <Paper sx={{ p: 2, borderRadius: "10px", boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.1)", position: "relative" }}>
-            <Box sx={{ display: 'flex', gap: 1, mb: 2 }}>
-              {floralBottleDetails.tags.map((tag, index) => (
-                <Chip 
-                  key={index}
-                  label={tag}
-                  size="small"
-                  icon={tag === "Floral" ? <LocalFlorist fontSize="small" /> : null}
-                  sx={{ backgroundColor: "#e91e63", color: "white", fontWeight: 'bold' }}
-                />
-              ))}
-            </Box>
-            
+          <Paper
+            sx={{
+              p: 2,
+              borderRadius: "16px",
+              boxShadow: "0px 8px 24px rgba(0, 0, 0, 0.08)",
+              bgcolor: "#fff",
+            }}
+          >
             <Zoom>
-              <img src={mainImage} alt={floralBottleDetails.name} style={{ width: "100%", borderRadius: "8px", cursor: "zoom-in", maxHeight: "400px", objectFit: "contain" }} />
+              <img
+                src={mainImage}
+                alt={bottleDetails.name}
+                style={{
+                  width: "100%",
+                  borderRadius: "12px",
+                  cursor: "zoom-in",
+                  maxHeight: "400px",
+                  objectFit: "contain",
+                }}
+              />
             </Zoom>
 
-            <Box sx={{ display: "flex", gap: 2, mt: 2, overflowX: "auto", "&::-webkit-scrollbar": { display: "none" }}}>
-              {floralBottleDetails.extraImages.map((image, index) => (
-                <Paper key={index} onClick={() => setMainImage(image)} sx={{ p: 1, borderRadius: "8px", boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)", cursor: "pointer", border: mainImage === image ? "2px solid #e91e63" : "none", "&:hover": { border: "2px solid #e91e63" }, flexShrink: 0 }}>
-                  <img src={image} alt={`Floral SS Bottle ${index + 1}`} style={{ width: "100px", height: "100px", borderRadius: "6px", objectFit: "cover" }} />
+            {/* Thumbnail Gallery */}
+            <Box
+              sx={{
+                display: "flex",
+                gap: 2,
+                mt: 2,
+                overflowX: "auto",
+                "&::-webkit-scrollbar": { display: "none" },
+              }}
+            >
+              {bottleDetails.extraImages.map((img, idx) => (
+                <Paper
+                  key={idx}
+                  onClick={() => setMainImage(img)}
+                  sx={{
+                    p: 1,
+                    borderRadius: "10px",
+                    cursor: "pointer",
+                    border:
+                      mainImage === img ? "2px solid #70CB97" : "2px solid transparent",
+                    "&:hover": { border: "2px solid #70CB97" },
+                    flexShrink: 0,
+                    transition: "all 0.2s",
+                  }}
+                >
+                  <img
+                    src={img}
+                    alt={`view ${idx + 1}`}
+                    style={{
+                      width: "90px",
+                      height: "90px",
+                      borderRadius: "8px",
+                      objectFit: "cover",
+                    }}
+                  />
                 </Paper>
               ))}
             </Box>
           </Paper>
         </Grid>
 
+        {/* Product Details */}
         <Grid item xs={12} md={6}>
-          <Typography variant="h4" sx={{ fontWeight: "bold", mb: 2, fontSize: { xs: "1.8rem", md: "2.5rem" }}}>
-            {floralBottleDetails.name}
-          </Typography>
-          
-          <Typography variant="h5" sx={{ color: "#e91e63", fontWeight: "bold", mb: 3, fontSize: { xs: "1.5rem", md: "2rem" }}}>
-            ₹{price}
-          </Typography>
-          
-          <Typography variant="body1" sx={{ mb: 3, lineHeight: 1.6 }}>
-            {floralBottleDetails.description}
+          {/* Tags */}
+          <Box sx={{ display: "flex", gap: 1, mb: 2, flexWrap: "wrap" }}>
+            {bottleDetails.tags.map((tag, idx) => (
+              <Chip
+                key={idx}
+                label={tag}
+                size="small"
+                icon={<LocalDrink fontSize="small" />}
+                sx={{
+                  backgroundColor: "rgba(112, 203, 151, 0.1)",
+                  color: "#70CB97",
+                  fontWeight: 600,
+                  borderRadius: 2,
+                }}
+              />
+            ))}
+          </Box>
+
+          <Typography
+            variant="h4"
+            sx={{ fontWeight: 700, mb: 2, color: "#19485D", fontSize: { xs: "1.8rem", md: "2.5rem" } }}
+          >
+            {bottleDetails.name}
           </Typography>
 
-          <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2, fontSize: { xs: "1.2rem", md: "1.5rem" }}}>
-            Features:
+          <Typography
+            variant="h5"
+            sx={{ color: "#70CB97", fontWeight: "bold", mb: 3, fontSize: { xs: "1.5rem", md: "2rem" } }}
+          >
+            ₹{price}
           </Typography>
-          <ul style={{ marginLeft: "20px", marginBottom: "20px", listStyleType: "none", padding: 0 }}>
-            {floralBottleDetails.features.map((feature, index) => (
-              <li key={index} style={{ marginBottom: "8px" }}>
-                <Typography variant="body1" sx={{ display: 'flex', alignItems: 'center' }}>
-                  <span style={{ display: 'inline-block', width: '6px', height: '6px', backgroundColor: "#e91e63", borderRadius: '50%', marginRight: '8px' }}></span>
+
+          <Typography
+            variant="body1"
+            sx={{ mb: 3, color: "#1e2a32", lineHeight: 1.6 }}
+          >
+            {bottleDetails.description}
+          </Typography>
+
+          {/* Features */}
+          <Typography
+            variant="h6"
+            sx={{ fontWeight: 600, mb: 2, color: "#19485D", fontSize: { xs: "1.2rem", md: "1.5rem" } }}
+          >
+            Product Highlights:
+          </Typography>
+          <Box component="ul" sx={{ ml: 2, mb: 3, listStyleType: "none", p: 0 }}>
+            {bottleDetails.features.map((feature, idx) => (
+              <li key={idx} style={{ marginBottom: "8px" }}>
+                <Typography variant="body1" sx={{ display: "flex", alignItems: "center", color: "#5a6e7a" }}>
+                  <span
+                    style={{
+                      display: "inline-block",
+                      width: "6px",
+                      height: "6px",
+                      backgroundColor: "#70CB97",
+                      borderRadius: "50%",
+                      marginRight: "8px",
+                    }}
+                  ></span>
                   {feature}
                 </Typography>
               </li>
             ))}
-          </ul>
+          </Box>
 
-          <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2, fontSize: { xs: "1.2rem", md: "1.5rem" }}}>
-            Available Sizes:
+          {/* Color Options */}
+          <Typography
+            variant="h6"
+            sx={{ fontWeight: 600, mb: 2, color: "#19485D", fontSize: { xs: "1.2rem", md: "1.5rem" } }}
+          >
+            Color Options:
           </Typography>
           <Box sx={{ display: "flex", gap: 2, mb: 4, flexWrap: "wrap" }}>
-            {floralBottleDetails.sizes.map((size, index) => (
-              <Paper key={index} onClick={() => setSelectedSize(size)} sx={{ p: 1.5, borderRadius: "8px", textAlign: "center", fontWeight: "bold", boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)", cursor: "pointer", backgroundColor: selectedSize === size ? "#e91e63" : "white", color: selectedSize === size ? "white" : "inherit", flex: "1 1 100px" }}>
+            {bottleDetails.colors.map((color, idx) => (
+              <Paper
+                key={idx}
+                onClick={() => setSelectedColor(color)}
+                sx={{
+                  p: 1.5,
+                  px: 2.5,
+                  borderRadius: "40px",
+                  textAlign: "center",
+                  fontWeight: 600,
+                  cursor: "pointer",
+                  bgcolor: selectedColor === color ? "#70CB97" : "#fff",
+                  color: selectedColor === color ? "#fff" : "#19485D",
+                  border: "1px solid #e0e7ed",
+                  transition: "all 0.2s",
+                  "&:hover": {
+                    bgcolor: selectedColor === color ? "#5cb67f" : "#f0f9f3",
+                    transform: "translateY(-2px)",
+                  },
+                }}
+              >
+                {color}
+              </Paper>
+            ))}
+          </Box>
+
+          {/* Size (only one option, but keeping for consistency) */}
+          <Typography
+            variant="h6"
+            sx={{ fontWeight: 600, mb: 2, color: "#19485D", fontSize: { xs: "1.2rem", md: "1.5rem" } }}
+          >
+            Capacity:
+          </Typography>
+          <Box sx={{ display: "flex", gap: 2, mb: 4, flexWrap: "wrap" }}>
+            {bottleDetails.sizes.map((size, idx) => (
+              <Paper
+                key={idx}
+                sx={{
+                  p: 1.5,
+                  px: 2.5,
+                  borderRadius: "40px",
+                  textAlign: "center",
+                  fontWeight: 600,
+                  backgroundColor: "#70CB97",
+                  color: "white",
+                  border: "1px solid #e0e7ed",
+                }}
+              >
                 {size}
               </Paper>
             ))}
           </Box>
 
-          <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2, fontSize: { xs: "1.2rem", md: "1.5rem" }}}>
-            Design Options:
-          </Typography>
-          <Box sx={{ display: "flex", gap: 2, mb: 4, flexWrap: "wrap" }}>
-            {availableDesigns.map((design, index) => (
-              <Paper key={index} onClick={() => setSelectedDesign(design)} sx={{ p: 1.5, borderRadius: "8px", textAlign: "center", fontWeight: "bold", boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)", cursor: "pointer", backgroundColor: selectedDesign === design ? "#e91e63" : "white", color: selectedDesign === design ? "white" : "inherit", flex: "1 1 100px" }}>
-                {design}
-              </Paper>
-            ))}
-          </Box>
-
-          <Button variant="contained" startIcon={<AddShoppingCart />} sx={{ background: "#e91e63", color: "white", fontWeight: "bold", fontSize: { xs: "0.9rem", md: "1rem" }, padding: { xs: "12px 20px", md: "14px 28px" }, "&:hover": { background: "#c2185b", transform: "translateY(-2px)" }, width: { xs: "100%", md: "auto" }, borderRadius: "8px", boxShadow: "0 4px 12px rgba(233, 30, 99, 0.3)", transition: 'all 0.2s ease' }} onClick={handleAddToCart}>
+          {/* Add to Cart Button */}
+          <Button
+            variant="contained"
+            startIcon={<AddShoppingCart />}
+            sx={{
+              background: "#70CB97",
+              color: "white",
+              fontWeight: 700,
+              fontSize: { xs: "0.9rem", md: "1rem" },
+              padding: { xs: "12px 20px", md: "12px 28px" },
+              borderRadius: "40px",
+              textTransform: "none",
+              boxShadow: "0px 4px 12px rgba(112, 203, 151, 0.3)",
+              "&:hover": {
+                background: "#5cb67f",
+                transform: "translateY(-2px)",
+              },
+              width: { xs: "100%", md: "auto" },
+              transition: "all 0.2s ease",
+            }}
+            onClick={handleAddToCart}
+          >
             Add to Cart
           </Button>
 
-          <Typography variant="body2" sx={{ mt: 2, color: "#e91e63", fontStyle: 'italic', fontWeight: '500' }}>
-            * Hand-wash recommended to preserve floral designs
+          <Typography variant="body2" sx={{ mt: 2, color: "#5a6e7a", fontStyle: "italic", textAlign: "center" }}>
+            * Perfect for PrintfrAll custom branding projects.
           </Typography>
         </Grid>
       </Grid>
 
-      <Snackbar open={snackbarOpen} autoHideDuration={3000} onClose={handleCloseSnackbar} message="Floral SS Bottle added to cart!" action={<IconButton size="small" color="inherit" onClick={handleCloseSnackbar} sx={{ "&:hover": { backgroundColor: "rgba(255,255,255,0.1)" } }}><Close fontSize="small" /></IconButton>} sx={{ "& .MuiSnackbarContent-root": { backgroundColor: "#e91e63", color: "white", borderRadius: "8px", fontWeight: 500 } }} />
+      {/* Snackbar */}
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={3000}
+        onClose={handleCloseSnackbar}
+        message="✓ Item added to cart!"
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        sx={{
+          "& .MuiSnackbarContent-root": {
+            backgroundColor: "#19485D",
+            borderRadius: "40px",
+          },
+        }}
+        action={
+          <IconButton size="small" color="inherit" onClick={handleCloseSnackbar}>
+            <Close fontSize="small" />
+          </IconButton>
+        }
+      />
     </Container>
   );
 };

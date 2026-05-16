@@ -8,129 +8,214 @@ import {
   Grid,
   Snackbar,
   IconButton,
+  Chip,
+  TextField,
+  InputAdornment,
 } from "@mui/material";
-import { AddShoppingCart, Close } from "@mui/icons-material";
-import vNeckTShirtImg from "../assets/v-neck-t-shirt.png"; // Main image
-import vNeckTShirtImg2 from "../assets/v-neck-t-shirt.png"; // Extra image 1
-import vNeckTShirtImg3 from "../assets/v-neck-t-shirt.png"; // Extra image 2
-import vNeckTShirtImg4 from "../assets/v-neck-t-shirt.png"; // Extra image 3
-import vNeckTShirtImg5 from "../assets/v-neck-t-shirt.png"; // Extra image 4
-import Zoom from "react-medium-image-zoom"; // For zoom functionality
-import "react-medium-image-zoom/dist/styles.css"; // Zoom styles
+import { AddShoppingCart, Close, Checkroom, LocalLaundryService } from "@mui/icons-material";
+import Zoom from "react-medium-image-zoom";
+import "react-medium-image-zoom/dist/styles.css";
+
+// ========== MAIN PRODUCT IMAGE ==========
+import mainImg from "../assets/v-neck-t-shirt.png";
+
+// ========== EXTRA ANGLES ==========
+import img2 from "../assets/v-neck-t-shirt.png";
+import img3 from "../assets/v-neck-t-shirt-1.png";
+import img4 from "../assets/v-neck-t-shirt-2.png";
+import img5 from "../assets/v-neck-t-shirt-3.png";
+import img6 from "../assets/v-neck-t-shirt-4.jpeg";
+import img7 from "../assets/v-neck-t-shirt-5.png";
+import img8 from "../assets/v-neck-t-shirt-6.png";
 
 const VNeckTShirts = ({ addToCart }) => {
-  // Define price mapping for each material
   const priceMapping = {
-    "Cotton": 550,
-    "Polyester": 450,
-    "Blend": 500,
+    "100% Combed Cotton": 489,
+    "Cotton-Poly Heather": 450,
   };
 
-  // Define available colors
-  const availableColors = ["Red", "Blue", "Black", "White", "Gray", "Green"];
+  const availableColors = ["Black", "White", "Red", "Blue", "Grey"];
+  const availableSizes = ["XS", "S", "M", "L", "XL", "2XL", "3XL"];
+  const printingOptions = ["Front Only", "Back Only", "Front and Back", "Left Chest"];
 
-  // Most popular material (default selection)
-  const defaultMaterial = "Cotton";
-  const defaultColor = "Black"; // Default color selection
+  const defaultMaterial = "100% Combed Cotton";
+  const defaultColor = "Black";
+  const defaultSize = "M";
+  const defaultSide = "Front Only";
 
   const [selectedMaterial, setSelectedMaterial] = useState(defaultMaterial);
-  const [selectedColor, setSelectedColor] = useState(defaultColor); // State for selected color
-  const [mainImage, setMainImage] = useState(vNeckTShirtImg); // State for main image
-  const [snackbarOpen, setSnackbarOpen] = useState(false); // State for Snackbar
+  const [selectedColor, setSelectedColor] = useState(defaultColor);
+  const [selectedSize, setSelectedSize] = useState(defaultSize);
+  const [selectedSide, setSelectedSide] = useState(defaultSide);
+  const [mainImage, setMainImage] = useState(mainImg);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
 
-  const vNeckTShirtDetails = {
-    name: "V-Neck T-Shirts",
-    image: vNeckTShirtImg,
-    description:
-      "Stylish and comfortable V-neck t-shirts for a modern look. Perfect for casual outings, parties, or everyday wear.",
-    features: [
-      "Soft and breathable fabric",
-      "Customizable designs and prints",
-      "Available in various sizes and colors",
-      "Durable and easy to maintain",
-    ],
-    materials: ["Cotton", "Polyester", "Blend"],
-    extraImages: [vNeckTShirtImg2, vNeckTShirtImg3, vNeckTShirtImg4, vNeckTShirtImg5], // Extra images
+  // Custom quantity state
+  const [selectedOption, setSelectedOption] = useState("Single");
+  const [customQuantity, setCustomQuantity] = useState(1);
+
+  const unitPrice = priceMapping[selectedMaterial];
+
+  const packOptions = [
+    { label: "Single", value: "Single", price: unitPrice, quantity: 1 },
+    { label: "Pack of 5", value: "Pack of 5", price: unitPrice * 5 * 0.95, quantity: 1 }, // 5% discount
+    { label: "Pack of 10", value: "Pack of 10", price: unitPrice * 10 * 0.9, quantity: 1 }, // 10% discount
+    { label: "Custom", value: "Custom", price: null, quantity: null },
+  ];
+
+  const getTotalPrice = () => {
+    if (selectedOption === "Custom") {
+      return unitPrice * customQuantity;
+    }
+    const option = packOptions.find((opt) => opt.value === selectedOption);
+    return option ? option.price : unitPrice;
   };
 
-  // Calculate price based on selected material
-  const price = priceMapping[selectedMaterial];
+  const price = getTotalPrice();
+
+  const handleOptionChange = (optionValue) => {
+    setSelectedOption(optionValue);
+    if (optionValue !== "Custom") {
+      setCustomQuantity(1);
+    }
+  };
+
+  const tShirtDetails = {
+    name: "Women’s V-Neck T-Shirt",
+    image: mainImg,
+    description:
+      "Embrace ultimate comfort and a polished everyday look. This premium V-neck is crafted from bio-washed combed cotton for a soft-flow dyed finish that ensures lasting colors and anti-pilling performance.",
+    features: [
+      "100% Bio-wash Superior Combed Cotton (180 GSM)",
+      "Soft flow dyed for vibrant, lasting colors",
+      "Anti-Pilling fabric with a relaxed fit",
+      "Side-seamed construction for a feminine silhouette",
+      "High-resolution Digital Printing available",
+      "Standard Print Area: 8.27 x 11.69 inches",
+      "Fabric Warranty: Guaranteed up to 25 washes",
+    ],
+    tags: ["Soft Fabric", "V-Neck Style", "Bio-Washed"],
+    colors: availableColors,
+    sizes: availableSizes,
+    printSides: printingOptions,
+    materials: ["100% Combed Cotton", "Cotton-Poly Heather"],
+    extraImages: [img2, img3, img4, img5, img6, img7, img8],
+  };
 
   const handleAddToCart = () => {
-    const item = {
-      ...vNeckTShirtDetails,
-      selectedMaterial,
-      selectedColor, // Include selected color in the cart item
-      price, // Use the dynamically calculated price
-      quantity: 1, // Default quantity
-    };
-
-    addToCart(item); // Add the item to the cart
-    setSnackbarOpen(true); // Show Snackbar for confirmation
+    let item;
+    if (selectedOption === "Custom") {
+      item = {
+        name: "Women’s V-Neck T-Shirt",
+        image: mainImg,
+        description: tShirtDetails.description,
+        features: tShirtDetails.features,
+        tags: tShirtDetails.tags,
+        selectedSize: `${customQuantity} pieces`,
+        selectedMaterial: `${selectedMaterial} | ${selectedColor} | Size ${selectedSize} | Print: ${selectedSide}`,
+        selectedColor,
+        selectedSizeValue: selectedSize,
+        selectedSide,
+        material: selectedMaterial,
+        price: price,
+        quantity: customQuantity,
+      };
+    } else {
+      const option = packOptions.find((opt) => opt.value === selectedOption);
+      item = {
+        ...tShirtDetails,
+        selectedSize: option.label,
+        selectedMaterial: `${selectedMaterial} | ${selectedColor} | Size ${selectedSize} | Print: ${selectedSide}`,
+        selectedColor,
+        selectedSizeValue: selectedSize,
+        selectedSide,
+        material: selectedMaterial,
+        price: option.price,
+        quantity: 1,
+      };
+    }
+    addToCart(item);
+    setSnackbarOpen(true);
   };
 
-  const handleCloseSnackbar = () => {
-    setSnackbarOpen(false);
-  };
+  const handleCloseSnackbar = () => setSnackbarOpen(false);
 
   return (
-    <Container sx={{ py: 6, maxWidth: 1200, margin: "40px auto 0 auto" }}>
+    <Container sx={{ py: 6, maxWidth: 1200, margin: "40px auto 0 auto", px: { xs: 2, md: 3 } }}>
       <Grid container spacing={4}>
-        {/* Image Section */}
+        {/* Image Gallery */}
         <Grid item xs={12} md={6}>
           <Paper
             sx={{
               p: 2,
-              borderRadius: "10px",
-              boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.1)",
+              borderRadius: "16px",
+              boxShadow: "0px 8px 24px rgba(0, 0, 0, 0.08)",
+              bgcolor: "#fff",
             }}
           >
-            {/* Main Image with Zoom */}
+            <Box sx={{ display: "flex", gap: 1, mb: 2 }}>
+              {tShirtDetails.tags.map((tag, idx) => (
+                <Chip
+                  key={idx}
+                  label={tag}
+                  size="small"
+                  icon={idx === 0 ? <Checkroom fontSize="small" /> : <LocalLaundryService fontSize="small" />}
+                  sx={{
+                    backgroundColor: "rgba(112, 203, 151, 0.1)",
+                    color: "#70CB97",
+                    fontWeight: "bold",
+                    borderRadius: 2,
+                  }}
+                />
+              ))}
+            </Box>
+
             <Zoom>
               <img
                 src={mainImage}
-                alt={vNeckTShirtDetails.name}
+                alt={tShirtDetails.name}
                 style={{
                   width: "100%",
-                  borderRadius: "10px",
+                  borderRadius: "12px",
                   cursor: "zoom-in",
                   maxHeight: "400px",
-                  objectFit: "cover",
+                  objectFit: "contain",
                 }}
               />
             </Zoom>
 
-            {/* Extra Images Gallery */}
+            {/* Thumbnail Gallery */}
             <Box
               sx={{
                 display: "flex",
                 gap: 2,
                 mt: 2,
-                overflowX: "auto", // Horizontal scroll for small screens
-                "&::-webkit-scrollbar": { display: "none" }, // Hide scrollbar
+                overflowX: "auto",
+                "&::-webkit-scrollbar": { display: "none" },
               }}
             >
-              {vNeckTShirtDetails.extraImages.map((image, index) => (
+              {tShirtDetails.extraImages.map((img, idx) => (
                 <Paper
-                  key={index}
-                  onClick={() => setMainImage(image)}
+                  key={idx}
+                  onClick={() => setMainImage(img)}
                   sx={{
                     p: 1,
-                    borderRadius: "8px",
-                    boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+                    borderRadius: "10px",
                     cursor: "pointer",
-                    border: mainImage === image ? "2px solid #ff6600" : "none",
-                    "&:hover": { border: "2px solid #ff6600" },
-                    flexShrink: 0, // Prevent shrinking on small screens
+                    border:
+                      mainImage === img ? "2px solid #70CB97" : "2px solid transparent",
+                    "&:hover": { border: "2px solid #70CB97" },
+                    flexShrink: 0,
+                    transition: "all 0.2s",
                   }}
                 >
                   <img
-                    src={image}
-                    alt={`V-Neck T-Shirt ${index + 1}`}
+                    src={img}
+                    alt={`view ${idx + 1}`}
                     style={{
-                      width: "100px",
-                      height: "100px",
-                      borderRadius: "6px",
+                      width: "90px",
+                      height: "90px",
+                      borderRadius: "8px",
                       objectFit: "cover",
                     }}
                   />
@@ -140,56 +225,86 @@ const VNeckTShirts = ({ addToCart }) => {
           </Paper>
         </Grid>
 
-        {/* Details Section */}
+        {/* Product Details */}
         <Grid item xs={12} md={6}>
-          <Typography variant="h4" sx={{ fontWeight: "bold", mb: 2 }}>
-            {vNeckTShirtDetails.name}
-          </Typography>
-          <Typography variant="h5" sx={{ color: "#ff6600", fontWeight: "bold", mb: 3 }}>
-            ₹{price} {/* Display dynamic price */}
-          </Typography>
-          <Typography variant="body1" sx={{ mb: 3 }}>
-            {vNeckTShirtDetails.description}
+          <Typography
+            variant="h4"
+            sx={{ fontWeight: 700, mb: 1, color: "#19485D", fontSize: { xs: "1.8rem", md: "2.5rem" } }}
+          >
+            {tShirtDetails.name}
           </Typography>
 
-          {/* Features */}
-          <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2 }}>
+          <Typography
+            variant="h5"
+            sx={{ color: "#70CB97", fontWeight: "bold", mb: 3, fontSize: { xs: "1.5rem", md: "2rem" } }}
+          >
+            ₹{Math.round(price)}
+          </Typography>
+
+          <Typography
+            variant="body1"
+            sx={{ mb: 3, color: "#1e2a32", lineHeight: 1.6 }}
+          >
+            {tShirtDetails.description}
+          </Typography>
+
+          <Typography
+            variant="h6"
+            sx={{ fontWeight: 600, mb: 2, color: "#19485D", fontSize: { xs: "1.2rem", md: "1.5rem" } }}
+          >
             Features:
           </Typography>
-          <ul style={{ marginLeft: "20px", marginBottom: "20px" }}>
-            {vNeckTShirtDetails.features.map((feature, index) => (
-              <li key={index}>
-                <Typography variant="body1">{feature}</Typography>
+          <Box component="ul" sx={{ ml: 2, mb: 3, listStyleType: "none", p: 0 }}>
+            {tShirtDetails.features.map((feature, idx) => (
+              <li key={idx} style={{ marginBottom: "8px" }}>
+                <Typography variant="body1" sx={{ display: "flex", alignItems: "center", color: "#5a6e7a" }}>
+                  <span
+                    style={{
+                      display: "inline-block",
+                      width: "6px",
+                      height: "6px",
+                      backgroundColor: "#70CB97",
+                      borderRadius: "50%",
+                      marginRight: "8px",
+                    }}
+                  ></span>
+                  {feature}
+                </Typography>
               </li>
             ))}
-          </ul>
+          </Box>
 
-          {/* Materials */}
-          <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2 }}>
-            Available Materials:
-          </Typography>
-          <Box
-            sx={{
-              display: "flex",
-              gap: 2,
-              mb: 4,
-              flexWrap: "wrap", // Wrap materials on small screens
-            }}
+          {/* Material Selection */}
+          <Typography
+            variant="h6"
+            sx={{ fontWeight: 600, mb: 2, color: "#19485D", fontSize: { xs: "1.2rem", md: "1.5rem" } }}
           >
-            {vNeckTShirtDetails.materials.map((material, index) => (
+            Fabric Material:
+          </Typography>
+          <Box sx={{ display: "flex", gap: 2, mb: 3, flexWrap: "wrap" }}>
+            {tShirtDetails.materials.map((material, idx) => (
               <Paper
-                key={index}
-                onClick={() => setSelectedMaterial(material)}
+                key={idx}
+                onClick={() => {
+                  setSelectedMaterial(material);
+                  setSelectedOption("Single");
+                  setCustomQuantity(1);
+                }}
                 sx={{
                   p: 1.5,
-                  borderRadius: "8px",
+                  px: 2.5,
+                  borderRadius: "40px",
                   textAlign: "center",
-                  fontWeight: "bold",
-                  boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+                  fontWeight: 600,
                   cursor: "pointer",
-                  backgroundColor: selectedMaterial === material ? "#ff6600" : "white",
-                  color: selectedMaterial === material ? "white" : "inherit",
-                  flex: "1 1 100px", // Flexible sizing for responsiveness
+                  bgcolor: selectedMaterial === material ? "#70CB97" : "#fff",
+                  color: selectedMaterial === material ? "#fff" : "#19485D",
+                  border: "1px solid #e0e7ed",
+                  transition: "all 0.2s",
+                  "&:hover": {
+                    bgcolor: selectedMaterial === material ? "#5cb67f" : "#f0f9f3",
+                    transform: "translateY(-2px)",
+                  },
                 }}
               >
                 {material}
@@ -197,32 +312,162 @@ const VNeckTShirts = ({ addToCart }) => {
             ))}
           </Box>
 
-          {/* Color Selection */}
-          <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2 }}>
-            Choose Your Color:
-          </Typography>
-          <Box
-            sx={{
-              display: "flex",
-              gap: 2,
-              mb: 4,
-              flexWrap: "wrap", // Wrap colors on small screens
-            }}
+          {/* Purchase Option (Quantity) */}
+          <Typography
+            variant="h6"
+            sx={{ fontWeight: 600, mb: 2, color: "#19485D", fontSize: { xs: "1.2rem", md: "1.5rem" } }}
           >
-            {availableColors.map((color, index) => (
+            Select Quantity / Pack:
+          </Typography>
+          <Box sx={{ display: "flex", gap: 2, mb: 3, flexWrap: "wrap" }}>
+            {packOptions.map((option) => (
               <Paper
-                key={index}
-                onClick={() => setSelectedColor(color)}
+                key={option.value}
+                onClick={() => handleOptionChange(option.value)}
                 sx={{
                   p: 1.5,
-                  borderRadius: "8px",
+                  px: 2.5,
+                  borderRadius: "40px",
                   textAlign: "center",
-                  fontWeight: "bold",
-                  boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+                  fontWeight: 600,
                   cursor: "pointer",
-                  backgroundColor: selectedColor === color ? "#ff6600" : "white",
-                  color: selectedColor === color ? "white" : "inherit",
-                  flex: "1 1 100px", // Flexible sizing for responsiveness
+                  bgcolor: selectedOption === option.value ? "#70CB97" : "#fff",
+                  color: selectedOption === option.value ? "#fff" : "#19485D",
+                  border: "1px solid #e0e7ed",
+                  transition: "all 0.2s",
+                  "&:hover": {
+                    bgcolor: selectedOption === option.value ? "#5cb67f" : "#f0f9f3",
+                    transform: "translateY(-2px)",
+                  },
+                }}
+              >
+                {option.label}
+              </Paper>
+            ))}
+          </Box>
+
+          {/* Custom Quantity Input */}
+          {selectedOption === "Custom" && (
+            <Box sx={{ mb: 3 }}>
+              <Typography variant="body2" sx={{ mb: 1, color: "#19485D", fontWeight: 500 }}>
+                Enter number of t-shirts:
+              </Typography>
+              <TextField
+                type="number"
+                value={customQuantity}
+                onChange={(e) => setCustomQuantity(Math.max(1, parseInt(e.target.value) || 1))}
+                InputProps={{
+                  endAdornment: <InputAdornment position="end">pieces</InputAdornment>,
+                }}
+                sx={{
+                  width: "200px",
+                  "& .MuiOutlinedInput-root": {
+                    borderRadius: "40px",
+                    "& fieldset": { borderColor: "#e0e7ed" },
+                    "&:hover fieldset": { borderColor: "#70CB97" },
+                    "&.Mui-focused fieldset": { borderColor: "#70CB97" },
+                  },
+                }}
+              />
+              <Typography variant="caption" sx={{ display: "block", mt: 1, color: "#5a6e7a" }}>
+                Unit price: ₹{unitPrice} per piece
+              </Typography>
+            </Box>
+          )}
+
+          {/* Print Side Selection */}
+          <Typography
+            variant="h6"
+            sx={{ fontWeight: 600, mb: 2, color: "#19485D", fontSize: { xs: "1.2rem", md: "1.5rem" } }}
+          >
+            Choose Print Side:
+          </Typography>
+          <Box sx={{ display: "flex", gap: 1, mb: 3, flexWrap: "wrap" }}>
+            {tShirtDetails.printSides.map((side) => (
+              <Paper
+                key={side}
+                onClick={() => setSelectedSide(side)}
+                sx={{
+                  p: 1.2,
+                  px: 2,
+                  borderRadius: "40px",
+                  cursor: "pointer",
+                  bgcolor: selectedSide === side ? "#70CB97" : "#fff",
+                  color: selectedSide === side ? "#fff" : "#19485D",
+                  border: "1px solid #e0e7ed",
+                  fontWeight: 600,
+                  transition: "all 0.2s",
+                  "&:hover": {
+                    bgcolor: selectedSide === side ? "#5cb67f" : "#f0f9f3",
+                    transform: "translateY(-2px)",
+                  },
+                }}
+              >
+                {side}
+              </Paper>
+            ))}
+          </Box>
+
+          {/* Size Selection */}
+          <Typography
+            variant="h6"
+            sx={{ fontWeight: 600, mb: 2, color: "#19485D", fontSize: { xs: "1.2rem", md: "1.5rem" } }}
+          >
+            Choose Size:
+          </Typography>
+          <Box sx={{ display: "flex", gap: 1, mb: 3, flexWrap: "wrap" }}>
+            {tShirtDetails.sizes.map((size) => (
+              <Paper
+                key={size}
+                onClick={() => setSelectedSize(size)}
+                sx={{
+                  p: 1.5,
+                  minWidth: "50px",
+                  textAlign: "center",
+                  borderRadius: "40px",
+                  cursor: "pointer",
+                  bgcolor: selectedSize === size ? "#70CB97" : "#fff",
+                  color: selectedSize === size ? "#fff" : "#19485D",
+                  border: "1px solid #e0e7ed",
+                  fontWeight: 600,
+                  transition: "all 0.2s",
+                  "&:hover": {
+                    bgcolor: selectedSize === size ? "#5cb67f" : "#f0f9f3",
+                    transform: "translateY(-2px)",
+                  },
+                }}
+              >
+                {size}
+              </Paper>
+            ))}
+          </Box>
+
+          {/* Color Selection */}
+          <Typography
+            variant="h6"
+            sx={{ fontWeight: 600, mb: 2, color: "#19485D", fontSize: { xs: "1.2rem", md: "1.5rem" } }}
+          >
+            Select Color:
+          </Typography>
+          <Box sx={{ display: "flex", gap: 1, mb: 4, flexWrap: "wrap" }}>
+            {tShirtDetails.colors.map((color) => (
+              <Paper
+                key={color}
+                onClick={() => setSelectedColor(color)}
+                sx={{
+                  p: 1.2,
+                  px: 2,
+                  borderRadius: "40px",
+                  cursor: "pointer",
+                  bgcolor: selectedColor === color ? "#70CB97" : "#fff",
+                  color: selectedColor === color ? "#fff" : "#19485D",
+                  border: "1px solid #e0e7ed",
+                  fontWeight: 600,
+                  transition: "all 0.2s",
+                  "&:hover": {
+                    bgcolor: selectedColor === color ? "#5cb67f" : "#f0f9f3",
+                    transform: "translateY(-2px)",
+                  },
                 }}
               >
                 {color}
@@ -230,37 +475,43 @@ const VNeckTShirts = ({ addToCart }) => {
             ))}
           </Box>
 
-          {/* Add to Cart Button */}
           <Button
             variant="contained"
             startIcon={<AddShoppingCart />}
             sx={{
-              background: "#ff6600",
+              background: "#70CB97",
               color: "white",
-              fontWeight: "bold",
-              fontSize: "16px",
-              padding: "12px 24px",
-              "&:hover": { background: "#ff8c42" },
-              width: { xs: "100%", md: "auto" }, // Full width on small screens
+              fontWeight: 700,
+              fontSize: { xs: "0.9rem", md: "1rem" },
+              padding: { xs: "12px 20px", md: "12px 28px" },
+              borderRadius: "40px",
+              textTransform: "none",
+              boxShadow: "0px 4px 12px rgba(112, 203, 151, 0.3)",
+              "&:hover": { background: "#5cb67f", transform: "translateY(-2px)" },
+              width: { xs: "100%", md: "auto" },
             }}
             onClick={handleAddToCart}
           >
-            Add to Cart
+            Add to Cart – ₹{Math.round(price)}
           </Button>
+
+          <Typography
+            variant="body2"
+            sx={{ mt: 2, color: "#5a6e7a", fontStyle: "italic", textAlign: "center" }}
+          >
+            * Wash inside out with cold water and mild detergent for print longevity.
+          </Typography>
         </Grid>
       </Grid>
 
-      {/* Snackbar for Notifications */}
       <Snackbar
         open={snackbarOpen}
         autoHideDuration={3000}
         onClose={handleCloseSnackbar}
-        message="Item added to cart!"
-        action={
-          <IconButton size="small" color="inherit" onClick={handleCloseSnackbar}>
-            <Close fontSize="small" />
-          </IconButton>
-        }
+        message="✓ V-Neck T-Shirt added to cart!"
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        sx={{ "& .MuiSnackbarContent-root": { backgroundColor: "#19485D", borderRadius: "40px" } }}
+        action={<IconButton size="small" color="inherit" onClick={handleCloseSnackbar}><Close fontSize="small" /></IconButton>}
       />
     </Container>
   );

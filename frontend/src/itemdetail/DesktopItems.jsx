@@ -8,165 +8,376 @@ import {
   Grid,
   Snackbar,
   IconButton,
-  Chip
+  Chip,
+  TextField,
+  InputAdornment,
 } from "@mui/material";
-import { AddShoppingCart, Close, Work } from "@mui/icons-material";
-import desktopImg from "../assets/desktop-items.png";
-import desktopImg2 from "../assets/desktop-items.png";
-import desktopImg3 from "../assets/desktop-items.png";
+import { AddShoppingCart, Close, WatchLater, WorkspacePremium } from "@mui/icons-material";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
 
+// ========== MAIN PRODUCT IMAGE ==========
+import mainImg from "../assets/desktop-items.png";
+
+// ========== EXTRA ANGLES ==========
+import img2 from "../assets/desktop-items.png";
+import img3 from "../assets/desktop-items-1.png";
+import img4 from "../assets/desktop-items-2.png";
+import img5 from "../assets/desktop-items-3.png";
+
 const DesktopItems = ({ addToCart }) => {
   const priceMapping = {
-    "Pen Stand": 899,
-    "Name Plate": 1299,
-    "Desk Organizer": 1599,
+    "Standard Organiser": 899,
   };
 
-  const availableMaterials = [
-    "Wooden", 
-    "Acrylic", 
-    "Metal",
-    "Marble"
-  ];
+  const availableMaterials = ["Polished Natural Wood"];
+  const defaultOption = "Standard Organiser";
+  const defaultMaterial = "Polished Natural Wood";
 
-  const defaultSize = "Name Plate";
-  const defaultMaterial = "Wooden";
-
-  const [selectedSize, setSelectedSize] = useState(defaultSize);
   const [selectedMaterial, setSelectedMaterial] = useState(defaultMaterial);
-  const [mainImage, setMainImage] = useState(desktopImg);
+  const [mainImage, setMainImage] = useState(mainImg);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
-  const desktopDetails = {
-    name: "Executive Desktop Items",
-    image: desktopImg,
-    description:
-      "Premium desktop accessories for the modern executive. Enhance your workspace with these elegant and functional items that reflect professionalism and style.",
-    features: [
-      "Custom engraving available",
-      "Premium quality materials",
-      "Elegant modern designs",
-      "Corporate branding options",
-      "Luxury packaging",
-      "Bulk order discounts",
-      "Ergonomic designs"
-    ],
-    sizes: ["Pen Stand", "Name Plate", "Desk Organizer"],
-    extraImages: [desktopImg2, desktopImg3],
-    tags: ["Office", "Premium", "Executive"]
+  // Custom quantity state
+  const [selectedOption, setSelectedOption] = useState("Single");
+  const [customQuantity, setCustomQuantity] = useState(1);
+
+  const unitPrice = priceMapping[defaultOption]; // ₹899
+
+  const packOptions = [
+    { label: "Single", value: "Single", price: unitPrice, quantity: 1 },
+    { label: "Pack of 5", value: "Pack of 5", price: unitPrice * 5 * 0.95, quantity: 1 }, // 5% discount
+    { label: "Pack of 10", value: "Pack of 10", price: unitPrice * 10 * 0.9, quantity: 1 }, // 10% discount
+    { label: "Custom", value: "Custom", price: null, quantity: null },
+  ];
+
+  const getTotalPrice = () => {
+    if (selectedOption === "Custom") {
+      return unitPrice * customQuantity;
+    }
+    const option = packOptions.find((opt) => opt.value === selectedOption);
+    return option ? option.price : unitPrice;
   };
 
-  const price = priceMapping[selectedSize];
+  const price = getTotalPrice();
+
+  const handleOptionChange = (optionValue) => {
+    setSelectedOption(optionValue);
+    if (optionValue !== "Custom") {
+      setCustomQuantity(1);
+    }
+  };
+
+  const desktopDetails = {
+    name: "Desktop Storage Organiser",
+    image: mainImg,
+    description:
+      "A high-quality, multiple-use wooden organiser designed to give your desktop a much-needed facelift. Handcrafted from polished natural wood, it features a smart clock and dedicated compartments for pens and visiting cards.",
+    features: [
+      "Sturdy Polished Natural Wood with smooth edges",
+      "Integrated Analog Clock with chrome coatings",
+      "Built-in Visiting Card Organiser",
+      "Spacious Pen & Pencil holder for a neat desk",
+      "Foil Printing for high-impact Logo/Text branding",
+      "Dimensions: 17.5 x 7 x 10.5 centimeters",
+      "Completely plastic-free and eco-friendly build",
+    ],
+    sizes: ["Standard Organiser"],
+    materials: availableMaterials,
+    extraImages: [img2, img3, img4, img5],
+    tags: ["Multifunctional", "Space Saver", "Eco-Friendly"],
+  };
 
   const handleAddToCart = () => {
-    const item = {
-      ...desktopDetails,
-      selectedSize,
-      selectedMaterial,
-      price,
-      quantity: 1,
-    };
+    let item;
+    if (selectedOption === "Custom") {
+      item = {
+        name: "Desktop Storage Organiser",
+        image: mainImg,
+        description: desktopDetails.description,
+        features: desktopDetails.features,
+        tags: desktopDetails.tags,
+        selectedSize: `${customQuantity} units`,
+        selectedMaterial: selectedMaterial,
+        price: price,
+        quantity: customQuantity,
+      };
+    } else {
+      const option = packOptions.find((opt) => opt.value === selectedOption);
+      item = {
+        ...desktopDetails,
+        selectedSize: option.label,
+        selectedMaterial: selectedMaterial,
+        price: option.price,
+        quantity: 1,
+      };
+    }
     addToCart(item);
     setSnackbarOpen(true);
   };
 
-  const handleCloseSnackbar = () => {
-    setSnackbarOpen(false);
-  };
+  const handleCloseSnackbar = () => setSnackbarOpen(false);
 
   return (
-    <Container sx={{ py: 6, maxWidth: 1200, margin: "40px auto 0 auto", px: { xs: 2, md: 3 }}}>
+    <Container sx={{ py: 6, maxWidth: 1200, margin: "40px auto 0 auto", px: { xs: 2, md: 3 } }}>
       <Grid container spacing={4}>
+        {/* Image Gallery */}
         <Grid item xs={12} md={6}>
-          <Paper sx={{ p: 2, borderRadius: "10px", boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.1)", position: "relative" }}>
-            <Box sx={{ display: 'flex', gap: 1, mb: 2 }}>
-              {desktopDetails.tags.map((tag, index) => (
-                <Chip 
-                  key={index}
+          <Paper
+            sx={{
+              p: 2,
+              borderRadius: "16px",
+              boxShadow: "0px 8px 24px rgba(0, 0, 0, 0.08)",
+              bgcolor: "#fff",
+            }}
+          >
+            <Box sx={{ display: "flex", gap: 1, mb: 2 }}>
+              {desktopDetails.tags.map((tag, idx) => (
+                <Chip
+                  key={idx}
                   label={tag}
                   size="small"
-                  icon={tag === "Office" ? <Work fontSize="small" /> : null}
-                  sx={{ backgroundColor: "#455a64", color: "white", fontWeight: 'bold' }}
+                  icon={tag === "Multifunctional" ? <WatchLater fontSize="small" /> : <WorkspacePremium fontSize="small" />}
+                  sx={{
+                    backgroundColor: "rgba(112, 203, 151, 0.1)",
+                    color: "#70CB97",
+                    fontWeight: "bold",
+                    borderRadius: 2,
+                  }}
                 />
               ))}
             </Box>
-            
+
             <Zoom>
-              <img src={mainImage} alt={desktopDetails.name} style={{ width: "100%", borderRadius: "8px", cursor: "zoom-in", maxHeight: "400px", objectFit: "contain" }} />
+              <img
+                src={mainImage}
+                alt={desktopDetails.name}
+                style={{
+                  width: "100%",
+                  borderRadius: "12px",
+                  cursor: "zoom-in",
+                  maxHeight: "400px",
+                  objectFit: "contain",
+                }}
+              />
             </Zoom>
 
-            <Box sx={{ display: "flex", gap: 2, mt: 2, overflowX: "auto", "&::-webkit-scrollbar": { display: "none" }}}>
-              {desktopDetails.extraImages.map((image, index) => (
-                <Paper key={index} onClick={() => setMainImage(image)} sx={{ p: 1, borderRadius: "8px", boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)", cursor: "pointer", border: mainImage === image ? "2px solid #455a64" : "none", "&:hover": { border: "2px solid #455a64" }, flexShrink: 0 }}>
-                  <img src={image} alt={`Desktop Item ${index + 1}`} style={{ width: "100px", height: "100px", borderRadius: "6px", objectFit: "cover" }} />
+            {/* Thumbnail Gallery */}
+            <Box
+              sx={{
+                display: "flex",
+                gap: 2,
+                mt: 2,
+                overflowX: "auto",
+                "&::-webkit-scrollbar": { display: "none" },
+              }}
+            >
+              {desktopDetails.extraImages.map((img, idx) => (
+                <Paper
+                  key={idx}
+                  onClick={() => setMainImage(img)}
+                  sx={{
+                    p: 1,
+                    borderRadius: "10px",
+                    cursor: "pointer",
+                    border:
+                      mainImage === img ? "2px solid #70CB97" : "2px solid transparent",
+                    "&:hover": { border: "2px solid #70CB97" },
+                    flexShrink: 0,
+                    transition: "all 0.2s",
+                  }}
+                >
+                  <img
+                    src={img}
+                    alt={`view ${idx + 1}`}
+                    style={{
+                      width: "90px",
+                      height: "90px",
+                      borderRadius: "8px",
+                      objectFit: "cover",
+                    }}
+                  />
                 </Paper>
               ))}
             </Box>
           </Paper>
         </Grid>
 
+        {/* Product Details */}
         <Grid item xs={12} md={6}>
-          <Typography variant="h4" sx={{ fontWeight: "bold", mb: 2, fontSize: { xs: "1.8rem", md: "2.5rem" }}}>
+          <Typography
+            variant="h4"
+            sx={{ fontWeight: 700, mb: 1, color: "#19485D", fontSize: { xs: "1.8rem", md: "2.5rem" } }}
+          >
             {desktopDetails.name}
           </Typography>
-          
-          <Typography variant="h5" sx={{ color: "#455a64", fontWeight: "bold", mb: 3, fontSize: { xs: "1.5rem", md: "2rem" }}}>
-            ₹{price}
+
+          <Typography
+            variant="h5"
+            sx={{ color: "#70CB97", fontWeight: "bold", mb: 3, fontSize: { xs: "1.5rem", md: "2rem" } }}
+          >
+            ₹{Math.round(price)}
           </Typography>
-          
-          <Typography variant="body1" sx={{ mb: 3, lineHeight: 1.6 }}>
+
+          <Typography
+            variant="body1"
+            sx={{ mb: 3, color: "#1e2a32", lineHeight: 1.6 }}
+          >
             {desktopDetails.description}
           </Typography>
 
-          <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2, fontSize: { xs: "1.2rem", md: "1.5rem" }}}>
-            Features:
+          <Typography
+            variant="h6"
+            sx={{ fontWeight: 600, mb: 2, color: "#19485D", fontSize: { xs: "1.2rem", md: "1.5rem" } }}
+          >
+            Product Features:
           </Typography>
-          <ul style={{ marginLeft: "20px", marginBottom: "20px", listStyleType: "none", padding: 0 }}>
-            {desktopDetails.features.map((feature, index) => (
-              <li key={index} style={{ marginBottom: "8px" }}>
-                <Typography variant="body1" sx={{ display: 'flex', alignItems: 'center' }}>
-                  <span style={{ display: 'inline-block', width: '6px', height: '6px', backgroundColor: "#455a64", borderRadius: '50%', marginRight: '8px' }}></span>
+          <Box component="ul" sx={{ ml: 2, mb: 3, listStyleType: "none", p: 0 }}>
+            {desktopDetails.features.map((feature, idx) => (
+              <li key={idx} style={{ marginBottom: "8px" }}>
+                <Typography variant="body1" sx={{ display: "flex", alignItems: "center", color: "#5a6e7a" }}>
+                  <span
+                    style={{
+                      display: "inline-block",
+                      width: "6px",
+                      height: "6px",
+                      backgroundColor: "#70CB97",
+                      borderRadius: "50%",
+                      marginRight: "8px",
+                    }}
+                  ></span>
                   {feature}
                 </Typography>
               </li>
             ))}
-          </ul>
+          </Box>
 
-          <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2, fontSize: { xs: "1.2rem", md: "1.5rem" }}}>
-            Product Types:
+          {/* Purchase Option (Quantity) */}
+          <Typography
+            variant="h6"
+            sx={{ fontWeight: 600, mb: 2, color: "#19485D", fontSize: { xs: "1.2rem", md: "1.5rem" } }}
+          >
+            Select Quantity / Pack:
           </Typography>
-          <Box sx={{ display: "flex", gap: 2, mb: 4, flexWrap: "wrap" }}>
-            {desktopDetails.sizes.map((size, index) => (
-              <Paper key={index} onClick={() => setSelectedSize(size)} sx={{ p: 1.5, borderRadius: "8px", textAlign: "center", fontWeight: "bold", boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)", cursor: "pointer", backgroundColor: selectedSize === size ? "#455a64" : "white", color: selectedSize === size ? "white" : "inherit", flex: "1 1 100px" }}>
-                {size}
+          <Box sx={{ display: "flex", gap: 2, mb: 3, flexWrap: "wrap" }}>
+            {packOptions.map((option) => (
+              <Paper
+                key={option.value}
+                onClick={() => handleOptionChange(option.value)}
+                sx={{
+                  p: 1.5,
+                  px: 2.5,
+                  borderRadius: "40px",
+                  textAlign: "center",
+                  fontWeight: 600,
+                  cursor: "pointer",
+                  bgcolor: selectedOption === option.value ? "#70CB97" : "#fff",
+                  color: selectedOption === option.value ? "#fff" : "#19485D",
+                  border: "1px solid #e0e7ed",
+                  transition: "all 0.2s",
+                  "&:hover": {
+                    bgcolor: selectedOption === option.value ? "#5cb67f" : "#f0f9f3",
+                    transform: "translateY(-2px)",
+                  },
+                }}
+              >
+                {option.label}
               </Paper>
             ))}
           </Box>
 
-          <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2, fontSize: { xs: "1.2rem", md: "1.5rem" }}}>
-            Material Options:
+          {/* Custom Quantity Input */}
+          {selectedOption === "Custom" && (
+            <Box sx={{ mb: 4 }}>
+              <Typography variant="body2" sx={{ mb: 1, color: "#19485D", fontWeight: 500 }}>
+                Enter number of organisers:
+              </Typography>
+              <TextField
+                type="number"
+                value={customQuantity}
+                onChange={(e) => setCustomQuantity(Math.max(1, parseInt(e.target.value) || 1))}
+                InputProps={{
+                  endAdornment: <InputAdornment position="end">units</InputAdornment>,
+                }}
+                sx={{
+                  width: "200px",
+                  "& .MuiOutlinedInput-root": {
+                    borderRadius: "40px",
+                    "& fieldset": { borderColor: "#e0e7ed" },
+                    "&:hover fieldset": { borderColor: "#70CB97" },
+                    "&.Mui-focused fieldset": { borderColor: "#70CB97" },
+                  },
+                }}
+              />
+              <Typography variant="caption" sx={{ display: "block", mt: 1, color: "#5a6e7a" }}>
+                Unit price: ₹{unitPrice} per organiser
+              </Typography>
+            </Box>
+          )}
+
+          {/* Material Selection (only one, but keep consistent) */}
+          <Typography
+            variant="h6"
+            sx={{ fontWeight: 600, mb: 2, color: "#19485D", fontSize: { xs: "1.2rem", md: "1.5rem" } }}
+          >
+            Material Selection:
           </Typography>
-          <Box sx={{ display: "flex", gap: 2, mb: 4, flexWrap: "wrap" }}>
-            {availableMaterials.map((material, index) => (
-              <Paper key={index} onClick={() => setSelectedMaterial(material)} sx={{ p: 1.5, borderRadius: "8px", textAlign: "center", fontWeight: "bold", boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)", cursor: "pointer", backgroundColor: selectedMaterial === material ? "#455a64" : "white", color: selectedMaterial === material ? "white" : "inherit", flex: "1 1 100px" }}>
-                {material}
-              </Paper>
-            ))}
+          <Box sx={{ mb: 4 }}>
+            <Paper
+              sx={{
+                p: 1.5,
+                px: 2.5,
+                borderRadius: "40px",
+                textAlign: "center",
+                fontWeight: 600,
+                backgroundColor: "#70CB97",
+                color: "white",
+                border: "1px solid #e0e7ed",
+                display: "inline-block",
+              }}
+            >
+              {selectedMaterial}
+            </Paper>
           </Box>
 
-          <Button variant="contained" startIcon={<AddShoppingCart />} sx={{ background: "#455a64", color: "white", fontWeight: "bold", fontSize: { xs: "0.9rem", md: "1rem" }, padding: { xs: "12px 20px", md: "14px 28px" }, "&:hover": { background: "#37474f", transform: "translateY(-2px)" }, width: { xs: "100%", md: "auto" }, borderRadius: "8px", boxShadow: "0 4px 12px rgba(69, 90, 100, 0.3)", transition: 'all 0.2s ease' }} onClick={handleAddToCart}>
-            Add to Cart
+          <Button
+            variant="contained"
+            startIcon={<AddShoppingCart />}
+            sx={{
+              background: "#70CB97",
+              color: "white",
+              fontWeight: 700,
+              fontSize: { xs: "0.9rem", md: "1rem" },
+              padding: { xs: "12px 20px", md: "12px 28px" },
+              borderRadius: "40px",
+              textTransform: "none",
+              boxShadow: "0px 4px 12px rgba(112, 203, 151, 0.3)",
+              "&:hover": { background: "#5cb67f", transform: "translateY(-2px)" },
+              width: { xs: "100%", md: "auto" },
+            }}
+            onClick={handleAddToCart}
+          >
+            Add to Cart – ₹{Math.round(price)}
           </Button>
 
-          <Typography variant="body2" sx={{ mt: 2, color: "#455a64", fontStyle: 'italic', fontWeight: '500' }}>
-            * Custom engravings include up to 30 characters
+          <Typography
+            variant="body2"
+            sx={{ mt: 2, color: "#5a6e7a", fontStyle: "italic", textAlign: "center" }}
+          >
+            * Personalization via PrintfrAll Premium Foil Printing Technology.
           </Typography>
         </Grid>
       </Grid>
 
-      <Snackbar open={snackbarOpen} autoHideDuration={3000} onClose={handleCloseSnackbar} message="Desktop item added to cart!" action={<IconButton size="small" color="inherit" onClick={handleCloseSnackbar} sx={{ "&:hover": { backgroundColor: "rgba(255,255,255,0.1)" } }}><Close fontSize="small" /></IconButton>} sx={{ "& .MuiSnackbarContent-root": { backgroundColor: "#455a64", color: "white", borderRadius: "8px", fontWeight: 500 } }} />
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={3000}
+        onClose={handleCloseSnackbar}
+        message="✓ Organiser added to cart!"
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        sx={{ "& .MuiSnackbarContent-root": { backgroundColor: "#19485D", borderRadius: "40px" } }}
+        action={<IconButton size="small" color="inherit" onClick={handleCloseSnackbar}><Close fontSize="small" /></IconButton>}
+      />
     </Container>
   );
 };

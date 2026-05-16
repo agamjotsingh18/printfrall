@@ -10,32 +10,32 @@ import {
   IconButton,
 } from "@mui/material";
 import { AddShoppingCart, Close } from "@mui/icons-material";
-import canvasPhotoWithFrameImg from "../assets/canvas-photo-with-frame.png"; // Main image
-import canvasPhotoWithFrameImg2 from "../assets/canvas-photo-with-frame.png"; // Extra image 1
-import canvasPhotoWithFrameImg3 from "../assets/canvas-photo-with-frame.png"; // Extra image 2
-import canvasPhotoWithFrameImg4 from "../assets/canvas-photo-with-frame.png"; // Extra image 3
-import canvasPhotoWithFrameImg5 from "../assets/canvas-photo-with-frame.png"; // Extra image 4
-import Zoom from "react-medium-image-zoom"; // For zoom functionality
-import "react-medium-image-zoom/dist/styles.css"; // Zoom styles
+import Zoom from "react-medium-image-zoom";
+import "react-medium-image-zoom/dist/styles.css";
+
+// ========== YOUR GENERATED CANVAS FRAME IMAGES ==========
+import mainImg from "../assets/canvas-frame-1.png";
+import img2 from "../assets/canvas-frame-2.png";
+import img3 from "../assets/canvas-frame-3.png";
+import img4 from "../assets/canvas-frame-4.png";
+// import img5 from "../assets/canvas-frame-5.png";
+// ========================================================
 
 const CanvasPhotoWithFrames = ({ addToCart }) => {
-  // Define price mapping for each material
   const priceMapping = {
     "Wooden Frame": 200,
     "Metal Frame": 250,
     "Floating Frame": 300,
   };
 
-  // Most popular material (default selection)
   const defaultMaterial = "Wooden Frame";
-
   const [selectedMaterial, setSelectedMaterial] = useState(defaultMaterial);
-  const [mainImage, setMainImage] = useState(canvasPhotoWithFrameImg); // State for main image
-  const [snackbarOpen, setSnackbarOpen] = useState(false); // State for Snackbar
+  const [mainImage, setMainImage] = useState(mainImg);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
 
-  const canvasPhotoWithFrameDetails = {
+  const details = {
     name: "Canvas Photo with Frames",
-    image: canvasPhotoWithFrameImg,
+    image: mainImg,
     description:
       "High-quality canvas photo prints with elegant frames. Perfect for adding a touch of sophistication to your home or office decor.",
     features: [
@@ -45,48 +45,44 @@ const CanvasPhotoWithFrames = ({ addToCart }) => {
       "Ready to hang",
     ],
     materials: ["Wooden Frame", "Metal Frame", "Floating Frame"],
-    extraImages: [canvasPhotoWithFrameImg2, canvasPhotoWithFrameImg3, canvasPhotoWithFrameImg4, canvasPhotoWithFrameImg5], // Extra images
+    extraImages: [img2, img3, img4],
   };
 
-  // Calculate price based on selected material
   const price = priceMapping[selectedMaterial];
 
   const handleAddToCart = () => {
     const item = {
-      ...canvasPhotoWithFrameDetails,
+      ...details,
       selectedMaterial,
-      price, // Use the dynamically calculated price
-      quantity: 1, // Default quantity
+      price,
+      quantity: 1,
     };
-
-    addToCart(item); // Add the item to the cart
-    setSnackbarOpen(true); // Show Snackbar for confirmation
+    addToCart(item);
+    setSnackbarOpen(true);
   };
 
-  const handleCloseSnackbar = () => {
-    setSnackbarOpen(false);
-  };
+  const handleCloseSnackbar = () => setSnackbarOpen(false);
 
   return (
-    <Container sx={{ py: 6, maxWidth: 1200, margin: "40px auto 0 auto" }}>
+    <Container sx={{ py: 6, maxWidth: 1200, margin: "40px auto 0 auto", px: { xs: 2, md: 3 } }}>
       <Grid container spacing={4}>
-        {/* Image Section */}
+        {/* Image Gallery */}
         <Grid item xs={12} md={6}>
           <Paper
             sx={{
               p: 2,
-              borderRadius: "10px",
-              boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.1)",
+              borderRadius: "16px",
+              boxShadow: "0px 8px 24px rgba(0, 0, 0, 0.08)",
+              bgcolor: "#fff",
             }}
           >
-            {/* Main Image with Zoom */}
             <Zoom>
               <img
                 src={mainImage}
-                alt={canvasPhotoWithFrameDetails.name}
+                alt={details.name}
                 style={{
                   width: "100%",
-                  borderRadius: "10px",
+                  borderRadius: "12px",
                   cursor: "zoom-in",
                   maxHeight: "400px",
                   objectFit: "cover",
@@ -94,37 +90,37 @@ const CanvasPhotoWithFrames = ({ addToCart }) => {
               />
             </Zoom>
 
-            {/* Extra Images Gallery */}
             <Box
               sx={{
                 display: "flex",
                 gap: 2,
                 mt: 2,
-                overflowX: "auto", // Horizontal scroll for small screens
-                "&::-webkit-scrollbar": { display: "none" }, // Hide scrollbar
+                overflowX: "auto",
+                "&::-webkit-scrollbar": { display: "none" },
               }}
             >
-              {canvasPhotoWithFrameDetails.extraImages.map((image, index) => (
+              {details.extraImages.map((img, idx) => (
                 <Paper
-                  key={index}
-                  onClick={() => setMainImage(image)}
+                  key={idx}
+                  onClick={() => setMainImage(img)}
                   sx={{
                     p: 1,
-                    borderRadius: "8px",
-                    boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+                    borderRadius: "10px",
                     cursor: "pointer",
-                    border: mainImage === image ? "2px solid #ff6600" : "none",
-                    "&:hover": { border: "2px solid #ff6600" },
-                    flexShrink: 0, // Prevent shrinking on small screens
+                    border:
+                      mainImage === img ? "2px solid #70CB97" : "2px solid transparent",
+                    "&:hover": { border: "2px solid #70CB97" },
+                    flexShrink: 0,
+                    transition: "all 0.2s",
                   }}
                 >
                   <img
-                    src={image}
-                    alt={`Canvas Photo with Frame ${index + 1}`}
+                    src={img}
+                    alt={`view ${idx + 1}`}
                     style={{
-                      width: "100px",
-                      height: "100px",
-                      borderRadius: "6px",
+                      width: "90px",
+                      height: "90px",
+                      borderRadius: "8px",
                       objectFit: "cover",
                     }}
                   />
@@ -134,56 +130,82 @@ const CanvasPhotoWithFrames = ({ addToCart }) => {
           </Paper>
         </Grid>
 
-        {/* Details Section */}
+        {/* Product Details */}
         <Grid item xs={12} md={6}>
-          <Typography variant="h4" sx={{ fontWeight: "bold", mb: 2 }}>
-            {canvasPhotoWithFrameDetails.name}
-          </Typography>
-          <Typography variant="h5" sx={{ color: "#ff6600", fontWeight: "bold", mb: 3 }}>
-            ₹{price} {/* Display dynamic price */}
-          </Typography>
-          <Typography variant="body1" sx={{ mb: 3 }}>
-            {canvasPhotoWithFrameDetails.description}
+          <Typography
+            variant="h4"
+            sx={{ fontWeight: 700, mb: 2, color: "#19485D", fontSize: { xs: "1.8rem", md: "2.5rem" } }}
+          >
+            {details.name}
           </Typography>
 
-          {/* Features */}
-          <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2 }}>
+          <Typography
+            variant="h5"
+            sx={{ color: "#70CB97", fontWeight: "bold", mb: 3, fontSize: { xs: "1.5rem", md: "2rem" } }}
+          >
+            ₹{price}
+          </Typography>
+
+          <Typography
+            variant="body1"
+            sx={{ mb: 3, color: "#1e2a32", lineHeight: 1.6 }}
+          >
+            {details.description}
+          </Typography>
+
+          <Typography
+            variant="h6"
+            sx={{ fontWeight: 600, mb: 2, color: "#19485D", fontSize: { xs: "1.2rem", md: "1.5rem" } }}
+          >
             Features:
           </Typography>
-          <ul style={{ marginLeft: "20px", marginBottom: "20px" }}>
-            {canvasPhotoWithFrameDetails.features.map((feature, index) => (
-              <li key={index}>
-                <Typography variant="body1">{feature}</Typography>
+          <Box component="ul" sx={{ ml: 2, mb: 3, listStyleType: "none", p: 0 }}>
+            {details.features.map((feature, idx) => (
+              <li key={idx} style={{ marginBottom: "8px" }}>
+                <Typography variant="body1" sx={{ display: "flex", alignItems: "center", color: "#5a6e7a" }}>
+                  <span
+                    style={{
+                      display: "inline-block",
+                      width: "6px",
+                      height: "6px",
+                      backgroundColor: "#70CB97",
+                      borderRadius: "50%",
+                      marginRight: "8px",
+                    }}
+                  ></span>
+                  {feature}
+                </Typography>
               </li>
             ))}
-          </ul>
+          </Box>
 
           {/* Materials */}
-          <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2 }}>
+          <Typography
+            variant="h6"
+            sx={{ fontWeight: 600, mb: 2, color: "#19485D", fontSize: { xs: "1.2rem", md: "1.5rem" } }}
+          >
             Available Materials:
           </Typography>
-          <Box
-            sx={{
-              display: "flex",
-              gap: 2,
-              mb: 4,
-              flexWrap: "wrap", // Wrap materials on small screens
-            }}
-          >
-            {canvasPhotoWithFrameDetails.materials.map((material, index) => (
+          <Box sx={{ display: "flex", gap: 2, mb: 4, flexWrap: "wrap" }}>
+            {details.materials.map((material, idx) => (
               <Paper
-                key={index}
+                key={idx}
                 onClick={() => setSelectedMaterial(material)}
                 sx={{
                   p: 1.5,
-                  borderRadius: "8px",
+                  px: 2.5,
+                  borderRadius: "40px",
                   textAlign: "center",
-                  fontWeight: "bold",
-                  boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+                  fontWeight: 600,
                   cursor: "pointer",
-                  backgroundColor: selectedMaterial === material ? "#ff6600" : "white",
-                  color: selectedMaterial === material ? "white" : "inherit",
-                  flex: "1 1 100px", // Flexible sizing for responsiveness
+                  bgcolor: selectedMaterial === material ? "#70CB97" : "#fff",
+                  color: selectedMaterial === material ? "#fff" : "#19485D",
+                  border: "1px solid #e0e7ed",
+                  transition: "all 0.2s",
+                  "&:hover": {
+                    bgcolor: selectedMaterial === material ? "#5cb67f" : "#f0f9f3",
+                    transform: "translateY(-2px)",
+                  },
                 }}
               >
                 {material}
@@ -191,18 +213,24 @@ const CanvasPhotoWithFrames = ({ addToCart }) => {
             ))}
           </Box>
 
-          {/* Add to Cart Button */}
           <Button
             variant="contained"
             startIcon={<AddShoppingCart />}
             sx={{
-              background: "#ff6600",
+              background: "#70CB97",
               color: "white",
-              fontWeight: "bold",
-              fontSize: "16px",
-              padding: "12px 24px",
-              "&:hover": { background: "#ff8c42" },
-              width: { xs: "100%", md: "auto" }, // Full width on small screens
+              fontWeight: 700,
+              fontSize: { xs: "0.9rem", md: "1rem" },
+              padding: { xs: "12px 20px", md: "12px 28px" },
+              borderRadius: "40px",
+              textTransform: "none",
+              boxShadow: "0px 4px 12px rgba(112, 203, 151, 0.3)",
+              "&:hover": {
+                background: "#5cb67f",
+                transform: "translateY(-2px)",
+              },
+              width: { xs: "100%", md: "auto" },
+              transition: "all 0.2s ease",
             }}
             onClick={handleAddToCart}
           >
@@ -211,12 +239,18 @@ const CanvasPhotoWithFrames = ({ addToCart }) => {
         </Grid>
       </Grid>
 
-      {/* Snackbar for Notifications */}
       <Snackbar
         open={snackbarOpen}
         autoHideDuration={3000}
         onClose={handleCloseSnackbar}
-        message="Item added to cart!"
+        message="✓ Item added to cart!"
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        sx={{
+          "& .MuiSnackbarContent-root": {
+            backgroundColor: "#19485D",
+            borderRadius: "40px",
+          },
+        }}
         action={
           <IconButton size="small" color="inherit" onClick={handleCloseSnackbar}>
             <Close fontSize="small" />

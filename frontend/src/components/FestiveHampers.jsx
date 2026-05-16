@@ -1,16 +1,16 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom"; // Import Link
 import { IconButton } from "@mui/material";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 import "../styles/FestiveHampers.css";
 
-// Import images for hampers (replace with actual image paths)
-import holiHampersImg1 from "../assets/festive-hampers.jpg";
-import holiHampersImg2 from "../assets/festive-hampers.jpg";
-import holiHampersImg3 from "../assets/festive-hampers.jpg";
-import holiHampersImg4 from "../assets/festive-hampers.jpg";
-import customFestiveHamperImg from "../assets/custom-festive-hamper.webp"; // Import the custom hamper image
+// Import images for hampers (replace with actual images)
+import colorSplashImg from "../assets/color-splash-hamper.png";
+import ecoFriendlyImg from "../assets/eco-hamper.png";
+import premiumHoliImg from "../assets/premium-hamper.png";
+import customFestiveHamperImg from "../assets/custom-festive-hamper.webp";
 
-// Import images for customizable items (replace with actual image paths)
+// Import images for customizable items (same as before)
 import festiveDiaryImg from "../assets/wave-texture-diaries.png";
 import colorfulPensImg from "../assets/scribble-pen.png";
 import holiTShirtImg from "../assets/tshirt.png";
@@ -22,59 +22,47 @@ import thankYouCardImg from "../assets/thank-you-card.png";
 const FestiveHampers = ({ addToCart }) => {
   const [selectedItems, setSelectedItems] = useState([]);
 
-  // Main hampers data
+  // Updated main hampers data with new products and links
   const mainHampers = [
     {
       name: "Color Splash Hamper",
-      image: holiHampersImg1,
+      image: colorSplashImg,
       price: 1500,
+      link: "/services/corporate-gifting/festive-hampers/color-splash-hamper",
       items: [
-        "Festive Diary",
-        "Colorful Pens",
-        "Holi T-Shirt",
-        "Eco-Friendly Bag",
-        "Festive Stickers",
+        "Faux Leather Diary",
+        "Scribble Pen",
+        "Polo T-shirt",
+        "Elite Horizon Laptop Bag",
       ],
     },
     {
       name: "Eco-Friendly Holi Hamper",
-      image: holiHampersImg2,
+      image: ecoFriendlyImg,
       price: 2000,
+      link: "/services/corporate-gifting/festive-hampers/eco-friendly-holi-hamper",
       items: [
-        "Eco-Friendly Diary",
-        "Natural Color Pack",
-        "Organic T-Shirt",
-        "Reusable Bag",
-        "Thank You Card",
+        "Eco Kraft Cover Diary",
+        "Kraft Pen",
+        "Round Neck T-shirt",
+        "Holographic Stickers",
       ],
     },
     {
       name: "Premium Holi Hamper",
-      image: holiHampersImg3,
+      image: premiumHoliImg,
       price: 2500,
+      link: "/services/corporate-gifting/festive-hampers/premium-holi-hamper",
       items: [
-        "Luxury Festive Diary",
-        "Premium Pens",
-        "Designer T-Shirt",
+        "Classic Leather Combo",
+        "Gilt Roller Ball Pen",
+        "Infinity Laptop Bag",
         "Custom Mug",
-        "Festive Stickers",
       ],
     },
-    // {
-    //   name: "Custom Holi Hamper",
-    //   image: holiHampersImg4,
-    //   price: 3000,
-    //   items: [
-    //     "Custom Diary",
-    //     "Colorful Pens",
-    //     "Holi T-Shirt",
-    //     "Eco-Friendly Bag",
-    //     "Thank You Card",
-    //   ],
-    // },
   ];
 
-  // Customizable items data
+  // Customizable items data (unchanged)
   const customizableItems = {
     Diaries: [
       { name: "Festive Diary", image: festiveDiaryImg, price: 400 },
@@ -101,26 +89,22 @@ const FestiveHampers = ({ addToCart }) => {
     Cards: [{ name: "Thank You Card", image: thankYouCardImg, price: 50 }],
   };
 
-  // Add item to selected items
   const handleAddItem = (item) => {
     setSelectedItems([...selectedItems, item]);
   };
 
-  // Remove item from selected items
   const handleRemoveItem = (item) => {
     setSelectedItems(selectedItems.filter((i) => i.name !== item.name));
   };
 
-  // Calculate total price of selected items
   const calculateTotalPrice = () => {
     return selectedItems.reduce((total, item) => total + item.price, 0);
   };
 
-  // Add custom hamper to cart
   const handleAddCustomHamperToCart = () => {
     const customHamper = {
       name: "Custom Hamper",
-      image: customFestiveHamperImg, // Use the imported image
+      image: customFestiveHamperImg,
       items: selectedItems,
       price: calculateTotalPrice(),
     };
@@ -129,6 +113,16 @@ const FestiveHampers = ({ addToCart }) => {
 
   return (
     <section className="festive-hampers">
+      {/* Diwali Banner */}
+      <div className="diwali-banner">
+        <div className="banner-content">
+          <span className="banner-icon">🪔</span>
+          <p className="banner-text">Diwali Kits Coming Soon! 🎁</p>
+          <span className="banner-icon">✨</span>
+        </div>
+        <div className="banner-subtext">Stay tuned for exclusive festive collections</div>
+      </div>
+
       <h2 className="section-title">Festive Hampers</h2>
       <p className="section-subtitle">Celebrate Holi with our exclusive hampers</p>
 
@@ -136,22 +130,28 @@ const FestiveHampers = ({ addToCart }) => {
       <div className="main-hampers-container">
         {mainHampers.map((hamper, index) => (
           <div key={index} className="hamper-card">
-            <img src={hamper.image} alt={hamper.name} className="hamper-image" />
-            <h3 className="hamper-name">{hamper.name}</h3>
-            <p className="hamper-price">₹{hamper.price}</p>
-            <ul className="hamper-items">
-              {hamper.items.map((item, i) => (
-                <li key={i}>{item}</li>
-              ))}
-            </ul>
+            {/* Wrap everything except the button in a Link */}
+            <Link to={hamper.link} className="hamper-link">
+              <img src={hamper.image} alt={hamper.name} className="hamper-image" />
+              <h3 className="hamper-name">{hamper.name}</h3>
+              <p className="hamper-price">₹{hamper.price}</p>
+              <ul className="hamper-items">
+                {hamper.items.map((item, i) => (
+                  <li key={i}>{item}</li>
+                ))}
+              </ul>
+            </Link>
             <IconButton
               sx={{
                 fontSize: "1.2rem",
                 color: "white",
-                background: "#ff6600",
+                background: "#70CB97",
                 padding: "10px",
                 borderRadius: "10px",
-                "&:hover": { transform: "scale(1.1)", color: "#ff6600" },
+                "&:hover": {
+                  transform: "scale(1.1)",
+                  background: "#5cb67f",
+                },
               }}
               onClick={() => addToCart(hamper)}
             >
@@ -165,7 +165,6 @@ const FestiveHampers = ({ addToCart }) => {
       {/* Customizable Hamper Section */}
       <h2 className="section-title">Create Your Custom Hamper</h2>
       <div className="customizable-hamper">
-        {/* Categories */}
         <div className="categories">
           {Object.keys(customizableItems).map((category) => (
             <div key={category} className="category">
@@ -183,7 +182,6 @@ const FestiveHampers = ({ addToCart }) => {
           ))}
         </div>
 
-        {/* Selected Items */}
         <div className="selected-items">
           <h3>Your Hamper</h3>
           <ul>
@@ -201,10 +199,13 @@ const FestiveHampers = ({ addToCart }) => {
             sx={{
               fontSize: "1.2rem",
               color: "white",
-              background: "#ff6600",
+              background: "#70CB97",
               padding: "10px",
               borderRadius: "10px",
-              "&:hover": { transform: "scale(1.1)", color: "#ff6600" },
+              "&:hover": {
+                transform: "scale(1.1)",
+                background: "#5cb67f",
+              },
             }}
             onClick={handleAddCustomHamperToCart}
           >

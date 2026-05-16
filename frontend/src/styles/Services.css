@@ -1,37 +1,67 @@
+/* ============================================
+   SERVICES PAGE STYLES
+   Brand Colors:
+   - Deep Teal (Primary): #19485D
+   - Green (Secondary): #70CB97
+   - Muted Neutral: #5a6e7a
+   - White / Light backgrounds as needed
+   ============================================ */
+
 .services {
-  padding: 60px 5%;
-  background: linear-gradient(135deg, #f9f9f9, #e6f3ff);
+  padding: 80px 5%;
+  background: linear-gradient(135deg, #f9f9f9, #eef3f7); /* subtle cool tone to complement teal */
 }
 
+/* Section Headings */
 .section-title {
-  font-size: 2rem; /* Reduced for smaller screens */
+  font-size: 2rem;
   font-weight: 800;
   text-align: center;
   margin-bottom: 15px;
-  color: #333;
+  color: #19485D; /* deep teal */
+  letter-spacing: -0.5px;
 }
 
 .section-subtitle {
-  font-size: 1rem; /* Reduced for smaller screens */
-  color: #666;
+  font-size: 1rem;
+  color: #5a6e7a; /* muted neutral */
   text-align: center;
   margin-bottom: 40px;
+  font-weight: 400;
 }
 
+/* Main container for service rows */
 .services-container {
   display: flex;
   flex-direction: column;
   gap: 20px;
 }
 
+
+.service-item-price {
+  font-size: 0.9rem;
+  font-weight: bold;
+  color: #70CB97; /* brand green */
+  margin: 5px 0;
+}
+
+
+/* Individual service row (category + items) */
 .service-row {
   display: flex;
   align-items: center;
   padding: 15px;
   border-radius: 15px;
   position: relative;
+  background: rgba(255,255,255,0.6);
+  transition: background 0.2s ease;
 }
 
+.service-row:hover {
+  background: rgba(255,255,255,0.9);
+}
+
+/* Left side: category icon and name */
 .service-category {
   flex: 1;
   display: flex;
@@ -41,16 +71,22 @@
 }
 
 .service-icon {
-  font-size: 2rem; /* Reduced for smaller screens */
-  color: #ff6600;
+  font-size: 2rem;
+  color: #70CB97; /* brand green for icons */
+  transition: transform 0.2s ease;
+}
+
+.service-row:hover .service-icon {
+  transform: scale(1.05);
 }
 
 .service-name {
-  font-size: 1.25rem; /* Reduced for smaller screens */
+  font-size: 1.25rem;
   font-weight: 600;
-  color: #333;
+  color: #19485D; /* deep teal */
 }
 
+/* Right side: horizontally scrollable product cards */
 .service-items {
   flex: 3;
   display: flex;
@@ -66,51 +102,62 @@
   display: none;
 }
 
+/* Individual product card */
 .service-card {
-  background: #e9eaf2;
-  padding: 10px;
-  border-radius: 10px;
+  background: #ffffff;
+  padding: 12px;
+  border-radius: 12px;
   text-decoration: none;
-  color: #333;
-  font-weight: 600;
-  transition: all 0.3s ease;
+  color: #1e2a32;
+  font-weight: 500;
+  transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
   text-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  flex: 0 0 calc(25% - 15px); /* Each card takes 25% width minus gap */
+  flex: 0 0 calc(25% - 15px);
   box-sizing: border-box;
   overflow: visible;
   position: relative;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  border: 1px solid rgba(112,203,151,0.2);
 }
 
 .service-card:hover {
-  background: #dcdde2;
+  background: #f0f9f3; /* very light green tint */
   transform: scale(1.05);
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+  border-color: #70CB97;
   z-index: 2;
 }
 
 .service-image {
   width: 100%;
-  height: 200px; /* Reduced for smaller screens */
+  height: 200px;
   object-fit: cover;
-  border-radius: 8px;
-  margin-bottom: 10px;
+  border-radius: 10px;
+  margin-bottom: 12px;
+  transition: transform 0.2s ease;
+}
+
+.service-card:hover .service-image {
+  transform: scale(1.02);
 }
 
 .service-item-name {
-  font-size: 0.9rem; /* Reduced for smaller screens */
+  font-size: 0.9rem;
   margin: 0;
-  color: #555;
+  color: #19485D;
+  font-weight: 600;
 }
 
+/* Scroll buttons (left/right) */
 .scroll-button {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  background: rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 0.9);
   border: none;
   border-radius: 50%;
   width: 40px;
@@ -119,44 +166,51 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   z-index: 1;
-  transition: background 0.3s ease;
+  transition: all 0.2s ease;
   right: -20px;
 }
 
 .scroll-button:hover {
-  background: rgba(255, 255, 255, 1);
+  background: #70CB97;
+  transform: translateY(-50%) scale(1.05);
+}
+
+.scroll-button:hover svg {
+  color: white;
 }
 
 .scroll-button svg {
-  color: #333;
+  color: #19485D;
   font-size: 1.2rem;
+  transition: color 0.2s;
 }
 
-/* Corporate Gifting Section */
+/* ===== CORPORATE GIFTING SECTION (highlight) ===== */
 .corporate-gifting-section {
   margin-top: 60px;
   padding: 40px 5%;
-  background-color: #fff8f0;
-  border-radius: 15px;
-  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
+  background-color: #ffffff;
+  border-radius: 24px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  border-top: 4px solid #70CB97;
 }
 
 .corporate-gifting-section .section-title {
-  color: #ff6600;
+  color: #19485D;
 }
 
 .corporate-gifting-section .section-subtitle {
-  color: #666;
+  color: #5a6e7a;
   margin-bottom: 30px;
 }
 
 .corporate-gifting-section .service-row {
-  background-color: #fff;
-  border-radius: 15px;
+  background-color: #fefefe;
+  border-radius: 20px;
   padding: 20px;
-  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -171,13 +225,13 @@
 
 .corporate-gifting-section .service-icon {
   font-size: 2rem;
-  color: #ff6600;
+  color: #70CB97;
 }
 
 .corporate-gifting-section .service-name {
   font-size: 1.25rem;
-  font-weight: 600;
-  color: #333;
+  font-weight: 700;
+  color: #19485D;
 }
 
 .corporate-gifting-section .service-items {
@@ -196,71 +250,34 @@
 }
 
 .corporate-gifting-section .service-card {
-  background: #e9eaf2;
-  padding: 10px;
-  border-radius: 10px;
-  text-decoration: none;
-  color: #333;
-  font-weight: 600;
-  transition: all 0.3s ease;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  flex: 0 0 calc(25% - 15px); /* Each card takes 25% width minus gap */
-  box-sizing: border-box;
-  overflow: visible;
-  position: relative;
+  background: #fafbfc;
+  border: 1px solid #e2e8f0;
+  flex: 0 0 calc(25% - 15px);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.03);
 }
 
 .corporate-gifting-section .service-card:hover {
-  background: #dcdde2;
+  background: #f0f9f3;
+  border-color: #70CB97;
   transform: scale(1.05);
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-  z-index: 2;
 }
 
 .corporate-gifting-section .service-image {
-  width: 100%;
-  height: 150px; /* Fixed height for images */
-  object-fit: cover; /* Ensure images maintain aspect ratio */
-  border-radius: 8px;
-  margin-bottom: 10px;
+  height: 150px;
+  object-fit: cover;
 }
 
 .corporate-gifting-section .service-item-name {
-  font-size: 0.9rem;
-  margin: 0;
-  color: #555;
+  color: #19485D;
 }
 
 .corporate-gifting-section .scroll-button {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  background: rgba(255, 255, 255, 0.8);
-  border: none;
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-  z-index: 1;
-  transition: background 0.3s ease;
   right: -20px;
+  background: white;
 }
 
 .corporate-gifting-section .scroll-button:hover {
-  background: rgba(255, 255, 255, 1);
-}
-
-.corporate-gifting-section .scroll-button svg {
-  color: #333;
-  font-size: 1.2rem;
+  background: #70CB97;
 }
 
 /* View All Button */
@@ -271,200 +288,166 @@
 }
 
 .view-all-button {
-  background-color: #ff6600;
+  background-color: #70CB97;
   color: white;
-  padding: 10px 20px;
-  border-radius: 25px;
+  padding: 10px 24px;
+  border-radius: 40px;
   text-decoration: none;
   font-weight: bold;
-  transition: background-color 0.3s ease;
+  transition: all 0.3s ease;
+  display: inline-block;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
 .view-all-button:hover {
-  background-color: #e65c00;
+  background-color: #5cb67f;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(0,0,0,0.1);
 }
 
 /* Add to Cart Button */
 .add-to-cart-button {
   font-size: 1.2rem;
   color: white;
-  background: #ff6600;
+  background: #70CB97;
   padding: 10px;
-  border-radius: 10px;
+  border-radius: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 5px;
   transition: all 0.3s ease;
+  cursor: pointer;
+  border: none;
+  width: fit-content;
+  margin: 8px auto 0;
 }
 
 .add-to-cart-button:hover {
-  background: #ff8c42;
-  transform: scale(1.1);
+  background: #5cb67f;
+  transform: scale(1.05);
 }
 
 .add-to-cart-text {
-  display: inline; /* Show text by default */
+  display: inline;
 }
 
-@media (max-width: 768px) {
-  .add-to-cart-button .add-to-cart-text {
-    display: none; /* Hide the text on mobile */
-  }
+/* ===== RESPONSIVE BREAKPOINTS ===== */
 
-  .add-to-cart-button {
-    padding: 10px; /* Adjust padding for icon-only button */
-  }
-}
-
-/* Responsive Adjustments */
+/* Tablet (max-width: 1024px) */
 @media (max-width: 1024px) {
   .service-card {
-    flex: 0 0 calc(33.33% - 15px); /* 3 cards per row */
+    flex: 0 0 calc(33.33% - 15px);
   }
-
   .service-icon {
     font-size: 1.8rem;
   }
-
   .service-name {
     font-size: 1.1rem;
   }
-
   .service-image {
     height: 130px;
   }
-
   .service-item-name {
     font-size: 0.85rem;
   }
-
   .corporate-gifting-section .service-card {
-    flex: 0 0 calc(33.33% - 15px); /* 3 cards per row */
+    flex: 0 0 calc(33.33% - 15px);
   }
-
   .corporate-gifting-section .service-image {
-    height: 130px; /* Adjusted height for iPad */
-  }
-
-  .corporate-gifting-section .service-item-name {
-    font-size: 0.85rem;
-  }
-
-  .corporate-gifting-section .service-name {
-    font-size: 1.1rem;
-  }
-
-  .corporate-gifting-section .service-icon {
-    font-size: 1.8rem;
+    height: 130px;
   }
 }
 
+/* Small Tablet / Large Mobile (max-width: 768px) */
 @media (max-width: 768px) {
   .service-card {
-    flex: 0 0 calc(50% - 15px); /* 2 cards per row */
+    flex: 0 0 calc(50% - 15px);
   }
-
   .service-icon {
     font-size: 1.5rem;
   }
-
   .service-name {
     font-size: 1rem;
   }
-
   .service-image {
     height: 170px;
   }
-
   .service-item-name {
     font-size: 0.8rem;
   }
-
   .scroll-button {
-    display: none; /* Hide scroll buttons on smaller screens */
+    display: none; /* hide scroll buttons on touch devices */
   }
-
   .corporate-gifting-section .service-card {
-    flex: 0 0 calc(50% - 15px); /* 2 cards per row */
+    flex: 0 0 calc(50% - 15px);
   }
-
   .corporate-gifting-section .service-image {
-    height: 120px; /* Smaller height for mobile */
+    height: 120px;
   }
-
-  .corporate-gifting-section .service-item-name {
-    font-size: 0.8rem;
+  .add-to-cart-button .add-to-cart-text {
+    display: none;
   }
-
-  .corporate-gifting-section .service-name {
-    font-size: 1rem;
-  }
-
-  .corporate-gifting-section .service-icon {
-    font-size: 1.5rem;
+  .add-to-cart-button {
+    padding: 8px 12px;
   }
 }
 
+/* Mobile (max-width: 500px) */
 @media (max-width: 500px) {
   .services {
-    padding: 40px 5%;
-    display: flex;
-    flex-direction: column;
+    padding: 60px 5%;
   }
-
   .section-title {
     font-size: 1.75rem;
-    /* order: 1; Move title to the top */
   }
-
   .section-subtitle {
     font-size: 0.9rem;
-    /* order: 2; Move subtitle below the title */
     margin-bottom: 20px;
   }
-
   .service-category {
     justify-content: center;
   }
-
   .services-container {
-    /* order:   3; Move service rows below the subtitle */
-    margin-top: 20px; /* Add margin to separate subtitle and service rows */
+    margin-top: 20px;
   }
-
   .service-row {
     display: block;
-  }
-
-  .service-items {
-    flex: 3;
-    display: flex;
-    gap: 15px;
-    overflow-x: auto; /* Enable horizontal scrolling */
-    scroll-behavior: smooth;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
     padding: 10px;
   }
-
-  .service-card {
-    flex: 0 0 calc(50% - 15px); /* 2 cards per row */
+  .service-items {
+    overflow-x: auto;
+    flex: unset;
   }
-
+  .service-card {
+    flex: 0 0 calc(50% - 15px);
+  }
   .service-icon {
     font-size: 1.2rem;
   }
-
   .service-name {
     font-size: 0.9rem;
   }
-
   .service-image {
     height: 150px;
   }
-
   .service-item-name {
     font-size: 0.75rem;
+  }
+  .corporate-gifting-section {
+    padding: 30px 5%;
+  }
+}
+
+/* Extra small devices (max-width: 380px) */
+@media (max-width: 380px) {
+  .service-card {
+    flex: 0 0 calc(100% - 15px);
+  }
+  .service-image {
+    height: 180px;
+  }
+  .corporate-gifting-section .service-card {
+    flex: 0 0 calc(100% - 15px);
   }
 }

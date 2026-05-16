@@ -15,8 +15,8 @@ import silverFoilingStickersImg2 from "../assets/silver-foiling-stickers.png"; /
 import silverFoilingStickersImg3 from "../assets/silver-foiling-stickers.png"; // Extra image 2
 import silverFoilingStickersImg4 from "../assets/silver-foiling-stickers.png"; // Extra image 3
 import silverFoilingStickersImg5 from "../assets/silver-foiling-stickers.png"; // Extra image 4
-import Zoom from "react-medium-image-zoom"; // For zoom functionality
-import "react-medium-image-zoom/dist/styles.css"; // Zoom styles
+import Zoom from "react-medium-image-zoom"; 
+import "react-medium-image-zoom/dist/styles.css"; 
 
 const SilverFoilingStickers = ({ addToCart }) => {
   // Define price mapping for each material

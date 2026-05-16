@@ -23,7 +23,7 @@ const acrylicProducts = [
 
 const AcrylicSignBoard = ({ addToCart }) => {
   const handleAddToCart = (item) => {
-    addToCart(item); // Add the item to the cart
+    addToCart(item); 
   };
 
   return (
@@ -44,10 +44,13 @@ const AcrylicSignBoard = ({ addToCart }) => {
               sx={{
                 fontSize: "1.2rem",
                 color: "white",
-                background: "#ff6600",
+                background: "#70CB97", // brand green
                 padding: "10px",
                 borderRadius: "10px",
-                "&:hover": { transform: "scale(1.1)", color: "#ff6600" },
+                "&:hover": {
+                  transform: "scale(1.1)",
+                  background: "#5cb67f", // darker green
+                },
               }}
               onClick={() => handleAddToCart(product)}
             >

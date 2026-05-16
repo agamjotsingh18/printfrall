@@ -11,7 +11,7 @@ import envelopeA6 from "../assets/a6-envelope.png";
 import envelopeKraft from "../assets/kraft-envelope.png";
 
 const envelopeTypes = [
-  { name: "#10 Envelope (long)", image: envelope10, price: 5, route: "/services/business-essentials/envelopes/10-envelope" },
+  { name: "hash10 Envelope", image: envelope10, price: 5, route: "/services/business-essentials/envelopes/hash10-envelope" },
   { name: "A5 Envelope", image: envelopeA5, price: 7, route: "/services/business-essentials/envelopes/a5-envelope" },
   { name: "A6 Envelope", image: envelopeA6, price: 6, route: "/services/business-essentials/envelopes/a6-envelope" },
   { name: "Kraft Envelope", image: envelopeKraft, price: 8, route: "/services/business-essentials/envelopes/kraft-envelope" },
@@ -40,10 +40,13 @@ const Envelopes = ({ addToCart }) => {
               sx={{
                 fontSize: "1.2rem",
                 color: "white",
-                background: "#ff6600",
+                background: "#70CB97", // brand green
                 padding: "10px",
                 borderRadius: "10px",
-                "&:hover": { transform: "scale(1.1)", color: "#ff6600" },
+                "&:hover": {
+                  transform: "scale(1.1)",
+                  background: "#5cb67f", // darker green
+                },
               }}
               onClick={() => handleAddToCart(envelope)}
             >

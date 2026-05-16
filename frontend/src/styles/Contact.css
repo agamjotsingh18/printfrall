@@ -46,7 +46,7 @@
 }
 
 .contact-button {
-  background-color: #ff6600 !important;
+  background-color: var(--color-green) !important;
   color: white;
   font-weight: bold;
   padding: 12px;
@@ -55,5 +55,5 @@
 }
 
 .contact-button:hover {
-  background-color: #ff4500 !important;
+  background-color: #5cb67f !important;
 }

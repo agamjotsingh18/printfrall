@@ -12,9 +12,9 @@ import {
 import { AddShoppingCart, Close } from "@mui/icons-material";
 import longCalendarImg from "../assets/long-calendar.png"; // Main image
 import longCalendarImg2 from "../assets/long-calendar.png"; // Extra image 1
-import longCalendarImg3 from "../assets/long-calendar.png"; // Extra image 2
-import longCalendarImg4 from "../assets/long-calendar.png"; // Extra image 3
-import longCalendarImg5 from "../assets/long-calendar.png"; // Extra image 4
+import longCalendarImg3 from "../assets/long-calendar-1.png"; // Extra image 2
+import longCalendarImg4 from "../assets/long-calendar-2.png"; // Extra image 3
+import longCalendarImg5 from "../assets/long-calendar-3.png"; // Extra image 4
 import Zoom from "react-medium-image-zoom"; // For zoom functionality
 import "react-medium-image-zoom/dist/styles.css"; // Zoom styles
 

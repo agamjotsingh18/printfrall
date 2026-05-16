@@ -8,124 +8,209 @@ import {
   Grid,
   Snackbar,
   IconButton,
+  Chip,
+  Divider,
 } from "@mui/material";
-import { AddShoppingCart, Close } from "@mui/icons-material";
-import photoWithWallFrameImg from "../assets/photo-with-wall-frame.png"; // Main image
-import photoWithWallFrameImg2 from "../assets/photo-with-wall-frame.png"; // Extra image 1
-import photoWithWallFrameImg3 from "../assets/photo-with-wall-frame.png"; // Extra image 2
-import photoWithWallFrameImg4 from "../assets/photo-with-wall-frame.png"; // Extra image 3
-import photoWithWallFrameImg5 from "../assets/photo-with-wall-frame.png"; // Extra image 4
-import Zoom from "react-medium-image-zoom"; // For zoom functionality
-import "react-medium-image-zoom/dist/styles.css"; // Zoom styles
+import {
+  AddShoppingCart,
+  Close,
+  Inventory,
+  Wallpaper,
+  WorkspacePremium,
+} from "@mui/icons-material";
+import Zoom from "react-medium-image-zoom";
+import "react-medium-image-zoom/dist/styles.css";
+
+// Import your wall frame images – replace with real variants
+import photoWithWallFrameImg from "../assets/photo-with-wall-frame.png";
+import photoWithWallFrameImg2 from "../assets/photo-with-wall-frame-1.png";
+import photoWithWallFrameImg3 from "../assets/photo-with-wall-frame-2.png";
+import photoWithWallFrameImg4 from "../assets/photo-with-wall-frame-3.png";
+import photoWithWallFrameImg5 from "../assets/photo-with-wall-frame-4.png";
 
 const PhotoWithWallFrames = ({ addToCart }) => {
-  // Define price mapping for each material
-  const priceMapping = {
-    "Wooden Frame": 130,
-    "Metal Frame": 160,
-    "Acrylic Frame": 140,
-  };
+  // Frame styles (10 options)
+  const frameStyles = [
+    "Decorative Gold Edge",
+    "Distressed Maze Texture",
+    "Sleek Black Minimal",
+    "Matte Black Classic",
+    "Modern Stripe Pattern",
+    "Bronze with Gold Trim",
+    "Geometric Zigzag Finish",
+    "Crackle Effect Bronze",
+    "Heavy Chevron Impression",
+    "Coarse Brushed Texture",
+  ];
 
-  // Most popular material (default selection)
-  const defaultMaterial = "Wooden Frame";
+  // Size options with pricing
+  const sizeOptions = [
+    { label: "9 x 12 in", price: 850 },
+    { label: "12 x 12 in", price: 950 },
+    { label: "14 x 18 in", price: 1250 },
+    { label: "12 x 18 in", price: 1150 },
+    { label: "18 x 24 in", price: 1850 },
+    { label: "27 x 36 in", price: 3250 },
+  ];
 
-  const [selectedMaterial, setSelectedMaterial] = useState(defaultMaterial);
-  const [mainImage, setMainImage] = useState(photoWithWallFrameImg); // State for main image
-  const [snackbarOpen, setSnackbarOpen] = useState(false); // State for Snackbar
+  // Print materials
+  const printMaterials = [
+    { name: "300 GSM Premium Canvas", desc: "Rich texture, vivid art gallery feel" },
+    { name: "Standard 3M Vinyl", desc: "High resolution, includes lamination" },
+  ];
 
-  const photoWithWallFrameDetails = {
-    name: "Photo with Wall Frames",
-    image: photoWithWallFrameImg,
-    description:
-      "Stylish and modern wall photo frames for displaying your favorite memories. Perfect for home decor, offices, and gifting purposes.",
-    features: [
-      "Modern and sleek designs",
-      "Durable and high-quality materials",
-      "Easy to hang on walls",
-      "Available in various sizes and colors",
-    ],
-    materials: ["Wooden Frame", "Metal Frame", "Acrylic Frame"],
-    extraImages: [photoWithWallFrameImg2, photoWithWallFrameImg3, photoWithWallFrameImg4, photoWithWallFrameImg5], // Extra images
-  };
+  const laminationOptions = ["Matte", "Glossy"];
 
-  // Calculate price based on selected material
-  const price = priceMapping[selectedMaterial];
+  // Product features (for specifications panel)
+  const productFeatures = [
+    "Gallery‑quality wall frames for professional display",
+    "Premium MDF wood base with durable synthetic frame",
+    "No acrylic/glass – preserves natural canvas/vinyl texture",
+    "Available in 10+ elegant finishes (gold, bronze, black, etc.)",
+    "Ready to hang – includes wall mounting hardware",
+    "Archival‑grade materials resist fading and moisture",
+    "Perfect for home, office galleries, exhibitions",
+  ];
+
+  // State
+  const [selectedSize, setSelectedSize] = useState(sizeOptions[2]); // 14x18 default
+  const [selectedStyle, setSelectedStyle] = useState(frameStyles[3]); // Matte Black
+  const [selectedMaterial, setSelectedMaterial] = useState(printMaterials[0]); // Canvas
+  const [selectedLamination, setSelectedLamination] = useState("Matte");
+  const [orientation, setOrientation] = useState("Portrait");
+  const [mainImage, setMainImage] = useState(photoWithWallFrameImg);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+
+  const totalPrice = selectedSize.price;
+
+  const thumbnailImages = [
+    photoWithWallFrameImg,
+    photoWithWallFrameImg2,
+    photoWithWallFrameImg3,
+    photoWithWallFrameImg4,
+    photoWithWallFrameImg5,
+  ];
 
   const handleAddToCart = () => {
     const item = {
-      ...photoWithWallFrameDetails,
-      selectedMaterial,
-      price, // Use the dynamically calculated price
-      quantity: 1, // Default quantity
+      name: "Premium Wall Photo Frame",
+      size: selectedSize.label,
+      style: selectedStyle,
+      material: selectedMaterial.name,
+      lamination: selectedMaterial.name.includes("Vinyl") ? selectedLamination : "N/A",
+      orientation: orientation,
+      price: totalPrice,
+      quantity: 1,
+      image: mainImage,
     };
-
-    addToCart(item); // Add the item to the cart
-    setSnackbarOpen(true); // Show Snackbar for confirmation
+    addToCart(item);
+    setSnackbarOpen(true);
   };
 
-  const handleCloseSnackbar = () => {
-    setSnackbarOpen(false);
-  };
+  const handleCloseSnackbar = () => setSnackbarOpen(false);
 
   return (
-    <Container sx={{ py: 6, maxWidth: 1200, margin: "40px auto 0 auto" }}>
-      <Grid container spacing={4}>
-        {/* Image Section */}
+    <Container
+      sx={{
+        py: 6,
+        maxWidth: 1200,
+        margin: "40px auto 0 auto",
+        px: { xs: 2, md: 3 },
+      }}
+    >
+      <Grid container spacing={5}>
+        {/* Left Side: Gallery */}
         <Grid item xs={12} md={6}>
           <Paper
             sx={{
               p: 2,
-              borderRadius: "10px",
-              boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.1)",
+              borderRadius: "16px",
+              boxShadow: "0px 8px 24px rgba(0, 0, 0, 0.08)",
+              bgcolor: "#fff",
+              position: "relative",
             }}
           >
-            {/* Main Image with Zoom */}
+            <Box
+              sx={{
+                position: "absolute",
+                top: 20,
+                left: 20,
+                zIndex: 10,
+                display: "flex",
+                gap: 1,
+              }}
+            >
+              <Chip
+                label="GALLERY QUALITY"
+                size="small"
+                icon={<WorkspacePremium />}
+                sx={{
+                  bgcolor: "#19485D",
+                  color: "white",
+                  fontWeight: "bold",
+                  borderRadius: "40px",
+                }}
+              />
+              <Chip
+                label="WALL MOUNT"
+                size="small"
+                icon={<Wallpaper />}
+                sx={{
+                  bgcolor: "#70CB97",
+                  color: "white",
+                  fontWeight: "bold",
+                  borderRadius: "40px",
+                }}
+              />
+            </Box>
+
             <Zoom>
               <img
                 src={mainImage}
-                alt={photoWithWallFrameDetails.name}
+                alt="Wall Frame Preview"
                 style={{
                   width: "100%",
-                  borderRadius: "10px",
-                  cursor: "zoom-in",
-                  maxHeight: "400px",
-                  objectFit: "cover",
+                  borderRadius: "12px",
+                  height: "450px",
+                  objectFit: "contain",
+                  transition: "0.3s",
                 }}
               />
             </Zoom>
 
-            {/* Extra Images Gallery */}
+            {/* Thumbnails */}
             <Box
               sx={{
                 display: "flex",
                 gap: 2,
                 mt: 2,
-                overflowX: "auto", // Horizontal scroll for small screens
-                "&::-webkit-scrollbar": { display: "none" }, // Hide scrollbar
+                overflowX: "auto",
+                "&::-webkit-scrollbar": { display: "none" },
               }}
             >
-              {photoWithWallFrameDetails.extraImages.map((image, index) => (
+              {thumbnailImages.map((image, index) => (
                 <Paper
                   key={index}
                   onClick={() => setMainImage(image)}
                   sx={{
                     p: 1,
-                    borderRadius: "8px",
-                    boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+                    borderRadius: "12px",
                     cursor: "pointer",
-                    border: mainImage === image ? "2px solid #ff6600" : "none",
-                    "&:hover": { border: "2px solid #ff6600" },
-                    flexShrink: 0, // Prevent shrinking on small screens
+                    border:
+                      mainImage === image ? "2px solid #70CB97" : "1px solid #e0e7ed",
+                    flexShrink: 0,
+                    transition: "all 0.2s",
+                    "&:hover": { transform: "translateY(-2px)" },
                   }}
                 >
                   <img
                     src={image}
-                    alt={`Photo with Wall Frame ${index + 1}`}
+                    alt={`View ${index + 1}`}
                     style={{
-                      width: "100px",
-                      height: "100px",
-                      borderRadius: "6px",
+                      width: "80px",
+                      height: "80px",
                       objectFit: "cover",
+                      borderRadius: "8px",
                     }}
                   />
                 </Paper>
@@ -134,89 +219,283 @@ const PhotoWithWallFrames = ({ addToCart }) => {
           </Paper>
         </Grid>
 
-        {/* Details Section */}
+        {/* Right Side: Customization */}
         <Grid item xs={12} md={6}>
-          <Typography variant="h4" sx={{ fontWeight: "bold", mb: 2 }}>
-            {photoWithWallFrameDetails.name}
-          </Typography>
-          <Typography variant="h5" sx={{ color: "#ff6600", fontWeight: "bold", mb: 3 }}>
-            ₹{price} {/* Display dynamic price */}
-          </Typography>
-          <Typography variant="body1" sx={{ mb: 3 }}>
-            {photoWithWallFrameDetails.description}
-          </Typography>
-
-          {/* Features */}
-          <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2 }}>
-            Features:
-          </Typography>
-          <ul style={{ marginLeft: "20px", marginBottom: "20px" }}>
-            {photoWithWallFrameDetails.features.map((feature, index) => (
-              <li key={index}>
-                <Typography variant="body1">{feature}</Typography>
-              </li>
-            ))}
-          </ul>
-
-          {/* Materials */}
-          <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2 }}>
-            Available Materials:
-          </Typography>
-          <Box
+          <Typography
+            variant="h4"
             sx={{
-              display: "flex",
-              gap: 2,
-              mb: 4,
-              flexWrap: "wrap", // Wrap materials on small screens
+              fontWeight: 700,
+              mb: 1,
+              color: "#19485D",
+              fontSize: { xs: "1.8rem", md: "2.5rem" },
             }}
           >
-            {photoWithWallFrameDetails.materials.map((material, index) => (
+            Wall Photo Frames
+          </Typography>
+
+          <Box sx={{ display: "flex", alignItems: "baseline", gap: 2, flexWrap: "wrap", mb: 1 }}>
+            <Typography variant="h5" sx={{ color: "#70CB97", fontWeight: "bold" }}>
+              ₹{totalPrice}
+            </Typography>
+            <Typography variant="body2" sx={{ color: "#5a6e7a" }}>
+              (per frame)
+            </Typography>
+          </Box>
+
+          <Typography variant="body1" sx={{ mb: 3, color: "#1e2a32", lineHeight: 1.6 }}>
+            Turn any wall into a stunning gallery. These frames are delivered without acrylic or glass
+            to preserve the rich, natural texture of the premium canvas or vinyl finish.
+          </Typography>
+
+          <Divider sx={{ mb: 3 }} />
+
+          {/* Orientation & Size in a grid (two columns) */}
+          <Grid container spacing={2} sx={{ mb: 4 }}>
+            {/* Orientation */}
+            <Grid item xs={6}>
+              <Typography
+                variant="h6"
+                sx={{ fontWeight: 600, mb: 2, color: "#19485D", fontSize: "1rem" }}
+              >
+                Orientation
+              </Typography>
+              <Box sx={{ display: "flex", gap: 1 }}>
+                {["Portrait", "Landscape"].map((o) => (
+                  <Paper
+                    key={o}
+                    onClick={() => setOrientation(o)}
+                    sx={{
+                      flex: 1,
+                      p: 1,
+                      textAlign: "center",
+                      borderRadius: "40px",
+                      fontWeight: 600,
+                      cursor: "pointer",
+                      bgcolor: orientation === o ? "#70CB97" : "#fff",
+                      color: orientation === o ? "#fff" : "#19485D",
+                      border: "1px solid #e0e7ed",
+                      transition: "all 0.2s",
+                      "&:hover": {
+                        bgcolor: orientation === o ? "#5cb67f" : "#f0f9f3",
+                        transform: "translateY(-2px)",
+                      },
+                    }}
+                  >
+                    {o}
+                  </Paper>
+                ))}
+              </Box>
+            </Grid>
+
+            {/* Size Selection */}
+            <Grid item xs={6}>
+              <Typography
+                variant="h6"
+                sx={{ fontWeight: 600, mb: 2, color: "#19485D", fontSize: "1rem" }}
+              >
+                Select Size
+              </Typography>
+              <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+                {sizeOptions.map((size) => (
+                  <Paper
+                    key={size.label}
+                    onClick={() => setSelectedSize(size)}
+                    sx={{
+                      p: 1,
+                      px: 2,
+                      borderRadius: "40px",
+                      textAlign: "center",
+                      fontWeight: 600,
+                      cursor: "pointer",
+                      bgcolor: selectedSize.label === size.label ? "#70CB97" : "#fff",
+                      color: selectedSize.label === size.label ? "#fff" : "#19485D",
+                      border: "1px solid #e0e7ed",
+                      transition: "all 0.2s",
+                      "&:hover": {
+                        bgcolor: selectedSize.label === size.label ? "#5cb67f" : "#f0f9f3",
+                        transform: "translateY(-2px)",
+                      },
+                    }}
+                  >
+                    {size.label}
+                  </Paper>
+                ))}
+              </Box>
+            </Grid>
+          </Grid>
+
+          {/* Print Material Selection (pill‑shaped) */}
+          <Typography
+            variant="h6"
+            sx={{ fontWeight: 600, mb: 2, color: "#19485D", fontSize: "1.1rem" }}
+          >
+            Print Material
+          </Typography>
+          <Box sx={{ display: "flex", gap: 2, mb: 3, flexWrap: "wrap" }}>
+            {printMaterials.map((mat) => (
               <Paper
-                key={index}
-                onClick={() => setSelectedMaterial(material)}
+                key={mat.name}
+                onClick={() => setSelectedMaterial(mat)}
                 sx={{
+                  flex: 1,
                   p: 1.5,
-                  borderRadius: "8px",
+                  px: 2.5,
+                  borderRadius: "40px",
                   textAlign: "center",
-                  fontWeight: "bold",
-                  boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+                  fontWeight: 600,
                   cursor: "pointer",
-                  backgroundColor: selectedMaterial === material ? "#ff6600" : "white",
-                  color: selectedMaterial === material ? "white" : "inherit",
-                  flex: "1 1 100px", // Flexible sizing for responsiveness
+                  bgcolor: selectedMaterial.name === mat.name ? "#70CB97" : "#fff",
+                  color: selectedMaterial.name === mat.name ? "#fff" : "#19485D",
+                  border: "1px solid #e0e7ed",
+                  transition: "all 0.2s",
+                  "&:hover": {
+                    bgcolor: selectedMaterial.name === mat.name ? "#5cb67f" : "#f0f9f3",
+                    transform: "translateY(-2px)",
+                  },
                 }}
               >
-                {material}
+                <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                  {mat.name}
+                </Typography>
+                <Typography variant="caption" sx={{ display: "block", opacity: 0.8 }}>
+                  {mat.desc}
+                </Typography>
               </Paper>
             ))}
           </Box>
 
-          {/* Add to Cart Button */}
+          {/* Lamination (only for Vinyl) - pill‑shaped chips */}
+          {selectedMaterial.name.includes("Vinyl") && (
+            <Box sx={{ mb: 4 }}>
+              <Typography
+                variant="h6"
+                sx={{ fontWeight: 600, mb: 2, color: "#19485D", fontSize: "1rem" }}
+              >
+                Lamination Type
+              </Typography>
+              <Box sx={{ display: "flex", gap: 1.5, flexWrap: "wrap" }}>
+                {laminationOptions.map((l) => (
+                  <Chip
+                    key={l}
+                    label={l}
+                    onClick={() => setSelectedLamination(l)}
+                    sx={{
+                      borderRadius: "40px",
+                      bgcolor: selectedLamination === l ? "#70CB97" : "#fff",
+                      color: selectedLamination === l ? "#fff" : "#19485D",
+                      border: "1px solid #e0e7ed",
+                      fontWeight: 500,
+                      cursor: "pointer",
+                      transition: "all 0.2s",
+                      "&:hover": {
+                        bgcolor: selectedLamination === l ? "#5cb67f" : "#f0f9f3",
+                        transform: "translateY(-2px)",
+                      },
+                    }}
+                  />
+                ))}
+              </Box>
+            </Box>
+          )}
+
+          {/* Frame Style Selection (pill‑shaped chips) */}
+          <Typography
+            variant="h6"
+            sx={{ fontWeight: 600, mb: 2, color: "#19485D", fontSize: "1.1rem" }}
+          >
+            Frame Finish Style (As shown in the image gallery)
+          </Typography>
+          <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap", mb: 4 }}>
+            {frameStyles.map((style) => (
+              <Chip
+                key={style}
+                label={style}
+                onClick={() => setSelectedStyle(style)}
+                sx={{
+                  borderRadius: "40px",
+                  bgcolor: selectedStyle === style ? "#70CB97" : "#fff",
+                  color: selectedStyle === style ? "#fff" : "#19485D",
+                  border: "1px solid #e0e7ed",
+                  fontWeight: 500,
+                  cursor: "pointer",
+                  transition: "all 0.2s",
+                  "&:hover": {
+                    bgcolor: selectedStyle === style ? "#5cb67f" : "#f0f9f3",
+                    transform: "translateY(-2px)",
+                  },
+                }}
+              />
+            ))}
+          </Box>
+
+          {/* Specifications Panel */}
+          <Paper
+            sx={{
+              p: 3,
+              bgcolor: "#f8fafc",
+              mb: 4,
+              borderRadius: "16px",
+              border: "1px solid #e0e7ed",
+            }}
+          >
+            <Typography variant="subtitle1" sx={{ fontWeight: 700, mb: 2, color: "#19485D" }}>
+              Gallery Features:
+            </Typography>
+            {productFeatures.map((feature, i) => (
+              <Box key={i} sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
+                <Inventory sx={{ fontSize: 16, color: "#70CB97" }} />
+                <Typography variant="body2" sx={{ color: "#5a6e7a" }}>
+                  {feature}
+                </Typography>
+              </Box>
+            ))}
+          </Paper>
+
           <Button
             variant="contained"
+            fullWidth
             startIcon={<AddShoppingCart />}
             sx={{
-              background: "#ff6600",
+              background: "#70CB97",
               color: "white",
-              fontWeight: "bold",
-              fontSize: "16px",
-              padding: "12px 24px",
-              "&:hover": { background: "#ff8c42" },
-              width: { xs: "100%", md: "auto" }, // Full width on small screens
+              fontWeight: 700,
+              fontSize: "1rem",
+              py: 1.8,
+              borderRadius: "40px",
+              textTransform: "none",
+              boxShadow: "0px 4px 12px rgba(112, 203, 151, 0.3)",
+              "&:hover": {
+                background: "#5cb67f",
+                transform: "translateY(-2px)",
+                boxShadow: "0px 6px 16px rgba(112, 203, 151, 0.4)",
+              },
             }}
             onClick={handleAddToCart}
           >
-            Add to Cart
+            Add to Gallery Selection – ₹{totalPrice}
           </Button>
+
+          <Typography
+            variant="caption"
+            sx={{ display: "block", mt: 2, textAlign: "center", color: "#5a6e7a" }}
+          >
+            * Custom sizes & bulk orders available. Contact us for corporate art solutions.
+          </Typography>
         </Grid>
       </Grid>
 
-      {/* Snackbar for Notifications */}
       <Snackbar
         open={snackbarOpen}
         autoHideDuration={3000}
         onClose={handleCloseSnackbar}
-        message="Item added to cart!"
+        message="✓ Wall frame added to cart!"
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        sx={{
+          "& .MuiSnackbarContent-root": {
+            backgroundColor: "#19485D",
+            borderRadius: "40px",
+          },
+        }}
         action={
           <IconButton size="small" color="inherit" onClick={handleCloseSnackbar}>
             <Close fontSize="small" />

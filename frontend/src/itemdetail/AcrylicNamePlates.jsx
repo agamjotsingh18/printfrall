@@ -10,34 +10,34 @@ import {
   IconButton,
 } from "@mui/material";
 import { AddShoppingCart, Close } from "@mui/icons-material";
-import acrylicNamePlateImg from "../assets/acrylic-name-plate.png"; // Main image
-import acrylicNamePlateImg2 from "../assets/acrylic-name-plate.png"; // Extra image 1
-import acrylicNamePlateImg3 from "../assets/acrylic-name-plate.png"; // Extra image 2
-import acrylicNamePlateImg4 from "../assets/acrylic-name-plate.png"; // Extra image 3
-import acrylicNamePlateImg5 from "../assets/acrylic-name-plate.png"; // Extra image 4
-import Zoom from "react-medium-image-zoom"; // For zoom functionality
-import "react-medium-image-zoom/dist/styles.css"; // Zoom styles
+import Zoom from "react-medium-image-zoom";
+import "react-medium-image-zoom/dist/styles.css";
+
+import mainImg from "../assets/acrylic-nameplate-0-design.png";
+import img1 from "../assets/acrylic-nameplate-1-desk.png";
+import img2 from "../assets/acrylic-nameplate-2-tilted.png";
+import img3 from "../assets/acrylic-nameplate-3-door.png";
+import img4 from "../assets/acrylic-nameplate-4-stack.png";
+import img5 from "../assets/acrylic-nameplate-5-closeup.png";
 
 const AcrylicNamePlates = ({ addToCart }) => {
-  // Define price mapping for each size and material combination
   const priceMapping = {
     "Small (6x4 inches)": { "Clear Acrylic": 150, "Frosted Acrylic": 170, "Colored Acrylic": 200 },
     "Medium (8x6 inches)": { "Clear Acrylic": 250, "Frosted Acrylic": 270, "Colored Acrylic": 300 },
     "Large (12x8 inches)": { "Clear Acrylic": 350, "Frosted Acrylic": 370, "Colored Acrylic": 400 },
   };
 
-  // Most popular size and material (default selection)
   const defaultSize = "Medium (8x6 inches)";
   const defaultMaterial = "Clear Acrylic";
 
   const [selectedSize, setSelectedSize] = useState(defaultSize);
   const [selectedMaterial, setSelectedMaterial] = useState(defaultMaterial);
-  const [mainImage, setMainImage] = useState(acrylicNamePlateImg); // State for main image
-  const [snackbarOpen, setSnackbarOpen] = useState(false); // State for Snackbar
+  const [mainImage, setMainImage] = useState(mainImg);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
 
-  const acrylicNamePlateDetails = {
+  const details = {
     name: "Acrylic Name Plates",
-    image: acrylicNamePlateImg,
+    image: mainImg,
     description:
       "Add a touch of elegance to your workspace with our premium acrylic name plates. Sleek, modern, and durable, these name plates are perfect for offices, desks, and doors.",
     features: [
@@ -48,49 +48,45 @@ const AcrylicNamePlates = ({ addToCart }) => {
     ],
     sizes: ["Small (6x4 inches)", "Medium (8x6 inches)", "Large (12x8 inches)"],
     materials: ["Clear Acrylic", "Frosted Acrylic", "Colored Acrylic"],
-    extraImages: [acrylicNamePlateImg2, acrylicNamePlateImg3, acrylicNamePlateImg4, acrylicNamePlateImg5], // Extra images
+    extraImages: [img1, img2, img3, img5, img4],
   };
 
-  // Calculate price based on selected size and material
   const price = priceMapping[selectedSize][selectedMaterial];
 
   const handleAddToCart = () => {
     const item = {
-      ...acrylicNamePlateDetails,
+      ...details,
       selectedSize,
       selectedMaterial,
-      price, // Use the dynamically calculated price
-      quantity: 1, // Default quantity
+      price,
+      quantity: 1,
     };
-
-    addToCart(item); // Add the item to the cart
-    setSnackbarOpen(true); // Show Snackbar for confirmation
+    addToCart(item);
+    setSnackbarOpen(true);
   };
 
-  const handleCloseSnackbar = () => {
-    setSnackbarOpen(false);
-  };
+  const handleCloseSnackbar = () => setSnackbarOpen(false);
 
   return (
     <Container sx={{ py: 6, maxWidth: 1200, margin: "40px auto 0 auto" }}>
       <Grid container spacing={4}>
-        {/* Image Section */}
+        {/* Image Gallery */}
         <Grid item xs={12} md={6}>
           <Paper
             sx={{
               p: 2,
-              borderRadius: "10px",
-              boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.1)",
+              borderRadius: "16px",
+              boxShadow: "0px 8px 24px rgba(0, 0, 0, 0.08)",
+              bgcolor: "#fff",
             }}
           >
-            {/* Main Image with Zoom */}
             <Zoom>
               <img
                 src={mainImage}
-                alt={acrylicNamePlateDetails.name}
+                alt={details.name}
                 style={{
                   width: "100%",
-                  borderRadius: "10px",
+                  borderRadius: "12px",
                   cursor: "zoom-in",
                   maxHeight: "400px",
                   objectFit: "cover",
@@ -98,37 +94,37 @@ const AcrylicNamePlates = ({ addToCart }) => {
               />
             </Zoom>
 
-            {/* Extra Images Gallery */}
             <Box
               sx={{
                 display: "flex",
                 gap: 2,
                 mt: 2,
-                overflowX: "auto", // Horizontal scroll for small screens
-                "&::-webkit-scrollbar": { display: "none" }, // Hide scrollbar
+                overflowX: "auto",
+                "&::-webkit-scrollbar": { display: "none" },
               }}
             >
-              {acrylicNamePlateDetails.extraImages.map((image, index) => (
+              {details.extraImages.map((img, idx) => (
                 <Paper
-                  key={index}
-                  onClick={() => setMainImage(image)}
+                  key={idx}
+                  onClick={() => setMainImage(img)}
                   sx={{
                     p: 1,
-                    borderRadius: "8px",
-                    boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+                    borderRadius: "10px",
                     cursor: "pointer",
-                    border: mainImage === image ? "2px solid #ff6600" : "none",
-                    "&:hover": { border: "2px solid #ff6600" },
-                    flexShrink: 0, // Prevent shrinking on small screens
+                    border:
+                      mainImage === img ? "2px solid #70CB97" : "2px solid transparent",
+                    "&:hover": { border: "2px solid #70CB97" },
+                    flexShrink: 0,
+                    transition: "all 0.2s",
                   }}
                 >
                   <img
-                    src={image}
-                    alt={`Acrylic Name Plate ${index + 1}`}
+                    src={img}
+                    alt={`view ${idx + 1}`}
                     style={{
-                      width: "100px",
-                      height: "100px",
-                      borderRadius: "6px",
+                      width: "90px",
+                      height: "90px",
+                      borderRadius: "8px",
                       objectFit: "cover",
                     }}
                   />
@@ -138,56 +134,70 @@ const AcrylicNamePlates = ({ addToCart }) => {
           </Paper>
         </Grid>
 
-        {/* Details Section */}
+        {/* Product Details */}
         <Grid item xs={12} md={6}>
-          <Typography variant="h4" sx={{ fontWeight: "bold", mb: 2 }}>
-            {acrylicNamePlateDetails.name}
+          <Typography
+            variant="h4"
+            sx={{ fontWeight: 700, mb: 2, color: "#19485D" }}
+          >
+            {details.name}
           </Typography>
-          <Typography variant="h5" sx={{ color: "#ff6600", fontWeight: "bold", mb: 3 }}>
-            ₹{price} {/* Display dynamic price */}
+          <Typography
+            variant="h5"
+            sx={{ color: "#70CB97", fontWeight: "bold", mb: 3 }}
+          >
+            ₹{price}
           </Typography>
-          <Typography variant="body1" sx={{ mb: 3 }}>
-            {acrylicNamePlateDetails.description}
+          <Typography
+            variant="body1"
+            sx={{ mb: 3, color: "#1e2a32", lineHeight: 1.6 }}
+          >
+            {details.description}
           </Typography>
 
-          {/* Features */}
-          <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2 }}>
+          <Typography
+            variant="h6"
+            sx={{ fontWeight: 600, mb: 2, color: "#19485D" }}
+          >
             Features:
           </Typography>
-          <ul style={{ marginLeft: "20px", marginBottom: "20px" }}>
-            {acrylicNamePlateDetails.features.map((feature, index) => (
-              <li key={index}>
-                <Typography variant="body1">{feature}</Typography>
+          <Box component="ul" sx={{ ml: 2, mb: 3 }}>
+            {details.features.map((f, i) => (
+              <li key={i}>
+                <Typography variant="body1" sx={{ color: "#5a6e7a" }}>
+                  {f}
+                </Typography>
               </li>
             ))}
-          </ul>
+          </Box>
 
           {/* Sizes */}
-          <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2 }}>
+          <Typography
+            variant="h6"
+            sx={{ fontWeight: 600, mb: 2, color: "#19485D" }}
+          >
             Available Sizes:
           </Typography>
-          <Box
-            sx={{
-              display: "flex",
-              gap: 2,
-              mb: 3,
-              flexWrap: "wrap", // Wrap sizes on small screens
-            }}
-          >
-            {acrylicNamePlateDetails.sizes.map((size, index) => (
+          <Box sx={{ display: "flex", gap: 2, mb: 3, flexWrap: "wrap" }}>
+            {details.sizes.map((size, idx) => (
               <Paper
-                key={index}
+                key={idx}
                 onClick={() => setSelectedSize(size)}
                 sx={{
                   p: 1.5,
-                  borderRadius: "8px",
+                  px: 2.5,
+                  borderRadius: "40px",
                   textAlign: "center",
-                  fontWeight: "bold",
-                  boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+                  fontWeight: 600,
                   cursor: "pointer",
-                  backgroundColor: selectedSize === size ? "#ff6600" : "white",
-                  color: selectedSize === size ? "white" : "inherit",
-                  flex: "1 1 100px", // Flexible sizing for responsiveness
+                  bgcolor: selectedSize === size ? "#70CB97" : "#fff",
+                  color: selectedSize === size ? "#fff" : "#19485D",
+                  border: "1px solid #e0e7ed",
+                  transition: "all 0.2s",
+                  "&:hover": {
+                    bgcolor: selectedSize === size ? "#5cb67f" : "#f0f9f3",
+                    transform: "translateY(-2px)",
+                  },
                 }}
               >
                 {size}
@@ -196,31 +206,32 @@ const AcrylicNamePlates = ({ addToCart }) => {
           </Box>
 
           {/* Materials */}
-          <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2 }}>
+          <Typography
+            variant="h6"
+            sx={{ fontWeight: 600, mb: 2, color: "#19485D" }}
+          >
             Available Materials:
           </Typography>
-          <Box
-            sx={{
-              display: "flex",
-              gap: 2,
-              mb: 4,
-              flexWrap: "wrap", // Wrap materials on small screens
-            }}
-          >
-            {acrylicNamePlateDetails.materials.map((material, index) => (
+          <Box sx={{ display: "flex", gap: 2, mb: 4, flexWrap: "wrap" }}>
+            {details.materials.map((material, idx) => (
               <Paper
-                key={index}
+                key={idx}
                 onClick={() => setSelectedMaterial(material)}
                 sx={{
                   p: 1.5,
-                  borderRadius: "8px",
+                  px: 2.5,
+                  borderRadius: "40px",
                   textAlign: "center",
-                  fontWeight: "bold",
-                  boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+                  fontWeight: 600,
                   cursor: "pointer",
-                  backgroundColor: selectedMaterial === material ? "#ff6600" : "white",
-                  color: selectedMaterial === material ? "white" : "inherit",
-                  flex: "1 1 100px", // Flexible sizing for responsiveness
+                  bgcolor: selectedMaterial === material ? "#70CB97" : "#fff",
+                  color: selectedMaterial === material ? "#fff" : "#19485D",
+                  border: "1px solid #e0e7ed",
+                  transition: "all 0.2s",
+                  "&:hover": {
+                    bgcolor: selectedMaterial === material ? "#5cb67f" : "#f0f9f3",
+                    transform: "translateY(-2px)",
+                  },
                 }}
               >
                 {material}
@@ -228,18 +239,23 @@ const AcrylicNamePlates = ({ addToCart }) => {
             ))}
           </Box>
 
-          {/* Add to Cart Button */}
           <Button
             variant="contained"
             startIcon={<AddShoppingCart />}
             sx={{
-              background: "#ff6600",
+              background: "#70CB97",
               color: "white",
-              fontWeight: "bold",
+              fontWeight: 700,
               fontSize: "16px",
-              padding: "12px 24px",
-              "&:hover": { background: "#ff8c42" },
-              width: { xs: "100%", md: "auto" }, // Full width on small screens
+              padding: "12px 28px",
+              borderRadius: "40px",
+              textTransform: "none",
+              boxShadow: "0px 4px 12px rgba(112, 203, 151, 0.3)",
+              "&:hover": {
+                background: "#5cb67f",
+                transform: "translateY(-2px)",
+              },
+              width: { xs: "100%", md: "auto" },
             }}
             onClick={handleAddToCart}
           >
@@ -248,12 +264,18 @@ const AcrylicNamePlates = ({ addToCart }) => {
         </Grid>
       </Grid>
 
-      {/* Snackbar for Notifications */}
       <Snackbar
         open={snackbarOpen}
         autoHideDuration={3000}
         onClose={handleCloseSnackbar}
-        message="Item added to cart!"
+        message="✓ Item added to cart!"
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        sx={{
+          "& .MuiSnackbarContent-root": {
+            backgroundColor: "#19485D",
+            borderRadius: "40px",
+          },
+        }}
         action={
           <IconButton size="small" color="inherit" onClick={handleCloseSnackbar}>
             <Close fontSize="small" />

@@ -5,7 +5,7 @@ import { IconButton } from "@mui/material";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 
 // Import images for each calendar type
-import a5LandscapeCalendar from "../assets/a5-landscape-calendar.png";
+import a5LandscapeCalendar from "../assets/a5-landscape-calendar-1-flatlay.png";
 import bigSquareDesktopCalendar from "../assets/big-square-desktop-calendar.png";
 import wallCalendar from "../assets/wall-calendar.png";
 import longCalendar from "../assets/long-calendar.png";
@@ -44,10 +44,13 @@ const Calendars = ({ addToCart }) => {
               sx={{
                 fontSize: "1.2rem",
                 color: "white",
-                background: "#ff6600",
+                background: "#70CB97", // brand green
                 padding: "10px",
                 borderRadius: "10px",
-                "&:hover": { transform: "scale(1.1)", color: "#ff6600" },
+                "&:hover": {
+                  transform: "scale(1.1)",
+                  background: "#5cb67f", // darker green
+                },
               }}
               onClick={() => handleAddToCart(calendar)}
             >

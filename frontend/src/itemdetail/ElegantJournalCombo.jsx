@@ -9,115 +9,148 @@ import {
   Snackbar,
   IconButton,
   Chip,
-  useMediaQuery
+  TextField,
+  InputAdornment,
 } from "@mui/material";
-import { AddShoppingCart, Close, Star } from "@mui/icons-material";
-import elegantComboImg from "../assets/elegant-journal-combo.png"; // Main image
-import elegantComboImg2 from "../assets/elegant-journal-combo.png"; // Extra image 1
-import elegantComboImg3 from "../assets/elegant-journal-combo.png"; // Extra image 2
-import premiumPenImg from "../assets/adroit-pen.png"; // Image of included pen
-import journalImg from "../assets/faux-leather-diaries.png"; // Image of journal
+import { AddShoppingCart, Close, WorkspacePremium, Create } from "@mui/icons-material";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
 
+// ========== MAIN COMBO IMAGE ==========
+import mainImg from "../assets/elegant-journal-combo.png";
+
+// ========== EXTRA ANGLES ==========
+import img2 from "../assets/elegant-journal-combo.png";
+import img3 from "../assets/elegant-journal-combo-1.png";
+import img4 from "../assets/elegant-journal-combo-2.png";
+import img5 from "../assets/elegant-journal-combo-3.png";
+import img6 from "../assets/elegant-journal-combo-4.png";
+
+// ========== INCLUDED ITEMS ==========
+import journalImg from "../assets/faux-leather-diaries.png";
+import premiumPenImg from "../assets/adroit-pen.png";
+
 const ElegantJournalCombo = ({ addToCart }) => {
-  const isMobile = useMediaQuery('(max-width:600px)');
-  const [mainImage, setMainImage] = useState(elegantComboImg);
+  // Pack options with quantity and price
+  const packOptions = [
+    { label: "Single", value: "Single", price: 700, quantity: 1 },
+    { label: "Pack of 2", value: "Pack of 2", price: 1350, quantity: 1 }, // 2 x 675 = 1350 (approx 3.5% discount)
+    { label: "Pack of 5", value: "Pack of 5", price: 3325, quantity: 1 }, // 5 x 665 = 3325 (5% discount)
+    { label: "Custom", value: "Custom", price: null, quantity: null },
+  ];
+
+  const unitPrice = 700; // Price per single combo
+
+  const [selectedOption, setSelectedOption] = useState(packOptions[0]);
+  const [customQuantity, setCustomQuantity] = useState(1);
+  const [mainImage, setMainImage] = useState(mainImg);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
+
+  const getTotalPrice = () => {
+    if (selectedOption.value === "Custom") {
+      return unitPrice * customQuantity;
+    }
+    return selectedOption.price;
+  };
+
+  const price = getTotalPrice();
+
+  const handleOptionChange = (option) => {
+    setSelectedOption(option);
+    if (option.value !== "Custom") {
+      setCustomQuantity(1);
+    }
+  };
 
   const productDetails = {
     name: "Elegant Journal Combo",
-    image: elegantComboImg,
-    price: 599,
-    description: "A sophisticated pairing of premium journal and executive pen, perfect for professionals who appreciate fine stationery.",
+    image: mainImg,
+    description:
+      "An exquisite personalized gift set featuring a high-quality leather-bound diary and a precision-crafted metallic pen. This set blends sophisticated style with personal uniqueness, making it the perfect companion for capturing thoughts and professional memories.",
     features: [
-      "Premium leather-bound journal",
-      "Includes luxury ballpoint pen",
-      "192 lined pages of high-quality paper",
-      "Elastic closure band and ribbon bookmark",
-      "Pen features smooth 0.7mm ink flow",
-      "Gift-ready packaging included"
+      "High-quality leather-bound journal",
+      "Elegantly embossed with name or initials",
+      "Sleek, matching engraved metallic pen",
+      "Precision design for a smooth writing experience",
+      "Ideal for journaling, note-taking, and professional use",
+      "Premium presentation for gifting loved ones or colleagues",
+      "Durable elastic closure and integrated bookmark",
     ],
-    extraImages: [elegantComboImg2, elegantComboImg3],
+    sizes: ["Single", "Pack of 2", "Pack of 5"],
+    extraImages: [img2, img3, img4, img5, img6],
     includedItems: [
-      { name: "Premium Journal", image: journalImg },
-      { name: "Executive Pen", image: premiumPenImg }
+      { name: "Personalized Journal", image: journalImg },
+      { name: "Engraved Pen", image: premiumPenImg },
     ],
-    tags: ["Luxury", "Executive", "Gift Set"]
+    tags: ["Personalized", "Luxury Set", "Premium Leather"],
   };
 
   const handleAddToCart = () => {
-    const item = {
-      ...productDetails,
-      quantity: 1
-    };
+    let item;
+    if (selectedOption.value === "Custom") {
+      item = {
+        name: "Elegant Journal Combo",
+        image: mainImg,
+        description: productDetails.description,
+        features: productDetails.features,
+        tags: productDetails.tags,
+        selectedSize: `${customQuantity} combos`,
+        selectedMaterial: "Premium Leather + Metallic Pen",
+        price: price,
+        quantity: customQuantity,
+      };
+    } else {
+      item = {
+        ...productDetails,
+        selectedSize: selectedOption.label,
+        selectedMaterial: "Premium Leather + Metallic Pen",
+        price: selectedOption.price,
+        quantity: 1,
+      };
+    }
     addToCart(item);
     setSnackbarOpen(true);
   };
 
-  const handleCloseSnackbar = () => {
-    setSnackbarOpen(false);
-  };
+  const handleCloseSnackbar = () => setSnackbarOpen(false);
 
   return (
-    <Container sx={{ 
-      py: 6, 
-      maxWidth: 1200, 
-      margin: "40px auto 0 auto",
-      px: isMobile ? 2 : 3
-    }}>
+    <Container sx={{ py: 6, maxWidth: 1200, margin: "40px auto 0 auto", px: { xs: 2, md: 3 } }}>
       <Grid container spacing={4}>
-        {/* Image Section */}
+        {/* Image Gallery */}
         <Grid item xs={12} md={6}>
           <Paper
             sx={{
               p: 2,
-              borderRadius: "10px",
-              boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.1)",
-              position: "relative"
+              borderRadius: "16px",
+              boxShadow: "0px 8px 24px rgba(0, 0, 0, 0.08)",
+              bgcolor: "#fff",
             }}
           >
-            {/* Rating Badge */}
-            <Box sx={{
-              position: "absolute",
-              top: 16,
-              left: 16,
-              backgroundColor: "rgba(255,255,255,0.9)",
-              borderRadius: "20px",
-              px: 1.5,
-              py: 0.5,
-              display: "flex",
-              alignItems: "center",
-              zIndex: 1
-            }}>
-              <Star sx={{ color: "#ff6600", fontSize: "18px", mr: 0.5 }} />
-              <Typography variant="body2" sx={{ fontWeight: "bold" }}>4.9</Typography>
-            </Box>
-
-            {/* Tags */}
-            <Box sx={{ display: 'flex', gap: 1, mb: 2, justifyContent: 'flex-end' }}>
-              {productDetails.tags.map((tag, index) => (
-                <Chip 
-                  key={index}
+            <Box sx={{ display: "flex", gap: 1, mb: 2 }}>
+              {productDetails.tags.map((tag, idx) => (
+                <Chip
+                  key={idx}
                   label={tag}
                   size="small"
+                  icon={idx === 0 ? <WorkspacePremium fontSize="small" /> : <Create fontSize="small" />}
                   sx={{
-                    backgroundColor: "#ff6600",
-                    color: "white",
-                    fontWeight: 'bold'
+                    backgroundColor: "rgba(112, 203, 151, 0.1)",
+                    color: "#70CB97",
+                    fontWeight: "bold",
+                    borderRadius: 2,
                   }}
                 />
               ))}
             </Box>
-            
-            {/* Main Image with Zoom */}
+
             <Zoom>
               <img
                 src={mainImage}
                 alt={productDetails.name}
                 style={{
                   width: "100%",
-                  borderRadius: "8px",
+                  borderRadius: "12px",
                   cursor: "zoom-in",
                   maxHeight: "400px",
                   objectFit: "contain",
@@ -125,8 +158,8 @@ const ElegantJournalCombo = ({ addToCart }) => {
               />
             </Zoom>
 
-            {/* Extra Images Gallery */}
-            {/* <Box
+            {/* Thumbnail Gallery */}
+            <Box
               sx={{
                 display: "flex",
                 gap: 2,
@@ -135,217 +168,220 @@ const ElegantJournalCombo = ({ addToCart }) => {
                 "&::-webkit-scrollbar": { display: "none" },
               }}
             >
-              {productDetails.extraImages.map((image, index) => (
+              {productDetails.extraImages.map((img, idx) => (
                 <Paper
-                  key={index}
-                  onClick={() => setMainImage(image)}
+                  key={idx}
+                  onClick={() => setMainImage(img)}
                   sx={{
                     p: 1,
-                    borderRadius: "8px",
-                    boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+                    borderRadius: "10px",
                     cursor: "pointer",
-                    border: mainImage === image ? "2px solid #ff6600" : "none",
-                    "&:hover": { border: "2px solid #ff6600" },
+                    border:
+                      mainImage === img ? "2px solid #70CB97" : "2px solid transparent",
+                    "&:hover": { border: "2px solid #70CB97" },
                     flexShrink: 0,
+                    transition: "all 0.2s",
                   }}
                 >
                   <img
-                    src={image}
-                    alt={`${productDetails.name} ${index + 1}`}
+                    src={img}
+                    alt={`view ${idx + 1}`}
                     style={{
-                      width: "100px",
-                      height: "100px",
-                      borderRadius: "6px",
+                      width: "90px",
+                      height: "90px",
+                      borderRadius: "8px",
                       objectFit: "cover",
                     }}
                   />
                 </Paper>
               ))}
-            </Box> */}
+            </Box>
           </Paper>
         </Grid>
 
-        {/* Details Section */}
+        {/* Product Details */}
         <Grid item xs={12} md={6}>
-          <Typography 
-            variant="h4" 
-            sx={{ 
-              fontWeight: "bold", 
-              mb: 2,
-              fontSize: isMobile ? "1.8rem" : "2.5rem",
-            }}
+          <Typography
+            variant="h4"
+            sx={{ fontWeight: 700, mb: 1, color: "#19485D", fontSize: { xs: "1.8rem", md: "2.5rem" } }}
           >
             {productDetails.name}
           </Typography>
-          
-          <Typography 
-            variant="h5" 
-            sx={{ 
-              color: "#ff6600", 
-              fontWeight: "bold", 
-              mb: 3,
-              fontSize: isMobile ? "1.5rem" : "2rem"
-            }}
+
+          <Typography
+            variant="h5"
+            sx={{ color: "#70CB97", fontWeight: "bold", mb: 3, fontSize: { xs: "1.5rem", md: "2rem" } }}
           >
-            ₹{productDetails.price}
+            ₹{price}
           </Typography>
-          
-          <Typography 
-            variant="body1" 
-            sx={{ 
-              mb: 3, 
-              lineHeight: 1.6
-            }}
+
+          <Typography
+            variant="body1"
+            sx={{ mb: 3, color: "#1e2a32", lineHeight: 1.6 }}
           >
             {productDetails.description}
           </Typography>
 
-          {/* Features */}
-          <Typography 
-            variant="h6" 
-            sx={{ 
-              fontWeight: "bold", 
-              mb: 2,
-              fontSize: isMobile ? "1.2rem" : "1.5rem"
-            }}
+          <Typography
+            variant="h6"
+            sx={{ fontWeight: 600, mb: 2, color: "#19485D", fontSize: { xs: "1.2rem", md: "1.5rem" } }}
           >
-            Combo Features:
+            Product Specifications:
           </Typography>
-          <ul style={{ 
-            marginLeft: "20px", 
-            marginBottom: "20px",
-            listStyleType: "none",
-            padding: 0
-          }}>
-            {productDetails.features.map((feature, index) => (
-              <li key={index} style={{ marginBottom: "8px" }}>
-                <Typography variant="body1" sx={{ display: 'flex', alignItems: 'center' }}>
-                  <span style={{ 
-                    display: 'inline-block',
-                    width: '6px',
-                    height: '6px',
-                    backgroundColor: "#ff6600",
-                    borderRadius: '50%',
-                    marginRight: '8px'
-                  }}></span>
+          <Box component="ul" sx={{ ml: 2, mb: 3, listStyleType: "none", p: 0 }}>
+            {productDetails.features.map((feature, idx) => (
+              <li key={idx} style={{ marginBottom: "8px" }}>
+                <Typography variant="body1" sx={{ display: "flex", alignItems: "center", color: "#5a6e7a" }}>
+                  <span
+                    style={{
+                      display: "inline-block",
+                      width: "6px",
+                      height: "6px",
+                      backgroundColor: "#70CB97",
+                      borderRadius: "50%",
+                      marginRight: "8px",
+                    }}
+                  ></span>
                   {feature}
                 </Typography>
               </li>
             ))}
-          </ul>
+          </Box>
+
+          {/* Purchase Option */}
+          <Typography
+            variant="h6"
+            sx={{ fontWeight: 600, mb: 2, color: "#19485D", fontSize: { xs: "1.2rem", md: "1.5rem" } }}
+          >
+            Select Quantity / Pack:
+          </Typography>
+          <Box sx={{ display: "flex", gap: 2, mb: 3, flexWrap: "wrap" }}>
+            {packOptions.map((option) => (
+              <Paper
+                key={option.value}
+                onClick={() => handleOptionChange(option)}
+                sx={{
+                  p: 1.5,
+                  px: 2.5,
+                  borderRadius: "40px",
+                  textAlign: "center",
+                  fontWeight: 600,
+                  cursor: "pointer",
+                  bgcolor: selectedOption.value === option.value ? "#70CB97" : "#fff",
+                  color: selectedOption.value === option.value ? "#fff" : "#19485D",
+                  border: "1px solid #e0e7ed",
+                  transition: "all 0.2s",
+                  "&:hover": {
+                    bgcolor: selectedOption.value === option.value ? "#5cb67f" : "#f0f9f3",
+                    transform: "translateY(-2px)",
+                  },
+                }}
+              >
+                {option.label}
+              </Paper>
+            ))}
+          </Box>
+
+          {/* Custom Quantity Input */}
+          {selectedOption.value === "Custom" && (
+            <Box sx={{ mb: 4 }}>
+              <Typography variant="body2" sx={{ mb: 1, color: "#19485D", fontWeight: 500 }}>
+                Enter number of combos:
+              </Typography>
+              <TextField
+                type="number"
+                value={customQuantity}
+                onChange={(e) => setCustomQuantity(Math.max(1, parseInt(e.target.value) || 1))}
+                InputProps={{
+                  endAdornment: <InputAdornment position="end">combos</InputAdornment>,
+                }}
+                sx={{
+                  width: "200px",
+                  "& .MuiOutlinedInput-root": {
+                    borderRadius: "40px",
+                    "& fieldset": { borderColor: "#e0e7ed" },
+                    "&:hover fieldset": { borderColor: "#70CB97" },
+                    "&.Mui-focused fieldset": { borderColor: "#70CB97" },
+                  },
+                }}
+              />
+              <Typography variant="caption" sx={{ display: "block", mt: 1, color: "#5a6e7a" }}>
+                Unit price: ₹{unitPrice} per combo
+              </Typography>
+            </Box>
+          )}
 
           {/* Included Items */}
-          <Typography 
-            variant="h6" 
-            sx={{ 
-              fontWeight: "bold", 
-              mb: 2,
-              fontSize: isMobile ? "1.2rem" : "1.5rem"
-            }}
+          <Typography
+            variant="h6"
+            sx={{ fontWeight: 600, mb: 2, color: "#19485D", fontSize: { xs: "1.2rem", md: "1.5rem" } }}
           >
-            What's Included:
+            Included in this Set:
           </Typography>
-          <Box sx={{ 
-            display: 'flex', 
-            gap: 2, 
-            mb: 3,
-            flexDirection: isMobile ? 'column' : 'row'
-          }}>
-            {productDetails.includedItems.map((item, index) => (
-              <Box key={index} sx={{ 
-                display: 'flex', 
-                alignItems: 'center',
-                backgroundColor: "#fff8f2",
-                borderRadius: '8px',
-                p: 2,
-                flex: 1,
-                border: '1px solid #ff6600'
-              }}>
-                <img 
-                  src={item.image} 
-                  alt={item.name} 
-                  style={{
-                    width: '60px',
-                    height: '60px',
-                    objectFit: 'contain',
-                    marginRight: '12px'
-                  }} 
+          <Box sx={{ display: "flex", gap: 2, mb: 4, flexWrap: "wrap" }}>
+            {productDetails.includedItems.map((item, idx) => (
+              <Box
+                key={idx}
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  backgroundColor: "#f4f7f9",
+                  borderRadius: "40px",
+                  p: 1,
+                  px: 2,
+                  border: "1px solid #e0e7ed",
+                  flex: { xs: "1 1 100%", sm: "1 1 auto" },
+                }}
+              >
+                <img
+                  src={item.image}
+                  alt={item.name}
+                  style={{ width: "40px", height: "40px", objectFit: "contain", marginRight: "10px" }}
                 />
-                <Box>
-                  <Typography variant="subtitle2" sx={{ fontWeight: 'bold' }}>{item.name}</Typography>
-                  <Typography variant="body2" sx={{ color: '#666', fontSize: '0.8rem' }}>
-                    {index === 0 ? '120gsm premium paper' : '0.7mm smooth ink flow'}
-                  </Typography>
-                </Box>
+                <Typography variant="body2" sx={{ fontWeight: 600, color: "#19485D" }}>
+                  {item.name}
+                </Typography>
               </Box>
             ))}
           </Box>
 
-          {/* Add to Cart Button */}
           <Button
             variant="contained"
             startIcon={<AddShoppingCart />}
             sx={{
-              background: "#ff6600",
+              background: "#70CB97",
               color: "white",
-              fontWeight: "bold",
-              fontSize: isMobile ? "0.9rem" : "1rem",
-              padding: "14px 28px",
-              "&:hover": { 
-                background: "#e55c00",
-                transform: "translateY(-2px)"
-              },
+              fontWeight: 700,
+              fontSize: { xs: "0.9rem", md: "1rem" },
+              padding: { xs: "12px 20px", md: "12px 28px" },
+              borderRadius: "40px",
+              textTransform: "none",
+              boxShadow: "0px 4px 12px rgba(112, 203, 151, 0.3)",
+              "&:hover": { background: "#5cb67f", transform: "translateY(-2px)" },
               width: { xs: "100%", md: "auto" },
-              borderRadius: "8px",
-              boxShadow: "0 4px 12px rgba(255, 102, 0, 0.3)",
-              transition: 'all 0.2s ease',
-              mt: 2
             }}
             onClick={handleAddToCart}
           >
-            Add Combo to Cart
+            Add Combo to Cart – ₹{price}
           </Button>
 
-          {/* Special Offer Note */}
-          <Typography variant="body2" sx={{ 
-            mt: 2,
-            color: "#ff6600",
-            fontStyle: 'italic',
-            fontWeight: '500'
-          }}>
-            * Save ₹150 compared to buying separately
+          <Typography
+            variant="body2"
+            sx={{ mt: 2, color: "#5a6e7a", fontStyle: "italic", textAlign: "center" }}
+          >
+            * Powered by PrintfrAll High-Resolution Custom Embossing & Engraving.
           </Typography>
         </Grid>
       </Grid>
 
-      {/* Snackbar for Notifications */}
       <Snackbar
         open={snackbarOpen}
         autoHideDuration={3000}
         onClose={handleCloseSnackbar}
-        message="Elegant Journal Combo added to cart!"
-        action={
-          <IconButton 
-            size="small" 
-            color="inherit" 
-            onClick={handleCloseSnackbar}
-            sx={{
-              "&:hover": {
-                backgroundColor: "rgba(255,255,255,0.1)"
-              }
-            }}
-          >
-            <Close fontSize="small" />
-          </IconButton>
-        }
-        sx={{
-          "& .MuiSnackbarContent-root": {
-            backgroundColor: "#ff6600",
-            color: "white",
-            borderRadius: "8px",
-            fontWeight: 500
-          }
-        }}
+        message="✓ Elegant Journal Combo added to cart!"
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        sx={{ "& .MuiSnackbarContent-root": { backgroundColor: "#19485D", borderRadius: "40px" } }}
+        action={<IconButton size="small" color="inherit" onClick={handleCloseSnackbar}><Close fontSize="small" /></IconButton>}
       />
     </Container>
   );

@@ -7,12 +7,12 @@ import "../styles/Drinkware.css";
 // Import images for drinkware items
 import standardMugImg from "../assets/mug.png";
 import shimmerDarkGreyMugImg from "../assets/shimmer-dark-grey-mug.png";
-import regalBlackMugImg from "../assets/regal-black-mug.png";
+import regalBlackMugImg from "../assets/regal-black-mug.jpeg";
 import travelerBlackMugImg from "../assets/traveler-black-mug.png";
 import sleekBlackMugImg from "../assets/sleek-black-mug.png";
 import miniMugImg from "../assets/mini-mug.png";
 import slimSSBottleImg from "../assets/slim-ss-bottle.png";
-import floralSSBottleImg from "../assets/floral-ss-bottle.png";
+import floralSSBottleImg from "../assets/floral-bottle-2.png";
 import vegaSSBottleImg from "../assets/vega-ss-bottle.png";
 import premiumBlackSipperImg from "../assets/premium-black-sipper.png";
 import multicolorSteelBottleImg from "../assets/multicolor-steel-bottle.png";
@@ -74,10 +74,13 @@ const Drinkware = ({ addToCart }) => {
                 sx={{
                   fontSize: "1.2rem",
                   color: "white",
-                  background: "#ff6600",
+                  background: "#70CB97", // brand green
                   padding: "10px",
                   borderRadius: "10px",
-                  "&:hover": { transform: "scale(1.1)", color: "#ff6600" },
+                  "&:hover": {
+                    transform: "scale(1.1)",
+                    background: "#5cb67f", // darker green
+                  },
                 }}
                 onClick={(e) => handleAddToCart(item, e)}
               >
@@ -104,10 +107,13 @@ const Drinkware = ({ addToCart }) => {
                 sx={{
                   fontSize: "1.2rem",
                   color: "white",
-                  background: "#ff6600",
+                  background: "#70CB97", // brand green
                   padding: "10px",
                   borderRadius: "10px",
-                  "&:hover": { transform: "scale(1.1)", color: "#ff6600" },
+                  "&:hover": {
+                    transform: "scale(1.1)",
+                    background: "#5cb67f", // darker green
+                  },
                 }}
                 onClick={(e) => handleAddToCart(item, e)}
               >

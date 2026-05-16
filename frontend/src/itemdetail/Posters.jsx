@@ -8,128 +8,195 @@ import {
   Grid,
   Snackbar,
   IconButton,
+  Chip,
+  Divider,
 } from "@mui/material";
-import { AddShoppingCart, Close } from "@mui/icons-material";
-import posterImg from "../assets/poster.png"; // Main image
-import posterImg2 from "../assets/poster.png"; // Extra image 1
-import posterImg3 from "../assets/poster.png"; // Extra image 2
-import posterImg4 from "../assets/poster.png"; // Extra image 3
-import posterImg5 from "../assets/poster.png"; // Extra image 4
-import Zoom from "react-medium-image-zoom"; // For zoom functionality
-import "react-medium-image-zoom/dist/styles.css"; // Zoom styles
+import {
+  AddShoppingCart,
+  Close,
+  AutoAwesome,
+  HighQuality,
+  PhotoSizeSelectActual,
+  Inventory,
+} from "@mui/icons-material";
+import Zoom from "react-medium-image-zoom";
+import "react-medium-image-zoom/dist/styles.css";
+
+// Asset paths kept exactly as requested
+import posterImg from "../assets/poster.png";
+import posterImg2 from "../assets/poster-1.png";
+import posterImg3 from "../assets/poster-11.png";
+import posterImg4 from "../assets/poster-2.png";
+import posterImg5 from "../assets/poster-3.png";
+import posterImg6 from "../assets/poster-4.png";
 
 const Posters = ({ addToCart }) => {
-  // Define price mapping for each size and material combination
-  const priceMapping = {
-    "A2 (420x594 mm)": { "Glossy Paper": 200, "Matte Paper": 220, "Premium Paper": 250 },
-    "A3 (297x420 mm)": { "Glossy Paper": 150, "Matte Paper": 170, "Premium Paper": 200 },
-    "A4 (210x297 mm)": { "Glossy Paper": 100, "Matte Paper": 120, "Premium Paper": 150 },
-  };
+  // Size options
+  const sizeOptions = [
+    { id: "A4", label: "A4 (8.3 x 11.7 in)", basePrice: 100 },
+    { id: "A3", label: "A3 (11.7 x 16.5 in)", basePrice: 150 },
+    { id: "A3+", label: "A3+ (12 x 18 in)", basePrice: 180 },
+  ];
 
-  // Most popular size and material (default selection)
-  const defaultSize = "A3 (297x420 mm)";
-  const defaultMaterial = "Glossy Paper";
+  // Material options
+  const materialOptions = [
+    { name: "170 GSM Coated", desc: "Lightweight, versatile", premium: 0 },
+    { name: "220 GSM Coated", desc: "Heavy-duty, premium feel", premium: 50 },
+  ];
 
-  const [selectedSize, setSelectedSize] = useState(defaultSize);
-  const [selectedMaterial, setSelectedMaterial] = useState(defaultMaterial);
-  const [mainImage, setMainImage] = useState(posterImg); // State for main image
-  const [snackbarOpen, setSnackbarOpen] = useState(false); // State for Snackbar
+  // Finish options
+  const finishOptions = [
+    { name: "Glossy", desc: "Colors pop, reflective depth" },
+    { name: "Matte", desc: "Zero-glare, rich texture" },
+  ];
 
-  const posterDetails = {
-    name: "Posters",
-    image: posterImg,
-    description:
-      "High-quality posters for all your marketing needs. Perfect for events, promotions, and branding campaigns.",
-    features: [
-      "High-resolution printing",
-      "Custom designs and sizes",
-      "Quick turnaround time",
-      "Durable and vibrant prints",
-    ],
-    sizes: ["A2 (420x594 mm)", "A3 (297x420 mm)", "A4 (210x297 mm)"],
-    materials: ["Glossy Paper", "Matte Paper", "Premium Paper"],
-    extraImages: [posterImg2, posterImg3, posterImg4, posterImg5], // Extra images
-  };
+  // Product features (for specifications panel)
+  const productFeatures = [
+    "High‑resolution digital printing (CMYK)",
+    "Vivid colours with sharp detail and smooth gradients",
+    "Choice of 170 GSM (lightweight) or 220 GSM (premium) paper",
+    "Glossy or matte finish – perfect for any environment",
+    "Standard sizes: A4, A3, and A3+ (12x18 in)",
+    "Suitable for indoor and outdoor applications",
+    "Ideal for branding, events, home decor, and retail displays",
+  ];
 
-  // Calculate price based on selected size and material
-  const price = priceMapping[selectedSize][selectedMaterial];
+  // State
+  const [selectedSize, setSelectedSize] = useState(sizeOptions[1]); // A3 default
+  const [selectedMaterial, setSelectedMaterial] = useState(materialOptions[0]);
+  const [selectedFinish, setSelectedFinish] = useState(finishOptions[0]);
+  const [mainImage, setMainImage] = useState(posterImg);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+
+  // Price calculation
+  const totalPrice = selectedSize.basePrice + selectedMaterial.premium;
+
+  // Thumbnails array
+  const thumbnailImages = [
+    posterImg,
+    posterImg2,
+    posterImg3,
+    posterImg4,
+    posterImg5,
+    posterImg6,
+  ];
 
   const handleAddToCart = () => {
     const item = {
-      ...posterDetails,
-      selectedSize,
-      selectedMaterial,
-      price, // Use the dynamically calculated price
-      quantity: 1, // Default quantity
+      name: "Standard Poster",
+      size: selectedSize.label,
+      material: `${selectedMaterial.name} (${selectedFinish.name})`,
+      price: totalPrice,
+      quantity: 1,
+      image: mainImage,
     };
-
-    addToCart(item); // Add the item to the cart
-    setSnackbarOpen(true); // Show Snackbar for confirmation
+    addToCart(item);
+    setSnackbarOpen(true);
   };
 
-  const handleCloseSnackbar = () => {
-    setSnackbarOpen(false);
-  };
+  const handleCloseSnackbar = () => setSnackbarOpen(false);
 
   return (
-    <Container sx={{ py: 6, maxWidth: 1200, margin: "40px auto 0 auto" }}>
-      <Grid container spacing={4}>
-        {/* Image Section */}
+    <Container
+      sx={{
+        py: 6,
+        maxWidth: 1200,
+        margin: "40px auto 0 auto",
+        px: { xs: 2, md: 3 },
+      }}
+    >
+      <Grid container spacing={5}>
+        {/* Left Side: Gallery */}
         <Grid item xs={12} md={6}>
           <Paper
             sx={{
               p: 2,
-              borderRadius: "10px",
-              boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.1)",
+              borderRadius: "16px",
+              boxShadow: "0px 8px 24px rgba(0, 0, 0, 0.08)",
+              bgcolor: "#fff",
+              position: "relative",
             }}
           >
-            {/* Main Image with Zoom */}
+            <Box
+              sx={{
+                position: "absolute",
+                top: 20,
+                left: 20,
+                zIndex: 10,
+                display: "flex",
+                gap: 1,
+              }}
+            >
+              <Chip
+                label="INDOOR/OUTDOOR"
+                size="small"
+                icon={<AutoAwesome />}
+                sx={{
+                  bgcolor: "#19485D",
+                  color: "white",
+                  fontWeight: "bold",
+                  borderRadius: "40px",
+                }}
+              />
+              <Chip
+                label="DIGITAL PRINT"
+                size="small"
+                icon={<HighQuality />}
+                sx={{
+                  bgcolor: "#70CB97",
+                  color: "white",
+                  fontWeight: "bold",
+                  borderRadius: "40px",
+                }}
+              />
+            </Box>
+
             <Zoom>
               <img
                 src={mainImage}
-                alt={posterDetails.name}
+                alt="Poster Preview"
                 style={{
                   width: "100%",
-                  borderRadius: "10px",
-                  cursor: "zoom-in",
-                  maxHeight: "400px",
-                  objectFit: "cover",
+                  borderRadius: "12px",
+                  height: "450px",
+                  objectFit: "contain",
                 }}
               />
             </Zoom>
 
-            {/* Extra Images Gallery */}
+            {/* Thumbnail Gallery */}
             <Box
               sx={{
                 display: "flex",
                 gap: 2,
                 mt: 2,
-                overflowX: "auto", // Horizontal scroll for small screens
-                "&::-webkit-scrollbar": { display: "none" }, // Hide scrollbar
+                overflowX: "auto",
+                "&::-webkit-scrollbar": { display: "none" },
               }}
             >
-              {posterDetails.extraImages.map((image, index) => (
+              {thumbnailImages.map((image, index) => (
                 <Paper
                   key={index}
                   onClick={() => setMainImage(image)}
                   sx={{
                     p: 1,
-                    borderRadius: "8px",
-                    boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+                    borderRadius: "12px",
                     cursor: "pointer",
-                    border: mainImage === image ? "2px solid #ff6600" : "none",
-                    "&:hover": { border: "2px solid #ff6600" },
-                    flexShrink: 0, // Prevent shrinking on small screens
+                    border:
+                      mainImage === image ? "2px solid #70CB97" : "1px solid #e0e7ed",
+                    flexShrink: 0,
+                    transition: "all 0.2s",
+                    "&:hover": { transform: "translateY(-2px)" },
                   }}
                 >
                   <img
                     src={image}
-                    alt={`Poster ${index + 1}`}
+                    alt={`View ${index + 1}`}
                     style={{
-                      width: "100px",
-                      height: "100px",
-                      borderRadius: "6px",
+                      width: "80px",
+                      height: "80px",
                       objectFit: "cover",
+                      borderRadius: "8px",
                     }}
                   />
                 </Paper>
@@ -138,122 +205,227 @@ const Posters = ({ addToCart }) => {
           </Paper>
         </Grid>
 
-        {/* Details Section */}
+        {/* Right Side: Customization */}
         <Grid item xs={12} md={6}>
-          <Typography variant="h4" sx={{ fontWeight: "bold", mb: 2 }}>
-            {posterDetails.name}
-          </Typography>
-          <Typography variant="h5" sx={{ color: "#ff6600", fontWeight: "bold", mb: 3 }}>
-            ₹{price} {/* Display dynamic price */}
-          </Typography>
-          <Typography variant="body1" sx={{ mb: 3 }}>
-            {posterDetails.description}
-          </Typography>
-
-          {/* Features */}
-          <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2 }}>
-            Features:
-          </Typography>
-          <ul style={{ marginLeft: "20px", marginBottom: "20px" }}>
-            {posterDetails.features.map((feature, index) => (
-              <li key={index}>
-                <Typography variant="body1">{feature}</Typography>
-              </li>
-            ))}
-          </ul>
-
-          {/* Sizes */}
-          <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2 }}>
-            Available Sizes:
-          </Typography>
-          <Box
+          <Typography
+            variant="h4"
             sx={{
-              display: "flex",
-              gap: 2,
-              mb: 3,
-              flexWrap: "wrap", // Wrap sizes on small screens
+              fontWeight: 700,
+              mb: 1,
+              color: "#19485D",
+              fontSize: { xs: "1.8rem", md: "2.5rem" },
             }}
           >
-            {posterDetails.sizes.map((size, index) => (
+            Standard Posters
+          </Typography>
+
+          <Box sx={{ display: "flex", alignItems: "baseline", gap: 2, flexWrap: "wrap", mb: 1 }}>
+            <Typography variant="h5" sx={{ color: "#70CB97", fontWeight: "bold" }}>
+              ₹{totalPrice}
+            </Typography>
+            <Typography variant="body2" sx={{ color: "#5a6e7a" }}>
+              (per poster)
+            </Typography>
+          </Box>
+
+          <Typography variant="body1" sx={{ mb: 3, color: "#1e2a32", lineHeight: 1.6 }}>
+            Simple to design, impossible to ignore. Our posters are printed on long-lasting material
+            designed to imprint a long‑lasting memory — perfect for marketing your brand or
+            decorating your space.
+          </Typography>
+
+          <Divider sx={{ mb: 3 }} />
+
+          {/* Size Selection (pill‑shaped) */}
+          <Typography
+            variant="h6"
+            sx={{
+              fontWeight: 600,
+              mb: 2,
+              color: "#19485D",
+              fontSize: "1.1rem",
+              display: "flex",
+              alignItems: "center",
+              gap: 1,
+            }}
+          >
+            <PhotoSizeSelectActual fontSize="small" /> Select Size
+          </Typography>
+          <Box sx={{ display: "flex", gap: 2, mb: 4, flexWrap: "wrap" }}>
+            {sizeOptions.map((size) => (
               <Paper
-                key={index}
+                key={size.id}
                 onClick={() => setSelectedSize(size)}
                 sx={{
+                  flex: 1,
                   p: 1.5,
-                  borderRadius: "8px",
                   textAlign: "center",
-                  fontWeight: "bold",
-                  boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+                  borderRadius: "40px",
+                  fontWeight: 600,
                   cursor: "pointer",
-                  backgroundColor: selectedSize === size ? "#ff6600" : "white",
-                  color: selectedSize === size ? "white" : "inherit",
-                  flex: "1 1 100px", // Flexible sizing for responsiveness
+                  bgcolor: selectedSize.id === size.id ? "#70CB97" : "#fff",
+                  color: selectedSize.id === size.id ? "#fff" : "#19485D",
+                  border: "1px solid #e0e7ed",
+                  transition: "all 0.2s",
+                  "&:hover": {
+                    bgcolor: selectedSize.id === size.id ? "#5cb67f" : "#f0f9f3",
+                    transform: "translateY(-2px)",
+                  },
                 }}
               >
-                {size}
+                {size.id}
               </Paper>
             ))}
           </Box>
 
-          {/* Materials */}
-          <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2 }}>
-            Available Materials:
+          {/* Material Selection (pill‑shaped) */}
+          <Typography
+            variant="h6"
+            sx={{ fontWeight: 600, mb: 2, color: "#19485D", fontSize: "1.1rem" }}
+          >
+            Paper Weight (GSM)
           </Typography>
-          <Box
+          <Box sx={{ display: "flex", gap: 2, mb: 4, flexWrap: "wrap" }}>
+            {materialOptions.map((mat) => (
+              <Paper
+                key={mat.name}
+                onClick={() => setSelectedMaterial(mat)}
+                sx={{
+                  flex: 1,
+                  p: 1.5,
+                  px: 2.5,
+                  borderRadius: "40px",
+                  textAlign: "center",
+                  fontWeight: 600,
+                  cursor: "pointer",
+                  bgcolor: selectedMaterial.name === mat.name ? "#70CB97" : "#fff",
+                  color: selectedMaterial.name === mat.name ? "#fff" : "#19485D",
+                  border: "1px solid #e0e7ed",
+                  transition: "all 0.2s",
+                  "&:hover": {
+                    bgcolor: selectedMaterial.name === mat.name ? "#5cb67f" : "#f0f9f3",
+                    transform: "translateY(-2px)",
+                  },
+                }}
+              >
+                <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                  {mat.name}
+                </Typography>
+                <Typography variant="caption" sx={{ display: "block", opacity: 0.8 }}>
+                  {mat.desc}
+                </Typography>
+              </Paper>
+            ))}
+          </Box>
+
+          {/* Finish Selection (pill‑shaped) */}
+          <Typography
+            variant="h6"
+            sx={{ fontWeight: 600, mb: 2, color: "#19485D", fontSize: "1.1rem" }}
+          >
+            Surface Finish
+          </Typography>
+          <Box sx={{ display: "flex", gap: 2, mb: 4, flexWrap: "wrap" }}>
+            {finishOptions.map((finish) => (
+              <Paper
+                key={finish.name}
+                onClick={() => setSelectedFinish(finish)}
+                sx={{
+                  flex: 1,
+                  p: 1.5,
+                  px: 2.5,
+                  borderRadius: "40px",
+                  textAlign: "center",
+                  fontWeight: 600,
+                  cursor: "pointer",
+                  bgcolor: selectedFinish.name === finish.name ? "#70CB97" : "#fff",
+                  color: selectedFinish.name === finish.name ? "#fff" : "#19485D",
+                  border: "1px solid #e0e7ed",
+                  transition: "all 0.2s",
+                  "&:hover": {
+                    bgcolor: selectedFinish.name === finish.name ? "#5cb67f" : "#f0f9f3",
+                    transform: "translateY(-2px)",
+                  },
+                }}
+              >
+                <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                  {finish.name}
+                </Typography>
+                <Typography variant="caption" sx={{ display: "block", opacity: 0.8 }}>
+                  {finish.desc}
+                </Typography>
+              </Paper>
+            ))}
+          </Box>
+
+          {/* Specifications Panel */}
+          <Paper
             sx={{
-              display: "flex",
-              gap: 2,
+              p: 3,
+              bgcolor: "#f8fafc",
               mb: 4,
-              flexWrap: "wrap", // Wrap materials on small screens
+              borderRadius: "16px",
+              border: "1px solid #e0e7ed",
             }}
           >
-            {posterDetails.materials.map((material, index) => (
-              <Paper
-                key={index}
-                onClick={() => setSelectedMaterial(material)}
-                sx={{
-                  p: 1.5,
-                  borderRadius: "8px",
-                  textAlign: "center",
-                  fontWeight: "bold",
-                  boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
-                  cursor: "pointer",
-                  backgroundColor: selectedMaterial === material ? "#ff6600" : "white",
-                  color: selectedMaterial === material ? "white" : "inherit",
-                  flex: "1 1 100px", // Flexible sizing for responsiveness
-                }}
-              >
-                {material}
-              </Paper>
+            <Typography variant="subtitle1" sx={{ fontWeight: 700, mb: 2, color: "#19485D" }}>
+              Printing Specifications:
+            </Typography>
+            {productFeatures.map((feature, i) => (
+              <Box key={i} sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
+                <Inventory sx={{ fontSize: 16, color: "#70CB97" }} />
+                <Typography variant="body2" sx={{ color: "#5a6e7a" }}>
+                  {feature}
+                </Typography>
+              </Box>
             ))}
-          </Box>
+          </Paper>
 
-          {/* Add to Cart Button */}
           <Button
             variant="contained"
+            fullWidth
             startIcon={<AddShoppingCart />}
             sx={{
-              background: "#ff6600",
+              background: "#70CB97",
               color: "white",
-              fontWeight: "bold",
-              fontSize: "16px",
-              padding: "12px 24px",
-              "&:hover": { background: "#ff8c42" },
-              width: { xs: "100%", md: "auto" }, // Full width on small screens
+              fontWeight: 700,
+              fontSize: "1rem",
+              py: 1.8,
+              borderRadius: "40px",
+              textTransform: "none",
+              boxShadow: "0px 4px 12px rgba(112, 203, 151, 0.3)",
+              "&:hover": {
+                background: "#5cb67f",
+                transform: "translateY(-2px)",
+                boxShadow: "0px 6px 16px rgba(112, 203, 151, 0.4)",
+              },
             }}
             onClick={handleAddToCart}
           >
-            Add to Cart
+            Add to Selection – ₹{totalPrice}
           </Button>
+
+          <Typography
+            variant="caption"
+            sx={{ display: "block", mt: 2, textAlign: "center", color: "#5a6e7a" }}
+          >
+            * Custom sizes & bulk orders available. Contact us for volume discounts.
+          </Typography>
         </Grid>
       </Grid>
 
-      {/* Snackbar for Notifications */}
       <Snackbar
         open={snackbarOpen}
         autoHideDuration={3000}
         onClose={handleCloseSnackbar}
-        message="Item added to cart!"
+        message="✓ Poster added to selection!"
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        sx={{
+          "& .MuiSnackbarContent-root": {
+            backgroundColor: "#19485D",
+            borderRadius: "40px",
+          },
+        }}
         action={
           <IconButton size="small" color="inherit" onClick={handleCloseSnackbar}>
             <Close fontSize="small" />

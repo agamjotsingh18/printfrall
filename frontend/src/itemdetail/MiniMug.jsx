@@ -8,123 +8,150 @@ import {
   Grid,
   Snackbar,
   IconButton,
+  Chip,
 } from "@mui/material";
-import { AddShoppingCart, Close } from "@mui/icons-material";
-import miniMugImg from "../assets/mini-mug.png"; // Main image
-import miniMugImg2 from "../assets/mini-mug.png"; // Extra image 1
-import miniMugImg3 from "../assets/mini-mug.png"; // Extra image 2
-import miniMugImg4 from "../assets/mini-mug.png"; // Extra image 3
-import miniMugImg5 from "../assets/mini-mug.png"; // Extra image 4
-import Zoom from "react-medium-image-zoom"; // For zoom functionality
-import "react-medium-image-zoom/dist/styles.css"; // Zoom styles
+import { AddShoppingCart, Close, Coffee } from "@mui/icons-material";
+import Zoom from "react-medium-image-zoom";
+import "react-medium-image-zoom/dist/styles.css";
+
+// ========== MAIN PRODUCT IMAGE ==========
+import mainImg from "../assets/mini-mug.png";
+
+// ========== EXTRA ANGLES ==========
+import img2 from "../assets/mini-mug.png";
+import img3 from "../assets/mini-mug-1.png";
+import img4 from "../assets/mini-mug-2.png";
+import img5 from "../assets/mini-mug-3.jpeg";
 
 const MiniMug = ({ addToCart }) => {
-  // Define price mapping for each material
   const priceMapping = {
-    "Ceramic": 80,
-    "Porcelain": 100,
-    "Stoneware": 120,
+    Ceramic: 80,
+    Porcelain: 100,
+    Stoneware: 120,
   };
 
-  // Most popular material (default selection)
   const defaultMaterial = "Ceramic";
-
   const [selectedMaterial, setSelectedMaterial] = useState(defaultMaterial);
-  const [mainImage, setMainImage] = useState(miniMugImg); // State for main image
-  const [snackbarOpen, setSnackbarOpen] = useState(false); // State for Snackbar
+  const [mainImage, setMainImage] = useState(mainImg);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   const miniMugDetails = {
-    name: "Mini Mug",
-    image: miniMugImg,
+    name: "Photo Mini Mug",
+    image: mainImg,
     description:
-      "Compact and adorable mini mugs for a delightful experience. Perfect for small servings, gifting, or adding a cute touch to your collection.",
+      "Mini Mugs: Quick Sips, Big Impact. These compact ceramic mugs are designed for tea lovers and espresso enthusiasts who appreciate a sleek, personalized touch.",
     features: [
-      "Durable and high-quality materials",
-      "Customizable designs",
-      "Microwave and dishwasher safe",
-      "Perfect for small servings or gifts",
+      "Compact 175 ml capacity",
+      "Perfect for tea or espresso shots",
+      "Personalize with high-res photos or logos",
+      "Microwave and dishwasher-safe",
+      "High-quality gloss finish",
+      "Ideal for quick sips or unique gifting",
     ],
     materials: ["Ceramic", "Porcelain", "Stoneware"],
-    extraImages: [miniMugImg2, miniMugImg3, miniMugImg4, miniMugImg5], // Extra images
+    extraImages: [img2,img5, img3, img4],
+    tags: ["Compact", "Custom Photo", "Eco-Friendly"],
   };
 
-  // Calculate price based on selected material
   const price = priceMapping[selectedMaterial];
 
   const handleAddToCart = () => {
     const item = {
       ...miniMugDetails,
       selectedMaterial,
-      price, // Use the dynamically calculated price
-      quantity: 1, // Default quantity
+      selectedSize: "175ml",
+      price,
+      quantity: 1,
     };
-
-    addToCart(item); // Add the item to the cart
-    setSnackbarOpen(true); // Show Snackbar for confirmation
+    addToCart(item);
+    setSnackbarOpen(true);
   };
 
-  const handleCloseSnackbar = () => {
-    setSnackbarOpen(false);
-  };
+  const handleCloseSnackbar = () => setSnackbarOpen(false);
 
   return (
-    <Container sx={{ py: 6, maxWidth: 1200, margin: "40px auto 0 auto" }}>
+    <Container
+      sx={{
+        py: 6,
+        maxWidth: 1200,
+        margin: "40px auto 0 auto",
+        px: { xs: 2, md: 3 },
+      }}
+    >
       <Grid container spacing={4}>
-        {/* Image Section */}
+        {/* Image Gallery */}
         <Grid item xs={12} md={6}>
           <Paper
             sx={{
               p: 2,
-              borderRadius: "10px",
-              boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.1)",
+              borderRadius: "16px",
+              boxShadow: "0px 8px 24px rgba(0, 0, 0, 0.08)",
+              bgcolor: "#fff",
             }}
           >
-            {/* Main Image with Zoom */}
+            <Box sx={{ display: "flex", gap: 1, mb: 2 }}>
+              {miniMugDetails.tags.map((tag, idx) => (
+                <Chip
+                  key={idx}
+                  label={tag}
+                  size="small"
+                  icon={tag === "Compact" ? <Coffee fontSize="small" /> : null}
+                  sx={{
+                    backgroundColor: "rgba(112, 203, 151, 0.1)",
+                    color: "#70CB97",
+                    fontWeight: "bold",
+                    borderRadius: 2,
+                  }}
+                />
+              ))}
+            </Box>
+
             <Zoom>
               <img
                 src={mainImage}
                 alt={miniMugDetails.name}
                 style={{
                   width: "100%",
-                  borderRadius: "10px",
+                  borderRadius: "12px",
                   cursor: "zoom-in",
                   maxHeight: "400px",
-                  objectFit: "cover",
+                  objectFit: "contain",
                 }}
               />
             </Zoom>
 
-            {/* Extra Images Gallery */}
+            {/* Thumbnail Gallery */}
             <Box
               sx={{
                 display: "flex",
                 gap: 2,
                 mt: 2,
-                overflowX: "auto", // Horizontal scroll for small screens
-                "&::-webkit-scrollbar": { display: "none" }, // Hide scrollbar
+                overflowX: "auto",
+                "&::-webkit-scrollbar": { display: "none" },
               }}
             >
-              {miniMugDetails.extraImages.map((image, index) => (
+              {miniMugDetails.extraImages.map((img, idx) => (
                 <Paper
-                  key={index}
-                  onClick={() => setMainImage(image)}
+                  key={idx}
+                  onClick={() => setMainImage(img)}
                   sx={{
                     p: 1,
-                    borderRadius: "8px",
-                    boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+                    borderRadius: "10px",
                     cursor: "pointer",
-                    border: mainImage === image ? "2px solid #ff6600" : "none",
-                    "&:hover": { border: "2px solid #ff6600" },
-                    flexShrink: 0, // Prevent shrinking on small screens
+                    border:
+                      mainImage === img ? "2px solid #70CB97" : "2px solid transparent",
+                    "&:hover": { border: "2px solid #70CB97" },
+                    flexShrink: 0,
+                    transition: "all 0.2s",
                   }}
                 >
                   <img
-                    src={image}
-                    alt={`Mini Mug ${index + 1}`}
+                    src={img}
+                    alt={`view ${idx + 1}`}
                     style={{
-                      width: "100px",
-                      height: "100px",
-                      borderRadius: "6px",
+                      width: "90px",
+                      height: "90px",
+                      borderRadius: "8px",
                       objectFit: "cover",
                     }}
                   />
@@ -134,56 +161,83 @@ const MiniMug = ({ addToCart }) => {
           </Paper>
         </Grid>
 
-        {/* Details Section */}
+        {/* Product Details */}
         <Grid item xs={12} md={6}>
-          <Typography variant="h4" sx={{ fontWeight: "bold", mb: 2 }}>
+          <Typography
+            variant="h4"
+            sx={{ fontWeight: 700, mb: 1, color: "#19485D", fontSize: { xs: "1.8rem", md: "2.5rem" } }}
+          >
             {miniMugDetails.name}
           </Typography>
-          <Typography variant="h5" sx={{ color: "#ff6600", fontWeight: "bold", mb: 3 }}>
-            ₹{price} {/* Display dynamic price */}
+
+          <Typography
+            variant="h5"
+            sx={{ color: "#70CB97", fontWeight: "bold", mb: 3, fontSize: { xs: "1.5rem", md: "2rem" } }}
+          >
+            ₹{price}
           </Typography>
-          <Typography variant="body1" sx={{ mb: 3 }}>
+
+          <Typography
+            variant="body1"
+            sx={{ mb: 3, color: "#1e2a32", lineHeight: 1.6 }}
+          >
             {miniMugDetails.description}
           </Typography>
 
-          {/* Features */}
-          <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2 }}>
-            Features:
+          {/* Specifications */}
+          <Typography
+            variant="h6"
+            sx={{ fontWeight: 600, mb: 2, color: "#19485D", fontSize: { xs: "1.2rem", md: "1.5rem" } }}
+          >
+            Specifications:
           </Typography>
-          <ul style={{ marginLeft: "20px", marginBottom: "20px" }}>
-            {miniMugDetails.features.map((feature, index) => (
-              <li key={index}>
-                <Typography variant="body1">{feature}</Typography>
+          <Box component="ul" sx={{ ml: 2, mb: 3, listStyleType: "none", p: 0 }}>
+            {miniMugDetails.features.map((feature, idx) => (
+              <li key={idx} style={{ marginBottom: "8px" }}>
+                <Typography variant="body1" sx={{ display: "flex", alignItems: "center", color: "#5a6e7a" }}>
+                  <span
+                    style={{
+                      display: "inline-block",
+                      width: "6px",
+                      height: "6px",
+                      backgroundColor: "#70CB97",
+                      borderRadius: "50%",
+                      marginRight: "8px",
+                    }}
+                  ></span>
+                  {feature}
+                </Typography>
               </li>
             ))}
-          </ul>
+          </Box>
 
-          {/* Materials */}
-          <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2 }}>
-            Available Materials:
-          </Typography>
-          <Box
-            sx={{
-              display: "flex",
-              gap: 2,
-              mb: 4,
-              flexWrap: "wrap", // Wrap materials on small screens
-            }}
+          {/* Material Selection */}
+          <Typography
+            variant="h6"
+            sx={{ fontWeight: 600, mb: 2, color: "#19485D", fontSize: { xs: "1.2rem", md: "1.5rem" } }}
           >
-            {miniMugDetails.materials.map((material, index) => (
+            Material Selection:
+          </Typography>
+          <Box sx={{ display: "flex", gap: 2, mb: 4, flexWrap: "wrap" }}>
+            {miniMugDetails.materials.map((material, idx) => (
               <Paper
-                key={index}
+                key={idx}
                 onClick={() => setSelectedMaterial(material)}
                 sx={{
                   p: 1.5,
-                  borderRadius: "8px",
+                  px: 2.5,
+                  borderRadius: "40px",
                   textAlign: "center",
-                  fontWeight: "bold",
-                  boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+                  fontWeight: 600,
                   cursor: "pointer",
-                  backgroundColor: selectedMaterial === material ? "#ff6600" : "white",
-                  color: selectedMaterial === material ? "white" : "inherit",
-                  flex: "1 1 100px", // Flexible sizing for responsiveness
+                  bgcolor: selectedMaterial === material ? "#70CB97" : "#fff",
+                  color: selectedMaterial === material ? "#fff" : "#19485D",
+                  border: "1px solid #e0e7ed",
+                  transition: "all 0.2s",
+                  "&:hover": {
+                    bgcolor: selectedMaterial === material ? "#5cb67f" : "#f0f9f3",
+                    transform: "translateY(-2px)",
+                  },
                 }}
               >
                 {material}
@@ -191,32 +245,77 @@ const MiniMug = ({ addToCart }) => {
             ))}
           </Box>
 
+          {/* Capacity */}
+          <Typography
+            variant="h6"
+            sx={{ fontWeight: 600, mb: 2, color: "#19485D", fontSize: { xs: "1.2rem", md: "1.5rem" } }}
+          >
+            Capacity:
+          </Typography>
+          <Box sx={{ display: "flex", gap: 2, mb: 4, flexWrap: "wrap" }}>
+            <Paper
+              sx={{
+                p: 1.5,
+                px: 2.5,
+                borderRadius: "40px",
+                textAlign: "center",
+                fontWeight: 600,
+                backgroundColor: "#70CB97",
+                color: "white",
+                border: "1px solid #e0e7ed",
+              }}
+            >
+              175ml
+            </Paper>
+          </Box>
+
           {/* Add to Cart Button */}
           <Button
             variant="contained"
             startIcon={<AddShoppingCart />}
             sx={{
-              background: "#ff6600",
+              background: "#70CB97",
               color: "white",
-              fontWeight: "bold",
-              fontSize: "16px",
-              padding: "12px 24px",
-              "&:hover": { background: "#ff8c42" },
-              width: { xs: "100%", md: "auto" }, // Full width on small screens
+              fontWeight: 700,
+              fontSize: { xs: "0.9rem", md: "1rem" },
+              padding: { xs: "12px 20px", md: "12px 28px" },
+              borderRadius: "40px",
+              textTransform: "none",
+              boxShadow: "0px 4px 12px rgba(112, 203, 151, 0.3)",
+              "&:hover": {
+                background: "#5cb67f",
+                transform: "translateY(-2px)",
+              },
+              width: { xs: "100%", md: "auto" },
+              transition: "all 0.2s ease",
             }}
             onClick={handleAddToCart}
           >
             Add to Cart
           </Button>
+
+          <Typography
+            variant="body2"
+            sx={{ mt: 2, color: "#5a6e7a", fontStyle: "italic", textAlign: "center" }}
+          >
+            * Powered by PrintfrAll High-Resolution Custom Photo Printing.
+          </Typography>
         </Grid>
       </Grid>
 
-      {/* Snackbar for Notifications */}
+      {/* Snackbar */}
       <Snackbar
         open={snackbarOpen}
         autoHideDuration={3000}
         onClose={handleCloseSnackbar}
-        message="Item added to cart!"
+        message="✓ Mini Mug added to cart!"
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        sx={{
+          "& .MuiSnackbarContent-root": {
+            backgroundColor: "#19485D",
+            borderRadius: "40px",
+          },
+        }}
         action={
           <IconButton size="small" color="inherit" onClick={handleCloseSnackbar}>
             <Close fontSize="small" />

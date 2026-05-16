@@ -8,123 +8,173 @@ import {
   Grid,
   Snackbar,
   IconButton,
+  Chip,
+  Divider,
 } from "@mui/material";
-import { AddShoppingCart, Close } from "@mui/icons-material";
-import uShapedBusinessCardImg from "../assets/u-shaped-business-card.png"; // Main image
-import uShapedBusinessCardImg2 from "../assets/u-shaped-business-card.png"; // Extra image 1
-import uShapedBusinessCardImg3 from "../assets/u-shaped-business-card.png"; // Extra image 2
-import uShapedBusinessCardImg4 from "../assets/u-shaped-business-card.png"; // Extra image 3
-import uShapedBusinessCardImg5 from "../assets/u-shaped-business-card.png"; // Extra image 4
-import Zoom from "react-medium-image-zoom"; // For zoom functionality
-import "react-medium-image-zoom/dist/styles.css"; // Zoom styles
+import {
+  AddShoppingCart,
+  Close,
+  WorkspacePremium,
+  Style,
+  AutoAwesome,
+} from "@mui/icons-material";
+import Zoom from "react-medium-image-zoom";
+import "react-medium-image-zoom/dist/styles.css";
+
+// Asset paths
+import uShapedBusinessCardImg from "../assets/u-shaped-business-card.png";
+import uShapedBusinessCardImg2 from "../assets/u-shaped-business-card-1.png";
+import uShapedBusinessCardImg3 from "../assets/u-shaped-business-card-2.png";
+import uShapedBusinessCardImg4 from "../assets/u-shaped-business-card-3.png";
 
 const UShapedBusinessCard = ({ addToCart }) => {
-  // Define price mapping for each material
-  const priceMapping = {
-    "Glossy Finish": 140,
-    "Matte Finish": 160,
-    "Soft Touch Finish": 190,
-  };
+  const paperOptions = [
+    { name: "350 GSM Ninbo Star Glossy", price: 250 },
+    { name: "350 GSM Ninbo Star Matte", price: 250 },
+    { name: "350 GSM Velvet Soft-Touch", price: 320 },
+  ];
 
-  // Most popular material (default selection)
-  const defaultMaterial = "Glossy Finish";
+  const sideOptions = ["Single-sided", "Double-sided"];
 
-  const [selectedMaterial, setSelectedMaterial] = useState(defaultMaterial);
-  const [mainImage, setMainImage] = useState(uShapedBusinessCardImg); // State for main image
-  const [snackbarOpen, setSnackbarOpen] = useState(false); // State for Snackbar
-
-  const uShapedBusinessCardDetails = {
-    name: "U-Shaped Business Card",
-    image: uShapedBusinessCardImg,
+  const cardDetails = {
+    name: "U-Shaped Business Cards",
     description:
-      "Make a bold and unique impression with our U-shaped business cards. Perfect for creative professionals and businesses looking to stand out.",
+      "Stand out with innovation. Our U-shaped cards blend elegance with originality, offering a unique platform to showcase your creativity. Crafted from Premium 350 GSM Ninbo Star art paper for a stiff, professional, and durable feel.",
     features: [
-      "Unique U-shaped design",
-      "High-quality printing",
-      "Custom designs",
-      "Quick turnaround time",
+      "Size: 3.5 x 2 inches (standard business card)",
+      "Unique die‑cut U‑shape design – memorable and modern",
+      "Paper: 350 GSM Ninbo Star (Glossy/Matte) or Velvet Soft‑Touch",
+      "Printing: Single‑sided or double‑sided (CMYK)",
+      "Quantity: Pack of 50 cards (MOQ)",
+      "Ideal for photographers, designers, event planners, and creative brands",
+      "Sharp digital print with vibrant colour reproduction",
     ],
-    materials: ["Glossy Finish", "Matte Finish", "Soft Touch Finish"],
-    extraImages: [uShapedBusinessCardImg2, uShapedBusinessCardImg3, uShapedBusinessCardImg4, uShapedBusinessCardImg5], // Extra images
+    tags: ["Unique Die-Cut", "350 GSM", "Creative Shape"],
   };
 
-  // Calculate price based on selected material
-  const price = priceMapping[selectedMaterial];
+  const [selectedPaper, setSelectedPaper] = useState(paperOptions[1]); // Matte
+  const [selectedSide, setSelectedSide] = useState("Single-sided");
+  const [mainImage, setMainImage] = useState(uShapedBusinessCardImg);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+
+  const moq = 50;
+  const totalPrice = selectedPaper.price + (selectedSide === "Double-sided" ? 150 : 0);
+
+  const thumbnailImages = [
+    uShapedBusinessCardImg,
+    uShapedBusinessCardImg2,
+    uShapedBusinessCardImg3,
+    uShapedBusinessCardImg4,
+  ];
 
   const handleAddToCart = () => {
     const item = {
-      ...uShapedBusinessCardDetails,
-      selectedMaterial,
-      price, // Use the dynamically calculated price
-      quantity: 1, // Default quantity
+      name: cardDetails.name,
+      size: "3.5 x 2 inches",
+      material: selectedPaper.name,
+      sides: selectedSide,
+      price: totalPrice,
+      quantity: moq,
+      image: mainImage,
     };
-
-    addToCart(item); // Add the item to the cart
-    setSnackbarOpen(true); // Show Snackbar for confirmation
+    addToCart(item);
+    setSnackbarOpen(true);
   };
 
-  const handleCloseSnackbar = () => {
-    setSnackbarOpen(false);
-  };
+  const handleCloseSnackbar = () => setSnackbarOpen(false);
 
   return (
-    <Container sx={{ py: 6, maxWidth: 1200, margin: "40px auto 0 auto" }}>
+    <Container
+      sx={{
+        py: 6,
+        maxWidth: 1200,
+        margin: "40px auto 0 auto",
+        px: { xs: 2, md: 3 },
+      }}
+    >
       <Grid container spacing={4}>
-        {/* Image Section */}
+        {/* Left Side: Gallery */}
         <Grid item xs={12} md={6}>
           <Paper
             sx={{
               p: 2,
-              borderRadius: "10px",
-              boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.1)",
+              borderRadius: "16px",
+              boxShadow: "0px 8px 24px rgba(0, 0, 0, 0.08)",
+              bgcolor: "#fff",
             }}
           >
-            {/* Main Image with Zoom */}
+            {/* Inline chips (no absolute positioning) */}
+            <Box sx={{ display: "flex", gap: 1, mb: 2 }}>
+              {cardDetails.tags.map((tag, idx) => (
+                <Chip
+                  key={idx}
+                  label={tag}
+                  size="small"
+                  icon={
+                    tag === "Unique Die-Cut" ? (
+                      <AutoAwesome fontSize="small" />
+                    ) : tag === "350 GSM" ? (
+                      <WorkspacePremium fontSize="small" />
+                    ) : (
+                      <Style fontSize="small" />
+                    )
+                  }
+                  sx={{
+                    backgroundColor: "rgba(112, 203, 151, 0.1)",
+                    color: "#70CB97",
+                    fontWeight: "bold",
+                    borderRadius: 2,
+                  }}
+                />
+              ))}
+            </Box>
+
             <Zoom>
               <img
                 src={mainImage}
-                alt={uShapedBusinessCardDetails.name}
+                alt="U-Shape Business Card Preview"
                 style={{
                   width: "100%",
-                  borderRadius: "10px",
+                  borderRadius: "12px",
                   cursor: "zoom-in",
                   maxHeight: "400px",
-                  objectFit: "cover",
+                  objectFit: "contain",
                 }}
               />
             </Zoom>
 
-            {/* Extra Images Gallery */}
+            {/* Thumbnail Gallery */}
             <Box
               sx={{
                 display: "flex",
                 gap: 2,
                 mt: 2,
-                overflowX: "auto", // Horizontal scroll for small screens
-                "&::-webkit-scrollbar": { display: "none" }, // Hide scrollbar
+                overflowX: "auto",
+                "&::-webkit-scrollbar": { display: "none" },
               }}
             >
-              {uShapedBusinessCardDetails.extraImages.map((image, index) => (
+              {thumbnailImages.map((img, idx) => (
                 <Paper
-                  key={index}
-                  onClick={() => setMainImage(image)}
+                  key={idx}
+                  onClick={() => setMainImage(img)}
                   sx={{
                     p: 1,
-                    borderRadius: "8px",
-                    boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+                    borderRadius: "10px",
                     cursor: "pointer",
-                    border: mainImage === image ? "2px solid #ff6600" : "none",
-                    "&:hover": { border: "2px solid #ff6600" },
-                    flexShrink: 0, // Prevent shrinking on small screens
+                    border:
+                      mainImage === img ? "2px solid #70CB97" : "2px solid transparent",
+                    "&:hover": { border: "2px solid #70CB97" },
+                    flexShrink: 0,
+                    transition: "all 0.2s",
                   }}
                 >
                   <img
-                    src={image}
-                    alt={`U-Shaped Business Card ${index + 1}`}
+                    src={img}
+                    alt={`view ${idx + 1}`}
                     style={{
-                      width: "100px",
-                      height: "100px",
-                      borderRadius: "6px",
+                      width: "90px",
+                      height: "90px",
+                      borderRadius: "8px",
                       objectFit: "cover",
                     }}
                   />
@@ -134,89 +184,192 @@ const UShapedBusinessCard = ({ addToCart }) => {
           </Paper>
         </Grid>
 
-        {/* Details Section */}
+        {/* Right Side: Details */}
         <Grid item xs={12} md={6}>
-          <Typography variant="h4" sx={{ fontWeight: "bold", mb: 2 }}>
-            {uShapedBusinessCardDetails.name}
-          </Typography>
-          <Typography variant="h5" sx={{ color: "#ff6600", fontWeight: "bold", mb: 3 }}>
-            ₹{price} {/* Display dynamic price */}
-          </Typography>
-          <Typography variant="body1" sx={{ mb: 3 }}>
-            {uShapedBusinessCardDetails.description}
-          </Typography>
-
-          {/* Features */}
-          <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2 }}>
-            Features:
-          </Typography>
-          <ul style={{ marginLeft: "20px", marginBottom: "20px" }}>
-            {uShapedBusinessCardDetails.features.map((feature, index) => (
-              <li key={index}>
-                <Typography variant="body1">{feature}</Typography>
-              </li>
-            ))}
-          </ul>
-
-          {/* Materials */}
-          <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2 }}>
-            Available Materials:
-          </Typography>
-          <Box
+          <Typography
+            variant="h4"
             sx={{
-              display: "flex",
-              gap: 2,
-              mb: 4,
-              flexWrap: "wrap", // Wrap materials on small screens
+              fontWeight: 700,
+              mb: 1,
+              color: "#19485D",
+              fontSize: { xs: "1.8rem", md: "2.5rem" },
             }}
           >
-            {uShapedBusinessCardDetails.materials.map((material, index) => (
+            {cardDetails.name}
+          </Typography>
+
+          <Typography
+            variant="h5"
+            sx={{
+              color: "#70CB97",
+              fontWeight: "bold",
+              mb: 3,
+              fontSize: { xs: "1.5rem", md: "2rem" },
+            }}
+          >
+            ₹{totalPrice} <Typography variant="caption" sx={{ color: "#5a6e7a" }}>/ {moq} cards</Typography>
+          </Typography>
+
+          <Typography variant="body1" sx={{ mb: 3, color: "#1e2a32", lineHeight: 1.6 }}>
+            {cardDetails.description}
+          </Typography>
+
+          <Divider sx={{ mb: 3 }} />
+
+          {/* Paper Finish Selection (pill‑shaped) */}
+          <Typography
+            variant="h6"
+            sx={{
+              fontWeight: 600,
+              mb: 2,
+              color: "#19485D",
+              fontSize: "1.1rem",
+              display: "flex",
+              alignItems: "center",
+              gap: 1,
+            }}
+          >
+            <Style fontSize="small" /> Select Paper Finish
+          </Typography>
+          <Box sx={{ display: "flex", gap: 1.5, mb: 4, flexWrap: "wrap" }}>
+            {paperOptions.map((paper) => (
               <Paper
-                key={index}
-                onClick={() => setSelectedMaterial(material)}
+                key={paper.name}
+                onClick={() => setSelectedPaper(paper)}
                 sx={{
+                  flex: 1,
                   p: 1.5,
-                  borderRadius: "8px",
                   textAlign: "center",
-                  fontWeight: "bold",
-                  boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+                  borderRadius: "40px",
+                  fontWeight: 600,
                   cursor: "pointer",
-                  backgroundColor: selectedMaterial === material ? "#ff6600" : "white",
-                  color: selectedMaterial === material ? "white" : "inherit",
-                  flex: "1 1 100px", // Flexible sizing for responsiveness
+                  bgcolor: selectedPaper.name === paper.name ? "#70CB97" : "#fff",
+                  color: selectedPaper.name === paper.name ? "#fff" : "#19485D",
+                  border: "1px solid #e0e7ed",
+                  transition: "all 0.2s",
+                  "&:hover": {
+                    bgcolor: selectedPaper.name === paper.name ? "#5cb67f" : "#f0f9f3",
+                    transform: "translateY(-2px)",
+                  },
                 }}
               >
-                {material}
+                <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                  {paper.name.replace("350 GSM Ninbo Star ", "")}
+                </Typography>
+                <Typography variant="caption" sx={{ display: "block", opacity: 0.8 }}>
+                  350 GSM Ninbo
+                </Typography>
               </Paper>
             ))}
           </Box>
 
-          {/* Add to Cart Button */}
+          {/* Printing Options (pill‑shaped) */}
+          <Typography
+            variant="h6"
+            sx={{ fontWeight: 600, mb: 2, color: "#19485D", fontSize: "1.1rem" }}
+          >
+            Printing Options
+          </Typography>
+          <Box sx={{ display: "flex", gap: 1.5, mb: 4, flexWrap: "wrap" }}>
+            {sideOptions.map((side) => (
+              <Paper
+                key={side}
+                onClick={() => setSelectedSide(side)}
+                sx={{
+                  flex: 1,
+                  p: 1.5,
+                  textAlign: "center",
+                  borderRadius: "40px",
+                  fontWeight: 600,
+                  cursor: "pointer",
+                  bgcolor: selectedSide === side ? "#70CB97" : "#fff",
+                  color: selectedSide === side ? "#fff" : "#19485D",
+                  border: "1px solid #e0e7ed",
+                  transition: "all 0.2s",
+                  "&:hover": {
+                    bgcolor: selectedSide === side ? "#5cb67f" : "#f0f9f3",
+                    transform: "translateY(-2px)",
+                  },
+                }}
+              >
+                {side}
+              </Paper>
+            ))}
+          </Box>
+
+          {/* Specifications Panel */}
+          <Paper
+            sx={{
+              p: 3,
+              bgcolor: "#f8fafc",
+              mb: 4,
+              borderRadius: "16px",
+              border: "1px solid #e0e7ed",
+            }}
+          >
+            <Typography variant="subtitle1" sx={{ fontWeight: 700, mb: 2, color: "#19485D" }}>
+              Product Specifications:
+            </Typography>
+            {cardDetails.features.map((feature, i) => (
+              <Box key={i} sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
+                <span
+                  style={{
+                    display: "inline-block",
+                    width: "6px",
+                    height: "6px",
+                    backgroundColor: "#70CB97",
+                    borderRadius: "50%",
+                  }}
+                ></span>
+                <Typography variant="body2" sx={{ color: "#5a6e7a" }}>
+                  {feature}
+                </Typography>
+              </Box>
+            ))}
+          </Paper>
+
           <Button
             variant="contained"
+            fullWidth
             startIcon={<AddShoppingCart />}
             sx={{
-              background: "#ff6600",
+              background: "#70CB97",
               color: "white",
-              fontWeight: "bold",
-              fontSize: "16px",
-              padding: "12px 24px",
-              "&:hover": { background: "#ff8c42" },
-              width: { xs: "100%", md: "auto" }, // Full width on small screens
+              fontWeight: 700,
+              fontSize: "1rem",
+              py: 1.8,
+              borderRadius: "40px",
+              textTransform: "none",
+              boxShadow: "0px 4px 12px rgba(112, 203, 151, 0.3)",
+              "&:hover": {
+                background: "#5cb67f",
+                transform: "translateY(-2px)",
+                boxShadow: "0px 6px 16px rgba(112, 203, 151, 0.4)",
+              },
             }}
             onClick={handleAddToCart}
           >
-            Add to Cart
+            Order Pack of {moq} – ₹{totalPrice}
           </Button>
+
+          <Typography
+            variant="caption"
+            sx={{ display: "block", mt: 2, textAlign: "center", color: "#5a6e7a" }}
+          >
+            * Custom quantities and die‑cut shapes available. Contact us for bulk orders.
+          </Typography>
         </Grid>
       </Grid>
 
-      {/* Snackbar for Notifications */}
       <Snackbar
         open={snackbarOpen}
         autoHideDuration={3000}
         onClose={handleCloseSnackbar}
-        message="Item added to cart!"
+        message="✓ U-Shape cards added to selection!"
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        sx={{
+          "& .MuiSnackbarContent-root": { backgroundColor: "#19485D", borderRadius: "40px" },
+        }}
         action={
           <IconButton size="small" color="inherit" onClick={handleCloseSnackbar}>
             <Close fontSize="small" />

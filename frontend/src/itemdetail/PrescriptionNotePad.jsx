@@ -8,124 +8,194 @@ import {
   Grid,
   Snackbar,
   IconButton,
+  Chip,
+  Divider,
 } from "@mui/material";
-import { AddShoppingCart, Close } from "@mui/icons-material";
-import prescriptionNotePadImg from "../assets/prescription-note-pad.png"; // Main image
-import prescriptionNotePadImg2 from "../assets/prescription-note-pad.png"; // Extra image 1
-import prescriptionNotePadImg3 from "../assets/prescription-note-pad.png"; // Extra image 2
-import prescriptionNotePadImg4 from "../assets/prescription-note-pad.png"; // Extra image 3
-import prescriptionNotePadImg5 from "../assets/prescription-note-pad.png"; // Extra image 4
-import Zoom from "react-medium-image-zoom"; // For zoom functionality
-import "react-medium-image-zoom/dist/styles.css"; // Zoom styles
+import {
+  AddShoppingCart,
+  Close,
+  LocalHospital,
+  AssignmentTurnedIn,
+  Inventory,
+  AutoAwesome,
+} from "@mui/icons-material";
+import Zoom from "react-medium-image-zoom";
+import "react-medium-image-zoom/dist/styles.css";
+
+// Asset paths kept exactly as requested
+import prescriptionNotePadImg from "../assets/prescription-note-pad.png";
+import prescriptionNotePadImg2 from "../assets/prescription-note-pad-1.png";
+import prescriptionNotePadImg3 from "../assets/prescription-note-pad-2.png";
+import prescriptionNotePadImg4 from "../assets/prescription-note-pad-3.png";
+import prescriptionNotePadImg5 from "../assets/prescription-note-pad-4.png";
+import prescriptionNotePadImg6 from "../assets/prescription-note-pad-5.png";
 
 const PrescriptionNotePad = ({ addToCart }) => {
-  // Define price mapping for each material
-  const priceMapping = {
-    "Standard Paper": 100,
-    "Premium Paper": 120,
-    "Recycled Paper": 110,
-  };
+  // Size options
+  const sizeOptions = [
+    { id: "A4", label: "A4 (210x297 mm)", basePrice: 250 },
+    { id: "A5", label: "A5 (148x210 mm)", basePrice: 180 },
+    { id: "A6", label: "A6 (105x148 mm)", basePrice: 120 },
+  ];
 
-  // Most popular material (default selection)
-  const defaultMaterial = "Standard Paper";
+  const frontPrintOptions = [
+    { label: "Black & White", extra: 0 },
+    { label: "Full Colour", extra: 380 },
+  ];
 
-  const [selectedMaterial, setSelectedMaterial] = useState(defaultMaterial);
-  const [mainImage, setMainImage] = useState(prescriptionNotePadImg); // State for main image
-  const [snackbarOpen, setSnackbarOpen] = useState(false); // State for Snackbar
+  const backPrintOptions = [
+    { label: "None", extra: 0 },
+    { label: "Black & White", extra: 150 },
+  ];
 
-  const prescriptionNotePadDetails = {
-    name: "Prescription Note Pad",
-    image: prescriptionNotePadImg,
-    description:
-      "Our Prescription Note Pads are designed for healthcare professionals, providing a convenient and professional way to write prescriptions.",
-    features: [
-      "Customizable with your clinic/hospital details",
-      "High-quality paper",
-      "Available in multiple paper types",
-      "Compact and easy to use",
-    ],
-    materials: ["Standard Paper", "Premium Paper", "Recycled Paper"],
-    extraImages: [prescriptionNotePadImg2, prescriptionNotePadImg3, prescriptionNotePadImg4, prescriptionNotePadImg5], // Extra images
-  };
+  // Product features (for specifications panel)
+  const productFeatures = [
+    "Premium hardbound cover for durability and professional look",
+    "48 sheets (96 pages) of high‑quality paper",
+    "Customisable with your clinic logo, name, and registration details",
+    "Choice of A4, A5, or A6 sizes – ideal for prescription writing",
+    "Full‑colour or black‑white front printing options",
+    "Optional back printing (black‑white) for additional information",
+    "Perfect for doctors, clinics, hospitals, and healthcare professionals",
+  ];
 
-  // Calculate price based on selected material
-  const price = priceMapping[selectedMaterial];
+  // State
+  const [selectedSize, setSelectedSize] = useState(sizeOptions[0]); // Default A4
+  const [selectedFront, setSelectedFront] = useState(frontPrintOptions[1]); // Default Full Colour
+  const [selectedBack, setSelectedBack] = useState(backPrintOptions[0]); // Default None
+  const [mainImage, setMainImage] = useState(prescriptionNotePadImg);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+
+  // Dynamic price calculation
+  const totalPrice = selectedSize.basePrice + selectedFront.extra + selectedBack.extra;
+
+  const thumbnailImages = [
+    prescriptionNotePadImg,
+    prescriptionNotePadImg2,
+    prescriptionNotePadImg3,
+    prescriptionNotePadImg4,
+    prescriptionNotePadImg5,
+    prescriptionNotePadImg6,
+  ];
 
   const handleAddToCart = () => {
     const item = {
-      ...prescriptionNotePadDetails,
-      selectedMaterial,
-      price, // Use the dynamically calculated price
-      quantity: 1, // Default quantity
+      name: "Custom Prescription Pad",
+      size: selectedSize.label,
+      frontPrinting: selectedFront.label,
+      backPrinting: selectedBack.label,
+      sheets: 48,
+      price: totalPrice,
+      quantity: 1,
+      image: mainImage,
     };
-
-    addToCart(item); // Add the item to the cart
-    setSnackbarOpen(true); // Show Snackbar for confirmation
+    addToCart(item);
+    setSnackbarOpen(true);
   };
 
-  const handleCloseSnackbar = () => {
-    setSnackbarOpen(false);
-  };
+  const handleCloseSnackbar = () => setSnackbarOpen(false);
 
   return (
-    <Container sx={{ py: 6, maxWidth: 1200, margin: "40px auto 0 auto" }}>
-      <Grid container spacing={4}>
-        {/* Image Section */}
+    <Container
+      sx={{
+        py: 6,
+        maxWidth: 1200,
+        margin: "40px auto 0 auto",
+        px: { xs: 2, md: 3 },
+      }}
+    >
+      <Grid container spacing={5}>
+        {/* Left Side: Gallery */}
         <Grid item xs={12} md={6}>
           <Paper
             sx={{
               p: 2,
-              borderRadius: "10px",
-              boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.1)",
+              borderRadius: "16px",
+              boxShadow: "0px 8px 24px rgba(0, 0, 0, 0.08)",
+              bgcolor: "#fff",
+              position: "relative",
             }}
           >
-            {/* Main Image with Zoom */}
+            <Box
+              sx={{
+                position: "absolute",
+                top: 20,
+                left: 20,
+                zIndex: 10,
+                display: "flex",
+                gap: 1,
+              }}
+            >
+              <Chip
+                label="48 SHEETS"
+                size="small"
+                icon={<AssignmentTurnedIn />}
+                sx={{
+                  bgcolor: "#19485D",
+                  color: "white",
+                  fontWeight: "bold",
+                  borderRadius: "40px",
+                }}
+              />
+              <Chip
+                label="HARDBOARD COVER"
+                size="small"
+                icon={<AutoAwesome />}
+                sx={{
+                  bgcolor: "#70CB97",
+                  color: "white",
+                  fontWeight: "bold",
+                  borderRadius: "40px",
+                }}
+              />
+            </Box>
+
             <Zoom>
               <img
                 src={mainImage}
-                alt={prescriptionNotePadDetails.name}
+                alt="Prescription Pad Preview"
                 style={{
                   width: "100%",
-                  borderRadius: "10px",
-                  cursor: "zoom-in",
-                  maxHeight: "400px",
-                  objectFit: "cover",
+                  borderRadius: "12px",
+                  height: "450px",
+                  objectFit: "contain",
                 }}
               />
             </Zoom>
 
-            {/* Extra Images Gallery */}
+            {/* Thumbnail Gallery */}
             <Box
               sx={{
                 display: "flex",
                 gap: 2,
                 mt: 2,
-                overflowX: "auto", // Horizontal scroll for small screens
-                "&::-webkit-scrollbar": { display: "none" }, // Hide scrollbar
+                overflowX: "auto",
+                "&::-webkit-scrollbar": { display: "none" },
               }}
             >
-              {prescriptionNotePadDetails.extraImages.map((image, index) => (
+              {thumbnailImages.map((image, index) => (
                 <Paper
                   key={index}
                   onClick={() => setMainImage(image)}
                   sx={{
                     p: 1,
-                    borderRadius: "8px",
-                    boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+                    borderRadius: "12px",
                     cursor: "pointer",
-                    border: mainImage === image ? "2px solid #ff6600" : "none",
-                    "&:hover": { border: "2px solid #ff6600" },
-                    flexShrink: 0, // Prevent shrinking on small screens
+                    border:
+                      mainImage === image ? "2px solid #70CB97" : "1px solid #e0e7ed",
+                    flexShrink: 0,
+                    transition: "all 0.2s",
+                    "&:hover": { transform: "translateY(-2px)" },
                   }}
                 >
                   <img
                     src={image}
-                    alt={`Prescription Note Pad ${index + 1}`}
+                    alt={`View ${index + 1}`}
                     style={{
-                      width: "100px",
-                      height: "100px",
-                      borderRadius: "6px",
+                      width: "80px",
+                      height: "80px",
                       objectFit: "cover",
+                      borderRadius: "8px",
                     }}
                   />
                 </Paper>
@@ -134,89 +204,226 @@ const PrescriptionNotePad = ({ addToCart }) => {
           </Paper>
         </Grid>
 
-        {/* Details Section */}
+        {/* Right Side: Customization */}
         <Grid item xs={12} md={6}>
-          <Typography variant="h4" sx={{ fontWeight: "bold", mb: 2 }}>
-            {prescriptionNotePadDetails.name}
-          </Typography>
-          <Typography variant="h5" sx={{ color: "#ff6600", fontWeight: "bold", mb: 3 }}>
-            ₹{price} {/* Display dynamic price */}
-          </Typography>
-          <Typography variant="body1" sx={{ mb: 3 }}>
-            {prescriptionNotePadDetails.description}
-          </Typography>
-
-          {/* Features */}
-          <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2 }}>
-            Features:
-          </Typography>
-          <ul style={{ marginLeft: "20px", marginBottom: "20px" }}>
-            {prescriptionNotePadDetails.features.map((feature, index) => (
-              <li key={index}>
-                <Typography variant="body1">{feature}</Typography>
-              </li>
-            ))}
-          </ul>
-
-          {/* Materials */}
-          <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2 }}>
-            Available Materials:
-          </Typography>
-          <Box
+          <Typography
+            variant="h4"
             sx={{
-              display: "flex",
-              gap: 2,
-              mb: 4,
-              flexWrap: "wrap", // Wrap materials on small screens
+              fontWeight: 700,
+              mb: 1,
+              color: "#19485D",
+              fontSize: { xs: "1.8rem", md: "2.5rem" },
             }}
           >
-            {prescriptionNotePadDetails.materials.map((material, index) => (
+            Doctor Prescription Pads
+          </Typography>
+
+          <Box sx={{ display: "flex", alignItems: "baseline", gap: 2, flexWrap: "wrap", mb: 1 }}>
+            <Typography variant="h5" sx={{ color: "#70CB97", fontWeight: "bold" }}>
+              ₹{totalPrice}
+            </Typography>
+            <Typography variant="body2" sx={{ color: "#5a6e7a" }}>
+              / pad (48 sheets)
+            </Typography>
+          </Box>
+
+          <Typography variant="body1" sx={{ mb: 3, color: "#1e2a32", lineHeight: 1.6 }}>
+            Essential for every healthcare professional. Our RX pads offer design flexibility, allowing
+            you to tailor layouts and branding to establish a professional image for your clinic or hospital.
+          </Typography>
+
+          <Divider sx={{ mb: 3 }} />
+
+          {/* Size Selection (pill‑shaped) */}
+          <Typography
+            variant="h6"
+            sx={{
+              fontWeight: 600,
+              mb: 2,
+              color: "#19485D",
+              fontSize: "1.1rem",
+              display: "flex",
+              alignItems: "center",
+              gap: 1,
+            }}
+          >
+            <LocalHospital fontSize="small" /> Select Size
+          </Typography>
+          <Box sx={{ display: "flex", gap: 1.5, mb: 4, flexWrap: "wrap" }}>
+            {sizeOptions.map((size) => (
               <Paper
-                key={index}
-                onClick={() => setSelectedMaterial(material)}
+                key={size.id}
+                onClick={() => setSelectedSize(size)}
                 sx={{
+                  flex: 1,
                   p: 1.5,
-                  borderRadius: "8px",
                   textAlign: "center",
-                  fontWeight: "bold",
-                  boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+                  borderRadius: "40px",
+                  fontWeight: 600,
                   cursor: "pointer",
-                  backgroundColor: selectedMaterial === material ? "#ff6600" : "white",
-                  color: selectedMaterial === material ? "white" : "inherit",
-                  flex: "1 1 100px", // Flexible sizing for responsiveness
+                  bgcolor: selectedSize.id === size.id ? "#70CB97" : "#fff",
+                  color: selectedSize.id === size.id ? "#fff" : "#19485D",
+                  border: "1px solid #e0e7ed",
+                  transition: "all 0.2s",
+                  "&:hover": {
+                    bgcolor: selectedSize.id === size.id ? "#5cb67f" : "#f0f9f3",
+                    transform: "translateY(-2px)",
+                  },
                 }}
               >
-                {material}
+                <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                  {size.id}
+                </Typography>
               </Paper>
             ))}
           </Box>
 
-          {/* Add to Cart Button */}
+          {/* Front Printing (pill‑shaped) */}
+          <Typography
+            variant="h6"
+            sx={{ fontWeight: 600, mb: 2, color: "#19485D", fontSize: "1.1rem" }}
+          >
+            Front Printing
+          </Typography>
+          <Box sx={{ display: "flex", gap: 1.5, mb: 4, flexWrap: "wrap" }}>
+            {frontPrintOptions.map((opt) => (
+              <Paper
+                key={opt.label}
+                onClick={() => setSelectedFront(opt)}
+                sx={{
+                  flex: 1,
+                  p: 1.5,
+                  textAlign: "center",
+                  borderRadius: "40px",
+                  fontWeight: 600,
+                  cursor: "pointer",
+                  bgcolor: selectedFront.label === opt.label ? "#70CB97" : "#fff",
+                  color: selectedFront.label === opt.label ? "#fff" : "#19485D",
+                  border: "1px solid #e0e7ed",
+                  transition: "all 0.2s",
+                  "&:hover": {
+                    bgcolor: selectedFront.label === opt.label ? "#5cb67f" : "#f0f9f3",
+                    transform: "translateY(-2px)",
+                  },
+                }}
+              >
+                <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                  {opt.label}
+                </Typography>
+                <Typography variant="caption" sx={{ display: "block", opacity: 0.8 }}>
+                  + ₹{opt.extra}
+                </Typography>
+              </Paper>
+            ))}
+          </Box>
+
+          {/* Back Printing (pill‑shaped) */}
+          <Typography
+            variant="h6"
+            sx={{ fontWeight: 600, mb: 2, color: "#19485D", fontSize: "1.1rem" }}
+          >
+            Back Printing
+          </Typography>
+          <Box sx={{ display: "flex", gap: 1.5, mb: 4, flexWrap: "wrap" }}>
+            {backPrintOptions.map((opt) => (
+              <Paper
+                key={opt.label}
+                onClick={() => setSelectedBack(opt)}
+                sx={{
+                  flex: 1,
+                  p: 1.5,
+                  textAlign: "center",
+                  borderRadius: "40px",
+                  fontWeight: 600,
+                  cursor: "pointer",
+                  bgcolor: selectedBack.label === opt.label ? "#70CB97" : "#fff",
+                  color: selectedBack.label === opt.label ? "#fff" : "#19485D",
+                  border: "1px solid #e0e7ed",
+                  transition: "all 0.2s",
+                  "&:hover": {
+                    bgcolor: selectedBack.label === opt.label ? "#5cb67f" : "#f0f9f3",
+                    transform: "translateY(-2px)",
+                  },
+                }}
+              >
+                <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                  {opt.label}
+                </Typography>
+                <Typography variant="caption" sx={{ display: "block", opacity: 0.8 }}>
+                  + ₹{opt.extra}
+                </Typography>
+              </Paper>
+            ))}
+          </Box>
+
+          {/* Specifications Panel */}
+          <Paper
+            sx={{
+              p: 3,
+              bgcolor: "#f8fafc",
+              mb: 4,
+              borderRadius: "16px",
+              border: "1px solid #e0e7ed",
+            }}
+          >
+            <Typography variant="subtitle1" sx={{ fontWeight: 700, mb: 2, color: "#19485D" }}>
+              Product Specifications:
+            </Typography>
+            {productFeatures.map((feature, i) => (
+              <Box key={i} sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
+                <Inventory sx={{ fontSize: 16, color: "#70CB97" }} />
+                <Typography variant="body2" sx={{ color: "#5a6e7a" }}>
+                  {feature}
+                </Typography>
+              </Box>
+            ))}
+          </Paper>
+
           <Button
             variant="contained"
+            fullWidth
             startIcon={<AddShoppingCart />}
             sx={{
-              background: "#ff6600",
+              background: "#70CB97",
               color: "white",
-              fontWeight: "bold",
-              fontSize: "16px",
-              padding: "12px 24px",
-              "&:hover": { background: "#ff8c42" },
-              width: { xs: "100%", md: "auto" }, // Full width on small screens
+              fontWeight: 700,
+              fontSize: "1rem",
+              py: 1.8,
+              borderRadius: "40px",
+              textTransform: "none",
+              boxShadow: "0px 4px 12px rgba(112, 203, 151, 0.3)",
+              "&:hover": {
+                background: "#5cb67f",
+                transform: "translateY(-2px)",
+                boxShadow: "0px 6px 16px rgba(112, 203, 151, 0.4)",
+              },
             }}
             onClick={handleAddToCart}
           >
-            Add to Cart
+            Configure & Add to Cart – ₹{totalPrice}
           </Button>
+
+          <Typography
+            variant="caption"
+            sx={{ display: "block", mt: 2, textAlign: "center", color: "#5a6e7a" }}
+          >
+            * Professional high-definition RX pads powered by PrintfrAll.
+          </Typography>
         </Grid>
       </Grid>
 
-      {/* Snackbar for Notifications */}
       <Snackbar
         open={snackbarOpen}
         autoHideDuration={3000}
         onClose={handleCloseSnackbar}
-        message="Item added to cart!"
+        message="✓ Prescription pad added to cart!"
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        sx={{
+          "& .MuiSnackbarContent-root": {
+            backgroundColor: "#19485D",
+            borderRadius: "40px",
+          },
+        }}
         action={
           <IconButton size="small" color="inherit" onClick={handleCloseSnackbar}>
             <Close fontSize="small" />

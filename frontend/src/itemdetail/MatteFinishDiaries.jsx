@@ -8,100 +8,152 @@ import {
   Grid,
   Snackbar,
   IconButton,
+  Chip,
+  TextField,
+  InputAdornment,
 } from "@mui/material";
-import { AddShoppingCart, Close } from "@mui/icons-material";
-import matteFinishDiaryImg from "../assets/matte-finish-diaries.png"; // Main image
-import matteFinishDiaryImg2 from "../assets/matte-finish-diaries.png"; // Extra image 1
-import matteFinishDiaryImg3 from "../assets/matte-finish-diaries.png"; // Extra image 2
-import matteFinishDiaryImg4 from "../assets/matte-finish-diaries.png"; // Extra image 3
-import Zoom from "react-medium-image-zoom"; // For zoom functionality
-import "react-medium-image-zoom/dist/styles.css"; // Zoom styles
+import { AddShoppingCart, Close, WorkspacePremium, AutoStories } from "@mui/icons-material";
+import Zoom from "react-medium-image-zoom";
+import "react-medium-image-zoom/dist/styles.css";
+
+// ========== MAIN PRODUCT IMAGE ==========
+import mainImg from "../assets/matte-finish-diaries.png";
+
+// ========== EXTRA ANGLES ==========
+import img2 from "../assets/matte-finish-diaries.png";
+import img3 from "../assets/matte-finish-diaries-1.png";
+import img4 from "../assets/matte-finish-diaries-2.png";
+import img5 from "../assets/matte-finish-diaries-3.png";
 
 const MatteFinishDiaries = ({ addToCart }) => {
-  // Define price mapping for each size
-  const priceMapping = {
-    "A5": 400,
-    "A4": 500,
-    "A6": 350,
-  };
+  // Pack options with quantity and price
+  const packOptions = [
+    { label: "Single", value: "Single", price: 400, quantity: 1 },
+    { label: "Pack of 5", value: "Pack of 5", price: 1900, quantity: 1 }, // 5 x 380 = 1900 (5% discount)
+    { label: "Pack of 10", value: "Pack of 10", price: 3600, quantity: 1 }, // 10 x 360 = 3600 (10% discount)
+    { label: "Custom", value: "Custom", price: null, quantity: null },
+  ];
 
-  // Define available colors
-  const availableColors = ["Black", "Gray", "Blue", "Brown", "Green", "Red"];
+  const unitPrice = 400; // Price per single diary
 
-  // Default selections
-  const defaultSize = "A5";
-  const defaultColor = "Black";
-
-  const [selectedSize, setSelectedSize] = useState(defaultSize);
-  const [selectedColor, setSelectedColor] = useState(defaultColor);
-  const [mainImage, setMainImage] = useState(matteFinishDiaryImg);
+  const [selectedOption, setSelectedOption] = useState(packOptions[0]);
+  const [customQuantity, setCustomQuantity] = useState(1);
+  const [selectedColor, setSelectedColor] = useState("Velvet Black");
+  const [mainImage, setMainImage] = useState(mainImg);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
-  const matteFinishDiaryDetails = {
-    name: "Matte Finish Diaries",
-    image: matteFinishDiaryImg,
-    description:
-      "Premium matte finish diaries with high-quality paper. Perfect for professionals, students, and journal enthusiasts.",
-    features: [
-      "Smooth matte cover finish",
-      "120gsm premium quality paper",
-      "Lay-flat binding design",
-      "Available in multiple sizes and colors",
-      "Elastic closure band",
-      "Ribbon bookmark included"
-    ],
-    sizes: ["A5", "A4", "A6"],
-    extraImages: [matteFinishDiaryImg2, matteFinishDiaryImg3, matteFinishDiaryImg4],
+  const getTotalPrice = () => {
+    if (selectedOption.value === "Custom") {
+      return unitPrice * customQuantity;
+    }
+    return selectedOption.price;
   };
 
-  // Calculate price based on selected size
-  const price = priceMapping[selectedSize];
+  const price = getTotalPrice();
+
+  const handleOptionChange = (option) => {
+    setSelectedOption(option);
+    if (option.value !== "Custom") {
+      setCustomQuantity(1);
+    }
+  };
+
+  const productDetails = {
+    name: "Matte Finish Diaries",
+    image: mainImg,
+    description:
+      "A sophisticated business companion featuring premium PU covers. Whether you prefer the velvet-touch or stone-washed finish, these diaries offer a premium tactile experience for every professional interaction.",
+    features: [
+      "Premium PU Covers with Velvet or Stone-washed texture",
+      "Durable Case-Bound design for long-lasting use",
+      "192 Ruled pages (including 14 monthly calendar pages)",
+      "Compact A5 size (220 mm x 150 mm)",
+      "Ribbon Bookmark with elegant metal tag",
+      "Optimized for UV branding of Logo or Brand name",
+      "Designed for everyday executive business needs",
+    ],
+    sizes: ["A5"],
+    colors: ["Velvet Blue", "Velvet Black", "Stone-Washed Black"],
+    extraImages: [img2, img3, img4, img5],
+    tags: ["Velvet Touch", "A5 Planner", "Executive"],
+  };
 
   const handleAddToCart = () => {
-    const item = {
-      ...matteFinishDiaryDetails,
-      selectedSize,
-      selectedColor,
-      price,
-      quantity: 1,
-    };
-
+    let item;
+    if (selectedOption.value === "Custom") {
+      item = {
+        name: "Matte Finish Diaries",
+        image: mainImg,
+        description: productDetails.description,
+        features: productDetails.features,
+        tags: productDetails.tags,
+        selectedSize: `${customQuantity} diaries`,
+        selectedMaterial: selectedColor,
+        selectedColor,
+        price: price,
+        quantity: customQuantity,
+      };
+    } else {
+      item = {
+        ...productDetails,
+        selectedSize: selectedOption.label,
+        selectedMaterial: selectedColor,
+        selectedColor,
+        price: selectedOption.price,
+        quantity: 1,
+      };
+    }
     addToCart(item);
     setSnackbarOpen(true);
   };
 
-  const handleCloseSnackbar = () => {
-    setSnackbarOpen(false);
-  };
+  const handleCloseSnackbar = () => setSnackbarOpen(false);
 
   return (
-    <Container sx={{ py: 6, maxWidth: 1200, margin: "40px auto 0 auto" }}>
+    <Container sx={{ py: 6, maxWidth: 1200, margin: "40px auto 0 auto", px: { xs: 2, md: 3 } }}>
       <Grid container spacing={4}>
-        {/* Image Section */}
+        {/* Image Gallery */}
         <Grid item xs={12} md={6}>
           <Paper
             sx={{
               p: 2,
-              borderRadius: "10px",
-              boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.1)",
+              borderRadius: "16px",
+              boxShadow: "0px 8px 24px rgba(0, 0, 0, 0.08)",
+              bgcolor: "#fff",
             }}
           >
-            {/* Main Image with Zoom */}
+            <Box sx={{ display: "flex", gap: 1, mb: 2 }}>
+              {productDetails.tags.map((tag, idx) => (
+                <Chip
+                  key={idx}
+                  label={tag}
+                  size="small"
+                  icon={tag === "Executive" ? <WorkspacePremium fontSize="small" /> : <AutoStories fontSize="small" />}
+                  sx={{
+                    backgroundColor: "rgba(112, 203, 151, 0.1)",
+                    color: "#70CB97",
+                    fontWeight: "bold",
+                    borderRadius: 2,
+                  }}
+                />
+              ))}
+            </Box>
+
             <Zoom>
               <img
                 src={mainImage}
-                alt={matteFinishDiaryDetails.name}
+                alt={productDetails.name}
                 style={{
                   width: "100%",
-                  borderRadius: "10px",
+                  borderRadius: "12px",
                   cursor: "zoom-in",
                   maxHeight: "400px",
-                  objectFit: "cover",
+                  objectFit: "contain",
                 }}
               />
             </Zoom>
 
-            {/* Extra Images Gallery */}
+            {/* Thumbnail Gallery */}
             <Box
               sx={{
                 display: "flex",
@@ -111,27 +163,28 @@ const MatteFinishDiaries = ({ addToCart }) => {
                 "&::-webkit-scrollbar": { display: "none" },
               }}
             >
-              {matteFinishDiaryDetails.extraImages.map((image, index) => (
+              {productDetails.extraImages.map((img, idx) => (
                 <Paper
-                  key={index}
-                  onClick={() => setMainImage(image)}
+                  key={idx}
+                  onClick={() => setMainImage(img)}
                   sx={{
                     p: 1,
-                    borderRadius: "8px",
-                    boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+                    borderRadius: "10px",
                     cursor: "pointer",
-                    border: mainImage === image ? "2px solid #ff6600" : "none",
-                    "&:hover": { border: "2px solid #ff6600" },
+                    border:
+                      mainImage === img ? "2px solid #70CB97" : "2px solid transparent",
+                    "&:hover": { border: "2px solid #70CB97" },
                     flexShrink: 0,
+                    transition: "all 0.2s",
                   }}
                 >
                   <img
-                    src={image}
-                    alt={`Matte Finish Diary ${index + 1}`}
+                    src={img}
+                    alt={`view ${idx + 1}`}
                     style={{
-                      width: "100px",
-                      height: "100px",
-                      borderRadius: "6px",
+                      width: "90px",
+                      height: "90px",
+                      borderRadius: "8px",
                       objectFit: "cover",
                     }}
                   />
@@ -141,89 +194,145 @@ const MatteFinishDiaries = ({ addToCart }) => {
           </Paper>
         </Grid>
 
-        {/* Details Section */}
+        {/* Product Details */}
         <Grid item xs={12} md={6}>
-          <Typography variant="h4" sx={{ fontWeight: "bold", mb: 2 }}>
-            {matteFinishDiaryDetails.name}
+          <Typography
+            variant="h4"
+            sx={{ fontWeight: 700, mb: 1, color: "#19485D", fontSize: { xs: "1.8rem", md: "2.5rem" } }}
+          >
+            {productDetails.name}
           </Typography>
-          <Typography variant="h5" sx={{ color: "#ff6600", fontWeight: "bold", mb: 3 }}>
+
+          <Typography
+            variant="h5"
+            sx={{ color: "#70CB97", fontWeight: "bold", mb: 3, fontSize: { xs: "1.5rem", md: "2rem" } }}
+          >
             ₹{price}
           </Typography>
-          <Typography variant="body1" sx={{ mb: 3 }}>
-            {matteFinishDiaryDetails.description}
+
+          <Typography
+            variant="body1"
+            sx={{ mb: 3, color: "#1e2a32", lineHeight: 1.6 }}
+          >
+            {productDetails.description}
           </Typography>
 
-          {/* Features */}
-          <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2 }}>
-            Features:
+          <Typography
+            variant="h6"
+            sx={{ fontWeight: 600, mb: 2, color: "#19485D", fontSize: { xs: "1.2rem", md: "1.5rem" } }}
+          >
+            Specifications:
           </Typography>
-          <ul style={{ marginLeft: "20px", marginBottom: "20px" }}>
-            {matteFinishDiaryDetails.features.map((feature, index) => (
-              <li key={index}>
-                <Typography variant="body1">{feature}</Typography>
+          <Box component="ul" sx={{ ml: 2, mb: 3, listStyleType: "none", p: 0 }}>
+            {productDetails.features.map((feature, idx) => (
+              <li key={idx} style={{ marginBottom: "8px" }}>
+                <Typography variant="body1" sx={{ display: "flex", alignItems: "center", color: "#5a6e7a" }}>
+                  <span
+                    style={{
+                      display: "inline-block",
+                      width: "6px",
+                      height: "6px",
+                      backgroundColor: "#70CB97",
+                      borderRadius: "50%",
+                      marginRight: "8px",
+                    }}
+                  ></span>
+                  {feature}
+                </Typography>
               </li>
             ))}
-          </ul>
+          </Box>
 
-          {/* Size Selection */}
-          <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2 }}>
-            Available Sizes:
-          </Typography>
-          <Box
-            sx={{
-              display: "flex",
-              gap: 2,
-              mb: 4,
-              flexWrap: "wrap",
-            }}
+          {/* Purchase Option */}
+          <Typography
+            variant="h6"
+            sx={{ fontWeight: 600, mb: 2, color: "#19485D", fontSize: { xs: "1.2rem", md: "1.5rem" } }}
           >
-            {matteFinishDiaryDetails.sizes.map((size, index) => (
+            Select Quantity / Pack:
+          </Typography>
+          <Box sx={{ display: "flex", gap: 2, mb: 3, flexWrap: "wrap" }}>
+            {packOptions.map((option) => (
               <Paper
-                key={index}
-                onClick={() => setSelectedSize(size)}
+                key={option.value}
+                onClick={() => handleOptionChange(option)}
                 sx={{
                   p: 1.5,
-                  borderRadius: "8px",
+                  px: 2.5,
+                  borderRadius: "40px",
                   textAlign: "center",
-                  fontWeight: "bold",
-                  boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+                  fontWeight: 600,
                   cursor: "pointer",
-                  backgroundColor: selectedSize === size ? "#ff6600" : "white",
-                  color: selectedSize === size ? "white" : "inherit",
-                  flex: "1 1 100px",
+                  bgcolor: selectedOption.value === option.value ? "#70CB97" : "#fff",
+                  color: selectedOption.value === option.value ? "#fff" : "#19485D",
+                  border: "1px solid #e0e7ed",
+                  transition: "all 0.2s",
+                  "&:hover": {
+                    bgcolor: selectedOption.value === option.value ? "#5cb67f" : "#f0f9f3",
+                    transform: "translateY(-2px)",
+                  },
                 }}
               >
-                {size}
+                {option.label}
               </Paper>
             ))}
           </Box>
 
-          {/* Color Selection */}
-          <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2 }}>
-            Choose Your Color:
-          </Typography>
-          <Box
-            sx={{
-              display: "flex",
-              gap: 2,
-              mb: 4,
-              flexWrap: "wrap",
-            }}
+          {/* Custom Quantity Input */}
+          {selectedOption.value === "Custom" && (
+            <Box sx={{ mb: 4 }}>
+              <Typography variant="body2" sx={{ mb: 1, color: "#19485D", fontWeight: 500 }}>
+                Enter number of diaries:
+              </Typography>
+              <TextField
+                type="number"
+                value={customQuantity}
+                onChange={(e) => setCustomQuantity(Math.max(1, parseInt(e.target.value) || 1))}
+                InputProps={{
+                  endAdornment: <InputAdornment position="end">diaries</InputAdornment>,
+                }}
+                sx={{
+                  width: "200px",
+                  "& .MuiOutlinedInput-root": {
+                    borderRadius: "40px",
+                    "& fieldset": { borderColor: "#e0e7ed" },
+                    "&:hover fieldset": { borderColor: "#70CB97" },
+                    "&.Mui-focused fieldset": { borderColor: "#70CB97" },
+                  },
+                }}
+              />
+              <Typography variant="caption" sx={{ display: "block", mt: 1, color: "#5a6e7a" }}>
+                Unit price: ₹{unitPrice} per diary
+              </Typography>
+            </Box>
+          )}
+
+          {/* Cover Texture Selection */}
+          <Typography
+            variant="h6"
+            sx={{ fontWeight: 600, mb: 2, color: "#19485D", fontSize: { xs: "1.2rem", md: "1.5rem" } }}
           >
-            {availableColors.map((color, index) => (
+            Select Cover Texture:
+          </Typography>
+          <Box sx={{ display: "flex", gap: 2, mb: 4, flexWrap: "wrap" }}>
+            {productDetails.colors.map((color, idx) => (
               <Paper
-                key={index}
+                key={idx}
                 onClick={() => setSelectedColor(color)}
                 sx={{
                   p: 1.5,
-                  borderRadius: "8px",
+                  px: 2.5,
+                  borderRadius: "40px",
                   textAlign: "center",
-                  fontWeight: "bold",
-                  boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+                  fontWeight: 600,
                   cursor: "pointer",
-                  backgroundColor: selectedColor === color ? "#ff6600" : "white",
-                  color: selectedColor === color ? "white" : "inherit",
-                  flex: "1 1 100px",
+                  bgcolor: selectedColor === color ? "#70CB97" : "#fff",
+                  color: selectedColor === color ? "#fff" : "#19485D",
+                  border: "1px solid #e0e7ed",
+                  transition: "all 0.2s",
+                  "&:hover": {
+                    bgcolor: selectedColor === color ? "#5cb67f" : "#f0f9f3",
+                    transform: "translateY(-2px)",
+                  },
                 }}
               >
                 {color}
@@ -231,37 +340,43 @@ const MatteFinishDiaries = ({ addToCart }) => {
             ))}
           </Box>
 
-          {/* Add to Cart Button */}
           <Button
             variant="contained"
             startIcon={<AddShoppingCart />}
             sx={{
-              background: "#ff6600",
+              background: "#70CB97",
               color: "white",
-              fontWeight: "bold",
-              fontSize: "16px",
-              padding: "12px 24px",
-              "&:hover": { background: "#ff8c42" },
+              fontWeight: 700,
+              fontSize: { xs: "0.9rem", md: "1rem" },
+              padding: { xs: "12px 20px", md: "12px 28px" },
+              borderRadius: "40px",
+              textTransform: "none",
+              boxShadow: "0px 4px 12px rgba(112, 203, 151, 0.3)",
+              "&:hover": { background: "#5cb67f", transform: "translateY(-2px)" },
               width: { xs: "100%", md: "auto" },
             }}
             onClick={handleAddToCart}
           >
-            Add to Cart
+            Add to Cart – ₹{price}
           </Button>
+
+          <Typography
+            variant="body2"
+            sx={{ mt: 2, color: "#5a6e7a", fontStyle: "italic", textAlign: "center" }}
+          >
+            * Custom Branding available via PrintfrAll High-Resolution UV Printing.
+          </Typography>
         </Grid>
       </Grid>
 
-      {/* Snackbar for Notifications */}
       <Snackbar
         open={snackbarOpen}
         autoHideDuration={3000}
         onClose={handleCloseSnackbar}
-        message="Matte Finish Diary added to cart!"
-        action={
-          <IconButton size="small" color="inherit" onClick={handleCloseSnackbar}>
-            <Close fontSize="small" />
-          </IconButton>
-        }
+        message="✓ Diary added to cart!"
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        sx={{ "& .MuiSnackbarContent-root": { backgroundColor: "#19485D", borderRadius: "40px" } }}
+        action={<IconButton size="small" color="inherit" onClick={handleCloseSnackbar}><Close fontSize="small" /></IconButton>}
       />
     </Container>
   );

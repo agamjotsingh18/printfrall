@@ -8,50 +8,103 @@ import {
   Grid,
   Snackbar,
   IconButton,
+  Chip,
 } from "@mui/material";
 import { AddShoppingCart, Close } from "@mui/icons-material";
-import bannerImg from "../assets/banner.png"; // Main banner image
-import bannerImg2 from "../assets/banner.png"; // Extra image 1
-import bannerImg3 from "../assets/banner.png"; // Extra image 2
-import bannerImg4 from "../assets/banner.png"; // Extra image 3
-import bannerImg5 from "../assets/banner.png"; // Extra image 4
-import Zoom from "react-medium-image-zoom"; // For zoom functionality
-import "react-medium-image-zoom/dist/styles.css"; // Zoom styles
+import Zoom from "react-medium-image-zoom";
+import "react-medium-image-zoom/dist/styles.css";
+
+// ========== YOUR GENERATED BANNER IMAGES ==========
+import mainImg from "../assets/banner-1-hung.png";
+import img2 from "../assets/banner-2-standee.png";
+import img3 from "../assets/banner-3-real.png";
+import img4 from "../assets/banner-4.png";
+import img5 from "../assets/banner-5.png";
+import img6 from "../assets/banner-6.png";
+// =================================================
+
+// Optional: extra images for finish options
+import finishNoEyeletsImg from "../assets/finish-trimmed.png";
+import finishEyeletsImg from "../assets/finish-eyelets.png";
 
 const Banners = ({ addToCart }) => {
-  // Define price mapping for each size and material combination
+  // Price mapping for each size and material combination
   const priceMapping = {
-    "2x4 ft": { "Vinyl": 100, "Fabric": 150, "Mesh": 120 },
-    "3x6 ft": { "Vinyl": 200, "Fabric": 250, "Mesh": 220 },
-    "4x8 ft": { "Vinyl": 300, "Fabric": 350, "Mesh": 320 },
+    "2x2 ft": {
+      "Non-Tearable (Eco-solvent)": 80,
+      "Economy Fabric (160 gsm)": 100,
+      "Standard Fabric (220 gsm)": 120,
+      "Premium Fabric (450 gsm)": 150,
+    },
+    "3x3 ft": {
+      "Non-Tearable (Eco-solvent)": 150,
+      "Economy Fabric (160 gsm)": 180,
+      "Standard Fabric (220 gsm)": 220,
+      "Premium Fabric (450 gsm)": 270,
+    },
+    "4x4 ft": {
+      "Non-Tearable (Eco-solvent)": 220,
+      "Economy Fabric (160 gsm)": 260,
+      "Standard Fabric (220 gsm)": 320,
+      "Premium Fabric (450 gsm)": 390,
+    },
+    "2x4 ft": {
+      "Non-Tearable (Eco-solvent)": 100,
+      "Economy Fabric (160 gsm)": 130,
+      "Standard Fabric (220 gsm)": 160,
+      "Premium Fabric (450 gsm)": 200,
+    },
+    "3x6 ft": {
+      "Non-Tearable (Eco-solvent)": 200,
+      "Economy Fabric (160 gsm)": 250,
+      "Standard Fabric (220 gsm)": 300,
+      "Premium Fabric (450 gsm)": 370,
+    },
+    "4x8 ft": {
+      "Non-Tearable (Eco-solvent)": 300,
+      "Economy Fabric (160 gsm)": 370,
+      "Standard Fabric (220 gsm)": 450,
+      "Premium Fabric (450 gsm)": 550,
+    },
   };
 
-  // Most popular size and material (default selection)
   const defaultSize = "3x6 ft";
-  const defaultMaterial = "Vinyl";
+  const defaultMaterial = "Non-Tearable (Eco-solvent)";
+  const defaultFinish = "Trimmed, without Eyelets";
 
   const [selectedSize, setSelectedSize] = useState(defaultSize);
   const [selectedMaterial, setSelectedMaterial] = useState(defaultMaterial);
-  const [mainImage, setMainImage] = useState(bannerImg); // State for main image
-  const [snackbarOpen, setSnackbarOpen] = useState(false); // State for Snackbar
+  const [selectedFinish, setSelectedFinish] = useState(defaultFinish);
+  const [mainImage, setMainImage] = useState(mainImg);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   const bannerDetails = {
     name: "Banners",
-    image: bannerImg,
+    image: mainImg,
     description:
-      "High-quality banners for all your marketing needs. Perfect for events, promotions, and branding. Available in various sizes and materials.",
+      "High-quality banners for all your marketing needs. Perfect for events, promotions, and branding. Available in various sizes, materials, and finish options.",
     features: [
       "Durable and weather-resistant materials",
-      "Vibrant and long-lasting prints",
+      "Vibrant and long-lasting prints (Eco-solvent)",
       "Custom sizes and designs",
       "Quick turnaround time",
     ],
-    sizes: ["2x4 ft", "3x6 ft", "4x8 ft"],
-    materials: ["Vinyl", "Fabric", "Mesh"],
-    extraImages: [bannerImg2, bannerImg3, bannerImg4, bannerImg5], // Extra images
+    sizes: ["2x2 ft", "3x3 ft", "4x4 ft", "2x4 ft", "3x6 ft", "4x8 ft"],
+    materials: [
+      "Non-Tearable (Eco-solvent)",
+      "Economy Fabric (160 gsm)",
+      "Standard Fabric (220 gsm)",
+      "Premium Fabric (450 gsm)",
+    ],
+    finishes: ["Trimmed, without Eyelets", "Eyelets in corners"],
+    extraImages: [img2, img3, img4, img5, img6],
+    finishImages: {
+      "Trimmed, without Eyelets": finishNoEyeletsImg,
+      "Eyelets in corners": finishEyeletsImg,
+    },
+    tags: ["Durable", "Weather-Resistant", "Eco-Solvent"],
   };
 
-  // Calculate price based on selected size and material
   const price = priceMapping[selectedSize][selectedMaterial];
 
   const handleAddToCart = () => {
@@ -59,78 +112,83 @@ const Banners = ({ addToCart }) => {
       ...bannerDetails,
       selectedSize,
       selectedMaterial,
-      price, // Use the dynamically calculated price
-      quantity: 1, // Default quantity
+      selectedFinish,
+      price,
+      quantity: 1,
     };
-
-    addToCart(item); // Add the item to the cart
-    setSnackbarOpen(true); // Show Snackbar for confirmation
+    addToCart(item);
+    setSnackbarOpen(true);
   };
 
-  const handleCloseSnackbar = () => {
-    setSnackbarOpen(false);
-  };
+  const handleCloseSnackbar = () => setSnackbarOpen(false);
 
   return (
-    <Container sx={{ py: 6, maxWidth: 1200, margin: "40px auto 0 auto" }}>
+    <Container sx={{ py: 6, maxWidth: 1200, margin: "40px auto 0 auto", px: { xs: 2, md: 3 } }}>
       <Grid container spacing={4}>
-        {/* Image Section */}
+        {/* Image Gallery */}
         <Grid item xs={12} md={6}>
           <Paper
             sx={{
               p: 2,
-              borderRadius: "10px",
-              boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.1)",
+              borderRadius: "16px",
+              boxShadow: "0px 8px 24px rgba(0, 0, 0, 0.08)",
+              bgcolor: "#fff",
+              position: "relative",
             }}
           >
-            {/* Main Image with Zoom */}
+            <Box sx={{ display: "flex", gap: 1, mb: 2, flexWrap: "wrap" }}>
+              {bannerDetails.tags.map((tag, idx) => (
+                <Chip
+                  key={idx}
+                  label={tag}
+                  size="small"
+                  sx={{ backgroundColor: "#19485D", color: "white", fontWeight: "bold" }}
+                />
+              ))}
+            </Box>
+
             <Zoom>
               <img
                 src={mainImage}
                 alt={bannerDetails.name}
                 style={{
                   width: "100%",
-                  borderRadius: "10px",
+                  borderRadius: "12px",
                   cursor: "zoom-in",
                   maxHeight: "400px",
-                  objectFit: "cover",
+                  objectFit: "contain",
                 }}
               />
             </Zoom>
 
-            {/* Extra Images Gallery */}
             <Box
               sx={{
                 display: "flex",
                 gap: 2,
                 mt: 2,
-                overflowX: "auto", // Horizontal scroll for small screens
-                "&::-webkit-scrollbar": { display: "none" }, // Hide scrollbar
+                overflowX: "auto",
+                "&::-webkit-scrollbar": { display: "none" },
               }}
             >
-              {bannerDetails.extraImages.map((image, index) => (
+              {bannerDetails.extraImages.map((img, idx) => (
                 <Paper
-                  key={index}
-                  onClick={() => setMainImage(image)}
+                  key={idx}
+                  onClick={() => setMainImage(img)}
                   sx={{
                     p: 1,
-                    borderRadius: "8px",
-                    boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+                    borderRadius: "10px",
                     cursor: "pointer",
-                    border: mainImage === image ? "2px solid #ff6600" : "none",
-                    "&:hover": { border: "2px solid #ff6600" },
-                    flexShrink: 0, // Prevent shrinking on small screens
+                    border:
+                      mainImage === img ? "2px solid #70CB97" : "2px solid transparent",
+                    "&:hover": { border: "2px solid #70CB97" },
+                    flexShrink: 0,
+                    transition: "all 0.2s",
                   }}
                 >
                   <img
-                    src={image}
-                    alt={`Banner ${index + 1}`}
-                    style={{
-                      width: "100px",
-                      height: "100px",
-                      borderRadius: "6px",
-                      objectFit: "cover",
-                    }}
+                    src={img}
+                    alt={`view ${idx + 1}`}
+                    style={{ width: "90px", height: "90px", borderRadius: "8px", objectFit: "cover" }}
                   />
                 </Paper>
               ))}
@@ -138,56 +196,58 @@ const Banners = ({ addToCart }) => {
           </Paper>
         </Grid>
 
-        {/* Details Section */}
+        {/* Product Details */}
         <Grid item xs={12} md={6}>
-          <Typography variant="h4" sx={{ fontWeight: "bold", mb: 2 }}>
+          <Typography variant="h4" sx={{ fontWeight: 700, mb: 2, color: "#19485D", fontSize: { xs: "1.8rem", md: "2.5rem" } }}>
             {bannerDetails.name}
           </Typography>
-          <Typography variant="h5" sx={{ color: "#ff6600", fontWeight: "bold", mb: 3 }}>
-            ₹{price} {/* Display dynamic price */}
+
+          <Typography variant="h5" sx={{ color: "#70CB97", fontWeight: "bold", mb: 3, fontSize: { xs: "1.5rem", md: "2rem" } }}>
+            ₹{price}
           </Typography>
-          <Typography variant="body1" sx={{ mb: 3 }}>
+
+          <Typography variant="body1" sx={{ mb: 3, color: "#1e2a32", lineHeight: 1.6 }}>
             {bannerDetails.description}
           </Typography>
 
-          {/* Features */}
-          <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2 }}>
+          <Typography variant="h6" sx={{ fontWeight: 600, mb: 2, color: "#19485D", fontSize: { xs: "1.2rem", md: "1.5rem" } }}>
             Features:
           </Typography>
-          <ul style={{ marginLeft: "20px", marginBottom: "20px" }}>
-            {bannerDetails.features.map((feature, index) => (
-              <li key={index}>
-                <Typography variant="body1">{feature}</Typography>
+          <Box component="ul" sx={{ ml: 2, mb: 3, listStyleType: "none", p: 0 }}>
+            {bannerDetails.features.map((feature, idx) => (
+              <li key={idx} style={{ marginBottom: "8px" }}>
+                <Typography variant="body1" sx={{ display: "flex", alignItems: "center", color: "#5a6e7a" }}>
+                  <span style={{ display: "inline-block", width: "6px", height: "6px", backgroundColor: "#70CB97", borderRadius: "50%", marginRight: "8px" }}></span>
+                  {feature}
+                </Typography>
               </li>
             ))}
-          </ul>
+          </Box>
 
           {/* Sizes */}
-          <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2 }}>
+          <Typography variant="h6" sx={{ fontWeight: 600, mb: 2, color: "#19485D", fontSize: { xs: "1.2rem", md: "1.5rem" } }}>
             Available Sizes:
           </Typography>
-          <Box
-            sx={{
-              display: "flex",
-              gap: 2,
-              mb: 3,
-              flexWrap: "wrap", // Wrap sizes on small screens
-            }}
-          >
-            {bannerDetails.sizes.map((size, index) => (
+          <Box sx={{ display: "flex", gap: 2, mb: 3, flexWrap: "wrap" }}>
+            {bannerDetails.sizes.map((size, idx) => (
               <Paper
-                key={index}
+                key={idx}
                 onClick={() => setSelectedSize(size)}
                 sx={{
                   p: 1.5,
-                  borderRadius: "8px",
+                  px: 2.5,
+                  borderRadius: "40px",
                   textAlign: "center",
-                  fontWeight: "bold",
-                  boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+                  fontWeight: 600,
                   cursor: "pointer",
-                  backgroundColor: selectedSize === size ? "#ff6600" : "white",
-                  color: selectedSize === size ? "white" : "inherit",
-                  flex: "1 1 100px", // Flexible sizing for responsiveness
+                  bgcolor: selectedSize === size ? "#70CB97" : "#fff",
+                  color: selectedSize === size ? "#fff" : "#19485D",
+                  border: "1px solid #e0e7ed",
+                  transition: "all 0.2s",
+                  "&:hover": {
+                    bgcolor: selectedSize === size ? "#5cb67f" : "#f0f9f3",
+                    transform: "translateY(-2px)",
+                  },
                 }}
               >
                 {size}
@@ -196,31 +256,29 @@ const Banners = ({ addToCart }) => {
           </Box>
 
           {/* Materials */}
-          <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2 }}>
-            Available Materials:
+          <Typography variant="h6" sx={{ fontWeight: 600, mb: 2, color: "#19485D", fontSize: { xs: "1.2rem", md: "1.5rem" } }}>
+            Available Materials (Eco-solvent printing):
           </Typography>
-          <Box
-            sx={{
-              display: "flex",
-              gap: 2,
-              mb: 4,
-              flexWrap: "wrap", // Wrap materials on small screens
-            }}
-          >
-            {bannerDetails.materials.map((material, index) => (
+          <Box sx={{ display: "flex", gap: 2, mb: 3, flexWrap: "wrap" }}>
+            {bannerDetails.materials.map((material, idx) => (
               <Paper
-                key={index}
+                key={idx}
                 onClick={() => setSelectedMaterial(material)}
                 sx={{
                   p: 1.5,
-                  borderRadius: "8px",
+                  px: 2.5,
+                  borderRadius: "40px",
                   textAlign: "center",
-                  fontWeight: "bold",
-                  boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+                  fontWeight: 600,
                   cursor: "pointer",
-                  backgroundColor: selectedMaterial === material ? "#ff6600" : "white",
-                  color: selectedMaterial === material ? "white" : "inherit",
-                  flex: "1 1 100px", // Flexible sizing for responsiveness
+                  bgcolor: selectedMaterial === material ? "#70CB97" : "#fff",
+                  color: selectedMaterial === material ? "#fff" : "#19485D",
+                  border: "1px solid #e0e7ed",
+                  transition: "all 0.2s",
+                  "&:hover": {
+                    bgcolor: selectedMaterial === material ? "#5cb67f" : "#f0f9f3",
+                    transform: "translateY(-2px)",
+                  },
                 }}
               >
                 {material}
@@ -228,32 +286,95 @@ const Banners = ({ addToCart }) => {
             ))}
           </Box>
 
-          {/* Add to Cart Button */}
+          {/* Finish Options */}
+          <Typography variant="h6" sx={{ fontWeight: 600, mb: 2, color: "#19485D", fontSize: { xs: "1.2rem", md: "1.5rem" } }}>
+            Finish Options:
+          </Typography>
+          <Box sx={{ display: "flex", gap: 2, mb: 4, flexWrap: "wrap" }}>
+            {bannerDetails.finishes.map((finish, idx) => (
+              <Paper
+                key={idx}
+                onClick={() => setSelectedFinish(finish)}
+                sx={{
+                  p: 1.5,
+                  px: 2.5,
+                  borderRadius: "40px",
+                  textAlign: "center",
+                  fontWeight: 600,
+                  cursor: "pointer",
+                  bgcolor: selectedFinish === finish ? "#70CB97" : "#fff",
+                  color: selectedFinish === finish ? "#fff" : "#19485D",
+                  border: "1px solid #e0e7ed",
+                  transition: "all 0.2s",
+                  "&:hover": {
+                    bgcolor: selectedFinish === finish ? "#5cb67f" : "#f0f9f3",
+                    transform: "translateY(-2px)",
+                  },
+                }}
+              >
+                {finish}
+              </Paper>
+            ))}
+          </Box>
+
+          {/* Visual explanation of finishes (optional thumbnails) */}
+          <Box sx={{ display: "flex", gap: 2, mb: 3 }}>
+            {bannerDetails.finishes.map((finish, idx) => (
+              <Box key={idx} sx={{ textAlign: "center", width: "100px" }}>
+                <img
+                  src={bannerDetails.finishImages[finish]}
+                  alt={finish}
+                  style={{ width: "80px", height: "80px", borderRadius: "8px", objectFit: "cover", border: "1px solid #e0e7ed" }}
+                />
+                <Typography variant="caption" sx={{ display: "block", mt: 0.5, color: "#5a6e7a" }}>
+                  {finish}
+                </Typography>
+              </Box>
+            ))}
+          </Box>
+
           <Button
             variant="contained"
             startIcon={<AddShoppingCart />}
             sx={{
-              background: "#ff6600",
+              background: "#70CB97",
               color: "white",
-              fontWeight: "bold",
-              fontSize: "16px",
-              padding: "12px 24px",
-              "&:hover": { background: "#ff8c42" },
-              width: { xs: "100%", md: "auto" }, // Full width on small screens
+              fontWeight: 700,
+              fontSize: { xs: "0.9rem", md: "1rem" },
+              padding: { xs: "12px 20px", md: "12px 28px" },
+              borderRadius: "40px",
+              textTransform: "none",
+              boxShadow: "0px 4px 12px rgba(112, 203, 151, 0.3)",
+              "&:hover": {
+                background: "#5cb67f",
+                transform: "translateY(-2px)",
+              },
+              width: { xs: "100%", md: "auto" },
+              transition: "all 0.2s ease",
             }}
             onClick={handleAddToCart}
           >
             Add to Cart
           </Button>
+
+          <Typography variant="body2" sx={{ mt: 2, color: "#5a6e7a", fontStyle: "italic", fontWeight: 500 }}>
+            * Eco-solvent printing ensures vibrant, weather-resistant output.
+          </Typography>
         </Grid>
       </Grid>
 
-      {/* Snackbar for Notifications */}
       <Snackbar
         open={snackbarOpen}
         autoHideDuration={3000}
         onClose={handleCloseSnackbar}
-        message="Item added to cart!"
+        message="✓ Banner added to cart!"
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        sx={{
+          "& .MuiSnackbarContent-root": {
+            backgroundColor: "#19485D",
+            borderRadius: "40px",
+          },
+        }}
         action={
           <IconButton size="small" color="inherit" onClick={handleCloseSnackbar}>
             <Close fontSize="small" />

@@ -9,6 +9,7 @@ const categories = [
       {
         name: "Business Cards",
         link: "/services/business-essentials/business-cards",
+        basePath: "/services/business-essentials/business-cards",
         products: [
           "Standard Business Card",
           "Premium Laminated Card",
@@ -23,8 +24,9 @@ const categories = [
       {
         name: "Envelopes",
         link: "/services/business-essentials/envelopes",
+        basePath: "/services/business-essentials/envelopes",
         products: [
-          "hash10 Envelope (long)",
+          "hash10 Envelope",
           "A5 Envelope",
           "A6 Envelope",
           "Kraft Envelope",
@@ -33,11 +35,13 @@ const categories = [
       {
         name: "Letterheads",
         link: null,
+        basePath: "/services/business-essentials/letterheads",
         products: ["Custom Letterheads", "Prescription Note Pad"],
       },
       {
         name: "Invoices",
         link: null,
+        basePath: "/services/business-essentials/invoices",
         products: [
           "Full Colour Printed Bill Books",
           "Black and White Printed Bill Books",
@@ -48,14 +52,12 @@ const categories = [
   {
     name: "Marketing Materials",
     subcategories: [
-      { name: "Banners", link: "/services/marketing-materials/banners" },
-      {
-        name: "Custom Standee Cutout",
-        link: "/services/marketing-materials/custom-standee-cutout",
-      },
+      { name: "Banners", link: "/services/marketing-materials/banners", basePath: "/services/marketing-materials/banners", products: [] },
+      { name: "Custom Standee Cutout", link: "/services/marketing-materials/custom-standee-cutout", basePath: "/services/marketing-materials/custom-standee-cutout", products: [] },
       {
         name: "Acrylic Sign Board",
         link: "/services/marketing-materials/acrylic-sign-board",
+        basePath: "/services/marketing-materials/acrylic-sign-board",
         products: [
           "Acrylic Photo Frames",
           "Acrylic Name Plates",
@@ -68,6 +70,7 @@ const categories = [
       {
         name: "Flyers",
         link: "/services/marketing-materials/flyers",
+        basePath: "/services/marketing-materials/flyers",
         products: [
           "Offer Flyers",
           "Business Flyers",
@@ -77,17 +80,15 @@ const categories = [
           "DL Flyer Printing",
         ],
       },
-      { name: "Posters", link: "/services/marketing-materials/posters" },
-      {
-        name: "Photo Selfie Booth",
-        link: "/services/marketing-materials/photo-selfie-booth",
-      },
+      { name: "Posters", link: "/services/marketing-materials/posters", basePath: "/services/marketing-materials/posters", products: [] },
+      { name: "Photo Selfie Booth", link: "/services/marketing-materials/photo-selfie-booth", basePath: "/services/marketing-materials/photo-selfie-booth", products: [] },
       {
         name: "Brochures",
         link: null,
+        basePath: "/services/marketing-materials/brochures",
         products: ["Half Fold Brochure", "Tri Fold Brochure"],
       },
-      { name: "Standees", link: "/services/marketing-materials/standees" },
+      { name: "Standees", link: "/services/marketing-materials/standees", basePath: "/services/marketing-materials/standees", products: [] },
     ],
   },
   {
@@ -96,6 +97,7 @@ const categories = [
       {
         name: "Stickers",
         link: "/services/packaging-labels/stickers",
+        basePath: "/services/packaging-labels/stickers",
         products: [
           "Matte Laminated Stickers",
           "Holographic Stickers",
@@ -111,6 +113,7 @@ const categories = [
       {
         name: "Labels",
         link: "/services/packaging-labels/labels",
+        basePath: "/services/packaging-labels/labels",
         products: [
           "Metallic Gold Paper Labels",
           "Metallic Silver Paper Labels",
@@ -123,13 +126,14 @@ const categories = [
       {
         name: "Paper Bags",
         link: null,
+        basePath: "/services/packaging-labels/paper-bags",
         products: [
           "Gift Paper Bags",
           "Takeout Paper Bags",
           "Pre-printed Paper Bags",
         ],
       },
-      { name: "Gift Boxes", link: "/services/packaging-labels/gift-boxes" },
+      { name: "Gift Boxes", link: "/services/packaging-labels/gift-boxes", basePath: "/services/packaging-labels/gift-boxes", products: [] },
     ],
   },
   {
@@ -138,6 +142,7 @@ const categories = [
       {
         name: "Photo Frames",
         link: "/services/personalized-gifts/photo-frames",
+        basePath: "/services/personalized-gifts/photo-frames",
         products: [
           "Photo with LED Frames",
           "Photo with Classic Frames",
@@ -151,16 +156,20 @@ const categories = [
       {
         name: "Mugs",
         link: "/services/personalized-gifts/mugs",
-        products: ["Standard Mug", "Mini Mug", "Shimmer Dark Grey Mug", "Regal Black Mug","Traveler Black Mug","Sleek Black Mug"],
+        basePath: "/services/personalized-gifts/mugs",
+        products: [
+          "Standard Mug",
+          "Mini Mug",
+          "Shimmer Dark Grey Mug",
+          "Regal Black Mug",
+          "Traveler Black Mug",
+          "Sleek Black Mug",
+        ],
       },
-      // {
-      //   name: "Bottles",
-      //   link: "/services/personalized-gifts/bottles",
-      //   products: ["Standard Mug", "Mini Mug"],
-      // },
       {
         name: "T-shirts",
         link: "/services/personalized-gifts/tshirts",
+        basePath: "/services/personalized-gifts/tshirts",
         products: [
           "Round Neck T-shirts",
           "Polo T-shirts",
@@ -170,6 +179,7 @@ const categories = [
       {
         name: "Calendars",
         link: "/services/personalized-gifts/calendars",
+        basePath: "/services/personalized-gifts/calendars",
         products: [
           "A5 Landscape Calendar",
           "Big Square Desktop Calendar",
@@ -187,6 +197,7 @@ const categories = [
       {
         name: "Custom T-shirts",
         link: "/services/personalized-gifts/tshirts",
+        basePath: "/services/personalized-gifts/tshirts",
         products: [
           "Round Neck T-shirts",
           "Polo T-shirts",
@@ -196,6 +207,7 @@ const categories = [
       {
         name: "Hoodies",
         link: "/services/tshirt-printing/hoodies",
+        basePath: "/services/tshirt-printing/hoodies",
         products: [
           "Custom Printed Zipper Hoodie",
           "Custom Printed Pullover Hoodie",
@@ -203,11 +215,12 @@ const categories = [
           "Embroidered Pullover Hoodie",
         ],
       },
-      { name: "Sweatshirts", link: "/services/tshirt-printing/sweatshirts" },
-      { name: "Jackets", link: "/services/tshirt-printing/jackets" },
+      { name: "Sweatshirts", link: "/services/tshirt-printing/sweatshirts", basePath: "/services/tshirt-printing/sweatshirts", products: [] },
+      { name: "Jackets", link: "/services/tshirt-printing/jackets", basePath: "/services/tshirt-printing/jackets", products: [] },
       {
         name: "Caps",
         link: "/services/tshirt-printing/caps",
+        basePath: "/services/tshirt-printing/caps",
         products: [
           "Printed Plain Caps",
           "Line Stitching Caps",
@@ -224,6 +237,7 @@ const categories = [
       {
         name: "Welcome Kits",
         link: "/services/corporate-gifting/welcome-kits",
+        basePath: "/services/corporate-gifting/welcome-kits",
         products: [
           "Corporate Executive Kit",
           "Creative Professional Kit",
@@ -234,6 +248,7 @@ const categories = [
       {
         name: "Festive Hampers",
         link: "/services/corporate-gifting/festive-hampers",
+        basePath: "/services/corporate-gifting/festive-hampers",
         products: [
           "Color Splash Hamper",
           "Eco-Friendly Holi Hamper",
@@ -241,28 +256,33 @@ const categories = [
         ],
       },
       {
-        name:"Drinkware",
+        name: "Drinkware",
         link: "/services/corporate-gifting/drinkware",
-        products:[],
+        basePath: "/services/corporate-gifting/drinkware",
+        products: [],
       },
       {
-        name:"Bags",
+        name: "Bags",
         link: "/services/corporate-gifting/bags",
-        products:[],
+        basePath: "/services/corporate-gifting/bags",
+        products: [],
       },
       {
-        name:"Awards & Trophies",
+        name: "Awards & Trophies",
         link: "/services/corporate-gifting/awards-trophies",
-        products:[],
+        basePath: "/services/corporate-gifting/awards-trophies",
+        products: [],
       },
       {
-        name:"Certificates",
-        link: "/services/corporate-gifting/certifcates",
-        products:[],
+        name: "Certificates",
+        link: "/services/corporate-gifting/certificates",
+        basePath: "/services/corporate-gifting/certificates",
+        products: [],
       },
       {
         name: "Duo Sets",
         link: "/services/corporate-gifting/duo-sets",
+        basePath: "/services/corporate-gifting/duo-sets",
         products: [
           "Eco-Grip Notebook",
           "Elegant Journal Combo",
@@ -271,20 +291,11 @@ const categories = [
         ],
       },
       {
-        name:"Pens",
+        name: "Pens",
         link: "/services/corporate-gifting/pens",
-        products:[],
+        basePath: "/services/corporate-gifting/pens",
+        products: [],
       },
-      // {
-      //   name: "Engagement Kits",
-      //   link: "/services/corporate-gifting/engagement-kits",
-      //   products: [
-      //     "Employee Engagement Kit",
-      //     "Customer Engagement Kit",
-      //     "Event Engagement Kit",
-      //     "Custom Branded Engagement Kit",
-      //   ],
-      // },
     ],
   },
 ];
@@ -294,6 +305,16 @@ const SubNavbar = () => {
 
   const toggleDropdown = (index) => {
     setOpenDropdown(openDropdown === index ? null : index);
+  };
+
+  // Helper to convert product name to URL slug
+  const getProductSlug = (productName) => {
+    return productName
+      .toLowerCase()
+      .replace(/ /g, "-")
+      .replace(/\(/g, "")
+      .replace(/\)/g, "")
+      .replace(/#/g, "hash");
   };
 
   return (
@@ -308,22 +329,30 @@ const SubNavbar = () => {
             onMouseEnter={() => toggleDropdown(index)}
             onMouseLeave={() => toggleDropdown(null)}
           >
-            <span className="sub-nav-link">{category.name}</span>
+           {category.link ? (
+              <Link to={category.link} className="sub-nav-link-item">
+                {category.name}
+              </Link>
+            ) : (
+              <span className="sub-nav-link-item">{category.name}</span>
+            )}
             {openDropdown === index && (
               <div className="dropdown">
                 <div className="dropdown-grid">
                   {category.subcategories.map((sub, i) => (
                     <div key={i} className="dropdown-column">
-                      <Link to={sub.link} className="dropdown-subcategory">
-                        {sub.name}
-                      </Link>
-                      {sub.products && (
+                      {sub.link ? (
+                        <Link to={sub.link} className="dropdown-subcategory">
+                          {sub.name}
+                        </Link>
+                      ) : (
+                        <span className="dropdown-subcategory">{sub.name}</span>
+                      )}
+                      {sub.products && sub.products.length > 0 && (
                         <div className="dropdown-products">
                           {sub.products.map((product, j) => (
                             <Link
-                              to={`${sub.link}/${product
-                                .toLowerCase()
-                                .replace(/ /g, "-")}`}
+                              to={`${sub.basePath}/${getProductSlug(product)}`}
                               className="dropdown-product-item"
                               key={j}
                             >

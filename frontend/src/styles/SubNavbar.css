@@ -29,14 +29,16 @@
 }
 
 .sub-nav-item:hover {
-  color: #ff6600;
+  color: var(--color-green);
 }
-
-/* Corporate Gifting Item */
 .corporate-item {
-  color: #ff6600; /* White text */
+  color: var(--color-green);
   font-size: 15px;
   font-weight: bolder;
+}
+.dropdown-subcategory:hover,
+.dropdown-product-item:hover {
+  color: var(--color-green);
 }
 
 .corporate-item:hover {
@@ -90,9 +92,6 @@
   transition: color 0.3s ease-in-out;
 }
 
-.dropdown-subcategory:hover {
-  color: #ff6600;
-}
 
 .dropdown-products {
   display: flex;
@@ -107,9 +106,27 @@
   transition: color 0.3s ease-in-out;
 }
 
-.dropdown-product-item:hover {
-  color: #ff6600;
+
+/* Add this to your CSS file */
+.sub-nav-link-item {
+  text-decoration: none;
+  color: inherit; /* Pulls color dynamically from .sub-nav-item or .corporate-item */
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  display: inline-block;
+  width: 100%;
 }
+
+/* Ensure corporate item custom style is preserved correctly */
+.corporate-item .sub-nav-link-item {
+  color: var(--color-green);
+}
+
+.corporate-item:hover .sub-nav-link-item {
+  color: black;
+}
+
 
 /* Responsive Adjustments for 900px to 1024px */
 @media (min-width: 900px) and (max-width: 1400px) {

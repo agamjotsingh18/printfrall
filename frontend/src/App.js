@@ -70,7 +70,7 @@ import SquareBusinessCard from "./itemdetail/SquareBusinessCard";
 import TexturedBusinessCard from "./itemdetail/TexturedBusinessCard";
 import PremiumLaminatedCard from "./itemdetail/PremiumBusinessCard";
 import StandardBusinessCard from "./itemdetail/StandardBusinessCard";
-import Envelope10Long from "./itemdetail/Envelope10Long";
+import Envelope10Long from "./itemdetail/Hash10Envelope";
 import A5Envelope from "./itemdetail/A5Envelope";
 import A6Envelope from "./itemdetail/A6Envelope";
 import KraftEnvelope from "./itemdetail/KraftEnvelope";
@@ -173,6 +173,12 @@ import VanguardLaptopBag from "./itemdetail/VanguardLaptopBag";
 import PrestigeProLaptopBag from "./itemdetail/PrestigeProLaptopBag";
 import ApexCarryLaptopBag from "./itemdetail/ApexCarryLaptopBag";
 import Breadcrumbs from './components/Breadcrumbs';
+import { ThemeProvider } from '@mui/material/styles';
+import theme from './styles/theme';
+import './styles/global.css'; 
+import ColorSplashHamper from "./itemdetail/ColorSplashHamper";
+import EcoFriendlyHoliHamper from "./itemdetail/EcoFriendlyHoliHamper";
+import PremiumHoliHamper from "./itemdetail/PremiumHoliHamper";
 
 const App = () => {
   // Initialize cartItems state with data from localStorage
@@ -215,17 +221,19 @@ const App = () => {
   };
 
   const removeFromCart = (name, size, material) => {
-    setCartItems((prevItems) =>
-      prevItems.filter(
-        (item) =>
-          item.name !== name ||
-          item.selectedSize !== size ||
-          item.selectedMaterial !== material
-      )
-    );
-  };
+  setCartItems((prevItems) =>
+    prevItems.filter((item) => {
+      // Match name
+      if (item.name !== name) return true;
+      if (size !== null && item.selectedSize !== size) return true;
+      if (material !== null && (item.selectedMaterial ?? item.selectedColor ?? item.selectedMethod ?? item.selectedFinish) !== material) return true;
+      return false;
+    })
+  );
+};
 
   return (
+    <ThemeProvider theme={theme}>
     <Router>
       {/* Pass cartItems and removeFromCart to Navbar */}
       <Navbar cartItems={cartItems} addToCart={addToCart} removeFromCart={removeFromCart} />
@@ -301,7 +309,7 @@ const App = () => {
             element={<PrescriptionNotePad addToCart={addToCart} />}
           />
           <Route
-            path="/services/business-essentials/envelopes/hash10-envelope-(long)"
+            path="/services/business-essentials/envelopes/hash10-envelope"
             element={<Envelope10Long addToCart={addToCart} />}
           />
           <Route
@@ -513,8 +521,7 @@ const App = () => {
             element={<CanvasPhotoWithFrames addToCart={addToCart} />}
           />
           <Route
-            path="/services/personalized-gifts/photo-frames/matte-photo-with-frames
-"
+            path="/services/personalized-gifts/photo-frames/matte-photo-with-frames"
             element={<MattePhotoWithFrames addToCart={addToCart} />}
           />
           <Route
@@ -861,8 +868,20 @@ const App = () => {
   path="/services/corporate-gifting/luggage-tags"
   element={<LuggageTags addToCart={addToCart} />}
 />
+<Route
+path="/services/corporate-gifting/festive-hampers/color-splash-hamper"
+element={<ColorSplashHamper addToCart={addToCart} />}
+/>
+<Route
+path="/services/corporate-gifting/festive-hampers/eco-friendly-holi-hamper"
+element={<EcoFriendlyHoliHamper addToCart={addToCart} />}
+/>
+<Route
+path="/services/corporate-gifting/festive-hampers/premium-holi-hamper"
+element={<PremiumHoliHamper addToCart={addToCart} />}
+/>
 
-          {/* Fallback Route for 404 Not Found */}
+
           <Route path="*" element={<NotFoundPage />} />
           <Route path="/blog/future-of-3D-printing" element={<FutureOf3DPrinting />} />
           <Route path="/blog/eco-friendly-printing-solutions" element={<EcoFriendlyPrintingSolutions />} />
@@ -875,6 +894,7 @@ const App = () => {
       </div>
       <Footer />
     </Router>
+    </ThemeProvider>
   );
 };
 

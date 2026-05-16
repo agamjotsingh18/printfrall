@@ -8,125 +8,182 @@ import {
   Grid,
   Snackbar,
   IconButton,
+  Chip,
+  Divider,
 } from "@mui/material";
-import { AddShoppingCart, Close } from "@mui/icons-material";
-import mattePhotoWithFrameImg from "../assets/matte-photo-with-frame.png"; // Main image
-import mattePhotoWithFrameImg2 from "../assets/matte-photo-with-frame.png"; // Extra image 1
-import mattePhotoWithFrameImg3 from "../assets/matte-photo-with-frame.png"; // Extra image 2
-import mattePhotoWithFrameImg4 from "../assets/matte-photo-with-frame.png"; // Extra image 3
-import mattePhotoWithFrameImg5 from "../assets/matte-photo-with-frame.png"; // Extra image 4
-import Zoom from "react-medium-image-zoom"; // For zoom functionality
-import "react-medium-image-zoom/dist/styles.css"; // Zoom styles
+import {
+  AddShoppingCart,
+  Close,
+  Inventory,
+  PhotoFilter,
+  AutoAwesome,
+} from "@mui/icons-material";
+import Zoom from "react-medium-image-zoom";
+import "react-medium-image-zoom/dist/styles.css";
+
+// Import your matte frame images – replace with real variants
+import mattePhotoWithFrameImg from "../assets/matte-photo-with-frame.png";
+import mattePhotoWithFrameImg2 from "../assets/matte-photo-with-frame-1.png";
+import mattePhotoWithFrameImg3 from "../assets/matte-photo-with-frame-2.png";
+import mattePhotoWithFrameImg4 from "../assets/matte-photo-with-frame-3.png";
+import mattePhotoWithFrameImg5 from "../assets/matte-photo-with-frame-4.png";
+import mattePhotoWithFrameImg6 from "../assets/matte-photo-with-frame-5.png";
 
 const MattePhotoWithFrames = ({ addToCart }) => {
-  // Define price mapping for each material
+  // Frame styles and pricing
+  const frameStyles = ["Classic Black", "Sleek Minimal", "Matte Wood", "Modern Stripe"];
+  
   const priceMapping = {
-    "Wooden Frame": 150,
-    "Metal Frame": 180,
-    "Acrylic Frame": 200,
+    "Classic Black": 450,
+    "Sleek Minimal": 400,
+    "Matte Wood": 500,
+    "Modern Stripe": 480,
   };
 
-  // Most popular material (default selection)
-  const defaultMaterial = "Wooden Frame";
+  const [selectedStyle, setSelectedStyle] = useState("Classic Black");
+  const [mainImage, setMainImage] = useState(mattePhotoWithFrameImg);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
 
-  const [selectedMaterial, setSelectedMaterial] = useState(defaultMaterial);
-  const [mainImage, setMainImage] = useState(mattePhotoWithFrameImg); // State for main image
-  const [snackbarOpen, setSnackbarOpen] = useState(false); // State for Snackbar
+  const unitPrice = priceMapping[selectedStyle];
+  const totalPrice = unitPrice; // Single frame
 
-  const mattePhotoWithFrameDetails = {
-    name: "Matte Photo with Frames",
-    image: mattePhotoWithFrameImg,
+  const productDetails = {
+    name: "Matte Finish Photo Frames",
     description:
-      "Elegant matte photo prints with stylish frames. Perfect for adding a modern and sophisticated touch to your home or office decor.",
+      "Bring your loved ones closer with our premium Matte Finish Photo Frames. Printed on high-quality white vinyl, these prints absorb light to deliver rich yet subdued colors for a natural, flat appearance. Designed without clear acrylic to preserve the organic texture of the matte finish, they are the perfect choice for creating a calm, sophisticated atmosphere in living rooms or office spaces.",
     features: [
-      "Matte finish for a non-reflective look",
-      "Customizable sizes and designs",
-      "Durable and high-quality frames",
-      "Ready to hang",
+      "Print Media: High-grade White Vinyl with Matte Finish",
+      "Natural Look: Non-reflective surface that reduces glare",
+      "Rich Texture: Framed without acrylic to highlight the print quality",
+      "Professional: Ideal for high-stakes office decor or home interiors",
+      "Durability: Resistant to light-fading and standard environmental wear",
+      "Ready to Hang: Includes pre-installed mounting hooks",
+      "Personalized: Available in 4 distinct premium frame styles",
     ],
-    materials: ["Wooden Frame", "Metal Frame", "Acrylic Frame"],
-    extraImages: [mattePhotoWithFrameImg2, mattePhotoWithFrameImg3, mattePhotoWithFrameImg4, mattePhotoWithFrameImg5], // Extra images
+    tags: ["Matte Vinyl", "Non-Reflective", "Art Gallery Quality"],
   };
 
-  // Calculate price based on selected material
-  const price = priceMapping[selectedMaterial];
+  const thumbnailImages = [
+    mattePhotoWithFrameImg,
+    mattePhotoWithFrameImg2,
+    mattePhotoWithFrameImg3,
+    mattePhotoWithFrameImg4,
+    mattePhotoWithFrameImg5,
+    mattePhotoWithFrameImg6,
+  ];
 
   const handleAddToCart = () => {
     const item = {
-      ...mattePhotoWithFrameDetails,
-      selectedMaterial,
-      price, // Use the dynamically calculated price
-      quantity: 1, // Default quantity
+      name: productDetails.name,
+      image: mainImage,
+      description: productDetails.description,
+      selectedStyle,
+      price: totalPrice,
+      quantity: 1,
     };
-
-    addToCart(item); // Add the item to the cart
-    setSnackbarOpen(true); // Show Snackbar for confirmation
+    addToCart(item);
+    setSnackbarOpen(true);
   };
 
-  const handleCloseSnackbar = () => {
-    setSnackbarOpen(false);
-  };
+  const handleCloseSnackbar = () => setSnackbarOpen(false);
 
   return (
-    <Container sx={{ py: 6, maxWidth: 1200, margin: "40px auto 0 auto" }}>
-      <Grid container spacing={4}>
-        {/* Image Section */}
+    <Container
+      sx={{
+        py: 6,
+        maxWidth: 1200,
+        margin: "40px auto 0 auto",
+        px: { xs: 2, md: 3 },
+      }}
+    >
+      <Grid container spacing={5}>
+        {/* Left Side: Gallery */}
         <Grid item xs={12} md={6}>
           <Paper
             sx={{
               p: 2,
-              borderRadius: "10px",
-              boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.1)",
+              borderRadius: "16px",
+              boxShadow: "0px 8px 24px rgba(0, 0, 0, 0.08)",
+              bgcolor: "#fff",
+              position: "relative",
             }}
           >
-            {/* Main Image with Zoom */}
+            <Box
+              sx={{
+                position: "absolute",
+                top: 20,
+                left: 20,
+                zIndex: 10,
+                display: "flex",
+                gap: 1,
+              }}
+            >
+              <Chip
+                label="MATTE VINYL"
+                size="small"
+                icon={<PhotoFilter />}
+                sx={{
+                  bgcolor: "#19485D",
+                  color: "white",
+                  fontWeight: "bold",
+                  borderRadius: "40px",
+                }}
+              />
+              <Chip
+                label="NON-REFLECTIVE"
+                size="small"
+                icon={<AutoAwesome />}
+                sx={{
+                  bgcolor: "#70CB97",
+                  color: "white",
+                  fontWeight: "bold",
+                  borderRadius: "40px",
+                }}
+              />
+            </Box>
+
             <Zoom>
               <img
                 src={mainImage}
-                alt={mattePhotoWithFrameDetails.name}
+                alt={productDetails.name}
                 style={{
                   width: "100%",
-                  borderRadius: "10px",
-                  cursor: "zoom-in",
-                  maxHeight: "400px",
-                  objectFit: "cover",
+                  borderRadius: "12px",
+                  height: "450px",
+                  objectFit: "contain",
                 }}
               />
             </Zoom>
 
-            {/* Extra Images Gallery */}
+            {/* Thumbnails */}
             <Box
               sx={{
                 display: "flex",
                 gap: 2,
                 mt: 2,
-                overflowX: "auto", // Horizontal scroll for small screens
-                "&::-webkit-scrollbar": { display: "none" }, // Hide scrollbar
+                overflowX: "auto",
+                "&::-webkit-scrollbar": { display: "none" },
               }}
             >
-              {mattePhotoWithFrameDetails.extraImages.map((image, index) => (
+              {thumbnailImages.map((image, index) => (
                 <Paper
                   key={index}
                   onClick={() => setMainImage(image)}
                   sx={{
                     p: 1,
-                    borderRadius: "8px",
-                    boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+                    borderRadius: "12px",
                     cursor: "pointer",
-                    border: mainImage === image ? "2px solid #ff6600" : "none",
-                    "&:hover": { border: "2px solid #ff6600" },
-                    flexShrink: 0, // Prevent shrinking on small screens
+                    border:
+                      mainImage === image ? "2px solid #70CB97" : "1px solid #e0e7ed",
+                    flexShrink: 0,
+                    transition: "all 0.2s",
+                    "&:hover": { transform: "translateY(-2px)" },
                   }}
                 >
                   <img
                     src={image}
-                    alt={`Matte Photo with Frame ${index + 1}`}
-                    style={{
-                      width: "100px",
-                      height: "100px",
-                      borderRadius: "6px",
-                      objectFit: "cover",
-                    }}
+                    alt={`View ${index + 1}`}
+                    style={{ width: "80px", height: "80px", objectFit: "cover", borderRadius: "8px" }}
                   />
                 </Paper>
               ))}
@@ -134,89 +191,137 @@ const MattePhotoWithFrames = ({ addToCart }) => {
           </Paper>
         </Grid>
 
-        {/* Details Section */}
+        {/* Right Side: Details */}
         <Grid item xs={12} md={6}>
-          <Typography variant="h4" sx={{ fontWeight: "bold", mb: 2 }}>
-            {mattePhotoWithFrameDetails.name}
-          </Typography>
-          <Typography variant="h5" sx={{ color: "#ff6600", fontWeight: "bold", mb: 3 }}>
-            ₹{price} {/* Display dynamic price */}
-          </Typography>
-          <Typography variant="body1" sx={{ mb: 3 }}>
-            {mattePhotoWithFrameDetails.description}
-          </Typography>
-
-          {/* Features */}
-          <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2 }}>
-            Features:
-          </Typography>
-          <ul style={{ marginLeft: "20px", marginBottom: "20px" }}>
-            {mattePhotoWithFrameDetails.features.map((feature, index) => (
-              <li key={index}>
-                <Typography variant="body1">{feature}</Typography>
-              </li>
-            ))}
-          </ul>
-
-          {/* Materials */}
-          <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2 }}>
-            Available Materials:
-          </Typography>
-          <Box
+          <Typography
+            variant="h4"
             sx={{
-              display: "flex",
-              gap: 2,
-              mb: 4,
-              flexWrap: "wrap", // Wrap materials on small screens
+              fontWeight: 700,
+              mb: 1,
+              color: "#19485D",
+              fontSize: { xs: "1.8rem", md: "2.5rem" },
             }}
           >
-            {mattePhotoWithFrameDetails.materials.map((material, index) => (
+            {productDetails.name}
+          </Typography>
+
+          <Box sx={{ display: "flex", alignItems: "baseline", gap: 2, flexWrap: "wrap", mb: 1 }}>
+            <Typography variant="h5" sx={{ color: "#70CB97", fontWeight: "bold" }}>
+              ₹{totalPrice}
+            </Typography>
+            <Typography variant="body2" sx={{ color: "#5a6e7a" }}>
+              (per frame)
+            </Typography>
+          </Box>
+
+          <Typography variant="body1" sx={{ mb: 3, color: "#1e2a32", lineHeight: 1.6 }}>
+            {productDetails.description}
+          </Typography>
+
+          <Divider sx={{ mb: 3 }} />
+
+          {/* Frame Style Selection (pill‑shaped) */}
+          <Typography
+            variant="h6"
+            sx={{ fontWeight: 600, mb: 2, color: "#19485D", fontSize: "1.1rem" }}
+          >
+            Choose Frame Style:
+          </Typography>
+          <Box sx={{ display: "flex", gap: 1.5, mb: 4, flexWrap: "wrap" }}>
+            {frameStyles.map((style) => (
               <Paper
-                key={index}
-                onClick={() => setSelectedMaterial(material)}
+                key={style}
+                onClick={() => setSelectedStyle(style)}
                 sx={{
                   p: 1.5,
-                  borderRadius: "8px",
+                  px: 3,
+                  borderRadius: "40px",
                   textAlign: "center",
-                  fontWeight: "bold",
-                  boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+                  fontWeight: 600,
                   cursor: "pointer",
-                  backgroundColor: selectedMaterial === material ? "#ff6600" : "white",
-                  color: selectedMaterial === material ? "white" : "inherit",
-                  flex: "1 1 100px", // Flexible sizing for responsiveness
+                  bgcolor: selectedStyle === style ? "#70CB97" : "#fff",
+                  color: selectedStyle === style ? "#fff" : "#19485D",
+                  border: "1px solid #e0e7ed",
+                  transition: "all 0.2s",
+                  "&:hover": {
+                    bgcolor: selectedStyle === style ? "#5cb67f" : "#f0f9f3",
+                    transform: "translateY(-2px)",
+                  },
                 }}
               >
-                {material}
+                {style}
               </Paper>
             ))}
           </Box>
 
-          {/* Add to Cart Button */}
+          {/* Specifications Panel */}
+          <Paper
+            sx={{
+              p: 3,
+              bgcolor: "#f8fafc",
+              mb: 4,
+              borderRadius: "16px",
+              border: "1px solid #e0e7ed",
+            }}
+          >
+            <Typography variant="subtitle1" sx={{ fontWeight: 700, mb: 2, color: "#19485D" }}>
+              Media Specifications:
+            </Typography>
+            {productDetails.features.map((feature, i) => (
+              <Box key={i} sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
+                <Inventory sx={{ fontSize: 16, color: "#70CB97" }} />
+                <Typography variant="body2" sx={{ color: "#5a6e7a" }}>
+                  {feature}
+                </Typography>
+              </Box>
+            ))}
+          </Paper>
+
           <Button
             variant="contained"
+            fullWidth
             startIcon={<AddShoppingCart />}
             sx={{
-              background: "#ff6600",
+              background: "#70CB97",
               color: "white",
-              fontWeight: "bold",
-              fontSize: "16px",
-              padding: "12px 24px",
-              "&:hover": { background: "#ff8c42" },
-              width: { xs: "100%", md: "auto" }, // Full width on small screens
+              fontWeight: 700,
+              fontSize: "1rem",
+              py: 1.8,
+              borderRadius: "40px",
+              textTransform: "none",
+              boxShadow: "0px 4px 12px rgba(112, 203, 151, 0.3)",
+              "&:hover": {
+                background: "#5cb67f",
+                transform: "translateY(-2px)",
+                boxShadow: "0px 6px 16px rgba(112, 203, 151, 0.4)",
+              },
             }}
             onClick={handleAddToCart}
           >
-            Add to Cart
+            Add to Decor Selection – ₹{totalPrice}
           </Button>
+
+          <Typography
+            variant="caption"
+            sx={{ display: "block", mt: 2, textAlign: "center", color: "#5a6e7a" }}
+          >
+            * Powered by PrintfrAll High-Resolution Matte Printing Technology.
+          </Typography>
         </Grid>
       </Grid>
 
-      {/* Snackbar for Notifications */}
       <Snackbar
         open={snackbarOpen}
         autoHideDuration={3000}
         onClose={handleCloseSnackbar}
-        message="Item added to cart!"
+        message="✓ Matte Frame added to selection!"
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        sx={{
+          "& .MuiSnackbarContent-root": {
+            backgroundColor: "#19485D",
+            borderRadius: "40px",
+          },
+        }}
         action={
           <IconButton size="small" color="inherit" onClick={handleCloseSnackbar}>
             <Close fontSize="small" />

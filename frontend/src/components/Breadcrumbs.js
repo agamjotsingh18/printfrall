@@ -16,12 +16,12 @@ const Breadcrumbs = () => {
   return (
     <div style={{
       padding: '12px 20px',
-      backgroundColor: '#f8f9fa',
-      borderBottom: '1px solid #e1e1e1',
+      backgroundColor: '#f0f4f7', // soft background matching palette
+      borderBottom: '1px solid #e0e7ed',
       fontSize: '14px',
       marginBottom: '20px'
     }}>
-      <Link to="/" style={{ color: '#007bff', textDecoration: 'none' }}>Home</Link>
+      <Link to="/" style={{ color: '#19485D', textDecoration: 'none' }}>Home</Link>
       
       {pathnames.map((name, index) => {
         const routeTo = `/${pathnames.slice(0, index + 1).join('/')}`;
@@ -33,14 +33,14 @@ const Breadcrumbs = () => {
           .replace(/(^|\s)\S/g, (char) => char.toUpperCase());
 
         return isLast ? (
-          <span key={name} style={{ color: '#6c757d' }}>
-            <span style={{ margin: '0 8px', color: '#6c757d' }}>/</span>
+          <span key={name} style={{ color: '#5a6e7a' }}>
+            <span style={{ margin: '0 8px', color: '#5a6e7a' }}>/</span>
             {displayName}
           </span>
         ) : (
           <span key={name}>
-            <span style={{ margin: '0 8px', color: '#6c757d' }}>/</span>
-            <Link to={routeTo} style={{ color: '#007bff', textDecoration: 'none' }}>
+            <span style={{ margin: '0 8px', color: '#5a6e7a' }}>/</span>
+            <Link to={routeTo} style={{ color: '#70CB97', textDecoration: 'none' }}>
               {displayName}
             </Link>
           </span>
@@ -51,4 +51,3 @@ const Breadcrumbs = () => {
 };
 
 export default Breadcrumbs;
-

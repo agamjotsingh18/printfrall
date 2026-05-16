@@ -9,7 +9,7 @@ import metallicGoldLabels from "../assets/metallic-gold-paper-labels.png";
 import metallicSilverLabels from "../assets/metallic-silver-paper-labels.png";
 import kraftPaperLabels from "../assets/kraft-paper-labels.png";
 import premiumWhiteLabels from "../assets/premium-white-labels.png";
-import clearLabels from "../assets/clear-labels.png";
+import clearLabels from "../assets/clear-label-2.png";
 import waterProofLabels from "../assets/water-proof-labels.png";
 
 const labelTypes = [
@@ -44,10 +44,13 @@ const Labels = ({ addToCart }) => {
               sx={{
                 fontSize: "1.2rem",
                 color: "white",
-                background: "#ff6600",
+                background: "#70CB97", // brand green
                 padding: "10px",
                 borderRadius: "10px",
-                "&:hover": { transform: "scale(1.1)", color: "#ff6600" },
+                "&:hover": {
+                  transform: "scale(1.1)",
+                  background: "#5cb67f", // darker green
+                },
               }}
               onClick={() => handleAddToCart(label)}
             >

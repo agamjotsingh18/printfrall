@@ -20,7 +20,7 @@ const NotFoundPage = () => {
       <ErrorOutlineIcon
         sx={{
           fontSize: "6rem",
-          color: "#ff6600",
+          color: "#70CB97", // brand green
           mb: 3,
         }}
       />
@@ -31,7 +31,7 @@ const NotFoundPage = () => {
         sx={{
           fontWeight: "bold",
           mb: 2,
-          color: "#333",
+          color: "#19485D", // deep teal
         }}
       >
         404 - Page Not Found
@@ -41,7 +41,7 @@ const NotFoundPage = () => {
       <Typography
         variant="body1"
         sx={{
-          color: "text.secondary",
+          color: "#5a6e7a", // muted neutral
           mb: 4,
           maxWidth: "500px",
         }}
@@ -55,7 +55,7 @@ const NotFoundPage = () => {
         to="/"
         variant="contained"
         sx={{
-          background: "#ff6600",
+          background: "#70CB97", // brand green
           color: "white",
           fontWeight: "bold",
           fontSize: "16px",
@@ -63,7 +63,7 @@ const NotFoundPage = () => {
           borderRadius: "25px",
           textTransform: "none",
           "&:hover": {
-            background: "#ff8c42",
+            background: "#5cb67f", // darker green
           },
         }}
       >

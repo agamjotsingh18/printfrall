@@ -22,7 +22,7 @@ import standeesImg from "../assets/standees.png";
 import customStandeeCutoutImg from "../assets/custom-standee-cutout.png";
 import posterImg from "../assets/poster.png";
 import brochureImg from "../assets/brochure.png";
-import bannerImg from "../assets/banner.png";
+import bannerImg from "../assets/banner-1-hung.png";
 import mugImg from "../assets/mug.png";
 import tshirtImg from "../assets/tshirt.png";
 import photoFrameImg from "../assets/photo-frame.png";
@@ -268,7 +268,7 @@ const corporateGifting = {
 const Services = ({ addToCart }) => {
   const serviceItemsRef = useRef([]);
   const corporateGiftingRef = useRef(null);
-  const [snackbarOpen, setSnackbarOpen] = useState(false); // State for Snackbar
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   const scrollRight = (index) => {
     const container = serviceItemsRef.current[index];
@@ -298,8 +298,8 @@ const Services = ({ addToCart }) => {
   };
 
   const handleAddToCart = (item) => {
-    addToCart(item); // Add the item to the cart
-    setSnackbarOpen(true); // Show Snackbar
+    addToCart(item);
+    setSnackbarOpen(true);
   };
 
   const handleCloseSnackbar = () => {
@@ -311,7 +311,6 @@ const Services = ({ addToCart }) => {
       <h2 className="section-title">Our Printing Services</h2>
       <p className="section-subtitle">High-quality prints for all your needs</p>
 
-      {/* Regular Services Section */}
       <div className="services-container">
         {services.map((service, index) => (
           <div className="service-row" key={index}>
@@ -336,19 +335,22 @@ const Services = ({ addToCart }) => {
                     <p className="service-item-price">₹{item.price}</p>
                   </Link>
                   <IconButton
-  sx={{
-    fontSize: "1.2rem",
-    color: "white",
-    background: "#ff6600",
-    padding: "10px",
-    borderRadius: "10px",
-    "&:hover": { transform: "scale(1.1)", color: "#ff6600" },
-  }}
-  onClick={() => handleAddToCart(item)}
->
-  Add to Cart &nbsp;
-  <AddShoppingCartIcon />
-</IconButton>
+                    sx={{
+                      fontSize: "1.2rem",
+                      color: "white",
+                      background: "#70CB97", // brand green
+                      padding: "10px",
+                      borderRadius: "10px",
+                      "&:hover": {
+                        transform: "scale(1.1)",
+                        background: "#5cb67f", // darker green
+                      },
+                    }}
+                    onClick={() => handleAddToCart(item)}
+                  >
+                    Add to Cart &nbsp;
+                    <AddShoppingCartIcon />
+                  </IconButton>
                 </div>
               ))}
             </div>
@@ -364,7 +366,6 @@ const Services = ({ addToCart }) => {
         ))}
       </div>
 
-      {/* Corporate Gifting Section */}
       <div className="corporate-gifting-section">
         <h2 className="section-title">Corporate Gifting</h2>
         <p className="section-subtitle">
@@ -393,19 +394,22 @@ const Services = ({ addToCart }) => {
                     <p className="service-item-price">₹{item.price}</p>
                   </Link>
                   <IconButton
-  sx={{
-    fontSize: "1.2rem",
-    color: "white",
-    background: "#ff6600",
-    padding: "10px",
-    borderRadius: "10px",
-    "&:hover": { transform: "scale(1.1)", color: "#ff6600" },
-  }}
-  onClick={() => handleAddToCart(item)}
->
-  Add to Cart &nbsp;
-  <AddShoppingCartIcon />
-</IconButton>
+                    sx={{
+                      fontSize: "1.2rem",
+                      color: "white",
+                      background: "#70CB97",
+                      padding: "10px",
+                      borderRadius: "10px",
+                      "&:hover": {
+                        transform: "scale(1.1)",
+                        background: "#5cb67f",
+                      },
+                    }}
+                    onClick={() => handleAddToCart(item)}
+                  >
+                    Add to Cart &nbsp;
+                    <AddShoppingCartIcon />
+                  </IconButton>
                 </div>
               ))}
             </div>
@@ -419,16 +423,14 @@ const Services = ({ addToCart }) => {
             )}
           </div>
 
-          {/* "View All" Button */}
           <div className="view-all-button-container">
-            <Link to="services/corporate-gifting" className="view-all-button">
+            <Link to="/services/corporate-gifting" className="view-all-button">
               View All Corporate Gifting Items
             </Link>
           </div>
         </div>
       </div>
 
-      {/* Snackbar for Add to Cart Notification */}
       <Snackbar
         open={snackbarOpen}
         autoHideDuration={3000}

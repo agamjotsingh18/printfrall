@@ -1,88 +1,287 @@
-.hero-container {
-  height: 100vh;
-  background: url("https://images.unsplash.com/photo-1693031630157-7ecc8d06de63") no-repeat center center/cover;
+/* ===== MODERN HERO SECTION - CRYSTAL CLEAR ===== */
+
+.hero-modern {
+  width: 100%;
+  position: relative;
+  background-color: transparent; /* No blue background */
+  overflow: hidden;
+  margin-top: 54px;
+  height: auto;
+  min-height: 600px;
+}
+
+.hero-swiper-modern {
+  width: 100%;
+  height: auto;
+}
+
+.hero-slide-modern {
+  width: 100%;
   display: flex;
-  justify-content: center;
   align-items: center;
-  text-align: center;
-  color: white;
+  justify-content: center;
+  background-color: transparent;
 }
 
-.hero-content h1 {
-  font-size: 3rem;
-  font-weight: bold;
-  animation: fadeInDown 1s ease-in-out;
+.hero-image {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: contain;
+  image-rendering: auto;
+  image-rendering: high-quality;
+  image-rendering: crisp-edges;
 }
 
-.hero-content p {
-  font-size: 1.5rem;
-  margin: 0 0 30px 0;
-}
-
-.hero-btn {
-  padding: 10px 20px;
-  background-color: #ff6600;
-  color: white;
-  border: none;
-  cursor: pointer;
-  transition: 0.3s;
-  text-decoration: none;
-}
-
-.hero-btn:hover {
-  background-color: #ff9900;
-}
-
-@keyframes fadeInDown {
-  from {
-    opacity: 0;
-    transform: translateY(-30px);
+/* ===== FIXED HEIGHT ON DESKTOP (No Screen Overflow) ===== */
+@media (min-width: 1025px) {
+  .hero-modern {
+    height: 572px; /* Your original aspect ratio height */
+    max-height: 640px;
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+  
+  .hero-swiper-modern {
+    height: 100%;
+  }
+  
+  .hero-slide-modern {
+    height: 100%;
+  }
+  
+  .hero-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Only on desktop, controlled cropping */
   }
 }
 
-/* Responsive Adjustments */
-@media (max-width: 1024px) {
-  .hero-content h1 {
-    font-size: 2.5rem; /* Slightly smaller for tablets */
+/* ===== TABLET VIEW ===== */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .hero-modern {
+    height: 450px;
   }
-
-  .hero-content p {
-    font-size: 1.25rem; /* Slightly smaller for tablets */
+  
+  .hero-swiper-modern,
+  .hero-slide-modern {
+    height: 100%;
   }
-
-  .hero-btn {
-    padding: 8px 16px; /* Slightly smaller padding for tablets */
+  
+  .hero-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
 }
 
+/* ===== MOBILE VIEW - Full width, natural height ===== */
 @media (max-width: 768px) {
-  .hero-content h1 {
-    font-size: 2rem; /* Smaller for smaller tablets */
+  .hero-modern {
+    margin-top: 54px;
+    height: auto;
+    min-height: 175px;
   }
-
-  .hero-content p {
-    font-size: 1rem; /* Smaller for smaller tablets */
+  
+  .hero-image {
+    width: 100%;
+    height: auto;
+    object-fit: contain; /* Shows full image without cropping */
   }
-
-  .hero-btn {
-    padding: 6px 12px; /* Smaller padding for smaller tablets */
+  
+  /* Hide navigation arrows on mobile for cleaner look */
+  .swiper-button-next,
+  .swiper-button-prev {
+    display: none !important;
+  }
+  
+  /* Hide CTA button completely on mobile */
+  .hero-cta {
+    display: none !important;
   }
 }
 
-@media (max-width: 480px) {
-  .hero-content h1 {
-    font-size: 1.75rem; /* Smaller for mobile */
+/* ===== MINIMAL MODERN SWIPER ARROWS (Only on desktop/tablet) ===== */
+@media (min-width: 769px) {
+  .swiper-button-next,
+  .swiper-button-prev {
+    color: #ffffff !important;
+    background: rgba(255, 255, 255, 0.1);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    backdrop-filter: blur(8px);
+    transition: all 0.3s ease;
+    opacity: 0.7;
   }
 
-  .hero-content p {
-    font-size: 0.9rem; /* Smaller for mobile */
+  .swiper-button-next:hover,
+  .swiper-button-prev:hover {
+    background: rgba(112, 203, 151, 0.9);
+    opacity: 1;
+    transform: scale(1.05);
   }
 
-  .hero-btn {
-    padding: 5px 10px; /* Smaller padding for mobile */
+  .swiper-button-next:after,
+  .swiper-button-prev:after {
+    font-size: 18px !important;
+    font-weight: 300;
+  }
+  
+  /* Custom positioning for cleaner look */
+  .swiper-button-next {
+    right: 20px;
+  }
+  
+  .swiper-button-prev {
+    left: 20px;
+  }
+}
+
+/* Even more minimal on larger screens */
+@media (min-width: 1440px) {
+  .swiper-button-next,
+  .swiper-button-prev {
+    width: 48px;
+    height: 48px;
+    opacity: 0.5;
+  }
+  
+  .swiper-button-next:hover,
+  .swiper-button-prev:hover {
+    opacity: 1;
+  }
+  
+  .swiper-button-next:after,
+  .swiper-button-prev:after {
+    font-size: 20px !important;
+  }
+}
+
+/* ===== UNDERSCORE PAGINATION ===== */
+.swiper-pagination {
+  bottom: 20px !important;
+}
+
+.swiper-pagination-bullet {
+  width: 30px;
+  height: 3px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.6);
+  opacity: 1;
+  transition: all 0.3s ease;
+}
+
+.swiper-pagination-bullet-active {
+  width: 50px;
+  background: #70cb97;
+}
+
+/* ===== FLOATING CTA BUTTON ===== */
+.hero-cta {
+  position: absolute;
+  bottom: 10%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 20;
+  width: auto;
+  text-align: center;
+}
+
+.hero-btn-modern {
+  display: inline-block;
+  background-color: #70cb97;
+  color: white;
+  padding: 12px 36px;
+  border-radius: 40px;
+  font-weight: 600;
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+  white-space: nowrap;
+}
+
+.hero-btn-modern:hover {
+  background-color: #5cb67f;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* ===== RESPONSIVE CTA BUTTON (Tablet only) ===== */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .hero-cta {
+    bottom: 8%;
+  }
+  
+  .hero-btn-modern {
+    padding: 10px 30px;
+    font-size: 0.9rem;
+  }
+}
+
+/* Desktop CTA positioning */
+@media (min-width: 1025px) {
+  .hero-cta {
+    bottom: 12%;
+  }
+}
+
+
+/* Custom Minimal Arrows */
+.custom-prev,
+.custom-next {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  cursor: pointer;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(8px);
+  border-radius: 50%;
+  color: white;
+  transition: all 0.3s ease;
+  opacity: 0.6;
+}
+
+.custom-prev {
+  left: 20px;
+}
+
+.custom-next {
+  right: 20px;
+}
+
+.custom-prev:hover,
+.custom-next:hover {
+  background: rgba(112, 203, 151, 0.9);
+  opacity: 1;
+  transform: translateY(-50%) scale(1.05);
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  .custom-prev,
+  .custom-next {
+    width: 36px;
+    height: 36px;
+  }
+  
+  .custom-prev svg,
+  .custom-next svg {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+/* Hide custom arrows on mobile */
+@media (max-width: 768px) {
+  .custom-prev,
+  .custom-next {
+    display: none;
   }
 }

@@ -8,123 +8,175 @@ import {
   Grid,
   Snackbar,
   IconButton,
+  Chip,
+  Divider,
 } from "@mui/material";
-import { AddShoppingCart, Close } from "@mui/icons-material";
-import texturedBusinessCardImg from "../assets/textured-business-card.png"; // Main image
-import texturedBusinessCardImg2 from "../assets/textured-business-card.png"; // Extra image 1
-import texturedBusinessCardImg3 from "../assets/textured-business-card.png"; // Extra image 2
-import texturedBusinessCardImg4 from "../assets/textured-business-card.png"; // Extra image 3
-import texturedBusinessCardImg5 from "../assets/textured-business-card.png"; // Extra image 4
-import Zoom from "react-medium-image-zoom"; // For zoom functionality
-import "react-medium-image-zoom/dist/styles.css"; // Zoom styles
+import {
+  AddShoppingCart,
+  Close,
+  TouchApp,
+  WorkspacePremium,
+  Style,
+  AutoAwesome,
+} from "@mui/icons-material";
+import Zoom from "react-medium-image-zoom";
+import "react-medium-image-zoom/dist/styles.css";
+
+// Asset paths
+import texturedBusinessCardImg from "../assets/textured-business-card.png";
+import texturedBusinessCardImg2 from "../assets/textured-business-card-1.png";
+import texturedBusinessCardImg3 from "../assets/textured-business-card-2.jpeg";
+import texturedBusinessCardImg4 from "../assets/textured-business-card-3.png";
 
 const TexturedBusinessCard = ({ addToCart }) => {
-  // Define price mapping for each material
-  const priceMapping = {
-    "Linen Texture": 120,
-    "Cotton Texture": 140,
-    "Velvet Texture": 160,
-  };
+  const paperStocks = [
+    { name: "Linen Texture", desc: "Fine cross-hatch fabric feel", price: 180 },
+    { name: "Cotton Texture", desc: "Soft, organic premium touch", price: 210 },
+    { name: "Hammered Texture", desc: "Unique dimpled surface", price: 230 },
+    { name: "Laid Texture", desc: "Traditional ribbed paper finish", price: 200 },
+  ];
 
-  // Most popular material (default selection)
-  const defaultMaterial = "Linen Texture";
+  const sideOptions = ["Single-sided", "Double-sided"];
 
-  const [selectedMaterial, setSelectedMaterial] = useState(defaultMaterial);
-  const [mainImage, setMainImage] = useState(texturedBusinessCardImg); // State for main image
-  const [snackbarOpen, setSnackbarOpen] = useState(false); // State for Snackbar
-
-  const texturedBusinessCardDetails = {
-    name: "Textured Business Card",
-    image: texturedBusinessCardImg,
+  const cardDetails = {
+    name: "Textured Business Cards",
     description:
-      "Elevate your brand with our premium textured business cards. Unique textures and high-quality finishes make your cards stand out.",
+      "Impress with quality you can feel. Our textured cards offer a tactile experience that sets your brand apart, making every physical interaction a memorable one. Ideal for luxury, fashion, and high-end hospitality branding.",
     features: [
-      "Unique texture finishes",
-      "Custom designs",
-      "Quick turnaround time",
-      "Durable and professional",
+      "Size: 3.5 x 2 inches (Standard business card)",
+      "Paper: Linen, Cotton, Hammered, or Laid texture",
+      "Printing: Single‑sided or double‑sided (CMYK)",
+      "Finish: Tactile, premium textured surface",
+      "Digital high‑resolution vivid printing",
+      "Quantity: Pack of 50 cards (MOQ)",
+      "Perfect for luxury brands, fashion, hospitality, and creative agencies",
     ],
-    materials: ["Linen Texture", "Cotton Texture", "Velvet Texture"],
-    extraImages: [texturedBusinessCardImg2, texturedBusinessCardImg3, texturedBusinessCardImg4, texturedBusinessCardImg5], // Extra images
+    tags: ["Tactile Finish", "Premium Stock", "Textured"],
   };
 
-  // Calculate price based on selected material
-  const price = priceMapping[selectedMaterial];
+  const [selectedPaper, setSelectedPaper] = useState(paperStocks[0]);
+  const [selectedSide, setSelectedSide] = useState("Single-sided");
+  const [mainImage, setMainImage] = useState(texturedBusinessCardImg);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+
+  const totalPrice = selectedPaper.price + (selectedSide === "Double-sided" ? 120 : 0);
+  const moq = 50;
+
+  const thumbnailImages = [
+    texturedBusinessCardImg,
+    texturedBusinessCardImg2,
+    texturedBusinessCardImg3,
+    texturedBusinessCardImg4,
+  ];
 
   const handleAddToCart = () => {
     const item = {
-      ...texturedBusinessCardDetails,
-      selectedMaterial,
-      price, // Use the dynamically calculated price
-      quantity: 1, // Default quantity
+      name: cardDetails.name,
+      size: "3.5 x 2 inches",
+      material: selectedPaper.name,
+      sides: selectedSide,
+      price: totalPrice,
+      quantity: moq,
+      image: mainImage,
     };
-
-    addToCart(item); // Add the item to the cart
-    setSnackbarOpen(true); // Show Snackbar for confirmation
+    addToCart(item);
+    setSnackbarOpen(true);
   };
 
-  const handleCloseSnackbar = () => {
-    setSnackbarOpen(false);
-  };
+  const handleCloseSnackbar = () => setSnackbarOpen(false);
 
   return (
-    <Container sx={{ py: 6, maxWidth: 1200, margin: "40px auto 0 auto" }}>
+    <Container
+      sx={{
+        py: 6,
+        maxWidth: 1200,
+        margin: "40px auto 0 auto",
+        px: { xs: 2, md: 3 },
+      }}
+    >
       <Grid container spacing={4}>
-        {/* Image Section */}
+        {/* Left Side: Gallery */}
         <Grid item xs={12} md={6}>
           <Paper
             sx={{
               p: 2,
-              borderRadius: "10px",
-              boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.1)",
+              borderRadius: "16px",
+              boxShadow: "0px 8px 24px rgba(0, 0, 0, 0.08)",
+              bgcolor: "#fff",
             }}
           >
-            {/* Main Image with Zoom */}
+            {/* Inline chips (no absolute positioning) */}
+            <Box sx={{ display: "flex", gap: 1, mb: 2 }}>
+              {cardDetails.tags.map((tag, idx) => (
+                <Chip
+                  key={idx}
+                  label={tag}
+                  size="small"
+                  icon={
+                    tag === "Tactile Finish" ? (
+                      <TouchApp fontSize="small" />
+                    ) : tag === "Premium Stock" ? (
+                      <WorkspacePremium fontSize="small" />
+                    ) : (
+                      <AutoAwesome fontSize="small" />
+                    )
+                  }
+                  sx={{
+                    backgroundColor: "rgba(112, 203, 151, 0.1)",
+                    color: "#70CB97",
+                    fontWeight: "bold",
+                    borderRadius: 2,
+                  }}
+                />
+              ))}
+            </Box>
+
             <Zoom>
               <img
                 src={mainImage}
-                alt={texturedBusinessCardDetails.name}
+                alt="Textured Card Preview"
                 style={{
                   width: "100%",
-                  borderRadius: "10px",
+                  borderRadius: "12px",
                   cursor: "zoom-in",
                   maxHeight: "400px",
-                  objectFit: "cover",
+                  objectFit: "contain",
                 }}
               />
             </Zoom>
 
-            {/* Extra Images Gallery */}
+            {/* Thumbnail Gallery */}
             <Box
               sx={{
                 display: "flex",
                 gap: 2,
                 mt: 2,
-                overflowX: "auto", // Horizontal scroll for small screens
-                "&::-webkit-scrollbar": { display: "none" }, // Hide scrollbar
+                overflowX: "auto",
+                "&::-webkit-scrollbar": { display: "none" },
               }}
             >
-              {texturedBusinessCardDetails.extraImages.map((image, index) => (
+              {thumbnailImages.map((img, idx) => (
                 <Paper
-                  key={index}
-                  onClick={() => setMainImage(image)}
+                  key={idx}
+                  onClick={() => setMainImage(img)}
                   sx={{
                     p: 1,
-                    borderRadius: "8px",
-                    boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+                    borderRadius: "10px",
                     cursor: "pointer",
-                    border: mainImage === image ? "2px solid #ff6600" : "none",
-                    "&:hover": { border: "2px solid #ff6600" },
-                    flexShrink: 0, // Prevent shrinking on small screens
+                    border:
+                      mainImage === img ? "2px solid #70CB97" : "2px solid transparent",
+                    "&:hover": { border: "2px solid #70CB97" },
+                    flexShrink: 0,
+                    transition: "all 0.2s",
                   }}
                 >
                   <img
-                    src={image}
-                    alt={`Textured Business Card ${index + 1}`}
+                    src={img}
+                    alt={`view ${idx + 1}`}
                     style={{
-                      width: "100px",
-                      height: "100px",
-                      borderRadius: "6px",
+                      width: "90px",
+                      height: "90px",
+                      borderRadius: "8px",
                       objectFit: "cover",
                     }}
                   />
@@ -134,89 +186,191 @@ const TexturedBusinessCard = ({ addToCart }) => {
           </Paper>
         </Grid>
 
-        {/* Details Section */}
+        {/* Right Side: Details */}
         <Grid item xs={12} md={6}>
-          <Typography variant="h4" sx={{ fontWeight: "bold", mb: 2 }}>
-            {texturedBusinessCardDetails.name}
-          </Typography>
-          <Typography variant="h5" sx={{ color: "#ff6600", fontWeight: "bold", mb: 3 }}>
-            ₹{price} {/* Display dynamic price */}
-          </Typography>
-          <Typography variant="body1" sx={{ mb: 3 }}>
-            {texturedBusinessCardDetails.description}
-          </Typography>
-
-          {/* Features */}
-          <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2 }}>
-            Features:
-          </Typography>
-          <ul style={{ marginLeft: "20px", marginBottom: "20px" }}>
-            {texturedBusinessCardDetails.features.map((feature, index) => (
-              <li key={index}>
-                <Typography variant="body1">{feature}</Typography>
-              </li>
-            ))}
-          </ul>
-
-          {/* Materials */}
-          <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2 }}>
-            Available Materials:
-          </Typography>
-          <Box
+          <Typography
+            variant="h4"
             sx={{
-              display: "flex",
-              gap: 2,
-              mb: 4,
-              flexWrap: "wrap", // Wrap materials on small screens
+              fontWeight: 700,
+              mb: 1,
+              color: "#19485D",
+              fontSize: { xs: "1.8rem", md: "2.5rem" },
             }}
           >
-            {texturedBusinessCardDetails.materials.map((material, index) => (
+            {cardDetails.name}
+          </Typography>
+
+          <Typography
+            variant="h5"
+            sx={{
+              color: "#70CB97",
+              fontWeight: "bold",
+              mb: 3,
+              fontSize: { xs: "1.5rem", md: "2rem" },
+            }}
+          >
+            ₹{totalPrice} <Typography variant="caption" sx={{ color: "#5a6e7a" }}>/ {moq} cards</Typography>
+          </Typography>
+
+          <Typography variant="body1" sx={{ mb: 3, color: "#1e2a32", lineHeight: 1.6 }}>
+            {cardDetails.description}
+          </Typography>
+
+          <Divider sx={{ mb: 3 }} />
+
+          {/* Textured Stock Selection (pill‑shaped grid) */}
+          <Typography
+            variant="h6"
+            sx={{
+              fontWeight: 600,
+              mb: 2,
+              color: "#19485D",
+              fontSize: "1.1rem",
+              display: "flex",
+              alignItems: "center",
+              gap: 1,
+            }}
+          >
+            <Style fontSize="small" /> Select Textured Stock
+          </Typography>
+          <Grid container spacing={1.5} sx={{ mb: 4 }}>
+            {paperStocks.map((paper) => (
+              <Grid item xs={6} key={paper.name}>
+                <Paper
+                  onClick={() => setSelectedPaper(paper)}
+                  sx={{
+                    p: 1.5,
+                    textAlign: "center",
+                    borderRadius: "40px",
+                    cursor: "pointer",
+                    bgcolor: selectedPaper.name === paper.name ? "#70CB97" : "#fff",
+                    color: selectedPaper.name === paper.name ? "#fff" : "#19485D",
+                    border: "1px solid #e0e7ed",
+                    transition: "all 0.2s",
+                    "&:hover": {
+                      bgcolor: selectedPaper.name === paper.name ? "#5cb67f" : "#f0f9f3",
+                      transform: "translateY(-2px)",
+                    },
+                  }}
+                >
+                  <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                    {paper.name}
+                  </Typography>
+                  <Typography variant="caption" sx={{ display: "block", opacity: 0.8 }}>
+                    {paper.desc}
+                  </Typography>
+                </Paper>
+              </Grid>
+            ))}
+          </Grid>
+
+          {/* Print Options (pill‑shaped) */}
+          <Typography
+            variant="h6"
+            sx={{ fontWeight: 600, mb: 2, color: "#19485D", fontSize: "1.1rem" }}
+          >
+            Print Options
+          </Typography>
+          <Box sx={{ display: "flex", gap: 1.5, mb: 4, flexWrap: "wrap" }}>
+            {sideOptions.map((side) => (
               <Paper
-                key={index}
-                onClick={() => setSelectedMaterial(material)}
+                key={side}
+                onClick={() => setSelectedSide(side)}
                 sx={{
+                  flex: 1,
                   p: 1.5,
-                  borderRadius: "8px",
                   textAlign: "center",
-                  fontWeight: "bold",
-                  boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+                  borderRadius: "40px",
+                  fontWeight: 600,
                   cursor: "pointer",
-                  backgroundColor: selectedMaterial === material ? "#ff6600" : "white",
-                  color: selectedMaterial === material ? "white" : "inherit",
-                  flex: "1 1 100px", // Flexible sizing for responsiveness
+                  bgcolor: selectedSide === side ? "#70CB97" : "#fff",
+                  color: selectedSide === side ? "#fff" : "#19485D",
+                  border: "1px solid #e0e7ed",
+                  transition: "all 0.2s",
+                  "&:hover": {
+                    bgcolor: selectedSide === side ? "#5cb67f" : "#f0f9f3",
+                    transform: "translateY(-2px)",
+                  },
                 }}
               >
-                {material}
+                {side}
               </Paper>
             ))}
           </Box>
 
-          {/* Add to Cart Button */}
+          {/* Specifications Panel */}
+          <Paper
+            sx={{
+              p: 3,
+              bgcolor: "#f8fafc",
+              mb: 4,
+              borderRadius: "16px",
+              border: "1px solid #e0e7ed",
+            }}
+          >
+            <Typography variant="subtitle1" sx={{ fontWeight: 700, mb: 2, color: "#19485D" }}>
+              Product Specifications:
+            </Typography>
+            {cardDetails.features.map((feature, i) => (
+              <Box key={i} sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
+                <span
+                  style={{
+                    display: "inline-block",
+                    width: "6px",
+                    height: "6px",
+                    backgroundColor: "#70CB97",
+                    borderRadius: "50%",
+                  }}
+                ></span>
+                <Typography variant="body2" sx={{ color: "#5a6e7a" }}>
+                  {feature}
+                </Typography>
+              </Box>
+            ))}
+          </Paper>
+
           <Button
             variant="contained"
+            fullWidth
             startIcon={<AddShoppingCart />}
             sx={{
-              background: "#ff6600",
+              background: "#70CB97",
               color: "white",
-              fontWeight: "bold",
-              fontSize: "16px",
-              padding: "12px 24px",
-              "&:hover": { background: "#ff8c42" },
-              width: { xs: "100%", md: "auto" }, // Full width on small screens
+              fontWeight: 700,
+              fontSize: "1rem",
+              py: 1.8,
+              borderRadius: "40px",
+              textTransform: "none",
+              boxShadow: "0px 4px 12px rgba(112, 203, 151, 0.3)",
+              "&:hover": {
+                background: "#5cb67f",
+                transform: "translateY(-2px)",
+                boxShadow: "0px 6px 16px rgba(112, 203, 151, 0.4)",
+              },
             }}
             onClick={handleAddToCart}
           >
-            Add to Cart
+            Add Pack of {moq} to Cart – ₹{totalPrice}
           </Button>
+
+          <Typography
+            variant="caption"
+            sx={{ display: "block", mt: 2, textAlign: "center", color: "#5a6e7a" }}
+          >
+            * Premium digital printing. Custom quantities and finishes available.
+          </Typography>
         </Grid>
       </Grid>
 
-      {/* Snackbar for Notifications */}
       <Snackbar
         open={snackbarOpen}
         autoHideDuration={3000}
         onClose={handleCloseSnackbar}
-        message="Item added to cart!"
+        message="✓ Textured cards added to selection!"
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        sx={{
+          "& .MuiSnackbarContent-root": { backgroundColor: "#19485D", borderRadius: "40px" },
+        }}
         action={
           <IconButton size="small" color="inherit" onClick={handleCloseSnackbar}>
             <Close fontSize="small" />

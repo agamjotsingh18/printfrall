@@ -42,8 +42,8 @@ const products = [
         link: "/services/business-essentials/letterheads/prescription-note-pad"
     },
     {
-        name: "#10 Envelope (long)",
-        link: "/services/business-essentials/envelopes/hash10-envelope-(long)"
+        name: "hash10 Envelope",
+        link: "/services/business-essentials/envelopes/hash10-envelope"
     },
     {
         name: "A5 Envelope",

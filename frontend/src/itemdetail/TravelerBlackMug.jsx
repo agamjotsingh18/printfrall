@@ -8,49 +8,51 @@ import {
   Grid,
   Snackbar,
   IconButton,
-  Chip
+  Chip,
 } from "@mui/material";
 import { AddShoppingCart, Close, Public } from "@mui/icons-material";
-import travelerMugImg from "../assets/traveler-black-mug.png";
-import travelerMugImg2 from "../assets/traveler-black-mug.png";
-import travelerMugImg3 from "../assets/traveler-black-mug.png";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
 
+// ========== MAIN PRODUCT IMAGE ==========
+import mainImg from "../assets/traveler-black-mug.png";
+
+// ========== EXTRA ANGLES ==========
+import img2 from "../assets/traveler-black-mug.png";
+import img3 from "../assets/traveler-black-mug-1.png";
+import img4 from "../assets/traveler-black-mug-2.png";
+
 const TravelerBlackMug = ({ addToCart }) => {
   const price = 599;
-  const availableDesigns = [
-    "World Map", 
-    "Compass", 
-    "Landmarks"
-  ];
-
+  const availableDesigns = ["World Map", "Compass", "Landmarks"];
   const defaultDesign = "World Map";
 
   const [selectedDesign, setSelectedDesign] = useState(defaultDesign);
-  const [mainImage, setMainImage] = useState(travelerMugImg);
+  const [mainImage, setMainImage] = useState(mainImg);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   const travelerMugDetails = {
     name: "Traveler Black Mug",
-    image: travelerMugImg,
+    image: mainImg,
     description:
-      "Premium ceramic travel mug with inspirational designs for the global professional. Features a comfortable grip and elegant design that's perfect for home, office, or travel.",
+      "A premium ceramic travel mug featuring inspirational global designs for the modern professional. Built for elegance and comfort, it's the perfect companion for your home office or global journey.",
     features: [
-      "450ml capacity",
-      "Premium ceramic with glossy finish",
+      "380ml High Capacity",
+      "Premium ceramic with a sleek glossy finish",
       "Microwave and dishwasher safe",
-      "Comfortable ergonomic handle",
-      "Custom text imprinting available",
-      "Gift box packaging included"
+      "Ergonomic handle for a comfortable grip",
+      "Custom text and logo imprinting available",
+      "Premium gift box packaging included",
+      "Lead-free and eco-friendly materials",
     ],
-    extraImages: [travelerMugImg2, travelerMugImg3],
-    tags: ["Travel", "Inspirational", "Premium"]
+    extraImages: [img2, img3, img4],
+    tags: ["Global", "Inspirational", "Premium"],
   };
 
   const handleAddToCart = () => {
     const item = {
       ...travelerMugDetails,
+      selectedMaterial: selectedDesign,   // for cart display
       selectedDesign,
       price,
       quantity: 1,
@@ -59,90 +61,237 @@ const TravelerBlackMug = ({ addToCart }) => {
     setSnackbarOpen(true);
   };
 
-  const handleCloseSnackbar = () => {
-    setSnackbarOpen(false);
-  };
+  const handleCloseSnackbar = () => setSnackbarOpen(false);
 
   return (
-    <Container sx={{ py: 6, maxWidth: 1200, margin: "40px auto 0 auto", px: { xs: 2, md: 3 }}}>
+    <Container
+      sx={{
+        py: 6,
+        maxWidth: 1200,
+        margin: "40px auto 0 auto",
+        px: { xs: 2, md: 3 },
+      }}
+    >
       <Grid container spacing={4}>
+        {/* Image Gallery */}
         <Grid item xs={12} md={6}>
-          <Paper sx={{ p: 2, borderRadius: "10px", boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.1)", position: "relative" }}>
-            <Box sx={{ display: 'flex', gap: 1, mb: 2 }}>
-              {travelerMugDetails.tags.map((tag, index) => (
-                <Chip 
-                  key={index}
+          <Paper
+            sx={{
+              p: 2,
+              borderRadius: "16px",
+              boxShadow: "0px 8px 24px rgba(0, 0, 0, 0.08)",
+              bgcolor: "#fff",
+            }}
+          >
+            <Box sx={{ display: "flex", gap: 1, mb: 2 }}>
+              {travelerMugDetails.tags.map((tag, idx) => (
+                <Chip
+                  key={idx}
                   label={tag}
                   size="small"
-                  icon={tag === "Travel" ? <Public fontSize="small" /> : null}
-                  sx={{ backgroundColor: "#3e2723", color: "white", fontWeight: 'bold' }}
+                  icon={tag === "Global" ? <Public fontSize="small" /> : null}
+                  sx={{
+                    backgroundColor: "rgba(112, 203, 151, 0.1)",
+                    color: "#70CB97",
+                    fontWeight: "bold",
+                    borderRadius: 2,
+                  }}
                 />
               ))}
             </Box>
-            
+
             <Zoom>
-              <img src={mainImage} alt={travelerMugDetails.name} style={{ width: "100%", borderRadius: "8px", cursor: "zoom-in", maxHeight: "400px", objectFit: "contain" }} />
+              <img
+                src={mainImage}
+                alt={travelerMugDetails.name}
+                style={{
+                  width: "100%",
+                  borderRadius: "12px",
+                  cursor: "zoom-in",
+                  maxHeight: "400px",
+                  objectFit: "contain",
+                }}
+              />
             </Zoom>
 
-            <Box sx={{ display: "flex", gap: 2, mt: 2, overflowX: "auto", "&::-webkit-scrollbar": { display: "none" }}}>
-              {travelerMugDetails.extraImages.map((image, index) => (
-                <Paper key={index} onClick={() => setMainImage(image)} sx={{ p: 1, borderRadius: "8px", boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)", cursor: "pointer", border: mainImage === image ? "2px solid #3e2723" : "none", "&:hover": { border: "2px solid #3e2723" }, flexShrink: 0 }}>
-                  <img src={image} alt={`Traveler Black Mug ${index + 1}`} style={{ width: "100px", height: "100px", borderRadius: "6px", objectFit: "cover" }} />
+            {/* Thumbnail Gallery */}
+            <Box
+              sx={{
+                display: "flex",
+                gap: 2,
+                mt: 2,
+                overflowX: "auto",
+                "&::-webkit-scrollbar": { display: "none" },
+              }}
+            >
+              {travelerMugDetails.extraImages.map((img, idx) => (
+                <Paper
+                  key={idx}
+                  onClick={() => setMainImage(img)}
+                  sx={{
+                    p: 1,
+                    borderRadius: "10px",
+                    cursor: "pointer",
+                    border:
+                      mainImage === img ? "2px solid #70CB97" : "2px solid transparent",
+                    "&:hover": { border: "2px solid #70CB97" },
+                    flexShrink: 0,
+                    transition: "all 0.2s",
+                  }}
+                >
+                  <img
+                    src={img}
+                    alt={`view ${idx + 1}`}
+                    style={{
+                      width: "90px",
+                      height: "90px",
+                      borderRadius: "8px",
+                      objectFit: "cover",
+                    }}
+                  />
                 </Paper>
               ))}
             </Box>
           </Paper>
         </Grid>
 
+        {/* Product Details */}
         <Grid item xs={12} md={6}>
-          <Typography variant="h4" sx={{ fontWeight: "bold", mb: 2, fontSize: { xs: "1.8rem", md: "2.5rem" }}}>
+          <Typography
+            variant="h4"
+            sx={{ fontWeight: 700, mb: 1, color: "#19485D", fontSize: { xs: "1.8rem", md: "2.5rem" } }}
+          >
             {travelerMugDetails.name}
           </Typography>
-          
-          <Typography variant="h5" sx={{ color: "#3e2723", fontWeight: "bold", mb: 3, fontSize: { xs: "1.5rem", md: "2rem" }}}>
+
+          <Typography
+            variant="h5"
+            sx={{ color: "#70CB97", fontWeight: "bold", mb: 3, fontSize: { xs: "1.5rem", md: "2rem" } }}
+          >
             ₹{price}
           </Typography>
-          
-          <Typography variant="body1" sx={{ mb: 3, lineHeight: 1.6 }}>
+
+          <Typography
+            variant="body1"
+            sx={{ mb: 3, color: "#1e2a32", lineHeight: 1.6 }}
+          >
             {travelerMugDetails.description}
           </Typography>
 
-          <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2, fontSize: { xs: "1.2rem", md: "1.5rem" }}}>
-            Features:
+          {/* Key Features */}
+          <Typography
+            variant="h6"
+            sx={{ fontWeight: 600, mb: 2, color: "#19485D", fontSize: { xs: "1.2rem", md: "1.5rem" } }}
+          >
+            Key Features:
           </Typography>
-          <ul style={{ marginLeft: "20px", marginBottom: "20px", listStyleType: "none", padding: 0 }}>
-            {travelerMugDetails.features.map((feature, index) => (
-              <li key={index} style={{ marginBottom: "8px" }}>
-                <Typography variant="body1" sx={{ display: 'flex', alignItems: 'center' }}>
-                  <span style={{ display: 'inline-block', width: '6px', height: '6px', backgroundColor: "#3e2723", borderRadius: '50%', marginRight: '8px' }}></span>
+          <Box component="ul" sx={{ ml: 2, mb: 3, listStyleType: "none", p: 0 }}>
+            {travelerMugDetails.features.map((feature, idx) => (
+              <li key={idx} style={{ marginBottom: "8px" }}>
+                <Typography variant="body1" sx={{ display: "flex", alignItems: "center", color: "#5a6e7a" }}>
+                  <span
+                    style={{
+                      display: "inline-block",
+                      width: "6px",
+                      height: "6px",
+                      backgroundColor: "#70CB97",
+                      borderRadius: "50%",
+                      marginRight: "8px",
+                    }}
+                  ></span>
                   {feature}
                 </Typography>
               </li>
             ))}
-          </ul>
+          </Box>
 
-          <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2, fontSize: { xs: "1.2rem", md: "1.5rem" }}}>
-            Design Options:
+          {/* Available Designs */}
+          <Typography
+            variant="h6"
+            sx={{ fontWeight: 600, mb: 2, color: "#19485D", fontSize: { xs: "1.2rem", md: "1.5rem" } }}
+          >
+            Available Designs:
           </Typography>
           <Box sx={{ display: "flex", gap: 2, mb: 4, flexWrap: "wrap" }}>
-            {availableDesigns.map((design, index) => (
-              <Paper key={index} onClick={() => setSelectedDesign(design)} sx={{ p: 1.5, borderRadius: "8px", textAlign: "center", fontWeight: "bold", boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)", cursor: "pointer", backgroundColor: selectedDesign === design ? "#3e2723" : "white", color: selectedDesign === design ? "white" : "inherit", flex: "1 1 100px" }}>
+            {availableDesigns.map((design, idx) => (
+              <Paper
+                key={idx}
+                onClick={() => setSelectedDesign(design)}
+                sx={{
+                  p: 1.5,
+                  px: 2.5,
+                  borderRadius: "40px",
+                  textAlign: "center",
+                  fontWeight: 600,
+                  cursor: "pointer",
+                  bgcolor: selectedDesign === design ? "#70CB97" : "#fff",
+                  color: selectedDesign === design ? "#fff" : "#19485D",
+                  border: "1px solid #e0e7ed",
+                  transition: "all 0.2s",
+                  "&:hover": {
+                    bgcolor: selectedDesign === design ? "#5cb67f" : "#f0f9f3",
+                    transform: "translateY(-2px)",
+                  },
+                }}
+              >
                 {design}
               </Paper>
             ))}
           </Box>
 
-          <Button variant="contained" startIcon={<AddShoppingCart />} sx={{ background: "#3e2723", color: "white", fontWeight: "bold", fontSize: { xs: "0.9rem", md: "1rem" }, padding: { xs: "12px 20px", md: "14px 28px" }, "&:hover": { background: "#260e04", transform: "translateY(-2px)" }, width: { xs: "100%", md: "auto" }, borderRadius: "8px", boxShadow: "0 4px 12px rgba(62, 39, 35, 0.3)", transition: 'all 0.2s ease' }} onClick={handleAddToCart}>
+          {/* Add to Cart Button */}
+          <Button
+            variant="contained"
+            startIcon={<AddShoppingCart />}
+            sx={{
+              background: "#70CB97",
+              color: "white",
+              fontWeight: 700,
+              fontSize: { xs: "0.9rem", md: "1rem" },
+              padding: { xs: "12px 20px", md: "12px 28px" },
+              borderRadius: "40px",
+              textTransform: "none",
+              boxShadow: "0px 4px 12px rgba(112, 203, 151, 0.3)",
+              "&:hover": {
+                background: "#5cb67f",
+                transform: "translateY(-2px)",
+              },
+              width: { xs: "100%", md: "auto" },
+              transition: "all 0.2s ease",
+            }}
+            onClick={handleAddToCart}
+          >
             Add to Cart
           </Button>
 
-          <Typography variant="body2" sx={{ mt: 2, color: "#3e2723", fontStyle: 'italic', fontWeight: '500' }}>
-            * Custom text imprinting available with 5-7 business day processing
+          <Typography
+            variant="body2"
+            sx={{ mt: 2, color: "#5a6e7a", fontStyle: "italic", textAlign: "center" }}
+          >
+            * Custom imprinting available via PrintfrAll High-Resolution Technology.
           </Typography>
         </Grid>
       </Grid>
 
-      <Snackbar open={snackbarOpen} autoHideDuration={3000} onClose={handleCloseSnackbar} message="Traveler Black Mug added to cart!" action={<IconButton size="small" color="inherit" onClick={handleCloseSnackbar} sx={{ "&:hover": { backgroundColor: "rgba(255,255,255,0.1)" } }}><Close fontSize="small" /></IconButton>} sx={{ "& .MuiSnackbarContent-root": { backgroundColor: "#3e2723", color: "white", borderRadius: "8px", fontWeight: 500 } }} />
+      {/* Snackbar */}
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={3000}
+        onClose={handleCloseSnackbar}
+        message="✓ Traveler Mug added to cart!"
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        sx={{
+          "& .MuiSnackbarContent-root": {
+            backgroundColor: "#19485D",
+            borderRadius: "40px",
+          },
+        }}
+        action={
+          <IconButton size="small" color="inherit" onClick={handleCloseSnackbar}>
+            <Close fontSize="small" />
+          </IconButton>
+        }
+      />
     </Container>
   );
 };

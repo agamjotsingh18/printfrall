@@ -13,7 +13,7 @@ import silverFoilingStickers from "../assets/silver-foiling-stickers.png";
 import domeStickers from "../assets/dome-stickers.png";
 import frontAdhesiveStickers from "../assets/front-adhesive-stickers.png";
 import customOpaqueStickers from "../assets/custom-opaque-stickers.png";
-import clearStickers from "../assets/clear-stickers.png";
+import clearStickers from "../assets/clear-sticker-2.png";
 
 const stickerTypes = [
   { name: "Matte Laminated Stickers", image: matteLaminatedStickers, price: 10, route: "/services/packaging-labels/stickers/matte-laminated-stickers" },
@@ -50,10 +50,13 @@ const Stickers = ({ addToCart }) => {
               sx={{
                 fontSize: "1.2rem",
                 color: "white",
-                background: "#ff6600",
+                background: "#70CB97", // brand green
                 padding: "10px",
                 borderRadius: "10px",
-                "&:hover": { transform: "scale(1.1)", color: "#ff6600" },
+                "&:hover": {
+                  transform: "scale(1.1)",
+                  background: "#5cb67f", // darker green
+                },
               }}
               onClick={() => handleAddToCart(sticker)}
             >

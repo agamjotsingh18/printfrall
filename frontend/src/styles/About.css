@@ -14,7 +14,7 @@
   }
   
   .highlight {
-    color: #e74c3c;
+  color: var(--color-green);
     font-weight: bold;
   }
   
@@ -44,7 +44,7 @@
   
   .stat-item h2 {
     font-size: 3rem;
-    color: #e74c3c;
+  color: var(--color-green);
     margin-bottom: 10px;
   }
   

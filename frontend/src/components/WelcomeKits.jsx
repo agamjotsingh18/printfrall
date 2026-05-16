@@ -6,12 +6,11 @@ import "../styles/WelcomeKits.css";
 
 // Import images for kits (replace with actual image paths)
 import corporateExecutiveKitImg from "../assets/welcome-kits.png";
-import creativeProfessionalKitImg from "../assets/welcome-kits.png";
-import ecoFriendlyKitImg from "../assets/welcome-kits.png";
-import startupEssentialsKitImg from "../assets/welcome-kits.png";
-import customWelcomeKitImg from "../assets/custom-welcome-kit.png"; // Import the custom kit image
+import creativeProfessionalKitImg from "../assets/creative-kit-2.png";
+import ecoFriendlyKitImg from "../assets/eco-kit-3.png";
+import startupEssentialsKitImg from "../assets/startup-kit-2.png";
+import customWelcomeKitImg from "../assets/custom-welcome-kit.png"; 
 
-// Import images for customizable items (replace with actual image paths)
 import matteFinishDiariesImg from "../assets/matte-finish-diaries.png";
 import vintageTanDiariesImg from "../assets/vintage-tan-diaries.png";
 import fauxLeatherDiariesImg from "../assets/faux-leather-diaries.png";
@@ -132,6 +131,7 @@ const WelcomeKits = ({ addToCart }) => {
       ],
     },
   ];
+
   // Customizable items data
   const customizableItems = {
     "Notebooks/Diaries": [
@@ -235,7 +235,7 @@ const WelcomeKits = ({ addToCart }) => {
   const handleAddCustomKitToCart = () => {
     const customKit = {
       name: "Custom Kit",
-      image: customWelcomeKitImg, // Use the imported image
+      image: customWelcomeKitImg,
       items: selectedItems,
       price: calculateTotalPrice(),
     };
@@ -244,40 +244,43 @@ const WelcomeKits = ({ addToCart }) => {
 
   return (
     <section className="welcome-kits">
-    <h2 className="section-title">Welcome Kits</h2>
-    <p className="section-subtitle">Our best-selling kits for every need</p>
+      <h2 className="section-title">Welcome Kits</h2>
+      <p className="section-subtitle">Our best-selling kits for every need</p>
 
-    {/* Main Kits Section - Updated with Links */}
-    <div className="main-kits-container">
-      {mainKits.map((kit, index) => (
-        <div key={index} className="kit-card">
-          <Link to={kit.route} className="kit-link">
-            <img src={kit.image} alt={kit.name} className="kit-image" />
-            <h3 className="kit-name">{kit.name}</h3>
-            <p className="kit-price">₹{kit.price}</p>
-            <ul className="kit-items">
-              {kit.items.map((item, i) => (
-                <li key={i}>{item}</li>
-              ))}
-            </ul>
-          </Link>
-          <IconButton
-            sx={{
-              fontSize: "1.2rem",
-              color: "white",
-              background: "#ff6600",
-              padding: "10px",
-              borderRadius: "10px",
-              "&:hover": { transform: "scale(1.1)", color: "#ff6600" },
-            }}
-            onClick={() => addToCart(kit)}
-          >
-            Add to Cart &nbsp;
-            <AddShoppingCartIcon />
-          </IconButton>
-        </div>
-      ))}
-    </div>
+      {/* Main Kits Section - Updated with Links */}
+      <div className="main-kits-container">
+        {mainKits.map((kit, index) => (
+          <div key={index} className="kit-card">
+            <Link to={kit.route} className="kit-link">
+              <img src={kit.image} alt={kit.name} className="kit-image" />
+              <h3 className="kit-name">{kit.name}</h3>
+              <p className="kit-price">₹{kit.price}</p>
+              <ul className="kit-items">
+                {kit.items.map((item, i) => (
+                  <li key={i}>{item}</li>
+                ))}
+              </ul>
+            </Link>
+            <IconButton
+              sx={{
+                fontSize: "1.2rem",
+                color: "white",
+                background: "#70CB97", // brand green
+                padding: "10px",
+                borderRadius: "10px",
+                "&:hover": {
+                  transform: "scale(1.1)",
+                  background: "#5cb67f", // darker green
+                },
+              }}
+              onClick={() => addToCart(kit)}
+            >
+              Add to Cart &nbsp;
+              <AddShoppingCartIcon />
+            </IconButton>
+          </div>
+        ))}
+      </div>
 
       {/* Customizable Kit Section */}
       <h2 className="section-title">Create Your Custom Kit</h2>
@@ -318,10 +321,13 @@ const WelcomeKits = ({ addToCart }) => {
             sx={{
               fontSize: "1.2rem",
               color: "white",
-              background: "#ff6600",
+              background: "#70CB97",
               padding: "10px",
               borderRadius: "10px",
-              "&:hover": { transform: "scale(1.1)", color: "#ff6600" },
+              "&:hover": {
+                transform: "scale(1.1)",
+                background: "#5cb67f",
+              },
             }}
             onClick={handleAddCustomKitToCart}
           >

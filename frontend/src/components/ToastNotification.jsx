@@ -8,7 +8,7 @@ const ToastNotification = ({ message, onClose }) => {
     const timer = setTimeout(() => {
       setVisible(false);
       onClose();
-    }, 3000); // Hide after 3 seconds
+    }, 3000); 
 
     return () => clearTimeout(timer);
   }, [onClose]);
