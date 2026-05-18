@@ -18,11 +18,6 @@ app.use(cors({
 }));
 app.use(express.json());
 
-// Log startup
-console.log('=== SERVER STARTING ===');
-console.log('PORT:', PORT);
-console.log('SENDGRID_API_KEY:', process.env.SENDGRID_API_KEY ? '✅ Set' : '❌ Missing');
-
 // Health check endpoint
 app.get("/", (req, res) => {
   res.json({
@@ -66,7 +61,6 @@ app.post("/subscribe", async (req, res) => {
 
   // Check for duplicate email
   if (subscribedEmails.has(email)) {
-    console.log('⚠️ Duplicate subscription attempt:', email);
     return res.status(400).json({ 
       success: false,
       error: "This email is already subscribed to our newsletter!" 
@@ -177,7 +171,6 @@ P.S. Check out our website for amazing printing deals!`,
     // Send welcome email to subscriber
     try {
       await sgMail.send(welcomeMsg);
-      console.log('✅ Welcome email sent to subscriber:', email);
     } catch (welcomeError) {
       console.warn('⚠️ Could not send welcome email:', welcomeError.message);
       // Don't fail the subscription if welcome email fails
@@ -186,7 +179,6 @@ P.S. Check out our website for amazing printing deals!`,
     // Store email in memory (replace with database in production)
     subscribedEmails.add(email);
     
-    console.log('✅ Subscriber added to database. Total subscribers:', subscribedEmails.size);
     res.status(200).json({ 
       success: true, 
       message: "Successfully subscribed! Welcome to our newsletter." 
@@ -203,7 +195,6 @@ P.S. Check out our website for amazing printing deals!`,
 
 // Send email endpoint
 app.post("/send-email", async (req, res) => {
-  console.log('📧 Send-email request received:', req.body);
   
   const { name, email, message } = req.body;
   
@@ -339,21 +330,17 @@ Visit our website: https://printfrall.vercel.app`,
     // Send email to admin
     await sgMail.send(adminMsg);
     
-    // Send auto-reply to user
     try {
       await sgMail.send(autoReplyMsg);
-      console.log('✅ Auto-reply sent to:', email);
     } catch (autoReplyError) {
       console.warn('⚠️ Could not send auto-reply:', autoReplyError.message);
     }
     
-    console.log('✅ Contact email sent successfully to:', toEmail);
     res.status(200).json({ 
       success: true, 
       message: "Your message has been sent successfully! We'll get back to you soon." 
     });
   } catch (error) {
-    console.error('❌ SendGrid email error:', error.response?.body || error.message);
     res.status(500).json({ 
       success: false,
       error: "Failed to send message. Please try again later.",
@@ -373,12 +360,9 @@ app.get("/subscribers", (req, res) => {
 // Start server
 app.listen(PORT, () => {
   console.log(`✅ Server running on port ${PORT}`);
-  console.log(`📍 API URL: http://localhost:${PORT}`);
-  console.log(`📧 SendGrid email configured`);
 });
 
 // Handle graceful shutdown
 process.on('SIGTERM', () => {
-  console.log('SIGTERM received, shutting down gracefully');
   process.exit(0);
 });
