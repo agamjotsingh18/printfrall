@@ -44,7 +44,6 @@ const Footer = () => {
         data = { success: response.ok, message: rawText, error: rawText };
       }
 
-      console.log("Subscribe API parse:", data);
 
       if (response.ok && data.success === true) {
         setSnackbarMessage(data.message || "✅ Successfully subscribed to newsletter!");
