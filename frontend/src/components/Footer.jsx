@@ -1,14 +1,13 @@
 import React, { useState } from "react";
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, Snackbar, Alert } from "@mui/material";
 import { FaInstagram, FaEnvelope, FaFacebookF, FaLinkedinIn, FaPinterestP, FaPhoneAlt, FaYoutube } from "react-icons/fa";
 import logo from "../assets/long-white.svg";
 import "../styles/Footer.css";
-import ToastNotification from "./ToastNotification";
 
 const Footer = () => {
-  const [showToast, setShowToast] = useState(false);
-  const [toastMessage, setToastMessage] = useState("");
-  const [toastSeverity, setToastSeverity] = useState("success");
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState("success");
   const [isLoading, setIsLoading] = useState(false);
 
   const API_URL = process.env.REACT_APP_API_URL || "https://printfrall.onrender.com";
@@ -18,10 +17,9 @@ const Footer = () => {
     const email = e.target.email.value;
 
     if (!email) {
-      setToastMessage("Please enter an email address");
-      setToastSeverity("error");
-      setShowToast(true);
-      setTimeout(() => setShowToast(false), 3000);
+      setSnackbarMessage("Please enter an email address");
+      setSnackbarSeverity("error");
+      setSnackbarOpen(true);
       return;
     }
 
@@ -36,26 +34,32 @@ const Footer = () => {
         body: JSON.stringify({ email }),
       });
 
-      // Parse as JSON (FIXED)
       const data = await response.json();
+      console.log("Subscribe response:", data); // Debug log
       
-      if (response.ok && data.success) {
-        setToastMessage(data.message || "Successfully subscribed!");
-        setToastSeverity("success");
+      if (response.ok && data.success === true) {
+        setSnackbarMessage(data.message || "✅ Successfully subscribed to newsletter!");
+        setSnackbarSeverity("success");
         e.target.reset();
+      } else if (response.status === 400 && data.error) {
+        setSnackbarMessage(data.error);
+        setSnackbarSeverity("warning");
       } else {
-        setToastMessage(data.error || "Failed to subscribe. Please try again.");
-        setToastSeverity("error");
+        setSnackbarMessage(data.error || "Failed to subscribe. Please try again.");
+        setSnackbarSeverity("error");
       }
     } catch (error) {
       console.error("Error:", error);
-      setToastMessage("Network error. Please check your connection and try again.");
-      setToastSeverity("error");
+      setSnackbarMessage("Network error. Please check your connection.");
+      setSnackbarSeverity("error");
     } finally {
       setIsLoading(false);
-      setShowToast(true);
-      setTimeout(() => setShowToast(false), 4000);
+      setSnackbarOpen(true);
     }
+  };
+
+  const handleCloseSnackbar = () => {
+    setSnackbarOpen(false);
   };
 
   return (
@@ -151,13 +155,21 @@ const Footer = () => {
         © {new Date().getFullYear()} <a href="/" className="footer-brand">PrintfrAll</a>. All rights reserved.
       </Typography>
 
-      {/* Toast Notification */}
-      <ToastNotification
-        open={showToast}
-        message={toastMessage}
-        onClose={() => setShowToast(false)}
-        severity={toastSeverity}
-      />
+      {/* Direct Snackbar instead of ToastNotification */}
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={5000}
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert 
+          onClose={handleCloseSnackbar} 
+          severity={snackbarSeverity}
+          sx={{ width: '100%', fontSize: '1rem' }}
+        >
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };
