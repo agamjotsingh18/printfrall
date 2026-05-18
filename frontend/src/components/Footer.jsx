@@ -8,6 +8,7 @@ import ToastNotification from "./ToastNotification";
 const Footer = () => {
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
+  const [toastSeverity, setToastSeverity] = useState("success");
   const [isLoading, setIsLoading] = useState(false);
 
   const API_URL = process.env.REACT_APP_API_URL || "https://printfrall.onrender.com";
@@ -18,6 +19,7 @@ const Footer = () => {
 
     if (!email) {
       setToastMessage("Please enter an email address");
+      setToastSeverity("error");
       setShowToast(true);
       setTimeout(() => setShowToast(false), 3000);
       return;
@@ -34,22 +36,25 @@ const Footer = () => {
         body: JSON.stringify({ email }),
       });
 
-      // Parse as JSON, not text
+      // Parse as JSON (FIXED)
       const data = await response.json();
       
       if (response.ok && data.success) {
         setToastMessage(data.message || "Successfully subscribed!");
+        setToastSeverity("success");
         e.target.reset();
       } else {
         setToastMessage(data.error || "Failed to subscribe. Please try again.");
+        setToastSeverity("error");
       }
     } catch (error) {
       console.error("Error:", error);
       setToastMessage("Network error. Please check your connection and try again.");
+      setToastSeverity("error");
     } finally {
       setIsLoading(false);
       setShowToast(true);
-      setTimeout(() => setShowToast(false), 3000);
+      setTimeout(() => setShowToast(false), 4000);
     }
   };
 
@@ -151,7 +156,7 @@ const Footer = () => {
         open={showToast}
         message={toastMessage}
         onClose={() => setShowToast(false)}
-        severity={toastMessage.includes("subscribed") || toastMessage.includes("Successfully") ? "success" : "error"}
+        severity={toastSeverity}
       />
     </Box>
   );
