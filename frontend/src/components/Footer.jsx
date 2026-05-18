@@ -19,6 +19,7 @@ const Footer = () => {
     if (!email) {
       setToastMessage("Please enter an email address");
       setShowToast(true);
+      setTimeout(() => setShowToast(false), 3000);
       return;
     }
 
@@ -33,14 +34,15 @@ const Footer = () => {
         body: JSON.stringify({ email }),
       });
 
-      const data = await response.text();
+      // Parse as JSON, not text
+      const data = await response.json();
       
       if (response.ok && data.success) {
-  setToastMessage(data.message);
-  e.target.reset();
-} else {
-  setToastMessage(data.error || "Failed to subscribe. Please try again.");
-}
+        setToastMessage(data.message || "Successfully subscribed!");
+        e.target.reset();
+      } else {
+        setToastMessage(data.error || "Failed to subscribe. Please try again.");
+      }
     } catch (error) {
       console.error("Error:", error);
       setToastMessage("Network error. Please check your connection and try again.");
