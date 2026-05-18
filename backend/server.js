@@ -6,6 +6,9 @@ const sgMail = require('@sendgrid/mail');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// In-memory storage for subscribed emails (replace with database in production)
+const subscribedEmails = new Set();
+
 // Initialize SendGrid with API key
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
@@ -16,17 +19,10 @@ app.use(cors({
 }));
 app.use(express.json());
 
-// Log startup (for debugging on Render)
+// Log startup
 console.log('=== SERVER STARTING ===');
 console.log('PORT:', PORT);
 console.log('SENDGRID_API_KEY:', process.env.SENDGRID_API_KEY ? '✅ Set' : '❌ Missing');
-console.log('FROM_EMAIL:', process.env.FROM_EMAIL || 'printfrall@gmail.com');
-console.log('TO_EMAIL:', process.env.TO_EMAIL || 'printfrall@gmail.com');
-
-// Verify SendGrid configuration
-if (!process.env.SENDGRID_API_KEY) {
-  console.error('❌ CRITICAL: SendGrid API key missing!');
-}
 
 // Health check endpoint
 app.get("/", (req, res) => {
@@ -43,11 +39,12 @@ app.get("/health", (req, res) => {
     status: "healthy",
     uptime: process.uptime(),
     sendgridConfigured: !!process.env.SENDGRID_API_KEY,
+    totalSubscribers: subscribedEmails.size,
     timestamp: new Date().toISOString()
   });
 });
 
-// Subscribe endpoint - Using SendGrid
+// Subscribe endpoint with duplicate prevention
 app.post("/subscribe", async (req, res) => {
   console.log('📧 Subscribe request received:', req.body);
   
@@ -70,6 +67,15 @@ app.post("/subscribe", async (req, res) => {
     });
   }
 
+  // Check for duplicate email
+  if (subscribedEmails.has(email)) {
+    console.log('⚠️ Duplicate subscription attempt:', email);
+    return res.status(400).json({ 
+      success: false,
+      error: "This email is already subscribed to our newsletter!" 
+    });
+  }
+
   // Check if SendGrid API key exists
   if (!process.env.SENDGRID_API_KEY) {
     console.error('❌ SendGrid API key missing');
@@ -82,7 +88,8 @@ app.post("/subscribe", async (req, res) => {
   const fromEmail = process.env.FROM_EMAIL || 'printfrall@gmail.com';
   const toEmail = process.env.TO_EMAIL || 'printfrall@gmail.com';
 
-  const msg = {
+  // Email to admin about new subscriber
+  const adminMsg = {
     to: toEmail,
     from: fromEmail,
     subject: "📧 New Newsletter Subscription - PrintfrAll",
@@ -96,7 +103,6 @@ app.post("/subscribe", async (req, res) => {
           .container { padding: 20px; border: 1px solid #ddd; border-radius: 5px; max-width: 500px; }
           h2 { color: #70CB97; }
           .info { background: #f5f5f5; padding: 10px; margin: 10px 0; border-radius: 5px; }
-          .footer { font-size: 12px; color: #999; margin-top: 20px; }
         </style>
       </head>
       <body>
@@ -106,8 +112,60 @@ app.post("/subscribe", async (req, res) => {
             <p><strong>Email:</strong> ${email}</p>
             <p><strong>Time:</strong> ${new Date().toLocaleString()}</p>
           </div>
+        </div>
+      </body>
+      </html>
+    `
+  };
+
+  // Welcome email to subscriber
+  const welcomeMsg = {
+    to: email,
+    from: fromEmail,
+    subject: "Welcome to PrintfrAll Newsletter! 🎉",
+    text: `Thank you for subscribing to PrintfrAll newsletter!
+
+You'll now receive updates about our latest printing services, special offers, and design tips.
+
+Best regards,
+PrintfrAll Team
+
+P.S. Check out our website for amazing printing deals!`,
+    html: `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <style>
+          body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+          .container { padding: 20px; max-width: 500px; margin: 0 auto; }
+          .header { background: #70CB97; color: white; padding: 20px; text-align: center; border-radius: 5px 5px 0 0; }
+          .content { padding: 20px; border: 1px solid #ddd; border-top: none; border-radius: 0 0 5px 5px; }
+          .button { background: #70CB97; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block; }
+          .footer { margin-top: 20px; font-size: 12px; color: #999; text-align: center; }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="header">
+            <h2>Welcome to PrintfrAll! 🎉</h2>
+          </div>
+          <div class="content">
+            <p>Dear Subscriber,</p>
+            <p>Thank you for subscribing to PrintfrAll newsletter!</p>
+            <p>You'll now receive updates about:</p>
+            <ul>
+              <li>✨ Latest printing services</li>
+              <li>🎯 Special offers & discounts</li>
+              <li>💡 Design tips & tricks</li>
+              <li>🚀 New product launches</li>
+            </ul>
+            <p style="text-align: center;">
+              <a href="https://printfrall.vercel.app" class="button">Visit Our Website</a>
+            </p>
+            <p>Best regards,<br><strong>PrintfrAll Team</strong></p>
+          </div>
           <div class="footer">
-            <p>This notification was sent from your PrintfrAll backend.</p>
+            <p>You received this email because you subscribed to our newsletter.</p>
           </div>
         </div>
       </body>
@@ -116,11 +174,25 @@ app.post("/subscribe", async (req, res) => {
   };
 
   try {
-    await sgMail.send(msg);
-    console.log('✅ Subscription email sent successfully to:', toEmail);
+    // Send email to admin
+    await sgMail.send(adminMsg);
+    
+    // Send welcome email to subscriber
+    try {
+      await sgMail.send(welcomeMsg);
+      console.log('✅ Welcome email sent to subscriber:', email);
+    } catch (welcomeError) {
+      console.warn('⚠️ Could not send welcome email:', welcomeError.message);
+      // Don't fail the subscription if welcome email fails
+    }
+    
+    // Store email in memory (replace with database in production)
+    subscribedEmails.add(email);
+    
+    console.log('✅ Subscriber added to database. Total subscribers:', subscribedEmails.size);
     res.status(200).json({ 
       success: true, 
-      message: "Subscribed successfully! We'll keep you updated." 
+      message: "Successfully subscribed! Welcome to our newsletter." 
     });
   } catch (error) {
     console.error('❌ SendGrid subscription error:', error.response?.body || error.message);
@@ -132,7 +204,7 @@ app.post("/subscribe", async (req, res) => {
   }
 });
 
-// Send email endpoint - Using SendGrid
+// Send email endpoint
 app.post("/send-email", async (req, res) => {
   console.log('📧 Send-email request received:', req.body);
   
@@ -167,7 +239,8 @@ app.post("/send-email", async (req, res) => {
   const fromEmail = process.env.FROM_EMAIL || 'printfrall@gmail.com';
   const toEmail = process.env.TO_EMAIL || 'printfrall@gmail.com';
 
-  const msg = {
+  // Email to admin
+  const adminMsg = {
     to: toEmail,
     from: fromEmail,
     replyTo: email,
@@ -188,7 +261,6 @@ app.post("/send-email", async (req, res) => {
           h2 { color: #70CB97; }
           .info { background: #f5f5f5; padding: 10px; margin: 10px 0; border-radius: 5px; }
           .message { background: #fafafa; padding: 15px; margin: 10px 0; border-left: 4px solid #70CB97; }
-          .footer { font-size: 12px; color: #999; margin-top: 20px; }
         </style>
       </head>
       <body>
@@ -205,7 +277,60 @@ app.post("/send-email", async (req, res) => {
           </div>
           <div class="footer">
             <p>Reply directly to: <a href="mailto:${email}">${email}</a></p>
-            <p>This notification was sent from your PrintfrAll backend.</p>
+          </div>
+        </div>
+      </body>
+      </html>
+    `
+  };
+
+  // Auto-reply to user
+  const autoReplyMsg = {
+    to: email,
+    from: fromEmail,
+    subject: "Thank you for contacting PrintfrAll! 📬",
+    text: `Dear ${name},
+
+Thank you for reaching out to PrintfrAll!
+
+We have received your message and will get back to you within 24-48 hours.
+
+Your message: "${message.substring(0, 100)}${message.length > 100 ? '...' : ''}"
+
+Best regards,
+PrintfrAll Team
+
+Visit our website: https://printfrall.vercel.app`,
+    html: `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <style>
+          body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+          .container { padding: 20px; max-width: 500px; margin: 0 auto; }
+          .header { background: #70CB97; color: white; padding: 20px; text-align: center; border-radius: 5px 5px 0 0; }
+          .content { padding: 20px; border: 1px solid #ddd; border-top: none; border-radius: 0 0 5px 5px; }
+          .message-box { background: #f5f5f5; padding: 15px; border-radius: 5px; margin: 15px 0; }
+          .button { background: #70CB97; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block; }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="header">
+            <h2>Thank You for Contacting Us! 📬</h2>
+          </div>
+          <div class="content">
+            <p>Dear ${name},</p>
+            <p>Thank you for reaching out to PrintfrAll!</p>
+            <p>We have received your message and will get back to you within <strong>24-48 hours</strong>.</p>
+            <div class="message-box">
+              <strong>Your message:</strong>
+              <p>${message.replace(/\n/g, '<br>')}</p>
+            </div>
+            <p style="text-align: center;">
+              <a href="https://printfrall.vercel.app" class="button">Visit Our Website</a>
+            </p>
+            <p>Best regards,<br><strong>PrintfrAll Team</strong></p>
           </div>
         </div>
       </body>
@@ -214,7 +339,17 @@ app.post("/send-email", async (req, res) => {
   };
 
   try {
-    await sgMail.send(msg);
+    // Send email to admin
+    await sgMail.send(adminMsg);
+    
+    // Send auto-reply to user
+    try {
+      await sgMail.send(autoReplyMsg);
+      console.log('✅ Auto-reply sent to:', email);
+    } catch (autoReplyError) {
+      console.warn('⚠️ Could not send auto-reply:', autoReplyError.message);
+    }
+    
     console.log('✅ Contact email sent successfully to:', toEmail);
     res.status(200).json({ 
       success: true, 
@@ -228,6 +363,14 @@ app.post("/send-email", async (req, res) => {
       details: error.response?.body?.errors?.[0]?.message || error.message
     });
   }
+});
+
+// Get all subscribers (protected endpoint - add auth in production)
+app.get("/subscribers", (req, res) => {
+  res.json({
+    total: subscribedEmails.size,
+    emails: Array.from(subscribedEmails)
+  });
 });
 
 // Start server
