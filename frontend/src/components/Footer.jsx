@@ -35,12 +35,12 @@ const Footer = () => {
 
       const data = await response.text();
       
-      if (response.ok) {
-        setToastMessage(data || "Successfully subscribed!");
-        e.target.reset();
-      } else {
-        setToastMessage(data || "Failed to subscribe. Please try again.");
-      }
+      if (response.ok && data.success) {
+  setToastMessage(data.message);
+  e.target.reset();
+} else {
+  setToastMessage(data.error || "Failed to subscribe. Please try again.");
+}
     } catch (error) {
       console.error("Error:", error);
       setToastMessage("Network error. Please check your connection and try again.");

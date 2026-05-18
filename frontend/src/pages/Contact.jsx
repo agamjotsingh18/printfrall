@@ -47,14 +47,14 @@ const Contact = () => {
         },
         body: JSON.stringify(form),
       });
+      const data = await response.json();
   
-      if (response.ok) {
-        setSuccessMessage("Your message has been sent successfully! We'll get back to you soon.");
-        setForm({ name: "", email: "", message: "" });
-      } else {
-        const errorData = await response.text();
-        setErrorMessage(errorData || "Failed to send the message. Please try again.");
-      }
+     if (response.ok && data.success) {
+  setSuccessMessage(data.message);
+  setForm({ name: "", email: "", message: "" });
+} else {
+  setErrorMessage(data.error || "Failed to send the message. Please try again.");
+}
     } catch (error) {
       console.error("Error:", error);
       setErrorMessage("Network error. Please check your connection and try again.");
