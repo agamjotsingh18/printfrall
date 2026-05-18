@@ -13,7 +13,6 @@ const Contact = () => {
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
-    // Clear messages when user starts typing
     setSuccessMessage("");
     setErrorMessage("");
   };
@@ -27,7 +26,6 @@ const Contact = () => {
       return;
     }
 
-    // Email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(form.email)) {
       setErrorMessage("Please enter a valid email address.");
@@ -47,14 +45,15 @@ const Contact = () => {
         },
         body: JSON.stringify(form),
       });
+      
       const data = await response.json();
   
-     if (response.ok && data.success) {
-  setSuccessMessage(data.message);
-  setForm({ name: "", email: "", message: "" });
-} else {
-  setErrorMessage(data.error || "Failed to send the message. Please try again.");
-}
+      if (response.ok && data.success) {
+        setSuccessMessage(data.message);
+        setForm({ name: "", email: "", message: "" });
+      } else {
+        setErrorMessage(data.error || "Failed to send the message. Please try again.");
+      }
     } catch (error) {
       console.error("Error:", error);
       setErrorMessage("Network error. Please check your connection and try again.");
