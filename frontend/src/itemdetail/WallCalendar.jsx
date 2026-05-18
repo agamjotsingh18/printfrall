@@ -32,7 +32,7 @@ const WallCalendar = ({ addToCart }) => {
 
   const defaultMaterial = "210 GSM Glossy Card Stock";
 
-  const [selectedMaterial, setSelectedMaterial] = useState(defaultMaterial);
+  const [selectedMaterial] = useState(defaultMaterial);
   const [mainImage, setMainImage] = useState(mainImg);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 

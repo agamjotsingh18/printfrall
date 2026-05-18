@@ -40,7 +40,7 @@ const EmbroideredZipHoodies = ({ addToCart }) => {
   const defaultColor = "Black";
   const defaultSize = "M";
 
-  const [selectedMaterial, setSelectedMaterial] = useState(defaultMaterial);
+  const [selectedMaterial] = useState(defaultMaterial);
   const [selectedColor, setSelectedColor] = useState(defaultColor);
   const [selectedSize, setSelectedSize] = useState(defaultSize);
   const [mainImage, setMainImage] = useState(mainImg);

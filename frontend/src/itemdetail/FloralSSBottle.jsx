@@ -32,7 +32,7 @@ const FloralSSBottle = ({ addToCart }) => {
   const defaultSize = "1000ml";
   const defaultColor = "Black";
 
-  const [selectedSize, setSelectedSize] = useState(defaultSize);
+  const [selectedSize] = useState(defaultSize);
   const [selectedColor, setSelectedColor] = useState(defaultColor);
   const [mainImage, setMainImage] = useState(mainImg);
   const [snackbarOpen, setSnackbarOpen] = useState(false);

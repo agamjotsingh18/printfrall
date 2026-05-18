@@ -46,7 +46,7 @@ const LineStitchingCaps = ({ addToCart }) => {
   const defaultColor = "Black";
   const defaultPanel = "6-Panel";
 
-  const [selectedMaterial, setSelectedMaterial] = useState(defaultMaterial);
+  const [selectedMaterial] = useState(defaultMaterial);
   const [selectedColor, setSelectedColor] = useState(defaultColor);
   const [selectedPanel, setSelectedPanel] = useState(defaultPanel);
   const [mainImage, setMainImage] = useState(mainImg);

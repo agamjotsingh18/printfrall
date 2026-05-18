@@ -32,7 +32,7 @@ const PrestigeProLaptopBag = ({ addToCart }) => {
   const defaultSize = "32 Litres";
   const defaultColor = "Khadi Grey";
 
-  const [selectedSize, setSelectedSize] = useState(defaultSize);
+  const [selectedSize] = useState(defaultSize);
   const [selectedColor, setSelectedColor] = useState(defaultColor);
   const [mainImage, setMainImage] = useState(mainImg);
   const [snackbarOpen, setSnackbarOpen] = useState(false);

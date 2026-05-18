@@ -34,7 +34,7 @@ const DesktopItems = ({ addToCart }) => {
   const defaultOption = "Standard Organiser";
   const defaultMaterial = "Polished Natural Wood";
 
-  const [selectedMaterial, setSelectedMaterial] = useState(defaultMaterial);
+  const [selectedMaterial] = useState(defaultMaterial);
   const [mainImage, setMainImage] = useState(mainImg);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 

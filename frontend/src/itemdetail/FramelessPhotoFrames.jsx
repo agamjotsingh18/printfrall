@@ -31,7 +31,7 @@ const FramelessPhotoFrames = ({ addToCart }) => {
   };
 
   const defaultMaterial = "12x8 High-Grade Acrylic";
-  const [selectedMaterial, setSelectedMaterial] = useState(defaultMaterial);
+  const [selectedMaterial] = useState(defaultMaterial);
   const [mainImage, setMainImage] = useState(mainImg);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 

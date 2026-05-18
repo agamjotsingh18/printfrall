@@ -33,7 +33,7 @@ const LancyHotColdSipper = ({ addToCart }) => {
   const defaultSize = "500ml";
   const defaultColor = "White Matte";
 
-  const [selectedSize, setSelectedSize] = useState(defaultSize);
+  const [selectedSize] = useState(defaultSize);
   const [selectedColor, setSelectedColor] = useState(defaultColor);
   const [mainImage, setMainImage] = useState(mainImg);
   const [snackbarOpen, setSnackbarOpen] = useState(false);

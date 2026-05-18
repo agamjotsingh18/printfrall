@@ -15,7 +15,6 @@ import {
   AddShoppingCart,
   Close,
   Inventory,
-  WorkspacePremium,
   AutoAwesome,
   Restaurant,
 } from "@mui/icons-material";

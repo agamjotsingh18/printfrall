@@ -33,7 +33,7 @@ const SlimGuardLaptopSleeve = ({ addToCart }) => {
   const defaultSize = "10-inch";
   const defaultColor = "Stylish Black";
 
-  const [selectedSize, setSelectedSize] = useState(defaultSize);
+  const [selectedSize] = useState(defaultSize);
   const [selectedColor, setSelectedColor] = useState(defaultColor);
   const [mainImage, setMainImage] = useState(mainImg);
   const [snackbarOpen, setSnackbarOpen] = useState(false);

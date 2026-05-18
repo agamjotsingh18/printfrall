@@ -33,7 +33,7 @@ const SupremeBlueSipper = ({ addToCart }) => {
   const defaultSize = "750ml";
   const defaultColor = "Blue";
 
-  const [selectedSize, setSelectedSize] = useState(defaultSize);
+  const [selectedSize] = useState(defaultSize);
   const [selectedColor, setSelectedColor] = useState(defaultColor);
   const [mainImage, setMainImage] = useState(mainImg);
   const [snackbarOpen, setSnackbarOpen] = useState(false);

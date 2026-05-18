@@ -42,7 +42,7 @@ const VanguardLaptopBag = ({ addToCart }) => {
   const defaultSize = "30 Litres";
   const defaultColor = "Stealth Black";
 
-  const [selectedSize, setSelectedSize] = useState(defaultSize);
+  const [selectedSize] = useState(defaultSize);
   const [selectedColor, setSelectedColor] = useState(defaultColor);
   const [mainMedia, setMainMedia] = useState(mainImg);
   const [lightboxOpen, setLightboxOpen] = useState(false);
@@ -68,7 +68,7 @@ const VanguardLaptopBag = ({ addToCart }) => {
     tags: ["Anti-Theft", "30L Capacity", "180° Open"],
   };
 
-  const allImages = bagDetails.extraImages.filter(src => !isVideoFile(src));
+  // const allImages = bagDetails.extraImages.filter(src => !isVideoFile(src));
   const allMedia = bagDetails.extraImages;
 
   const price = priceMapping[selectedSize];

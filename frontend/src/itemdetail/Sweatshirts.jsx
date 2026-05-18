@@ -15,7 +15,6 @@ import {
   AddShoppingCart,
   Close,
   Inventory,
-  Checkroom,
   VerifiedUser,
   AutoAwesome,
 } from "@mui/icons-material";

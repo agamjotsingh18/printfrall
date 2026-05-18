@@ -32,7 +32,7 @@ const InfinityLaptopBag = ({ addToCart }) => {
   const defaultSize = "30 Litres";
   const defaultColor = "Sleek Black";
 
-  const [selectedSize, setSelectedSize] = useState(defaultSize);
+  const [selectedSize] = useState(defaultSize);
   const [selectedColor, setSelectedColor] = useState(defaultColor);
   const [mainImage, setMainImage] = useState(mainImg);
   const [snackbarOpen, setSnackbarOpen] = useState(false);

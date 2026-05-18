@@ -34,7 +34,7 @@ const FrontAdhesiveStickers = ({ addToCart }) => {
   const defaultMaterial = "Transparent Vinyl";
   const defaultShape = "Circle";
 
-  const [selectedMaterial, setSelectedMaterial] = useState(defaultMaterial);
+  const [selectedMaterial] = useState(defaultMaterial);
   const [selectedShape, setSelectedShape] = useState(defaultShape);
   const [mainImage, setMainImage] = useState(mainImg);
   const [snackbarOpen, setSnackbarOpen] = useState(false);

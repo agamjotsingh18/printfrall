@@ -43,10 +43,10 @@ const WaveTextureDiaries = ({ addToCart }) => {
   const [mainImage, setMainImage] = useState(mainImg);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
-  const priceMapping = {
-    "40 Sheets": 600,
-    "80 Sheets": 750,
-  };
+  // const priceMapping = {
+  //   "40 Sheets": 600,
+  //   "80 Sheets": 750,
+  // };
 
   const getTotalPrice = () => {
     if (selectedOption.value === "Custom") {
@@ -78,7 +78,7 @@ const WaveTextureDiaries = ({ addToCart }) => {
       "Ideal for onboarding kits, client gifts, and giveaways",
       "Order from as low as 1 unit",
     ],
-    sizes: ["40 Sheets", "80 Sheets"],
+    sizes: ["80 Sheets"],
     finishes: ["Nano Dot Textured", "Chic White Textured", "Linen Textured"],
     extraImages: [img2, img3, img4],
     tags: ["Digital Printed", "Ripple Texture", "Branded"],
