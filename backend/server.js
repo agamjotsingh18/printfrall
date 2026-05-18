@@ -9,7 +9,6 @@ const PORT = process.env.PORT || 5000;
 // In-memory storage for subscribed emails (replace with database in production)
 const subscribedEmails = new Set();
 
-// Initialize SendGrid with API key
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 // Middleware
@@ -45,9 +44,7 @@ app.get("/health", (req, res) => {
 });
 
 // Subscribe endpoint with duplicate prevention
-app.post("/subscribe", async (req, res) => {
-  console.log('📧 Subscribe request received:', req.body);
-  
+app.post("/subscribe", async (req, res) => {  
   const { email } = req.body;
   
   // Validate email
