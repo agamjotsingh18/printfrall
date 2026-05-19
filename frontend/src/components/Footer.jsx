@@ -109,7 +109,7 @@ const Footer = () => {
           <Box className="map-container">
             <iframe
               title="PrintfrAll Location"
-              src="https://maps.google.com/maps?q=Uttam%20Nagar,New%20Delhi&t=&z=13&ie=UTF8&iwloc=&output=embed" 
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3502.090779985867!2d77.0346579408233!3d28.627041222072712!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390d05362adfb89b%3A0x8f8e3e7bb27db4d0!2sPrintfrAll!5e0!3m2!1sen!2sus!4v1779191737277!5m2!1sen!2sus" 
               width="100%"
               height="150"
               style={{ border: 0, borderRadius: "8px" }}
