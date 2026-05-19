@@ -1,59 +1,189 @@
-.contact-page {
+/* Core Page Outer Wrapper Setup */
+.contact-page-wrapper {
+  width: 100%;
+  min-height: calc(100vh - 114px);
+  background-color: #f8fafc;
   display: flex;
-  justify-content: center;
   align-items: center;
-  min-height: 100vh;
-  background: #f9f9f9;
-  padding: 20px;
+  justify-content: center;
+  padding: 60px 24px;
 }
 
-.contact-box {
-  max-width: 600px;
-  padding: 30px;
-  border-radius: 10px;
-  background: white;
+/* Main Dual-Column Canvas Dashboard Card */
+.contact-premium-card {
+  width: 100%;
+  max-width: 1000px;
+  display: flex;
+  background-color: #ffffff;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(25, 72, 93, 0.06);
+  border: 1px solid #eef2f6;
 }
 
-.contact-title {
-  text-align: center;
-  font-size: 2rem;
-  font-weight: bold;
-  margin-bottom: 20px;
-  color: #333;
-}
-
-.contact-details {
-  text-align: center;
-  margin-bottom: 20px;
-  color: #555;
-}
-
-.contact-alert {
-  margin-bottom: 15px;
-  text-align: center;
-}
-
-.contact-form {
+/* LEFT SIDE PANEL: Branding Informational Area */
+.contact-info-panel {
+  flex: 1.1;
+  background-color: #19485D; /* Brand Primary Deep Teal */
+  padding: 45px;
+  color: #ffffff;
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  justify-content: space-between;
+  gap: 35px;
+  position: relative;
 }
 
-.contact-pm{
-  color: #656565;
-  text-decoration: none!important;
-  text-align: center!important;
+.panel-title {
+  font-weight: 700 !important;
+  color: #ffffff;
+  margin-bottom: 8px !important;
 }
 
-.contact-button {
-  background-color: var(--color-green) !important;
-  color: white;
-  font-weight: bold;
-  padding: 12px;
-  text-transform: none;
-  transition: background 0.3s ease;
+.panel-subtitle {
+  color: #c5d3d9;
+  line-height: 1.5;
 }
 
-.contact-button:hover {
+/* Items List Styling */
+.panel-details-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.panel-info-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.panel-info-icon {
+  color: #70CB97; /* Brand Secondary Green */
+  font-size: 1.1rem;
+  margin-top: 3px;
+  flex-shrink: 0;
+}
+
+.panel-info-item a {
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 0.95rem;
+  transition: color 0.2s ease;
+}
+
+.panel-info-item a:hover {
+  color: #70CB97;
+}
+
+/* Designer Help Box Box Badge Card */
+.designer-trust-badge {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.trust-badge-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #70CB97;
+}
+
+.trust-badge-icon {
+  font-size: 1.1rem;
+}
+
+.trust-badge-text {
+  color: #d1dfe5;
+  line-height: 1.4;
+}
+
+.trust-badge-footer {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #70CB97;
+  margin-top: 4px;
+}
+
+.trust-clock-icon {
+  font-size: 0.85rem;
+}
+
+/* RIGHT SIDE PANEL: Clean Whitespace Interactive Input Grid */
+.contact-form-panel {
+  flex: 1.3;
+  padding: 45px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.form-panel-title {
+  font-weight: 700 !important;
+  color: #19485D;
+  margin-bottom: 25px !important;
+}
+
+.premium-contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Primary Form Button Configuration */
+.premium-submit-button {
+  background-color: #70CB97 !important;
+  color: #ffffff !important;
+  font-weight: 600 !important;
+  padding: 14px !important;
+  font-size: 1rem !important;
+  text-transform: none !important;
+  border-radius: 8px !important;
+  box-shadow: 0 4px 12px rgba(112, 203, 151, 0.25) !important;
+  transition: all 0.25s ease !important;
+}
+
+.premium-submit-button:hover {
   background-color: #5cb67f !important;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(112, 203, 151, 0.35) !important;
+}
+
+.premium-submit-button:disabled {
+  background-color: #e2e8f0 !important;
+  color: #94a3b8 !important;
+}
+
+/* --- ADAPTIVE LAYOUT MEDIA QUERY SYSTEM BREAKPOINTS --- */
+
+@media (max-width: 868px) {
+  .contact-page-wrapper {
+    padding: 30px 16px;
+    min-height: calc(100vh - 56px);
+  }
+
+  .contact-premium-card {
+    flex-direction: column; /* Collapses nicely to singular layout tracking stream */
+    border-radius: 12px;
+  }
+
+  .contact-info-panel {
+    padding: 30px 24px;
+    gap: 25px;
+  }
+
+  .contact-form-panel {
+    padding: 35px 24px;
+  }
+  
+  .form-panel-title {
+    margin-bottom: 20px !important;
+    font-size: 1.4rem !important;
+  }
 }

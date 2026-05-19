@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Box, TextField, Button, Typography, Alert, Paper, CircularProgress } from "@mui/material";
+import { FaEnvelope, FaPhoneAlt, FaMapMarkerAlt, FaComments, FaClock } from "react-icons/fa";
 import "../styles/Contact.css";
-import { FaEnvelope, FaPhoneAlt } from "react-icons/fa";
 
 const Contact = () => {
   const [form, setForm] = useState({ name: "", email: "", message: "" });
@@ -22,14 +22,12 @@ const Contact = () => {
   
     if (!form.name || !form.email || !form.message) {
       setErrorMessage("Please fill in all fields before submitting.");
-      setTimeout(() => setErrorMessage(""), 5000);
       return;
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(form.email)) {
       setErrorMessage("Please enter a valid email address.");
-      setTimeout(() => setErrorMessage(""), 5000);
       return;
     }
   
@@ -62,86 +60,121 @@ const Contact = () => {
       setTimeout(() => {
         setSuccessMessage("");
         setErrorMessage("");
-      }, 5000);
+      }, 6000);
     }
   };
 
   return (
-    <Box className="contact-page">
-      <Paper elevation={3} className="contact-box">
-        <Typography variant="h4" className="contact-title">Get in Touch</Typography>
+    <Box className="contact-page-wrapper">
+      <Paper elevation={0} className="contact-premium-card">
         
-        <Box className="contact-details">
-          <Typography variant="body1">
-            <strong>📍 Address:</strong> F-17 Mohan Garden, Pipal Wala Rd,<br/> Uttam Nagar, New Delhi, India
-          </Typography>
+        {/* LEFT COLUMN: Brand Information Hub */}
+        <Box className="contact-info-panel">
           <Box>
-            <a href="tel:+919319042075" className="contact-pm">
-              <FaPhoneAlt /> +91 9319042075
-            </a>
+            <Typography variant="h4" className="panel-title">Let's Connect</Typography>
+            <Typography variant="body2" className="panel-subtitle">
+              Have questions about corporate orders, custom kits, or bulk pricing? Drop us a line.
+            </Typography>
           </Box>
-          <Box>
-            <a className="contact-pm" href="mailto:printfrall@gmail.com">
-              <FaEnvelope /> printfrall@gmail.com
-            </a>
+
+          <Box className="panel-details-list">
+            <Box className="panel-info-item">
+              <FaMapMarkerAlt className="panel-info-icon" />
+              <Typography variant="body2">
+                <strong>Our Address:</strong><br />
+                F-17 Mohan Garden, Pipal Wala Rd,<br /> Uttam Nagar, New Delhi, India
+              </Typography>
+            </Box>
+
+            <Box className="panel-info-item">
+              <FaPhoneAlt className="panel-info-icon" />
+              <a href="tel:+919319042075">+91 9319042075</a>
+            </Box>
+
+            <Box className="panel-info-item">
+              <FaEnvelope className="panel-info-icon" />
+              <a href="mailto:printfrall@gmail.com">printfrall@gmail.com</a>
+            </Box>
+          </Box>
+
+          {/* Designer Trust Alert Block Box */}
+          <Box className="designer-trust-badge">
+            <Box className="trust-badge-header">
+              <FaComments className="trust-badge-icon" />
+              <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>Need designer help?</Typography>
+            </Box>
+            <Typography variant="body2" className="trust-badge-text">
+              Connect directly with our creative team to format logos or map custom corporate layouts perfectly.
+            </Typography>
+            <Box className="trust-badge-footer">
+              <FaClock className="trust-clock-icon" />
+              <Typography variant="caption">Responses within 2-3 hours</Typography>
+            </Box>
           </Box>
         </Box>
 
-        {successMessage && (
-          <Alert severity="success" className="contact-alert">
-            {successMessage}
-          </Alert>
-        )}
-        
-        {errorMessage && (
-          <Alert severity="error" className="contact-alert">
-            {errorMessage}
-          </Alert>
-        )}
+        {/* RIGHT COLUMN: Functional Interactive Form */}
+        <Box className="contact-form-panel">
+          <Typography variant="h5" className="form-panel-title">Send a Message</Typography>
+          
+          {successMessage && (
+            <Alert severity="success" sx={{ mb: 2, borderRadius: "8px" }}>
+              {successMessage}
+            </Alert>
+          )}
+          
+          {errorMessage && (
+            <Alert severity="error" sx={{ mb: 2, borderRadius: "8px" }}>
+              {errorMessage}
+            </Alert>
+          )}
 
-        <Box component="form" onSubmit={handleSubmit} className="contact-form">
-          <TextField 
-            label="Your Name" 
-            name="name" 
-            variant="outlined" 
-            required 
-            value={form.name} 
-            onChange={handleChange}
-            disabled={isLoading}
-            fullWidth
-          />
-          <TextField 
-            label="Your Email" 
-            name="email" 
-            variant="outlined" 
-            required 
-            type="email" 
-            value={form.email} 
-            onChange={handleChange}
-            disabled={isLoading}
-            fullWidth
-          />
-          <TextField 
-            label="Your Message" 
-            name="message" 
-            variant="outlined" 
-            required 
-            multiline 
-            rows={4} 
-            value={form.message} 
-            onChange={handleChange}
-            disabled={isLoading}
-            fullWidth
-          />
-          <Button 
-            type="submit" 
-            variant="contained" 
-            className="contact-button"
-            disabled={isLoading}
-          >
-            {isLoading ? <CircularProgress size={24} color="inherit" /> : "Send Message"}
-          </Button>
+          <Box component="form" onSubmit={handleSubmit} className="premium-contact-form">
+            <TextField 
+              label="Your Name *" 
+              name="name" 
+              variant="outlined" 
+              value={form.name} 
+              onChange={handleChange}
+              disabled={isLoading}
+              fullWidth
+              sx={{ "& .MuiOutlinedInput-root": { borderRadius: "8px" } }}
+            />
+            <TextField 
+              label="Your Email *" 
+              name="email" 
+              variant="outlined" 
+              type="email" 
+              value={form.email} 
+              onChange={handleChange}
+              disabled={isLoading}
+              fullWidth
+              sx={{ "& .MuiOutlinedInput-root": { borderRadius: "8px" } }}
+            />
+            <TextField 
+              label="Your Message or Bulk Request Details *" 
+              name="message" 
+              variant="outlined" 
+              multiline 
+              rows={4} 
+              value={form.message} 
+              onChange={handleChange}
+              disabled={isLoading}
+              fullWidth
+              sx={{ "& .MuiOutlinedInput-root": { borderRadius: "8px" } }}
+            />
+            
+            <Button 
+              type="submit" 
+              variant="contained" 
+              className="premium-submit-button"
+              disabled={isLoading}
+            >
+              {isLoading ? <CircularProgress size={24} color="inherit" /> : "Send Message"}
+            </Button>
+          </Box>
         </Box>
+
       </Paper>
     </Box>
   );
