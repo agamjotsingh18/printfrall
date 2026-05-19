@@ -1,20 +1,76 @@
-.breadcrumbs {
-    background-color: #f0f4f7; /* Soft background matching the palette */
-    padding: 10px 20px;
-    font-size: 14px;
+/* Clean, full-bleed header wrapper container */
+.breadcrumbs-wrapper {
+  width: 100%;
+  background-color: #ffffff; /* Crisp white background instead of muddy grey */
+  border-bottom: 1px solid #edf2f4;
+  padding: 14px 0;
+  display: flex;
+  align-items: center;
 }
 
-.breadcrumbs a {
-    color: #19485D; /* Deep teal from logo */
-    text-decoration: none;
-    transition: color 0.2s ease;
+/* Aligns text boundaries beautifully with your main layout wrapper grid */
+.breadcrumbs-inner {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0;
 }
 
-.breadcrumbs a:hover {
-    color: #70CB97; /* Brand green */
-    text-decoration: underline;
+/* Base Breadcrumb typography definitions */
+.breadcrumbs-wrapper a, 
+.breadcrumbs-wrapper span {
+  font-size: 0.82rem;
+  font-weight: 500;
+  letter-spacing: 0.2px;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
 }
 
-.breadcrumbs span {
-    color: #5a6e7a; /* Muted neutral */
+/* Normal actionable links styling profile */
+.breadcrumb-link {
+  color: #5a6e7a !important; /* Elegant slate grey instead of heavy purple/teal */
+  text-decoration: none !important;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.breadcrumb-link:hover {
+  color: #70CB97 !important; /* Shifts smooth to your brand green on hover */
+}
+
+/* Current active page indicator labels text formatting profile */
+.breadcrumb-current {
+  color: #70CB97 !important; /* Highlights your deep brand teal style rules */
+  font-weight: 600 !important;
+}
+
+/* Clean micro design modern dividers */
+.breadcrumb-separator {
+  margin: 0 10px !important;
+  color: #b0bfc6 !important;
+  font-size: 0.75rem !important;
+  user-select: none;
+}
+
+/* --- RESPONSIVE MOBILE PROFILE OVERRIDES --- */
+@media (max-width: 900px) {
+  .breadcrumbs-wrapper {
+    padding: 10px 0;
+    background-color: #ffffff;
+  }
+  
+  .breadcrumbs-inner {
+    padding: 0 16px; /* Tighter padding for mobile screens */
+  }
+
+  .breadcrumbs-wrapper a, 
+  .breadcrumbs-wrapper span {
+    font-size: 0.78rem; /* Slightly smaller text for mobile viewports */
+  }
+  
+  .breadcrumb-separator {
+    margin: 0 6px !important; /* Closer spacing on phone layouts */
+  }
 }

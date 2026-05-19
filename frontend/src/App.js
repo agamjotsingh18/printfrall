@@ -233,11 +233,11 @@ const App = () => {
   return (
     <ThemeProvider theme={theme}>
     <Router>
-      {/* Pass cartItems and removeFromCart to Navbar */}
       <Navbar cartItems={cartItems} addToCart={addToCart} removeFromCart={removeFromCart} />
       <SubNavbar />
-      <div style={{ width: "100vw", overflowX: "clip", maxWidth: "100%" }}>
+      <div className="main-content-layout">
       <Breadcrumbs />
+      <div style={{ width: "100vw", overflowX: "clip", maxWidth: "100%" }}>
         <Routes>
           <Route path="/" element={<Home addToCart={addToCart} />} />
           <Route path="/services" element={<Services addToCart={addToCart} />} />
@@ -889,6 +889,7 @@ element={<PremiumHoliHamper addToCart={addToCart} />}
           <Route path="/payment-success" element={<PaymentSuccess />} />
 <Route path="/payment-cancel" element={<PaymentCancel />} />
         </Routes>
+      </div>
       </div>
       <Footer />
     </Router>

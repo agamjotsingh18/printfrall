@@ -74,3 +74,17 @@ body {
   background: var(--color-green);
   color: white;
 }
+
+.main-content-layout {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding-top: 59px; 
+}
+
+@media (max-width: 900px) {
+  .main-content-layout {
+    /* Safe mobile padding fallback space since SubNavbar is hidden on mobile */
+    padding-top: 56px; 
+  }
+}
