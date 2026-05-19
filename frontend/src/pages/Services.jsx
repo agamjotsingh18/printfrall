@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import "../styles/Services.css";
 import {
@@ -50,55 +50,180 @@ const services = [
     name: "Marketing Materials",
     icon: <FaPrint />,
     items: [
-      { name: "Banners", image: bannerImg, link: "/services/marketing-materials/banners", price: 100 },
-      { name: "Custom Standee Cutout", image: customStandeeCutoutImg, link: "/services/marketing-materials/custom-standee-cutout", price: 150 },
-      { name: "Acrylic Sign Board", image: acrylicSignBoardImg, link: "/services/marketing-materials/acrylic-sign-board", price: 200 },
-      { name: "Posters", image: posterImg, link: "/services/marketing-materials/posters", price: 50 },
-      { name: "Photo Selfie Booth", image: photoSelfieBoothImg, link: "/services/marketing-materials/photo-selfie-booth", price: 300 },
-      { name: "Brochures", image: brochureImg, link: "/services/marketing-materials/brochures", price: 30 },
-      { name: "Flyers", image: flyerImg, link: "/services/marketing-materials/flyers", price: 20 },
-      { name: "Standees", image: standeesImg, link: "/services/marketing-materials/standees", price: 120 },
+      {
+        name: "Banners",
+        image: bannerImg,
+        link: "/services/marketing-materials/banners",
+        price: 100,
+      },
+      {
+        name: "Custom Standee Cutout",
+        image: customStandeeCutoutImg,
+        link: "/services/marketing-materials/custom-standee-cutout",
+        price: 150,
+      },
+      {
+        name: "Acrylic Sign Board",
+        image: acrylicSignBoardImg,
+        link: "/services/marketing-materials/acrylic-sign-board",
+        price: 200,
+      },
+      {
+        name: "Posters",
+        image: posterImg,
+        link: "/services/marketing-materials/posters",
+        price: 50,
+      },
+      {
+        name: "Photo Selfie Booth",
+        image: photoSelfieBoothImg,
+        link: "/services/marketing-materials/photo-selfie-booth",
+        price: 300,
+      },
+      {
+        name: "Brochures",
+        image: brochureImg,
+        link: "/services/marketing-materials/brochures",
+        price: 30,
+      },
+      {
+        name: "Flyers",
+        image: flyerImg,
+        link: "/services/marketing-materials/flyers",
+        price: 20,
+      },
+      {
+        name: "Standees",
+        image: standeesImg,
+        link: "/services/marketing-materials/standees",
+        price: 120,
+      },
     ],
   },
   {
     name: "Packaging & Labels",
     icon: <FaBox />,
     items: [
-      { name: "Stickers", image: stickerImg, link: "/services/packaging-labels/stickers", price: 10 },
-      { name: "Labels", image: labelImg, link: "/services/packaging-labels/labels", price: 15 },
-      { name: "Paper Bags", image: paperBagImg, link: "/services/packaging-labels/paper-bags", price: 25 },
-      { name: "Gift Boxes", image: giftBoxImg, link: "/services/packaging-labels/gift-boxes", price: 40 },
+      {
+        name: "Stickers",
+        image: stickerImg,
+        link: "/services/packaging-labels/stickers",
+        price: 10,
+      },
+      {
+        name: "Labels",
+        image: labelImg,
+        link: "/services/packaging-labels/labels",
+        price: 15,
+      },
+      {
+        name: "Paper Bags",
+        image: paperBagImg,
+        link: "/services/packaging-labels/paper-bags",
+        price: 25,
+      },
+      {
+        name: "Gift Boxes",
+        image: giftBoxImg,
+        link: "/services/packaging-labels/gift-boxes",
+        price: 40,
+      },
     ],
   },
   {
     name: "Personalized Gifts",
     icon: <FaGift />,
     items: [
-      { name: "Mugs", image: mugImg, link: "/services/personalized-gifts/mugs", price: 20 },
-      { name: "T-Shirts", image: tshirtImg, link: "/services/personalized-gifts/tshirts", price: 25 },
-      { name: "Photo Frames", image: photoFrameImg, link: "/services/personalized-gifts/photo-frames", price: 30 },
-      { name: "Calendars", image: calendarImg, link: "/services/personalized-gifts/calendars", price: 15 },
+      {
+        name: "Mugs",
+        image: mugImg,
+        link: "/services/personalized-gifts/mugs",
+        price: 20,
+      },
+      {
+        name: "T-Shirts",
+        image: tshirtImg,
+        link: "/services/personalized-gifts/tshirts",
+        price: 25,
+      },
+      {
+        name: "Photo Frames",
+        image: photoFrameImg,
+        link: "/services/personalized-gifts/photo-frames",
+        price: 30,
+      },
+      {
+        name: "Calendars",
+        image: calendarImg,
+        link: "/services/personalized-gifts/calendars",
+        price: 15,
+      },
     ],
   },
   {
     name: "Business Essentials",
     icon: <FaFileAlt />,
     items: [
-      { name: "Business Cards", image: businessCardImg, link: "/services/business-essentials/business-cards", price: 10 },
-      { name: "Letterheads", image: letterheadImg, link: "/services/business-essentials/letterheads", price: 20 },
-      { name: "Envelopes", image: envelopeImg, link: "/services/business-essentials/envelopes", price: 15 },
-      { name: "Invoices", image: invoiceImg, link: "/services/business-essentials/invoices", price: 5 },
+      {
+        name: "Business Cards",
+        image: businessCardImg,
+        link: "/services/business-essentials/business-cards",
+        price: 10,
+      },
+      {
+        name: "Letterheads",
+        image: letterheadImg,
+        link: "/services/business-essentials/letterheads",
+        price: 20,
+      },
+      {
+        name: "Envelopes",
+        image: envelopeImg,
+        link: "/services/business-essentials/envelopes",
+        price: 15,
+      },
+      {
+        name: "Invoices",
+        image: invoiceImg,
+        link: "/services/business-essentials/invoices",
+        price: 5,
+      },
     ],
   },
   {
     name: "T-Shirt Printing",
     icon: <FaTshirt />,
     items: [
-      { name: "Custom T-Shirts", image: tshirtImg, link: "/services/personalized-gifts/tshirts", price: 25 },
-      { name: "Hoodies", image: hoodieImg, link: "/services/tshirt-printing/hoodies", price: 40 },
-      { name: "Sweatshirts", image: sweatshirtImg, link: "/services/tshirt-printing/sweatshirts", price: 35 },
-      { name: "Caps", image: capImg, link: "/services/tshirt-printing/caps", price: 20 },
-      { name: "Jackets", image: jacketImg, link: "/services/tshirt-printing/jackets", price: 50 },
+      {
+        name: "Custom T-Shirts",
+        image: tshirtImg,
+        link: "/services/personalized-gifts/tshirts",
+        price: 25,
+      },
+      {
+        name: "Hoodies",
+        image: hoodieImg,
+        link: "/services/tshirt-printing/hoodies",
+        price: 40,
+      },
+      {
+        name: "Sweatshirts",
+        image: sweatshirtImg,
+        link: "/services/tshirt-printing/sweatshirts",
+        price: 35,
+      },
+      {
+        name: "Caps",
+        image: capImg,
+        link: "/services/tshirt-printing/caps",
+        price: 20,
+      },
+      {
+        name: "Jackets",
+        image: jacketImg,
+        link: "/services/tshirt-printing/jackets",
+        price: 50,
+      },
     ],
   },
 ];
@@ -107,11 +232,36 @@ const corporateGifting = {
   name: "Corporate Gifting",
   icon: <FaGift />,
   items: [
-    { name: "Duo Sets", image: duoSetImg, link: "/services/corporate-gifting/duo-sets", price: 100 },
-    { name: "Festive Hampers", image: festiveHampersImg, link: "/services/corporate-gifting/festive-hampers", price: 150 },
-    { name: "Welcome Kits", image: welcomeKitsImg, link: "/services/corporate-gifting/welcome-kits", price: 200 },
-    { name: "Drinkware", image: drinkwareImg, link: "/services/corporate-gifting/drinkware", price: 50 },
-    { name: "Bags", image: bagsImg, link: "/services/corporate-gifting/bags", price: 80 },
+    {
+      name: "Duo Sets",
+      image: duoSetImg,
+      link: "/services/corporate-gifting/duo-sets",
+      price: 100,
+    },
+    {
+      name: "Festive Hampers",
+      image: festiveHampersImg,
+      link: "/services/corporate-gifting/festive-hampers",
+      price: 150,
+    },
+    {
+      name: "Welcome Kits",
+      image: welcomeKitsImg,
+      link: "/services/corporate-gifting/welcome-kits",
+      price: 200,
+    },
+    {
+      name: "Drinkware",
+      image: drinkwareImg,
+      link: "/services/corporate-gifting/drinkware",
+      price: 50,
+    },
+    {
+      name: "Bags",
+      image: bagsImg,
+      link: "/services/corporate-gifting/bags",
+      price: 80,
+    },
   ],
 };
 
@@ -130,38 +280,22 @@ const Services = ({ addToCart }) => {
     }
   };
 
-  // Safe, non-passive horizontal scroll handler hook execution
-  useEffect(() => {
-    const attachWheelListener = (container) => {
-      if (!container) return;
-
-      const onWheelEvent = (e) => {
-        if (
-          (e.deltaY < 0 && container.scrollLeft > 0) ||
-          (e.deltaY > 0 && container.scrollLeft < container.scrollWidth - container.clientWidth)
-        ) {
-          // Instruct browser explicitly that we are hijacking the wheel movement axis cleanly
-          e.preventDefault();
-          container.scrollBy({
-            left: e.deltaY < 0 ? -40 : 40,
-            behavior: "auto", // Smooth behavior inside event listeners can sometimes cause jittering
-          });
-        }
-      };
-
-      container.addEventListener("wheel", onWheelEvent, { passive: false });
-      return () => container.removeEventListener("wheel", onWheelEvent);
-    };
-
-    // Bind layout rows to handlers
-    const cleanups = serviceItemsRef.current.map((ref) => attachWheelListener(ref));
-    const corporateCleanup = attachWheelListener(corporateGiftingRef.current);
-
-    return () => {
-      cleanups.forEach((cleanup) => cleanup && cleanup());
-      if (corporateCleanup) corporateCleanup();
-    };
-  }, []);
+  const handleWheel = (e, index) => {
+    const container = serviceItemsRef.current[index];
+    if (container) {
+      e.preventDefault();
+      if (
+        (e.deltaY < 0 && container.scrollLeft > 0) ||
+        (e.deltaY > 0 &&
+          container.scrollLeft < container.scrollWidth - container.clientWidth)
+      ) {
+        container.scrollBy({
+          left: e.deltaY < 0 ? -30 : 30,
+          behavior: "smooth",
+        });
+      }
+    }
+  };
 
   const handleAddToCart = (item) => {
     addToCart(item);
@@ -187,6 +321,7 @@ const Services = ({ addToCart }) => {
             <div
               className="service-items"
               ref={(el) => (serviceItemsRef.current[index] = el)}
+              onWheel={(e) => handleWheel(e, index)}
             >
               {service.items.map((item, idx) => (
                 <div className="service-card" key={idx}>
@@ -203,18 +338,18 @@ const Services = ({ addToCart }) => {
                     sx={{
                       fontSize: "1.2rem",
                       color: "white",
-                      background: "#70CB97",
+                      background: "#70CB97", // brand green
                       padding: "10px",
                       borderRadius: "10px",
-                      "& :hover": {
-                        transform: "scale(1.05)",
-                        background: "#5cb67f",
+                      "&:hover": {
+                        transform: "scale(1.1)",
+                        background: "#5cb67f", // darker green
                       },
                     }}
                     onClick={() => handleAddToCart(item)}
                   >
-                    Add to Cart  
-                    <AddShoppingCartIcon sx={{ ml: 1 }} />
+                    Add to Cart &nbsp;
+                    <AddShoppingCartIcon />
                   </IconButton>
                 </div>
               ))}
@@ -245,6 +380,7 @@ const Services = ({ addToCart }) => {
             <div
               className="service-items"
               ref={corporateGiftingRef}
+              onWheel={(e) => handleWheel(e, services.length)}
             >
               {corporateGifting.items.map((item, idx) => (
                 <div className="service-card" key={idx}>
@@ -264,19 +400,27 @@ const Services = ({ addToCart }) => {
                       background: "#70CB97",
                       padding: "10px",
                       borderRadius: "10px",
-                      "& :hover": {
-                        transform: "scale(1.05)",
+                      "&:hover": {
+                        transform: "scale(1.1)",
                         background: "#5cb67f",
                       },
                     }}
                     onClick={() => handleAddToCart(item)}
                   >
-                    Add to Cart  
-                    <AddShoppingCartIcon sx={{ ml: 1 }} />
+                    Add to Cart &nbsp;
+                    <AddShoppingCartIcon />
                   </IconButton>
                 </div>
               ))}
             </div>
+            {corporateGifting.items.length > 4 && (
+              <button
+                className="scroll-button next"
+                onClick={() => scrollRight(services.length)}
+              >
+                <FaChevronRight />
+              </button>
+            )}
           </div>
 
           <div className="view-all-button-container">
@@ -292,7 +436,6 @@ const Services = ({ addToCart }) => {
         autoHideDuration={3000}
         onClose={handleCloseSnackbar}
         message="Item added to cart!"
-        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
       />
     </section>
   );
