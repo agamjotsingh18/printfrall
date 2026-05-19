@@ -184,13 +184,11 @@ const App = () => {
   // Initialize cartItems state with data from localStorage
   const [cartItems, setCartItems] = useState(() => {
     const savedCartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
-    console.log("Initialized cart items from localStorage:", savedCartItems); // Debugging
     return savedCartItems;
   });
 
   // Save cart items to localStorage whenever cartItems changes
   useEffect(() => {
-    console.log("Saving cart items to localStorage:", cartItems); // Debugging
     localStorage.setItem("cartItems", JSON.stringify(cartItems));
   }, [cartItems]);
 
