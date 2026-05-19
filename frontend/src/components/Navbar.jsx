@@ -112,7 +112,10 @@ const Navbar = ({ cartItems, addToCart, removeFromCart }) => {
       role="presentation"
     >
       <Box sx={{ textAlign: "center", p: 2 }}>
-        <img src={logop} alt="Printfrall Logo" style={{ height: "20px" }} />
+        {/* Made the mobile drawer logo clickable to go home as well */}
+        <Link to="/" style={{ display: "inline-block" }} onClick={() => setIsDrawerOpen(false)}>
+          <img src={logop} alt="Printfrall Logo" style={{ height: "20px", display: "block" }} />
+        </Link>
       </Box>
 
       <List sx={{ flex: 1 }}>
@@ -121,7 +124,7 @@ const Navbar = ({ cartItems, addToCart, removeFromCart }) => {
           component={Link}
           to="/"
           sx={{ "&:hover": { background: theme.palette.secondary.main, color: "white" } }}
-          onClick={(e) => e.stopPropagation()}
+          onClick={() => setIsDrawerOpen(false)}
         >
           <ListItemText primary="Home" sx={{ color: "#333", fontWeight: 600 }} />
         </ListItem>
@@ -131,7 +134,7 @@ const Navbar = ({ cartItems, addToCart, removeFromCart }) => {
           component={Link}
           to="/services"
           sx={{ "&:hover": { background: theme.palette.secondary.main, color: "white" } }}
-          onClick={(e) => e.stopPropagation()}
+          onClick={() => setIsDrawerOpen(false)}
         >
           <ListItemText primary="Services" sx={{ color: "#333", fontWeight: 600 }} />
         </ListItem>
@@ -141,7 +144,7 @@ const Navbar = ({ cartItems, addToCart, removeFromCart }) => {
           component={Link}
           to="/portfolio"
           sx={{ "&:hover": { background: theme.palette.secondary.main, color: "white" } }}
-          onClick={(e) => e.stopPropagation()}
+          onClick={() => setIsDrawerOpen(false)}
         >
           <ListItemText primary="Portfolio" sx={{ color: "#333", fontWeight: 600 }} />
         </ListItem>
@@ -151,7 +154,7 @@ const Navbar = ({ cartItems, addToCart, removeFromCart }) => {
           component={Link}
           to="/about"
           sx={{ "&:hover": { background: theme.palette.secondary.main, color: "white" } }}
-          onClick={(e) => e.stopPropagation()}
+          onClick={() => setIsDrawerOpen(false)}
         >
           <ListItemText primary="About" sx={{ color: "#333", fontWeight: 600 }} />
         </ListItem>
@@ -209,7 +212,7 @@ const Navbar = ({ cartItems, addToCart, removeFromCart }) => {
                       key={index}
                       to={result.link}
                       style={{ textDecoration: "none", color: "inherit" }}
-                      onClick={(e) => e.stopPropagation()}
+                      onClick={() => setIsDrawerOpen(false)}
                     >
                       <Box
                         sx={{
@@ -288,7 +291,7 @@ const Navbar = ({ cartItems, addToCart, removeFromCart }) => {
             component={Link}
             to="/about"
             sx={{ "&:hover": { background: theme.palette.secondary.main, color: "white" } }}
-            onClick={(e) => e.stopPropagation()}
+            onClick={() => setIsDrawerOpen(false)}
           >
             <ListItemText primary="About" />
           </ListItem>
@@ -297,7 +300,7 @@ const Navbar = ({ cartItems, addToCart, removeFromCart }) => {
             component={Link}
             to="/portfolio"
             sx={{ "&:hover": { background: theme.palette.secondary.main, color: "white" } }}
-            onClick={(e) => e.stopPropagation()}
+            onClick={() => setIsDrawerOpen(false)}
           >
             <ListItemText primary="Work Portfolio" />
           </ListItem>
@@ -315,9 +318,12 @@ const Navbar = ({ cartItems, addToCart, removeFromCart }) => {
           alignItems: "center",
           px: { xs: 2, sm: 3, md: 4, lg: 6 }
         }}>
-          {/* Logo Section */}
+          
+          {/* Logo Section - Wrapped inside Link to point back home */}
           <Box sx={{ display: "flex", alignItems: "center" }}>
-            <img src={logo} alt="PrintfrAll Logo" style={{ height: "26px", marginRight: "10px" }} />
+            <Link to="/" style={{ display: "flex", alignItems: "center", textDecoration: "none" }}>
+              <img src={logo} alt="PrintfrAll Logo" style={{ height: "26px", marginRight: "10px", display: "block" }} />
+            </Link>
           </Box>
 
           {/* Mobile Menu Icons */}
