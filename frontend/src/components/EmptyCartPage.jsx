@@ -15,14 +15,17 @@ const EmptyCartPage = () => {
         textAlign: "center",
         p: 3,
       }}
+      aria-label="Empty cart page"
     >
       {/* Empty Cart Icon */}
       <ShoppingCartIcon
         sx={{
           fontSize: "6rem",
-          color: "#70CB97", // brand green
+          color: "#70CB97",
           mb: 3,
         }}
+        aria-label="Empty shopping cart"
+        aria-hidden="false"
       />
 
       {/* Title */}
@@ -31,8 +34,9 @@ const EmptyCartPage = () => {
         sx={{
           fontWeight: "bold",
           mb: 2,
-          color: "#19485D", // deep teal
+          color: "#19485D",
         }}
+        aria-label="Your cart is empty"
       >
         Your Cart is Empty
       </Typography>
@@ -41,10 +45,11 @@ const EmptyCartPage = () => {
       <Typography
         variant="body1"
         sx={{
-          color: "#5a6e7a", // muted neutral
+          color: "#5a6e7a",
           mb: 4,
           maxWidth: "500px",
         }}
+        aria-label="No items have been added to your cart yet"
       >
         Looks like you haven't added anything to your cart yet. Explore our amazing collection of
         products and find something you love!
@@ -56,7 +61,7 @@ const EmptyCartPage = () => {
         to="/services"
         variant="contained"
         sx={{
-          background: "#70CB97", // brand green
+          background: "#70CB97",
           color: "white",
           fontWeight: "bold",
           fontSize: "16px",
@@ -64,9 +69,10 @@ const EmptyCartPage = () => {
           borderRadius: "25px",
           textTransform: "none",
           "&:hover": {
-            background: "#5cb67f", // darker green
+            background: "#5cb67f",
           },
         }}
+        aria-label="Explore products to add to your cart"
       >
         Explore Products
       </Button>

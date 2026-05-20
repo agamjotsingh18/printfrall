@@ -101,7 +101,7 @@
 
 .dropdown-product-item {
   font-size: 0.9rem;
-  color: #666;
+  color: #4a5568;
   text-decoration: none;
   transition: color 0.3s ease-in-out;
 }
@@ -110,7 +110,7 @@
 /* Add this to your CSS file */
 .sub-nav-link-item {
   text-decoration: none;
-  color: inherit; /* Pulls color dynamically from .sub-nav-item or .corporate-item */
+  color: #1e2a32; /* Pulls color dynamically from .sub-nav-item or .corporate-item */
   font-family: inherit;
   font-size: inherit;
   font-weight: inherit;

@@ -22,45 +22,62 @@ const flyerTypes = [
 ];
 
 const Flyers = ({ addToCart }) => {
-  const handleAddToCart = (item) => {
-    addToCart(item); // Add the item to the cart
+  const handleAddToCart = (item, e) => {
+    e?.preventDefault();
+    e?.stopPropagation();
+    addToCart(item);
   };
 
   return (
-    <section className="flyers">
+    <section className="flyers" aria-label="Flyers Collection">
       <h2 className="section-title">Flyers</h2>
       <p className="section-subtitle">Choose from a variety of flyer types</p>
-      <div className="flyers-container">
+      <div className="flyers-container" aria-label="Flyer types">
         {flyerTypes.map((flyer, index) => (
-          <div className="flyer-item" key={index}>
+          <div className="flyer-item" key={index} aria-label={`Product: ${flyer.name}`}>
             {/* Wrap flyer details in a Link */}
-            <Link to={flyer.route} className="flyer-link">
-              <img src={flyer.image} alt={flyer.name} className="flyer-image" />
+            <Link 
+              to={flyer.route} 
+              className="flyer-link"
+              aria-label={`View details of ${flyer.name}`}
+            >
+              <img 
+                src={flyer.image} 
+                alt={flyer.name} 
+                className="flyer-image" 
+              />
               <p className="flyer-name">{flyer.name}</p>
-              <p className="flyer-price">₹{flyer.price}</p>
+              <p className="flyer-price" aria-label={`Price: ₹${flyer.price}`}>₹{flyer.price}</p>
             </Link>
             {/* Add to Cart Button */}
             <IconButton
+              aria-label={`Add ${flyer.name} to cart`}
               sx={{
                 fontSize: "1.2rem",
                 color: "white",
-                background: "#70CB97", // brand green
+                background: "#70CB97",
                 padding: "10px",
                 borderRadius: "10px",
                 "&:hover": {
-                  transform: "scale(1.1)",
-                  background: "#5cb67f", // darker green
+                  transform: "scale(1.05)",
+                  background: "#5cb67f",
                 },
               }}
-              onClick={() => handleAddToCart(flyer)}
+              onClick={(e) => handleAddToCart(flyer, e)}
             >
               Add to Cart &nbsp;
-              <AddShoppingCartIcon />
+              <AddShoppingCartIcon aria-hidden="true" />
             </IconButton>
           </div>
         ))}
       </div>
-      <Link to="/services" className="back-button">Back to Services</Link>
+      <Link 
+        to="/services" 
+        className="back-button"
+        aria-label="Back to services page"
+      >
+        Back to Services
+      </Link>
     </section>
   );
 };

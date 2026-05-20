@@ -34,7 +34,6 @@ const CartPage = ({ cartItems, removeFromCart }) => {
         const unitPrice = getUnitPrice(item);
         let details = `Size: ${size}, Material: ${material}`;
         if (finish) details += `, Finish: ${finish}`;
-        // Show breakdown: ₹{unitPrice} x {item.quantity} = ₹{item.price}
         return `${item.name} - ₹${unitPrice} x ${item.quantity} = ₹${item.price}%0a${details}`;
       })
       .join("%0a");
@@ -43,7 +42,7 @@ const CartPage = ({ cartItems, removeFromCart }) => {
   };
 
   return (
-    <Container sx={{ p: 3, maxWidth: 1200, margin: "0 auto" }}>
+    <Container sx={{ p: 3, maxWidth: 1200, margin: "0 auto" }} aria-label="Shopping cart">
       {cartItems.length === 0 ? (
         <EmptyCartPage />
       ) : (
@@ -56,6 +55,7 @@ const CartPage = ({ cartItems, removeFromCart }) => {
               textAlign: "center",
               color: "#19485D"
             }}
+            aria-label="Your shopping cart"
           >
             Your Cart
           </Typography>
@@ -75,6 +75,8 @@ const CartPage = ({ cartItems, removeFromCart }) => {
                   borderRadius: "10px",
                   boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.1)",
                 }}
+                role="article"
+                aria-label={`Cart item: ${item.name}`}
               >
                 <img
                   src={item.image}
@@ -101,6 +103,7 @@ const CartPage = ({ cartItems, removeFromCart }) => {
                   )}
                 </Box>
                 <IconButton
+                  aria-label={`Remove ${item.name} from cart`}
                   onClick={() =>
                     removeFromCart(
                       item.name,
@@ -110,7 +113,7 @@ const CartPage = ({ cartItems, removeFromCart }) => {
                   }
                   sx={{ color: "#e74c3c" }} 
                 >
-                  <CloseIcon />
+                  <CloseIcon aria-hidden="true" />
                 </IconButton>
               </Paper>
             );
@@ -136,6 +139,7 @@ const CartPage = ({ cartItems, removeFromCart }) => {
               href={generateWhatsAppMessage()} 
               target="_blank" 
               rel="noopener noreferrer"
+              aria-label="Proceed to checkout on WhatsApp"
             >
               Proceed to Checkout
             </Button>

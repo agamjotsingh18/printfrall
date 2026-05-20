@@ -88,12 +88,12 @@ const Contact = () => {
 
             <Box className="panel-info-item">
               <FaPhoneAlt className="panel-info-icon" />
-              <a href="tel:+919319042075">+91 9319042075</a>
+              <a href="tel:+919319042075" aria-label="Call us at 9319042075">+91 9319042075</a>
             </Box>
 
             <Box className="panel-info-item">
               <FaEnvelope className="panel-info-icon" />
-              <a href="mailto:printfrall@gmail.com">printfrall@gmail.com</a>
+              <a href="mailto:printfrall@gmail.com" aria-label="Email us at printfrall@gmail.com">printfrall@gmail.com</a>
             </Box>
           </Box>
 
@@ -129,7 +129,7 @@ const Contact = () => {
             </Alert>
           )}
 
-          <Box component="form" onSubmit={handleSubmit} className="premium-contact-form">
+          <Box aria-label="Contact form" component="form" onSubmit={handleSubmit} className="premium-contact-form">
             <TextField 
               label="Your Name *" 
               name="name" 

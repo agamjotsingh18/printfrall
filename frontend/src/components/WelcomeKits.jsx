@@ -243,40 +243,45 @@ const WelcomeKits = ({ addToCart }) => {
   };
 
   return (
-    <section className="welcome-kits">
+    <section className="welcome-kits" aria-label="Welcome Kits Collection">
       <h2 className="section-title">Welcome Kits</h2>
       <p className="section-subtitle">Our best-selling kits for every need</p>
 
       {/* Main Kits Section - Updated with Links */}
-      <div className="main-kits-container">
+      <div className="main-kits-container" aria-label="Premium welcome kits">
         {mainKits.map((kit, index) => (
-          <div key={index} className="kit-card">
-            <Link to={kit.route} className="kit-link">
+          <div key={index} className="kit-card" aria-label={`Kit: ${kit.name}`}>
+            <Link 
+              to={kit.route} 
+              className="kit-link"
+              aria-label={`View details of ${kit.name}`}
+            >
               <img src={kit.image} alt={kit.name} className="kit-image" />
               <h3 className="kit-name">{kit.name}</h3>
-              <p className="kit-price">₹{kit.price}</p>
-              <ul className="kit-items">
+              <p className="kit-price" aria-label={`Price: ₹${kit.price}`}>₹{kit.price}</p>
+              <ul className="kit-items" aria-label={`Items included in ${kit.name}`}>
                 {kit.items.map((item, i) => (
                   <li key={i}>{item}</li>
                 ))}
               </ul>
             </Link>
             <IconButton
+              aria-label={`Add ${kit.name} to cart`}
               sx={{
                 fontSize: "1.2rem",
                 color: "white",
-                background: "#70CB97", // brand green
+                background: "#70CB97",
                 padding: "10px",
                 borderRadius: "10px",
                 "&:hover": {
-                  transform: "scale(1.1)",
-                  background: "#5cb67f", // darker green
+                  transform: "scale(1.05)",
+                  background: "#5cb67f",
                 },
               }}
               onClick={() => addToCart(kit)}
             >
               Add to Cart &nbsp;
-              <AddShoppingCartIcon />
+              <AddShoppingCartIcon aria-hidden="true" />
             </IconButton>
           </div>
         ))}
@@ -286,16 +291,27 @@ const WelcomeKits = ({ addToCart }) => {
       <h2 className="section-title">Create Your Custom Kit</h2>
       <div className="customizable-kit">
         {/* Categories */}
-        <div className="categories">
+        <div className="categories" aria-label="Customizable items categories">
           {Object.keys(customizableItems).map((category) => (
-            <div key={category} className="category">
+            <div key={category} className="category" aria-label={`${category} category`}>
               <h3>{category}</h3>
-              <ul>
+              <ul aria-label={`${category} items list`}>
                 {customizableItems[category].map((item, index) => (
-                  <li key={index} onClick={() => handleAddItem(item)}>
+                  <li 
+                    key={index} 
+                    onClick={() => handleAddItem(item)}
+                    aria-label={`Add ${item.name} to your custom kit`}
+                    role="button"
+                    tabIndex={0}
+                    onKeyPress={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        handleAddItem(item);
+                      }
+                    }}
+                  >
                     <img src={item.image} alt={item.name} />
                     <p>{item.name}</p>
-                    <p>₹{item.price}</p>
+                    <p aria-label={`Price: ₹${item.price}`}>₹{item.price}</p>
                   </li>
                 ))}
               </ul>
@@ -304,20 +320,32 @@ const WelcomeKits = ({ addToCart }) => {
         </div>
 
         {/* Selected Items */}
-        <div className="selected-items">
+        <div className="selected-items" aria-label="Your custom kit selection">
           <h3>Your Kit</h3>
-          <ul>
-            {selectedItems.map((item, index) => (
-              <li key={index} className="selected-item">
-                <img src={item.image} alt={item.name} />
-                <p>{item.name}</p>
-                <p>₹{item.price}</p>
-                <button onClick={() => handleRemoveItem(item)}>Remove</button>
-              </li>
-            ))}
-          </ul>
-          <p className="total-price">Total: ₹{calculateTotalPrice()}</p>
+          {selectedItems.length === 0 ? (
+            <p aria-label="No items added yet">No items selected. Click on items above to build your kit.</p>
+          ) : (
+            <ul aria-label="Selected items list">
+              {selectedItems.map((item, index) => (
+                <li key={index} className="selected-item" aria-label={`Selected item: ${item.name}`}>
+                  <img src={item.image} alt={item.name} />
+                  <p>{item.name}</p>
+                  <p>₹{item.price}</p>
+                  <button 
+                    onClick={() => handleRemoveItem(item)}
+                    aria-label={`Remove ${item.name} from kit`}
+                  >
+                    Remove
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
+          <p className="total-price" aria-label={`Total price: ₹${calculateTotalPrice()}`}>
+            Total: ₹{calculateTotalPrice()}
+          </p>
           <IconButton
+            aria-label="Add custom kit to cart"
             sx={{
               fontSize: "1.2rem",
               color: "white",
@@ -325,14 +353,14 @@ const WelcomeKits = ({ addToCart }) => {
               padding: "10px",
               borderRadius: "10px",
               "&:hover": {
-                transform: "scale(1.1)",
+                transform: "scale(1.05)",
                 background: "#5cb67f",
               },
             }}
             onClick={handleAddCustomKitToCart}
           >
             Add Custom Kit to Cart &nbsp;
-            <AddShoppingCartIcon />
+            <AddShoppingCartIcon aria-hidden="true" />
           </IconButton>
         </div>
       </div>

@@ -110,11 +110,22 @@ const Navbar = ({ cartItems, addToCart, removeFromCart }) => {
         flexDirection: "column",
       }}
       role="presentation"
+      aria-label="Navigation menu"
     >
       <Box sx={{ textAlign: "center", p: 2 }}>
-        {/* Made the mobile drawer logo clickable to go home as well */}
-        <Link to="/" style={{ display: "inline-block" }} onClick={() => setIsDrawerOpen(false)}>
-          <img src={logop} alt="Printfrall Logo" style={{ height: "20px", display: "block" }} />
+        <Link 
+          to="/" 
+          style={{ display: "inline-block" }} 
+          onClick={() => setIsDrawerOpen(false)}
+          aria-label="Go to home page"
+        >
+          <img 
+            src={logop} 
+            alt="Printfrall Logo" 
+            style={{ height: "20px", width: "auto", display: "block" }} 
+            width="120"
+            height="20" 
+          />
         </Link>
       </Box>
 
@@ -125,6 +136,7 @@ const Navbar = ({ cartItems, addToCart, removeFromCart }) => {
           to="/"
           sx={{ "&:hover": { background: theme.palette.secondary.main, color: "white" } }}
           onClick={() => setIsDrawerOpen(false)}
+          aria-label="Navigate to home"
         >
           <ListItemText primary="Home" sx={{ color: "#333", fontWeight: 600 }} />
         </ListItem>
@@ -135,6 +147,7 @@ const Navbar = ({ cartItems, addToCart, removeFromCart }) => {
           to="/services"
           sx={{ "&:hover": { background: theme.palette.secondary.main, color: "white" } }}
           onClick={() => setIsDrawerOpen(false)}
+          aria-label="Navigate to services"
         >
           <ListItemText primary="Services" sx={{ color: "#333", fontWeight: 600 }} />
         </ListItem>
@@ -145,6 +158,7 @@ const Navbar = ({ cartItems, addToCart, removeFromCart }) => {
           to="/portfolio"
           sx={{ "&:hover": { background: theme.palette.secondary.main, color: "white" } }}
           onClick={() => setIsDrawerOpen(false)}
+          aria-label="Navigate to portfolio"
         >
           <ListItemText primary="Portfolio" sx={{ color: "#333", fontWeight: 600 }} />
         </ListItem>
@@ -155,6 +169,7 @@ const Navbar = ({ cartItems, addToCart, removeFromCart }) => {
           to="/about"
           sx={{ "&:hover": { background: theme.palette.secondary.main, color: "white" } }}
           onClick={() => setIsDrawerOpen(false)}
+          aria-label="Navigate to about us"
         >
           <ListItemText primary="About" sx={{ color: "#333", fontWeight: 600 }} />
         </ListItem>
@@ -173,6 +188,7 @@ const Navbar = ({ cartItems, addToCart, removeFromCart }) => {
                 boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
               }}
               onClick={(e) => e.stopPropagation()}
+              aria-label="Search form"
             >
               <InputBase
                 placeholder="Search products..."
@@ -181,8 +197,10 @@ const Navbar = ({ cartItems, addToCart, removeFromCart }) => {
                 onChange={(e) => handleSearch(e.target.value)}
                 inputRef={searchInputRef}
                 onClick={(e) => e.stopPropagation()}
+                aria-label="Search products"
               />
               <IconButton
+                aria-label="Search"
                 onClick={(e) => {
                   e.stopPropagation();
                   toggleSearch();
@@ -205,6 +223,7 @@ const Navbar = ({ cartItems, addToCart, removeFromCart }) => {
                   overflowY: "auto",
                 }}
                 onClick={(e) => e.stopPropagation()}
+                aria-label="Search results"
               >
                 {searchResults.length > 0 ? (
                   searchResults.map((result, index) => (
@@ -213,6 +232,7 @@ const Navbar = ({ cartItems, addToCart, removeFromCart }) => {
                       to={result.link}
                       style={{ textDecoration: "none", color: "inherit" }}
                       onClick={() => setIsDrawerOpen(false)}
+                      aria-label={`View ${result.name}`}
                     >
                       <Box
                         sx={{
@@ -256,14 +276,16 @@ const Navbar = ({ cartItems, addToCart, removeFromCart }) => {
           href="https://wa.me/9319042075"
           target="_blank"
           onClick={(e) => e.stopPropagation()}
+          aria-label="Chat with us on WhatsApp"
         >
           WhatsApp Us
         </Button>
         <Box
           sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1, cursor: "pointer" }}
           onClick={handlePhoneClick}
+          aria-label="Call us at 9319042075"
         >
-          <PhoneIcon sx={{ color: "#333" }} />
+          <PhoneIcon sx={{ color: "#333" }} aria-hidden="true" />
           <Typography variant="body1" sx={{ color: "#333" }}>
             9319042075
           </Typography>
@@ -271,8 +293,9 @@ const Navbar = ({ cartItems, addToCart, removeFromCart }) => {
         <Box
           sx={{ display: "flex", alignItems: "center", gap: 1, cursor: "pointer" }}
           onClick={handleEmailClick}
+          aria-label="Email us at printfrall@gmail.com"
         >
-          <EmailIcon sx={{ color: "#333" }} />
+          <EmailIcon sx={{ color: "#333" }} aria-hidden="true" />
           <Typography variant="body1" sx={{ color: "#333" }}>
             printfrall@gmail.com
           </Typography>
@@ -292,6 +315,7 @@ const Navbar = ({ cartItems, addToCart, removeFromCart }) => {
             to="/about"
             sx={{ "&:hover": { background: theme.palette.secondary.main, color: "white" } }}
             onClick={() => setIsDrawerOpen(false)}
+            aria-label="Learn more about us"
           >
             <ListItemText primary="About" />
           </ListItem>
@@ -301,6 +325,7 @@ const Navbar = ({ cartItems, addToCart, removeFromCart }) => {
             to="/portfolio"
             sx={{ "&:hover": { background: theme.palette.secondary.main, color: "white" } }}
             onClick={() => setIsDrawerOpen(false)}
+            aria-label="View our work portfolio"
           >
             <ListItemText primary="Work Portfolio" />
           </ListItem>
@@ -321,26 +346,37 @@ const Navbar = ({ cartItems, addToCart, removeFromCart }) => {
           
           {/* Logo Section - Wrapped inside Link to point back home */}
           <Box sx={{ display: "flex", alignItems: "center" }}>
-            <Link to="/" style={{ display: "flex", alignItems: "center", textDecoration: "none" }}>
-              <img src={logo} alt="PrintfrAll Logo" style={{ height: "26px", marginRight: "10px", display: "block" }} />
+            <Link 
+              to="/" 
+              style={{ display: "flex", alignItems: "center", textDecoration: "none" }}
+              aria-label="Go to home page"
+            >
+              <img 
+                src={logo} 
+                alt="PrintfrAll Logo" 
+                width="120"
+                height="26" 
+                style={{ height: "26px", width: "auto", marginRight: "10px", display: "block" }} 
+              />
             </Link>
           </Box>
 
           {/* Mobile Menu Icons */}
           <Box sx={{ display: { xs: "flex", md: "none" }, alignItems: "center", gap: 1 }}>
             <IconButton
+              aria-label={`Cart with ${cartItems.length} items`}
               component={Link}
               to="/cart"
               sx={{ color: "white", "&:hover": { transform: "scale(1.1)" } }}
             >
               <Badge badgeContent={cartItems.length} color="error">
-                <ShoppingCartIcon />
+                <ShoppingCartIcon aria-hidden="true" />
               </Badge>
             </IconButton>
             <IconButton
+              aria-label="Menu"
               edge="start"
               color="inherit"
-              aria-label="menu"
               onClick={toggleDrawer(true)}
               sx={{ color: "white" }}
             >
@@ -357,10 +393,12 @@ const Navbar = ({ cartItems, addToCart, removeFromCart }) => {
               left: "50%",
               transform: "translateX(-50%)",
             }}
+            aria-label="Main navigation"
           >
             <Button
               component={Link}
               to="/"
+              aria-label="Home"
               sx={{
                 color: "white",
                 fontSize: { md: "14px", lg: "16px" },
@@ -374,6 +412,7 @@ const Navbar = ({ cartItems, addToCart, removeFromCart }) => {
             <Button
               component={Link}
               to="/services"
+              aria-label="Services"
               sx={{
                 color: "white",
                 fontSize: { md: "14px", lg: "16px" },
@@ -387,6 +426,7 @@ const Navbar = ({ cartItems, addToCart, removeFromCart }) => {
             <Button
               component={Link}
               to="/portfolio"
+              aria-label="Portfolio"
               sx={{
                 color: "white",
                 fontSize: { md: "14px", lg: "16px" },
@@ -400,6 +440,7 @@ const Navbar = ({ cartItems, addToCart, removeFromCart }) => {
             <Button
               component={Link}
               to="/about"
+              aria-label="About"
               sx={{
                 color: "white",
                 fontSize: { md: "14px", lg: "16px" },
@@ -426,6 +467,7 @@ const Navbar = ({ cartItems, addToCart, removeFromCart }) => {
             }}
           >
             <IconButton
+              aria-label="Search"
               onClick={() => {
                 toggleSearch();
                 if (isSearchOpen) {
@@ -450,9 +492,11 @@ const Navbar = ({ cartItems, addToCart, removeFromCart }) => {
                   p: "2px 8px",
                   transition: "width 0.3s ease",
                 }}
+                aria-label="Search form"
               >
                 <InputBase
                   placeholder="Search..."
+                  aria-label="Search products"
                   sx={{ 
                     ml: 1, 
                     flex: 1, 
@@ -485,6 +529,7 @@ const Navbar = ({ cartItems, addToCart, removeFromCart }) => {
                   maxHeight: "300px",
                   overflowY: "auto",
                 }}
+                aria-label="Search results"
               >
                 {searchResults.length > 0 ? (
                   searchResults.map((result, index) => (
@@ -497,6 +542,7 @@ const Navbar = ({ cartItems, addToCart, removeFromCart }) => {
                         setSearchQuery("");
                         setSearchResults([]);
                       }}
+                      aria-label={`View ${result.name}`}
                     >
                       <Box
                         sx={{
@@ -518,12 +564,13 @@ const Navbar = ({ cartItems, addToCart, removeFromCart }) => {
             )}
 
             <IconButton
+              aria-label={`Cart with ${cartItems.length} items`}
               component={Link}
               to="/cart"
               sx={{ color: "white", "&:hover": { transform: "scale(1.1)" }, p: { md: 0.5, lg: 1 } }}
             >
               <Badge badgeContent={cartItems.length} color="error">
-                <ShoppingCartIcon sx={{ fontSize: { md: "20px", lg: "24px" } }} />
+                <ShoppingCartIcon sx={{ fontSize: { md: "20px", lg: "24px" } }} aria-hidden="true" />
               </Badge>
             </IconButton>
 
@@ -531,6 +578,7 @@ const Navbar = ({ cartItems, addToCart, removeFromCart }) => {
               component={Link}
               to="/contact"
               variant="contained"
+              aria-label="Contact Us"
               sx={{
                 bgcolor: theme.palette.secondary.main,
                 color: "white",
@@ -547,7 +595,12 @@ const Navbar = ({ cartItems, addToCart, removeFromCart }) => {
         </Toolbar>
       </AppBar>
 
-      <Drawer anchor="left" open={isDrawerOpen} onClose={toggleDrawer(false)}>
+      <Drawer 
+        anchor="left" 
+        open={isDrawerOpen} 
+        onClose={toggleDrawer(false)}
+        aria-label="Navigation menu drawer"
+      >
         {drawerContent()}
       </Drawer>
     </>

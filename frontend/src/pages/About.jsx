@@ -4,7 +4,7 @@ import '../styles/About.css';
 function About() {
   return (
     <div className="about-container">
-      <div className="about-content">
+      <div className="about-content"  aria-label="About PrintfrAll">
         <h1>Our Journey</h1>
         <p>
           At <span className="highlight">PrintfrAll</span>, quality is not just a goal—it's our perfection. 

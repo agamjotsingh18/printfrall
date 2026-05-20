@@ -5,7 +5,6 @@
   position: relative;
   background-color: transparent; /* No blue background */
   overflow: hidden;
-  margin-top: 54px;
   height: auto;
   min-height: 600px;
 }
@@ -76,7 +75,6 @@
 /* ===== MOBILE VIEW - Full width, natural height ===== */
 @media (max-width: 768px) {
   .hero-modern {
-    margin-top: 54px;
     height: auto;
     min-height: 175px;
   }

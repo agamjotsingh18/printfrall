@@ -41,16 +41,27 @@ const CustomizableWelcomeKit = () => {
   };
 
   return (
-    <div className="customizable-kit">
-      <h2>Create Your Custom Kit</h2>
+    <div className="customizable-kit" aria-label="Customizable Welcome Kit Builder">
+      <h2 aria-label="Create your custom corporate kit">Create Your Custom Kit</h2>
       <div className="kit-builder">
-        <div className="categories">
+        <div className="categories" aria-label="Product categories">
           {Object.keys(categories).map((category) => (
-            <div key={category} className="category">
+            <div key={category} className="category" aria-label={`${category} category`}>
               <h3>{category}</h3>
-              <ul>
+              <ul aria-label={`${category} items list`}>
                 {categories[category].map((item, index) => (
-                  <li key={index} onClick={() => handleAddItem(item)}>
+                  <li 
+                    key={index} 
+                    onClick={() => handleAddItem(item)}
+                    aria-label={`Add ${item.name} to your kit`}
+                    role="button"
+                    tabIndex={0}
+                    onKeyPress={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        handleAddItem(item);
+                      }
+                    }}
+                  >
                     {item.name}
                   </li>
                 ))}
@@ -58,16 +69,25 @@ const CustomizableWelcomeKit = () => {
             </div>
           ))}
         </div>
-        <div className="selected-items">
-          <h3>Your Kit</h3>
-          <ul>
-            {selectedItems.map((item, index) => (
-              <li key={index} className="selected-item">
-                {item.name}
-                <button onClick={() => handleRemoveItem(item)}>Remove</button>
-              </li>
-            ))}
-          </ul>
+        <div className="selected-items" aria-label="Your selected kit items">
+          <h3 aria-label="Items in your custom kit">Your Kit</h3>
+          {selectedItems.length === 0 ? (
+            <p aria-label="No items selected yet">No items selected. Click on items above to build your kit.</p>
+          ) : (
+            <ul aria-label="Selected items list">
+              {selectedItems.map((item, index) => (
+                <li key={index} className="selected-item" aria-label={`Selected item: ${item.name}`}>
+                  {item.name}
+                  <button 
+                    onClick={() => handleRemoveItem(item)}
+                    aria-label={`Remove ${item.name} from your kit`}
+                  >
+                    Remove
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
       </div>
     </div>

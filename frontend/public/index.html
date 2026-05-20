@@ -2,58 +2,125 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-<link rel="icon" type="image/png" href="%PUBLIC_URL%/favicon.png" />
+    <link rel="icon" type="image/png" href="%PUBLIC_URL%/favicon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#000000" />
-    <meta
-      name="description"
-      content="Web site created using create-react-app"
-    />
+    <meta name="theme-color" content="#19485D" /> 
+    <meta name="description" content="Custom Corporate Kits & Premium Corporate Gifting Essentials by PrintfrAll." />
+    
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link rel="preconnect" href="https://printfrall.onrender.com" />
+
+    
+      <link 
+      rel="preload" 
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" 
+      as="style"
+      onload="this.onload=null;this.rel='stylesheet'"
+    />
+    <link 
+      rel="preload" 
+      href="%PUBLIC_URL%/favicon.png" 
+      as="image"
+      type="image/png"
+    />
+  <noscript>
+      <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    </noscript>
+
     <title>PrintfrAll</title>
   </head>
   <body>
+    <script>
+    // Allow page to be cached in back/forward cache
+    window.addEventListener('beforeunload', function(event) {
+      // Clear any sensitive data or close connections
+      if (window.ws && window.ws.readyState === WebSocket.OPEN) {
+        window.ws.close();
+      }
+    });
+    
+    // Re-initialize after bfcache restore
+    window.addEventListener('pageshow', function(event) {
+      if (event.persisted) {
+        // Page was restored from bfcache, reinitialize any connections
+        console.log('Page restored from bfcache');
+      }
+    });
+  </script>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
-    <script>
-      var url = 'https://cdn.jsdelivr.net/gh/iammunendrasingh/free-whatsapp-chat-widget@main/main.js';
-      var s = document.createElement('script');
-          s.type = 'text/javascript';
-          s.async = true;
-          s.src = url;
-          var options = {
-          "enabled": true,
-          "chatButtonSetting": {
-              "backgroundColor": "#4DC247",
-              "ctaText": "",
-              "borderRadius": "25",
-              "marginLeft": "",
-              "marginBottom": "30",
-              "marginRight": "30",
-              "position": "right"
-          },
-          "brandSetting": {
-              "brandName": "PrintfrAll",
-              "brandSubTitle": "Typically replies within 2 hrs",
-              "brandImg": "https://i.ibb.co/pvqX62Hc/printfrall-light.png",
-              // "brandImg": "https://i.ibb.co/bgMNZBVq/printfrall-dark.png",
+ <script>
+      (function() {
+        // Defer WhatsApp widget to after page load
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', initWhatsAppWidget);
+        } else {
+          initWhatsAppWidget();
+        }
+        
+        function initWhatsAppWidget() {
+          // Further delay to not block critical rendering
+          setTimeout(function() {
+            var config = {
+              "enabled": true,
+              "chatButtonSetting": {
+                "backgroundColor": "#4DC247",
+                "ctaText": "",
+                "borderRadius": "25",
+                "marginBottom": "30",
+                "marginRight": "30",
+                "position": "right"
+              },
+              "brandSetting": {
+                "brandName": "PrintfrAll",
+                "phoneNumber": "919319042075",
+                "messageText": "Hello, I have a question. Could you guide me on pricing and how to get started?"
+              }
+            };
 
-              "welcomeText": "How can we make your day brighter?",
-              "messageText": "Hello, I have a question. Could you guide me on pricing and how to get started?",
-              "backgroundColor": "#404145",
-              "ctaText": "Start Chat",
-              "borderRadius": "25",
-              "autoShow": false,
-              "phoneNumber": "919319042075"
-          }
-      };
-          s.onload = function() {
-              CreateWhatsappChatWidget(options);
-          };
-          var x = document.getElementsByTagName('script')[0];
-          x.parentNode.insertBefore(s, x);
-      </script>
+            if (!config.enabled) return;
+
+            var button = config.chatButtonSetting || {};
+            var brand = config.brandSetting || {};
+
+            var widgetContainer = document.createElement('div');
+            widgetContainer.id = 'whatsapp_chat_widget';
+            
+            widgetContainer.innerHTML = [
+              '<div id="wa-widget-send-button" style="display:flex;align-items:center;justify-content:center;background-color:' + (button.backgroundColor || '#4DC247') + ';border-radius:' + (button.borderRadius || '25') + 'px;padding:' + (button.ctaText ? '8px 18px' : '12px') + ';box-shadow:0 4px 12px rgba(0,0,0,0.25);">',
+                '<svg viewBox="0 0 32 32" width="28" height="28" fill="#ffffff"><path d="M19.11 17.205c-.372 0-1.088 1.39-1.518 1.39a.63.63 0 0 1-.315-.1c-.802-.402-1.504-.817-2.163-1.447-.545-.516-1.146-1.29-1.46-1.963a.426.426 0 0 1-.073-.215c0-.33.99-.945.99-1.49 0-.143-.73-2.09-.832-2.335-.143-.372-.214-.487-.6-.487-.187 0-.36-.043-.53-.043-.302 0-.53.115-.746.315-.688.645-1.032 1.318-1.06 2.264v.114c-.015.99.472 1.977 1.017 2.78 1.23 1.82 2.506 3.41 4.554 4.34.616.287 2.035.888 2.722.888.817 0 2.15-.515 2.478-1.318.13-.33.244-.73.244-1.088 0-.058 0-.144-.03-.215-.1-.172-2.434-1.39-2.678-1.39zm-2.908 7.593c-1.747 0-3.48-.53-4.942-1.49L7.793 24.41l1.132-3.337a8.955 8.955 0 0 1-1.72-5.272c0-4.955 4.04-8.995 8.997-8.995S25.2 10.845 25.2 15.8c0 4.958-4.04 8.998-8.998 8.998zm0-19.798c-5.96 0-10.8 4.842-10.8 10.8 0 1.964.53 3.898 1.546 5.574L5 27.176l5.974-1.92a10.807 10.807 0 0 0 16.03-9.455c0-5.958-4.842-10.8-10.802-10.8z"></path></svg>',
+                button.ctaText ? '<span class="cta-text-element" style="color:#ffffff;font-family:-apple-system,BlinkMacSystemFont,Inter,sans-serif;font-size:15px;font-weight:600;margin-left:8px;">' + button.ctaText + '</span>' : '',
+              '</div>'
+            ].join('');
+
+            var styleElement = document.createElement('style');
+            styleElement.textContent = [
+              '#whatsapp_chat_widget {',
+                'position: fixed !important;',
+                'z-index: 9999 !important;',
+                'bottom: ' + (button.marginBottom || '30') + 'px;',
+                (button.position === 'left' ? 'left: ' + (button.marginLeft || '30') + 'px;' : 'right: ' + (button.marginRight || '30') + 'px;'),
+                'cursor: pointer;',
+                'transition: transform 0.2s ease;',
+              '}',
+              '#whatsapp_chat_widget:hover { transform: scale(1.06); }'
+            ].join('');
+
+            document.head.appendChild(styleElement);
+            document.body.appendChild(widgetContainer);
+
+            widgetContainer.addEventListener('click', function() {
+              var formattedText = encodeURIComponent(brand.messageText || '');
+              var endpoint = 'https://api.whatsapp.com/send?phone=' + (brand.phoneNumber || '919319042075') + '&text=' + formattedText;
+              window.open(endpoint, '_blank', 'noopener,noreferrer');
+            });
+          }, 2000);
+        }
+      })();
+    </script>
   </body>
-
 </html>

@@ -200,6 +200,7 @@ const Services = ({ addToCart }) => {
                     <p className="service-item-price">₹{item.price}</p>
                   </Link>
                   <IconButton
+                    aria-label={`Add ${item.name} to cart`}
                     sx={{
                       fontSize: "1.2rem",
                       color: "white",
@@ -214,7 +215,7 @@ const Services = ({ addToCart }) => {
                     onClick={() => handleAddToCart(item)}
                   >
                     Add to Cart  
-                    <AddShoppingCartIcon sx={{ ml: 1 }} />
+                    <AddShoppingCartIcon sx={{ ml: 1 }} aria-hidden="true" />
                   </IconButton>
                 </div>
               ))}
@@ -223,8 +224,9 @@ const Services = ({ addToCart }) => {
               <button
                 className="scroll-button next"
                 onClick={() => scrollRight(index)}
+                 aria-label="Scroll right to see more products"
               >
-                <FaChevronRight />
+                <FaChevronRight aria-hidden="true"  />
               </button>
             )}
           </div>
@@ -253,11 +255,15 @@ const Services = ({ addToCart }) => {
                       src={item.image}
                       alt={item.name}
                       className="service-image"
+                      width="400"
+                      height="400"
+                      loading="lazy"
                     />
                     <p className="service-item-name">{item.name}</p>
                     <p className="service-item-price">₹{item.price}</p>
                   </Link>
                   <IconButton
+                  aria-label={`Add ${item.name} to cart`}
                     sx={{
                       fontSize: "1.2rem",
                       color: "white",
@@ -272,7 +278,7 @@ const Services = ({ addToCart }) => {
                     onClick={() => handleAddToCart(item)}
                   >
                     Add to Cart  
-                    <AddShoppingCartIcon sx={{ ml: 1 }} />
+                    <AddShoppingCartIcon sx={{ ml: 1 }} aria-hidden="true"  />
                   </IconButton>
                 </div>
               ))}

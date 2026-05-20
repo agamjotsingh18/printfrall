@@ -22,45 +22,62 @@ const calendarTypes = [
 ];
 
 const Calendars = ({ addToCart }) => {
-  const handleAddToCart = (item) => {
-    addToCart(item); // Add the item to the cart
+  const handleAddToCart = (item, e) => {
+    e?.preventDefault();
+    e?.stopPropagation();
+    addToCart(item);
   };
 
   return (
-    <section className="calendars">
+    <section className="calendars" aria-label="Calendars Collection">
       <h2 className="section-title">Calendars</h2>
       <p className="section-subtitle">Choose from a variety of calendar styles</p>
       <div className="calendars-container">
         {calendarTypes.map((calendar, index) => (
           <div className="calendar-item" key={index}>
             {/* Wrap calendar details in a Link */}
-            <Link to={calendar.route} className="calendar-link">
-              <img src={calendar.image} alt={calendar.name} className="calendar-image" />
+            <Link 
+              to={calendar.route} 
+              className="calendar-link"
+              aria-label={`View details of ${calendar.name}`}
+            >
+              <img 
+                src={calendar.image} 
+                alt={calendar.name} 
+                className="calendar-image" 
+              />
               <p className="calendar-name">{calendar.name}</p>
               <p className="calendar-price">₹{calendar.price}</p>
             </Link>
             {/* Add to Cart Button */}
             <IconButton
+              aria-label={`Add ${calendar.name} to cart`}
               sx={{
                 fontSize: "1.2rem",
                 color: "white",
-                background: "#70CB97", // brand green
+                background: "#70CB97",
                 padding: "10px",
                 borderRadius: "10px",
                 "&:hover": {
-                  transform: "scale(1.1)",
-                  background: "#5cb67f", // darker green
+                  transform: "scale(1.05)",
+                  background: "#5cb67f",
                 },
               }}
-              onClick={() => handleAddToCart(calendar)}
+              onClick={(e) => handleAddToCart(calendar, e)}
             >
               Add to Cart &nbsp;
-              <AddShoppingCartIcon />
+              <AddShoppingCartIcon aria-hidden="true" />
             </IconButton>
           </div>
         ))}
       </div>
-      <Link to="/services" className="back-button">Back to Services</Link>
+      <Link 
+        to="/services" 
+        className="back-button"
+        aria-label="Back to services page"
+      >
+        Back to Services
+      </Link>
     </section>
   );
 };

@@ -26,45 +26,62 @@ const businessCardTypes = [
 ];
 
 const BusinessCards = ({ addToCart }) => {
-  const handleAddToCart = (item) => {
-    addToCart(item); // Add the item to the cart
+  const handleAddToCart = (item, e) => {
+    e?.preventDefault();
+    e?.stopPropagation();
+    addToCart(item);
   };
 
   return (
-    <section className="business-cards">
+    <section className="business-cards" aria-label="Business Cards Collection">
       <h2 className="section-title">Business Cards</h2>
       <p className="section-subtitle">Choose from a variety of styles</p>
       <div className="cards-container">
         {businessCardTypes.map((card, index) => (
           <div className="card-item" key={index}>
             {/* Wrap business card details in a Link */}
-            <Link to={card.route} className="card-link">
-              <img src={card.image} alt={card.name} className="card-image" />
+            <Link 
+              to={card.route} 
+              className="card-link"
+              aria-label={`View details of ${card.name}`}
+            >
+              <img 
+                src={card.image} 
+                alt={card.name} 
+                className="card-image" 
+              />
               <p className="card-name">{card.name}</p>
               <p className="card-price">₹{card.price}</p>
             </Link>
             {/* Add to Cart Button */}
             <IconButton
+              aria-label={`Add ${card.name} to cart`}
               sx={{
                 fontSize: "1.2rem",
                 color: "white",
-                background: "#70CB97", // brand green
+                background: "#70CB97",
                 padding: "10px",
                 borderRadius: "10px",
                 "&:hover": {
-                  transform: "scale(1.1)",
-                  background: "#5cb67f", // darker green
+                  transform: "scale(1.05)",
+                  background: "#5cb67f",
                 },
               }}
-              onClick={() => handleAddToCart(card)}
+              onClick={(e) => handleAddToCart(card, e)}
             >
               Add to Cart &nbsp;
-              <AddShoppingCartIcon />
+              <AddShoppingCartIcon aria-hidden="true" />
             </IconButton>
           </div>
         ))}
       </div>
-      <Link to="/services" className="back-button">Back to Services</Link>
+      <Link 
+        to="/services" 
+        className="back-button"
+        aria-label="Back to services page"
+      >
+        Back to Services
+      </Link>
     </section>
   );
 };

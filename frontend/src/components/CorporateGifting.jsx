@@ -56,78 +56,100 @@ const additionalItems = [
 
 const CorporateGifting = ({ addToCart }) => {
   const handleAddToCart = (item, e) => {
-    e?.preventDefault(); // Prevent navigation when clicking Add to Cart
-    e?.stopPropagation(); // Stop event bubbling
+    e?.preventDefault();
+    e?.stopPropagation();
     addToCart(item);
   };
 
   return (
-    <section className="corporate-gifting">
+    <section className="corporate-gifting" aria-label="Corporate Gifting Collection">
       <h2 className="section-title">Corporate Gifting</h2>
       <p className="section-subtitle">Thoughtful gifts for every occasion</p>
 
       {/* Main Corporate Gifting Items */}
-      <div className="gifts-container">
+      <div className="gifts-container" aria-label="Main corporate gifting items">
         {corporateGiftingTypes.map((gift, index) => (
           <div className="gift-item" key={index}>
-            <Link to={gift.route} className="gift-link">
-              <img src={gift.image} alt={gift.name} className="gift-image" />
+            <Link 
+              to={gift.route} 
+              className="gift-link"
+              aria-label={`View details of ${gift.name}`}
+            >
+              <img 
+                src={gift.image} 
+                alt={gift.name} 
+                className="gift-image" 
+              />
               <p className="gift-name">{gift.name}</p>
               <p className="gift-price">₹{gift.price}</p>
             </Link>
             <IconButton
+              aria-label={`Add ${gift.name} to cart`}
               sx={{
                 fontSize: "1.2rem",
                 color: "white",
-                background: "#70CB97", // brand green
+                background: "#70CB97",
                 padding: "10px",
                 borderRadius: "10px",
                 "&:hover": {
-                  transform: "scale(1.1)",
-                  background: "#5cb67f", // darker green
+                  transform: "scale(1.05)",
+                  background: "#5cb67f",
                 },
               }}
               onClick={(e) => handleAddToCart(gift, e)}
             >
               Add to Cart &nbsp;
-              <AddShoppingCartIcon />
+              <AddShoppingCartIcon aria-hidden="true" />
             </IconButton>
           </div>
         ))}
       </div>
 
       {/* Additional Items Section */}
-      <p className="section-second-title">Explore a wider range of options.</p>
-      <div className="additional-items-container">
+      <p className="section-second-title" aria-label="Additional items to explore">Explore a wider range of options.</p>
+      <div className="additional-items-container" aria-label="Additional corporate gifting items">
         {additionalItems.map((item, index) => (
           <div className="additional-item" key={index}>
-            <Link to={item.route} className="additional-item-link">
-              <img src={item.image} alt={item.name} className="additional-item-image" />
+            <Link 
+              to={item.route} 
+              className="additional-item-link"
+              aria-label={`View details of ${item.name}`}
+            >
+              <img 
+                src={item.image} 
+                alt={item.name} 
+                className="additional-item-image" 
+              />
               <p className="additional-item-name">{item.name}</p>
               <p className="additional-item-price">₹{item.price}</p>
             </Link>
             <IconButton
+              aria-label={`Add ${item.name} to cart`}
               sx={{
                 fontSize: "1.2rem",
                 color: "white",
-                background: "#70CB97", // brand green
+                background: "#70CB97",
                 padding: "10px",
                 borderRadius: "10px",
                 "&:hover": {
-                  transform: "scale(1.1)",
-                  background: "#5cb67f", // darker green
+                  transform: "scale(1.05)",
+                  background: "#5cb67f",
                 },
               }}
               onClick={(e) => handleAddToCart(item, e)}
             >
               Add to Cart &nbsp;
-              <AddShoppingCartIcon />
+              <AddShoppingCartIcon aria-hidden="true" />
             </IconButton>
           </div>
         ))}
       </div>
 
-      <Link to="/services" className="back-button">
+      <Link 
+        to="/services" 
+        className="back-button"
+        aria-label="Back to services page"
+      >
         Back to Services
       </Link>
     </section>

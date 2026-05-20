@@ -318,7 +318,7 @@ const SubNavbar = () => {
   };
 
   return (
-    <nav className="sub-navbar">
+    <nav className="sub-navbar" aria-label="Category navigation">
       <div className="sub-nav-container">
         {categories.map((category, index) => (
           <div
@@ -328,33 +328,60 @@ const SubNavbar = () => {
             key={index}
             onMouseEnter={() => toggleDropdown(index)}
             onMouseLeave={() => toggleDropdown(null)}
+            aria-label={`${category.name} category`}
           >
            {category.link ? (
-              <Link to={category.link} className="sub-nav-link-item">
+              <Link 
+                to={category.link} 
+                className="sub-nav-link-item"
+                aria-label={`Go to ${category.name}`}
+              >
                 {category.name}
               </Link>
             ) : (
-              <span className="sub-nav-link-item">{category.name}</span>
+              <span 
+                className="sub-nav-link-item"
+                aria-label={`${category.name} category - has dropdown`}
+              >
+                {category.name}
+              </span>
             )}
             {openDropdown === index && (
-              <div className="dropdown">
+              <div 
+                className="dropdown"
+                role="menu"
+                aria-label={`${category.name} subcategories`}
+              >
                 <div className="dropdown-grid">
                   {category.subcategories.map((sub, i) => (
-                    <div key={i} className="dropdown-column">
+                    <div key={i} className="dropdown-column" role="menuitem">
                       {sub.link ? (
-                        <Link to={sub.link} className="dropdown-subcategory">
+                        <Link 
+                          to={sub.link} 
+                          className="dropdown-subcategory"
+                          aria-label={`Go to ${sub.name}`}
+                        >
                           {sub.name}
                         </Link>
                       ) : (
-                        <span className="dropdown-subcategory">{sub.name}</span>
+                        <span 
+                          className="dropdown-subcategory"
+                          aria-label={`${sub.name} section - has items`}
+                        >
+                          {sub.name}
+                        </span>
                       )}
                       {sub.products && sub.products.length > 0 && (
-                        <div className="dropdown-products">
+                        <div 
+                          className="dropdown-products"
+                          aria-label={`${sub.name} products`}
+                        >
                           {sub.products.map((product, j) => (
                             <Link
                               to={`${sub.basePath}/${getProductSlug(product)}`}
                               className="dropdown-product-item"
                               key={j}
+                              aria-label={`Go to ${product}`}
                             >
                               {product}
                             </Link>

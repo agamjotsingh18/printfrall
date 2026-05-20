@@ -66,7 +66,7 @@ const Bags = ({ addToCart }) => {
   };
 
   return (
-    <section className="bags">
+    <section className="bags" aria-label="Bags Collection">
       <h2 className="section-title">Bags</h2>
       <p className="section-subtitle">Explore our premium collection of laptop bags and sleeves</p>
 
@@ -75,11 +75,14 @@ const Bags = ({ addToCart }) => {
         {bagsItems.map((item, index) => (
           <div className="bag-item" key={index}>
             <Link to={item.route} className="bag-link">
-              <img src={item.image} alt={item.name} className="bag-image" />
+              <img src={item.image} alt={item.name} className="bag-image"  width="300"
+                height="300"
+                loading="lazy" />
               <p className="bag-name">{item.name}</p>
               <p className="bag-price">₹{item.price}</p>
             </Link>
             <IconButton
+                 aria-label={`Add ${item.name} to cart`}
               sx={{
                 fontSize: "1.2rem",
                 color: "white",
@@ -94,7 +97,7 @@ const Bags = ({ addToCart }) => {
               onClick={(e) => handleAddToCart(item, e)}
             >
               Add to Cart &nbsp;
-              <AddShoppingCartIcon />
+              <AddShoppingCartIcon aria-hidden="true" />
             </IconButton>
           </div>
         ))}

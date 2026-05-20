@@ -24,44 +24,55 @@ const idCardsItems = [
 ];
 
 const IdCards = ({ addToCart }) => {
-  const handleAddToCart = (item) => {
-    addToCart(item); // Add the item to the cart
+  const handleAddToCart = (item, e) => {
+    e?.preventDefault();
+    e?.stopPropagation();
+    addToCart(item);
   };
 
   return (
-    <section className="id-cards">
+    <section className="id-cards" aria-label="ID Cards Collection">
       <h2 className="section-title">ID Cards</h2>
       <p className="section-subtitle">Explore our premium collection of ID cards and combos</p>
 
       {/* ID Cards Section */}
-      <div className="id-cards-container">
+      <div className="id-cards-container" aria-label="ID cards and combo collection">
         {idCardsItems.map((item, index) => (
-          <div className="id-card-item" key={index}>
-            <img src={item.image} alt={item.name} className="id-card-image" />
+          <div className="id-card-item" key={index} aria-label={`Product: ${item.name}`}>
+            <img 
+              src={item.image} 
+              alt={item.name} 
+              className="id-card-image" 
+            />
             <p className="id-card-name">{item.name}</p>
-            <p className="id-card-price">₹{item.price}</p>
+            <p className="id-card-price" aria-label={`Price: ₹${item.price}`}>₹{item.price}</p>
             <IconButton
+              aria-label={`Add ${item.name} to cart`}
               sx={{
                 fontSize: "1.2rem",
                 color: "white",
-                background: "#70CB97", // brand green
+                background: "#70CB97",
                 padding: "10px",
                 borderRadius: "10px",
                 "&:hover": {
-                  transform: "scale(1.1)",
-                  background: "#5cb67f", // darker green
+                  transform: "scale(1.05)",
+                  background: "#5cb67f",
                 },
               }}
-              onClick={() => handleAddToCart(item)}
+              onClick={(e) => handleAddToCart(item, e)}
             >
               Add to Cart &nbsp;
-              <AddShoppingCartIcon />
+              <AddShoppingCartIcon aria-hidden="true" />
             </IconButton>
           </div>
         ))}
       </div>
 
-      <Link to="/services" className="back-button">
+      <Link 
+        to="/services" 
+        className="back-button"
+        aria-label="Back to services page"
+      >
         Back to Services
       </Link>
     </section>

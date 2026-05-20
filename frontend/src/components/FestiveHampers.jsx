@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom"; // Import Link
+import { Link } from "react-router-dom";
 import { IconButton } from "@mui/material";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 import "../styles/FestiveHampers.css";
@@ -112,36 +112,37 @@ const FestiveHampers = ({ addToCart }) => {
   };
 
   return (
-    <section className="festive-hampers">
+    <section className="festive-hampers" aria-label="Festive Hampers Collection">
       {/* Diwali Banner */}
-      <div className="diwali-banner">
+      <div className="diwali-banner" aria-label="Diwali announcement banner">
         <div className="banner-content">
-          <span className="banner-icon">🪔</span>
-          <p className="banner-text">Diwali Kits Coming Soon! 🎁</p>
-          <span className="banner-icon">✨</span>
+          <span className="banner-icon" aria-label="Diya icon">🪔</span>
+          <p className="banner-text" aria-label="Diwali kits announcement">Diwali Kits Coming Soon! 🎁</p>
+          <span className="banner-icon" aria-label="Sparkle icon">✨</span>
         </div>
-        <div className="banner-subtext">Stay tuned for exclusive festive collections</div>
+        <div className="banner-subtext" aria-label="Festive collection notification">Stay tuned for exclusive festive collections</div>
       </div>
 
       <h2 className="section-title">Festive Hampers</h2>
       <p className="section-subtitle">Celebrate Holi with our exclusive hampers</p>
 
       {/* Main Hampers Section */}
-      <div className="main-hampers-container">
+      <div className="main-hampers-container" aria-label="Premium festive hampers">
         {mainHampers.map((hamper, index) => (
-          <div key={index} className="hamper-card">
+          <div key={index} className="hamper-card" aria-label={`Hamper: ${hamper.name}`}>
             {/* Wrap everything except the button in a Link */}
-            <Link to={hamper.link} className="hamper-link">
+            <Link to={hamper.link} className="hamper-link" aria-label={`View details of ${hamper.name}`}>
               <img src={hamper.image} alt={hamper.name} className="hamper-image" />
               <h3 className="hamper-name">{hamper.name}</h3>
-              <p className="hamper-price">₹{hamper.price}</p>
-              <ul className="hamper-items">
+              <p className="hamper-price" aria-label={`Price: ₹${hamper.price}`}>₹{hamper.price}</p>
+              <ul className="hamper-items" aria-label={`Items included in ${hamper.name}`}>
                 {hamper.items.map((item, i) => (
                   <li key={i}>{item}</li>
                 ))}
               </ul>
             </Link>
             <IconButton
+              aria-label={`Add ${hamper.name} to cart`}
               sx={{
                 fontSize: "1.2rem",
                 color: "white",
@@ -149,14 +150,14 @@ const FestiveHampers = ({ addToCart }) => {
                 padding: "10px",
                 borderRadius: "10px",
                 "&:hover": {
-                  transform: "scale(1.1)",
+                  transform: "scale(1.05)",
                   background: "#5cb67f",
                 },
               }}
               onClick={() => addToCart(hamper)}
             >
               Add to Cart &nbsp;
-              <AddShoppingCartIcon />
+              <AddShoppingCartIcon aria-hidden="true" />
             </IconButton>
           </div>
         ))}
@@ -165,16 +166,27 @@ const FestiveHampers = ({ addToCart }) => {
       {/* Customizable Hamper Section */}
       <h2 className="section-title">Create Your Custom Hamper</h2>
       <div className="customizable-hamper">
-        <div className="categories">
+        <div className="categories" aria-label="Customizable items categories">
           {Object.keys(customizableItems).map((category) => (
-            <div key={category} className="category">
+            <div key={category} className="category" aria-label={`${category} category`}>
               <h3>{category}</h3>
-              <ul>
+              <ul aria-label={`${category} items list`}>
                 {customizableItems[category].map((item, index) => (
-                  <li key={index} onClick={() => handleAddItem(item)}>
+                  <li 
+                    key={index} 
+                    onClick={() => handleAddItem(item)}
+                    aria-label={`Add ${item.name} to your custom hamper`}
+                    role="button"
+                    tabIndex={0}
+                    onKeyPress={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        handleAddItem(item);
+                      }
+                    }}
+                  >
                     <img src={item.image} alt={item.name} />
                     <p>{item.name}</p>
-                    <p>₹{item.price}</p>
+                    <p aria-label={`Price: ₹${item.price}`}>₹{item.price}</p>
                   </li>
                 ))}
               </ul>
@@ -182,20 +194,32 @@ const FestiveHampers = ({ addToCart }) => {
           ))}
         </div>
 
-        <div className="selected-items">
+        <div className="selected-items" aria-label="Your custom hamper selection">
           <h3>Your Hamper</h3>
-          <ul>
-            {selectedItems.map((item, index) => (
-              <li key={index} className="selected-item">
-                <img src={item.image} alt={item.name} />
-                <p>{item.name}</p>
-                <p>₹{item.price}</p>
-                <button onClick={() => handleRemoveItem(item)}>Remove</button>
-              </li>
-            ))}
-          </ul>
-          <p className="total-price">Total: ₹{calculateTotalPrice()}</p>
+          {selectedItems.length === 0 ? (
+            <p aria-label="No items added yet">No items selected. Click on items above to build your hamper.</p>
+          ) : (
+            <ul aria-label="Selected items list">
+              {selectedItems.map((item, index) => (
+                <li key={index} className="selected-item" aria-label={`Selected item: ${item.name}`}>
+                  <img src={item.image} alt={item.name} />
+                  <p>{item.name}</p>
+                  <p>₹{item.price}</p>
+                  <button 
+                    onClick={() => handleRemoveItem(item)}
+                    aria-label={`Remove ${item.name} from hamper`}
+                  >
+                    Remove
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
+          <p className="total-price" aria-label={`Total price: ₹${calculateTotalPrice()}`}>
+            Total: ₹{calculateTotalPrice()}
+          </p>
           <IconButton
+            aria-label="Add custom hamper to cart"
             sx={{
               fontSize: "1.2rem",
               color: "white",
@@ -203,14 +227,14 @@ const FestiveHampers = ({ addToCart }) => {
               padding: "10px",
               borderRadius: "10px",
               "&:hover": {
-                transform: "scale(1.1)",
+                transform: "scale(1.05)",
                 background: "#5cb67f",
               },
             }}
             onClick={handleAddCustomHamperToCart}
           >
             Add Custom Hamper to Cart &nbsp;
-            <AddShoppingCartIcon />
+            <AddShoppingCartIcon aria-hidden="true" />
           </IconButton>
         </div>
       </div>

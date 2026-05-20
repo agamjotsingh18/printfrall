@@ -15,14 +15,17 @@ const NotFoundPage = () => {
         textAlign: "center",
         p: 3,
       }}
+      aria-label="404 Page Not Found"
     >
       {/* 404 Icon */}
       <ErrorOutlineIcon
         sx={{
           fontSize: "6rem",
-          color: "#70CB97", // brand green
+          color: "#70CB97",
           mb: 3,
         }}
+        aria-label="Error icon"
+        aria-hidden="false"
       />
 
       {/* Title */}
@@ -31,8 +34,9 @@ const NotFoundPage = () => {
         sx={{
           fontWeight: "bold",
           mb: 2,
-          color: "#19485D", // deep teal
+          color: "#19485D",
         }}
+        aria-label="Page not found error"
       >
         404 - Page Not Found
       </Typography>
@@ -41,10 +45,11 @@ const NotFoundPage = () => {
       <Typography
         variant="body1"
         sx={{
-          color: "#5a6e7a", // muted neutral
+          color: "#5a6e7a",
           mb: 4,
           maxWidth: "500px",
         }}
+        aria-label="The page you are looking for does not exist or has been moved"
       >
         Oops! The page you're looking for doesn't exist. It might have been moved or deleted.
       </Typography>
@@ -55,7 +60,7 @@ const NotFoundPage = () => {
         to="/"
         variant="contained"
         sx={{
-          background: "#70CB97", // brand green
+          background: "#70CB97",
           color: "white",
           fontWeight: "bold",
           fontSize: "16px",
@@ -63,9 +68,10 @@ const NotFoundPage = () => {
           borderRadius: "25px",
           textTransform: "none",
           "&:hover": {
-            background: "#5cb67f", // darker green
+            background: "#5cb67f",
           },
         }}
+        aria-label="Go back to home page"
       >
         Go Back Home
       </Button>

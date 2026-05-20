@@ -22,48 +22,63 @@ const mugsItems = [
 ];
 
 const Mugs = ({ addToCart }) => {
-  const handleAddToCart = (item) => {
-    addToCart(item); // Add the item to the cart
+  const handleAddToCart = (item, e) => {
+    e?.preventDefault();
+    e?.stopPropagation();
+    addToCart(item);
   };
 
   return (
-    <section className="mugs">
+    <section className="mugs" aria-label="Mugs Collection">
       <h2 className="section-title">Mugs</h2>
       <p className="section-subtitle">Explore our premium collection of mugs</p>
 
       {/* Mugs Section */}
-      <div className="mugs-container">
+      <div className="mugs-container" aria-label="Premium mugs collection">
         {mugsItems.map((item, index) => (
-          <div className="mug-item" key={index}>
+          <div className="mug-item" key={index} aria-label={`Product: ${item.name}`}>
             {/* Wrap mug details in a Link */}
-            <Link to={item.route} className="mug-link">
-              <img src={item.image} alt={item.name} className="mug-image" />
+            <Link 
+              to={item.route} 
+              className="mug-link"
+              aria-label={`View details of ${item.name}`}
+            >
+              <img 
+                src={item.image} 
+                alt={item.name} 
+                className="mug-image" 
+              />
               <p className="mug-name">{item.name}</p>
-              <p className="mug-price">₹{item.price}</p>
+              <p className="mug-price" aria-label={`Price: ₹${item.price}`}>₹{item.price}</p>
             </Link>
             {/* Add to Cart Button */}
             <IconButton
+              aria-label={`Add ${item.name} to cart`}
               sx={{
                 fontSize: "1.2rem",
                 color: "white",
-                background: "#70CB97", // brand green
+                background: "#70CB97",
                 padding: "10px",
                 borderRadius: "10px",
                 "&:hover": {
-                  transform: "scale(1.1)",
-                  background: "#5cb67f", // darker green
+                  transform: "scale(1.05)",
+                  background: "#5cb67f",
                 },
               }}
-              onClick={() => handleAddToCart(item)}
+              onClick={(e) => handleAddToCart(item, e)}
             >
               Add to Cart &nbsp;
-              <AddShoppingCartIcon />
+              <AddShoppingCartIcon aria-hidden="true" />
             </IconButton>
           </div>
         ))}
       </div>
 
-      <Link to="/services" className="back-button">
+      <Link 
+        to="/services" 
+        className="back-button"
+        aria-label="Back to services page"
+      >
         Back to Services
       </Link>
     </section>

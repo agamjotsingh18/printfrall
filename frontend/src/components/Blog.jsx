@@ -28,7 +28,7 @@ const blogPosts = [
 
 const Blog = () => {
   return (
-    <Box className="blog-page" sx={{ marginTop: "50px", paddingBottom: "50px" }}>
+    <Box className="blog-page" sx={{ marginTop: "50px", paddingBottom: "50px" }} aria-label="Blog Section">
       <Typography className="blog-title" sx={{ fontWeight: "bolder" }}>
         Latest from Our Blog
       </Typography>
@@ -39,7 +39,7 @@ const Blog = () => {
             <CardContent>
               <Typography className="blog-heading">{post.title}</Typography>
               <Typography className="blog-description">{post.description}</Typography>
-              <a href={post.link} className="blog-read-more">Read More</a>
+              <a href={post.link} className="blog-read-more" aria-label={`Read more about ${post.title}`}>Read More</a>
             </CardContent>
           </Card>
         ))}

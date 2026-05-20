@@ -27,20 +27,21 @@ const AcrylicSignBoard = ({ addToCart }) => {
   };
 
   return (
-    <section className="acrylic-sign-board">
+    <section className="acrylic-sign-board" aria-label="Acrylic Products">
       <h2 className="section-title">Acrylic Sign Boards & Products</h2>
       <p className="section-subtitle">Choose from a variety of acrylic products</p>
       <div className="acrylic-container">
         {acrylicProducts.map((product, index) => (
           <div className="acrylic-item" key={index}>
             {/* Wrap product details in a Link */}
-            <Link to={product.route} className="acrylic-link">
+            <Link to={product.route} className="acrylic-link" aria-label={`View details of ${product.name}`}>
               <img src={product.image} alt={product.name} className="acrylic-image" />
               <p className="acrylic-name">{product.name}</p>
               <p className="acrylic-price">₹{product.price}</p>
             </Link>
             {/* Add to Cart Button */}
             <IconButton
+              aria-label={`Add ${product.name} to cart`}
               sx={{
                 fontSize: "1.2rem",
                 color: "white",
@@ -55,12 +56,12 @@ const AcrylicSignBoard = ({ addToCart }) => {
               onClick={() => handleAddToCart(product)}
             >
               Add to Cart &nbsp;
-              <AddShoppingCartIcon />
+              <AddShoppingCartIcon aria-hidden="true" />
             </IconButton>
           </div>
         ))}
       </div>
-      <Link to="/services" className="back-button">Back to Services</Link>
+      <Link to="/services" className="back-button"   aria-label="Back to services page">Back to Services</Link>
     </section>
   );
 };

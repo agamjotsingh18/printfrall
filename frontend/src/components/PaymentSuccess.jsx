@@ -14,6 +14,7 @@ const PaymentSuccess = () => {
         background: "linear-gradient(135deg, #f9f9f9, #eef3f7)",
         padding: "20px",
       }}
+      aria-label="Payment success page"
     >
       <Paper
         elevation={3}
@@ -25,31 +26,36 @@ const PaymentSuccess = () => {
           borderRadius: "20px",
           backgroundColor: "#ffffff",
         }}
+        aria-label="Payment success confirmation"
       >
         <CheckCircle
           sx={{
             fontSize: 80,
-            color: "#70CB97", // brand green
+            color: "#70CB97",
             marginBottom: 2,
           }}
+          aria-label="Payment successful icon"
+          aria-hidden="false"
         />
         <Typography
           variant="h4"
           component="h1"
           sx={{
             fontWeight: 700,
-            color: "#19485D", // deep teal
+            color: "#19485D",
             marginBottom: 2,
           }}
+          aria-label="Your payment was successful"
         >
           Payment Successful!
         </Typography>
         <Typography
           variant="body1"
           sx={{
-            color: "#5a6e7a", // muted neutral
+            color: "#5a6e7a",
             marginBottom: 4,
           }}
+          aria-label="Thank you for your purchase. Your order has been placed successfully."
         >
           Thank you for your purchase. Your order has been placed successfully.
         </Typography>
@@ -68,6 +74,7 @@ const PaymentSuccess = () => {
               backgroundColor: "#5cb67f",
             },
           }}
+          aria-label="Continue shopping on home page"
         >
           Continue Shopping
         </Button>

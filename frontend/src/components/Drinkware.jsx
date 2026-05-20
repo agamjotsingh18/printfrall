@@ -48,83 +48,105 @@ const drinkwareItems = [
 
 const Drinkware = ({ addToCart }) => {
   const handleAddToCart = (item, e) => {
-    e?.preventDefault(); // Prevent navigation when clicking Add to Cart
-    e?.stopPropagation(); // Stop event bubbling
+    e?.preventDefault();
+    e?.stopPropagation();
     addToCart(item);
   };
 
   return (
-    <section className="drinkware">
+    <section className="drinkware" aria-label="Drinkware Collection">
       <h2 className="section-title">Drinkware</h2>
       <p className="section-subtitle">Explore our premium collection of sippers and mugs</p>
 
       {/* Sippers & Mugs Section */}
-      <h3 className="category-title">Sippers & Mugs</h3>
-      <div className="drinkware-container">
+      <h3 className="category-title" aria-label="Sippers and Mugs category">Sippers & Mugs</h3>
+      <div className="drinkware-container" aria-label="Sippers and mugs collection">
         {drinkwareItems
           .filter((item) => item.category === "Sippers & Mugs")
           .map((item, index) => (
-            <div className="drinkware-item" key={index}>
-              <Link to={item.route} className="drinkware-link">
-                <img src={item.image} alt={item.name} className="drinkware-image" />
+            <div className="drinkware-item" key={index} aria-label={`Product: ${item.name}`}>
+              <Link 
+                to={item.route} 
+                className="drinkware-link"
+                aria-label={`View details of ${item.name}`}
+              >
+                <img 
+                  src={item.image} 
+                  alt={item.name} 
+                  className="drinkware-image" 
+                />
                 <p className="drinkware-name">{item.name}</p>
-                <p className="drinkware-price">₹{item.price}</p>
+                <p className="drinkware-price" aria-label={`Price: ₹${item.price}`}>₹{item.price}</p>
               </Link>
               <IconButton
+                aria-label={`Add ${item.name} to cart`}
                 sx={{
                   fontSize: "1.2rem",
                   color: "white",
-                  background: "#70CB97", // brand green
+                  background: "#70CB97",
                   padding: "10px",
                   borderRadius: "10px",
                   "&:hover": {
-                    transform: "scale(1.1)",
-                    background: "#5cb67f", // darker green
+                    transform: "scale(1.05)",
+                    background: "#5cb67f",
                   },
                 }}
                 onClick={(e) => handleAddToCart(item, e)}
               >
                 Add to Cart &nbsp;
-                <AddShoppingCartIcon />
+                <AddShoppingCartIcon aria-hidden="true" />
               </IconButton>
             </div>
           ))}
       </div>
 
       {/* Mugs Section */}
-      <h3 className="category-title">Mugs</h3>
-      <div className="drinkware-container">
+      <h3 className="category-title" aria-label="Mugs category">Mugs</h3>
+      <div className="drinkware-container" aria-label="Mugs collection">
         {drinkwareItems
           .filter((item) => item.category === "Mugs")
           .map((item, index) => (
-            <div className="drinkware-item" key={index}>
-              <Link to={item.route} className="drinkware-link">
-                <img src={item.image} alt={item.name} className="drinkware-image" />
+            <div className="drinkware-item" key={index} aria-label={`Product: ${item.name}`}>
+              <Link 
+                to={item.route} 
+                className="drinkware-link"
+                aria-label={`View details of ${item.name}`}
+              >
+                <img 
+                  src={item.image} 
+                  alt={item.name} 
+                  className="drinkware-image" 
+                />
                 <p className="drinkware-name">{item.name}</p>
-                <p className="drinkware-price">₹{item.price}</p>
+                <p className="drinkware-price" aria-label={`Price: ₹${item.price}`}>₹{item.price}</p>
               </Link>
               <IconButton
+                aria-label={`Add ${item.name} to cart`}
                 sx={{
                   fontSize: "1.2rem",
                   color: "white",
-                  background: "#70CB97", // brand green
+                  background: "#70CB97",
                   padding: "10px",
                   borderRadius: "10px",
                   "&:hover": {
-                    transform: "scale(1.1)",
-                    background: "#5cb67f", // darker green
+                    transform: "scale(1.05)",
+                    background: "#5cb67f",
                   },
                 }}
                 onClick={(e) => handleAddToCart(item, e)}
               >
                 Add to Cart &nbsp;
-                <AddShoppingCartIcon />
+                <AddShoppingCartIcon aria-hidden="true" />
               </IconButton>
             </div>
           ))}
       </div>
 
-      <Link to="/services" className="back-button">
+      <Link 
+        to="/services" 
+        className="back-button"
+        aria-label="Back to services page"
+      >
         Back to Services
       </Link>
     </section>
