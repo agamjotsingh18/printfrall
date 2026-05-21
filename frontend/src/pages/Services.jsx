@@ -195,6 +195,9 @@ const Services = ({ addToCart }) => {
                       src={item.image}
                       alt={item.name}
                       className="service-image"
+                      loading="lazy"  // Add this
+                      width="400"
+                      height="400"
                     />
                     <p className="service-item-name">{item.name}</p>
                     <p className="service-item-price">₹{item.price}</p>

@@ -168,6 +168,8 @@ body {
 .view-all-button,
 .premium-submit-button {
   background-color: #1a6e44 !important;
+    color: #ffffff !important;
+
 }
 
 .hero-btn-modern:hover,
@@ -208,4 +210,25 @@ body {
   .main-content-layout {
     padding-top: 56px; 
   }
+}
+
+
+.service-item-price,
+.bag-price,
+.gift-price,
+.cap-price,
+.mug-price,
+.pen-price,
+.diary-price,
+.drinkware-price,
+.frame-price,
+.sticker-price,
+.label-price,
+.envelope-price,
+.tshirt-price,
+.hoodie-price,
+.calendar-price,
+.id-card-price,
+.additional-item-price {
+  color: #1a6e44 !important; /* Darker green for better contrast */
 }

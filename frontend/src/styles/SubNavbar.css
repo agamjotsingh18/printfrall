@@ -110,7 +110,7 @@
 /* Add this to your CSS file */
 .sub-nav-link-item {
   text-decoration: none;
-  color: #1e2a32; /* Pulls color dynamically from .sub-nav-item or .corporate-item */
+  color: #1e2a32;
   font-family: inherit;
   font-size: inherit;
   font-weight: inherit;
@@ -120,7 +120,7 @@
 
 /* Ensure corporate item custom style is preserved correctly */
 .corporate-item .sub-nav-link-item {
-  color: var(--color-green);
+  color: #1e2a32;;
 }
 
 .corporate-item:hover .sub-nav-link-item {
