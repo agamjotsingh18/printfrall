@@ -10,17 +10,9 @@ import {
   IconButton,
 } from "@mui/material";
 import { AddShoppingCart, Close } from "@mui/icons-material";
+import { getCdnImage } from "../utils/imageLoader";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
-
-// ========== YOUR GENERATED ACRYLIC MAGNET IMAGES ==========
-import mainImg from "../assets/acrylic-magnet-1-fridge.png";
-import img2 from "../assets/acrylic-magnet-2-tilted.png";
-import img3 from "../assets/acrylic-magnet-3-set.png";
-import img4 from "../assets/acrylic-magnet-4-stack.png";
-import img5 from "../assets/acrylic-magnet-5-closeup.png";
-import img6 from "../assets/acrylic-magnet-6-birthday.png";
-// ==========================================================
 
 const AcrylicMagnets = ({ addToCart }) => {
   const priceMapping = {
@@ -34,12 +26,11 @@ const AcrylicMagnets = ({ addToCart }) => {
 
   const [selectedSize, setSelectedSize] = useState(defaultSize);
   const [selectedMaterial, setSelectedMaterial] = useState(defaultMaterial);
-  const [mainImage, setMainImage] = useState(mainImg);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   const details = {
     name: "Acrylic Magnets",
-    image: mainImg,
     description:
       "Add a touch of creativity to your fridge or workspace with our premium acrylic magnets. Sleek, modern, and durable, these magnets are perfect for personal or promotional use.",
     features: [
@@ -50,14 +41,23 @@ const AcrylicMagnets = ({ addToCart }) => {
     ],
     sizes: ["Small (2x3 inches)", "Medium (3x4 inches)", "Large (4x6 inches)"],
     materials: ["Clear Acrylic", "Frosted Acrylic", "Colored Acrylic"],
-    extraImages: [img2, img3, img6, img4, img5],
+    images: [
+      "acrylic-magnet-1-fridge.png",
+      "acrylic-magnet-2-tilted.png",
+      "acrylic-magnet-3-set.png",
+      "acrylic-magnet-6-birthday.png",
+      "acrylic-magnet-4-stack.png",
+      "acrylic-magnet-5-closeup.png"
+    ],
   };
 
   const price = priceMapping[selectedSize][selectedMaterial];
 
   const handleAddToCart = () => {
     const item = {
-      ...details,
+      name: details.name,
+      image: getCdnImage(details.images[0], { width: 150, height: 150 }),
+      description: details.description,
       selectedSize,
       selectedMaterial,
       price,
@@ -84,8 +84,10 @@ const AcrylicMagnets = ({ addToCart }) => {
           >
             <Zoom>
               <img
-                src={mainImage}
-                alt={details.name}
+                src={getCdnImage(details.images[activeImageIndex], { width: 600, height: 450 })}
+                alt={`${details.name} primary view`}
+                width="600"
+                height="450"
                 style={{
                   width: "100%",
                   borderRadius: "12px",
@@ -103,26 +105,30 @@ const AcrylicMagnets = ({ addToCart }) => {
                 mt: 2,
                 overflowX: "auto",
                 "&::-webkit-scrollbar": { display: "none" },
+                scrollbarWidth: "none",
               }}
             >
-              {details.extraImages.map((img, idx) => (
+              {details.images.map((imageName, idx) => (
                 <Paper
                   key={idx}
-                  onClick={() => setMainImage(img)}
+                  onClick={() => setActiveImageIndex(idx)}
                   sx={{
                     p: 1,
                     borderRadius: "10px",
                     cursor: "pointer",
                     border:
-                      mainImage === img ? "2px solid #70CB97" : "2px solid transparent",
+                      activeImageIndex === idx ? "2px solid #70CB97" : "2px solid transparent",
                     "&:hover": { border: "2px solid #70CB97" },
                     flexShrink: 0,
                     transition: "all 0.2s",
                   }}
                 >
                   <img
-                    src={img}
-                    alt={`view ${idx + 1}`}
+                    src={getCdnImage(imageName, { width: 90, height: 90 })}
+                    alt={`${details.name} thumbnail view ${idx + 1}`}
+                    width="90"
+                    height="90"
+                    loading="lazy"
                     style={{
                       width: "90px",
                       height: "90px",

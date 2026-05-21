@@ -13,17 +13,9 @@ import {
   InputAdornment,
 } from "@mui/material";
 import { AddShoppingCart, Close, AspectRatio, WorkspacePremium } from "@mui/icons-material";
+import { getCdnImage } from "../utils/imageLoader";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
-
-// ========== MAIN PRODUCT IMAGE ==========
-import mainImg from "../assets/custom-standee-cutout.jpeg";
-
-// ========== EXTRA ANGLES ==========
-import img2 from "../assets/custom-standee-cutout.jpeg";
-import img3 from "../assets/custom-standee-cutout-1.png";
-import img4 from "../assets/custom-standee-cutout-2.jpeg";
-import img5 from "../assets/custom-standee-cutout-3.png";
 
 const CustomStandeeCutout = ({ addToCart }) => {
   const priceMapping = {
@@ -38,7 +30,7 @@ const CustomStandeeCutout = ({ addToCart }) => {
   const defaultMaterial = "5mm SunBoard";
 
   const [selectedSize, setSelectedSize] = useState(defaultSize);
-  const [mainImage, setMainImage] = useState(mainImg);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   // Custom quantity state
@@ -73,7 +65,6 @@ const CustomStandeeCutout = ({ addToCart }) => {
 
   const productDetails = {
     name: "Custom Standee Cutout",
-    image: mainImg,
     description:
       "Elevate your brand with life-size, visually engaging custom cut-out display stands. Our high-impact stands feature premium Eco Solvent printing on durable SunBoard, creating focal points that captivate audiences and enhance brand recall.",
     features: [
@@ -86,7 +77,12 @@ const CustomStandeeCutout = ({ addToCart }) => {
       "Applications: Retail stores, Trade shows, and Photo opportunities",
     ],
     sizes: ["2.5ft x 5ft", "3ft x 3ft", "3ft x 6ft", "4ft x 5ft", "5ft x 3ft"],
-    extraImages: [img2, img3, img4, img5],
+    images: [
+      "custom-standee-cutout.jpeg",
+      "custom-standee-cutout-1.png",
+      "custom-standee-cutout-2.jpeg",
+      "custom-standee-cutout-3.png"
+    ],
     tags: ["Eco Solvent", "Sturdy Stand", "Custom Shape"],
   };
 
@@ -95,7 +91,7 @@ const CustomStandeeCutout = ({ addToCart }) => {
     if (selectedOption === "Custom") {
       item = {
         name: "Custom Standee Cutout",
-        image: mainImg,
+        image: getCdnImage(productDetails.images[0], { width: 150, height: 150 }),
         description: productDetails.description,
         features: productDetails.features,
         tags: productDetails.tags,
@@ -107,7 +103,11 @@ const CustomStandeeCutout = ({ addToCart }) => {
     } else {
       const option = packOptions.find((opt) => opt.value === selectedOption);
       item = {
-        ...productDetails,
+        name: productDetails.name,
+        image: getCdnImage(productDetails.images[0], { width: 150, height: 150 }),
+        description: productDetails.description,
+        features: productDetails.features,
+        tags: productDetails.tags,
         selectedSize: `${option.label} (${selectedSize})`,
         selectedMaterial: defaultMaterial,
         price: option.price,
@@ -152,8 +152,10 @@ const CustomStandeeCutout = ({ addToCart }) => {
 
             <Zoom>
               <img
-                src={mainImage}
-                alt={productDetails.name}
+                src={getCdnImage(productDetails.images[activeImageIndex], { width: 600, height: 450 })}
+                alt={`${productDetails.name} primary view`}
+                width="600"
+                height="450"
                 style={{
                   width: "100%",
                   borderRadius: "12px",
@@ -172,26 +174,30 @@ const CustomStandeeCutout = ({ addToCart }) => {
                 mt: 2,
                 overflowX: "auto",
                 "&::-webkit-scrollbar": { display: "none" },
+                scrollbarWidth: "none",
               }}
             >
-              {productDetails.extraImages.map((img, idx) => (
+              {productDetails.images.map((imageName, idx) => (
                 <Paper
                   key={idx}
-                  onClick={() => setMainImage(img)}
+                  onClick={() => setActiveImageIndex(idx)}
                   sx={{
                     p: 1,
                     borderRadius: "10px",
                     cursor: "pointer",
                     border:
-                      mainImage === img ? "2px solid #70CB97" : "2px solid transparent",
+                      activeImageIndex === idx ? "2px solid #70CB97" : "2px solid transparent",
                     "&:hover": { border: "2px solid #70CB97" },
                     flexShrink: 0,
                     transition: "all 0.2s",
                   }}
                 >
                   <img
-                    src={img}
-                    alt={`view ${idx + 1}`}
+                    src={getCdnImage(imageName, { width: 90, height: 90 })}
+                    alt={`${productDetails.name} thumbnail view ${idx + 1}`}
+                    width="90"
+                    height="90"
+                    loading="lazy"
                     style={{
                       width: "90px",
                       height: "90px",

@@ -11,15 +11,9 @@ import {
   Chip,
 } from "@mui/material";
 import { AddShoppingCart, Close, LocalDrink } from "@mui/icons-material";
+import { getCdnImage } from "../utils/imageLoader";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
-
-// ========== MAIN BOTTLE IMAGE ==========
-import mainImg from "../assets/premium-black-sipper.png";
-
-// ========== EXTRA ANGLES ==========
-import img2 from "../assets/premium-black-sipper.png";
-import img3 from "../assets/premium-black-sipper-1.png";
 
 const PremiumBlackSipper = ({ addToCart }) => {
   // Price mapping
@@ -34,12 +28,11 @@ const PremiumBlackSipper = ({ addToCart }) => {
 
   const [selectedSize] = useState(defaultSize);
   const [selectedColor, setSelectedColor] = useState(defaultColor);
-  const [mainImage, setMainImage] = useState(mainImg);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   const bottleDetails = {
     name: "Premium Black Sipper",
-    image: mainImg,
     description:
       "A premium stainless steel black sipper bottle specifically engineered to withstand daily wear and tear. Lightweight and durable, it's the perfect companion for home, travel, or office use.",
     features: [
@@ -52,7 +45,10 @@ const PremiumBlackSipper = ({ addToCart }) => {
     ],
     sizes: ["750ml"],
     colors: availableColors,
-    extraImages: [img2, img3],
+    images: [
+      "premium-black-sipper.png",
+      "premium-black-sipper-1.png"
+    ],
     tags: ["Durable", "BPA-Free", "Customizable"],
   };
 
@@ -60,7 +56,11 @@ const PremiumBlackSipper = ({ addToCart }) => {
 
   const handleAddToCart = () => {
     const item = {
-      ...bottleDetails,
+      name: bottleDetails.name,
+      image: getCdnImage(bottleDetails.images[0], { width: 150, height: 150 }),
+      description: bottleDetails.description,
+      features: bottleDetails.features,
+      tags: bottleDetails.tags,
       selectedSize,
       selectedColor,
       price,
@@ -87,8 +87,10 @@ const PremiumBlackSipper = ({ addToCart }) => {
           >
             <Zoom>
               <img
-                src={mainImage}
-                alt={bottleDetails.name}
+                src={getCdnImage(bottleDetails.images[activeImageIndex], { width: 600, height: 450 })}
+                alt={`${bottleDetails.name} primary view`}
+                width="600"
+                height="450"
                 style={{
                   width: "100%",
                   borderRadius: "12px",
@@ -107,26 +109,30 @@ const PremiumBlackSipper = ({ addToCart }) => {
                 mt: 2,
                 overflowX: "auto",
                 "&::-webkit-scrollbar": { display: "none" },
+                scrollbarWidth: "none",
               }}
             >
-              {bottleDetails.extraImages.map((img, idx) => (
+              {bottleDetails.images.map((imageName, idx) => (
                 <Paper
                   key={idx}
-                  onClick={() => setMainImage(img)}
+                  onClick={() => setActiveImageIndex(idx)}
                   sx={{
                     p: 1,
                     borderRadius: "10px",
                     cursor: "pointer",
                     border:
-                      mainImage === img ? "2px solid #70CB97" : "2px solid transparent",
+                      activeImageIndex === idx ? "2px solid #70CB97" : "2px solid transparent",
                     "&:hover": { border: "2px solid #70CB97" },
                     flexShrink: 0,
                     transition: "all 0.2s",
                   }}
                 >
                   <img
-                    src={img}
-                    alt={`view ${idx + 1}`}
+                    src={getCdnImage(imageName, { width: 90, height: 90 })}
+                    alt={`${bottleDetails.name} thumbnail view ${idx + 1}`}
+                    width="90"
+                    height="90"
+                    loading="lazy"
                     style={{
                       width: "90px",
                       height: "90px",

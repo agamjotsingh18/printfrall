@@ -18,17 +18,9 @@ import {
   WorkspacePremium,
   AutoAwesome,
 } from "@mui/icons-material";
+import { getCdnImage } from "../utils/imageLoader";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
-
-// Import your actual matte laminated sticker images – replace with real variants if available
-import matteLaminatedStickersImg from "../assets/matte-laminated-stickers.png";
-import matteLaminatedStickersImg2 from "../assets/matte-laminated-stickers-1.png";
-import matteLaminatedStickersImg3 from "../assets/matte-laminated-stickers-2.png";
-// import matteLaminatedStickersImg4 from "../assets/matte-laminated-stickers-3.png";
-import matteLaminatedStickersImg5 from "../assets/matte-laminated-stickers-4.png";
-import matteLaminatedStickersImg6 from "../assets/matte-laminated-stickers-5.png";
-import matteLaminatedStickersImg7 from "../assets/matte-laminated-stickers-6.png";
 
 const MatteLaminatedStickers = ({ addToCart }) => {
   // Price mapping for premium 300 GSM Matte packs
@@ -39,7 +31,7 @@ const MatteLaminatedStickers = ({ addToCart }) => {
   };
 
   const [selectedMaterial, setSelectedMaterial] = useState("Aesthetic Pack (45 Pcs)");
-  const [mainImage, setMainImage] = useState(matteLaminatedStickersImg);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   const unitPrice = priceMapping[selectedMaterial];
@@ -58,23 +50,21 @@ const MatteLaminatedStickers = ({ addToCart }) => {
       "Versatility: Ideal for Laptops, Journals, Helmets, and Bottles",
       "Design: High-definition vibrant aesthetic & doodle art",
     ],
+    images: [
+      "matte-laminated-stickers.png",
+      "matte-laminated-stickers-1.png",
+      "matte-laminated-stickers-2.png",
+      "matte-laminated-stickers-4.png",
+      "matte-laminated-stickers-5.png",
+      "matte-laminated-stickers-6.png"
+    ],
     tags: ["300 GSM", "Journal Essential", "Premium Vinyl"],
   };
-
-  const thumbnailImages = [
-    matteLaminatedStickersImg,
-    matteLaminatedStickersImg2,
-    matteLaminatedStickersImg3,
-    // matteLaminatedStickersImg4,
-    matteLaminatedStickersImg5,
-    matteLaminatedStickersImg6,
-    matteLaminatedStickersImg7,
-  ];
 
   const handleAddToCart = () => {
     const item = {
       name: productDetails.name,
-      image: mainImage,
+      image: getCdnImage(productDetails.images[0], { width: 150, height: 150 }),
       description: productDetails.description,
       selectedMaterial,
       price: totalPrice,
@@ -143,11 +133,14 @@ const MatteLaminatedStickers = ({ addToCart }) => {
 
             <Zoom>
               <img
-                src={mainImage}
-                alt={productDetails.name}
+                src={getCdnImage(productDetails.images[activeImageIndex], { width: 600, height: 450 })}
+                alt={`${productDetails.name} primary view`}
+                width="600"
+                height="450"
                 style={{
                   width: "100%",
                   borderRadius: "12px",
+                  cursor: "zoom-in",
                   height: "450px",
                   objectFit: "contain",
                 }}
@@ -162,27 +155,31 @@ const MatteLaminatedStickers = ({ addToCart }) => {
                 mt: 2,
                 overflowX: "auto",
                 "&::-webkit-scrollbar": { display: "none" },
+                scrollbarWidth: "none",
               }}
             >
-              {thumbnailImages.map((image, index) => (
+              {productDetails.images.map((imageName, index) => (
                 <Paper
                   key={index}
-                  onClick={() => setMainImage(image)}
+                  onClick={() => setActiveImageIndex(index)}
                   sx={{
                     p: 1,
                     borderRadius: "12px",
                     cursor: "pointer",
                     border:
-                      mainImage === image ? "2px solid #70CB97" : "1px solid #e0e7ed",
+                      activeImageIndex === index ? "2px solid #70CB97" : "1px solid #e0e7ed",
                     flexShrink: 0,
                     transition: "all 0.2s",
                     "&:hover": { transform: "translateY(-2px)" },
                   }}
                 >
                   <img
-                    src={image}
-                    alt={`View ${index + 1}`}
-                    style={{ width: "80px", height: "80px", objectFit: "cover" }}
+                    src={getCdnImage(imageName, { width: 80, height: 80 })}
+                    alt={`${productDetails.name} thumbnail view ${index + 1}`}
+                    width="80"
+                    height="80"
+                    loading="lazy"
+                    style={{ width: "80px", height: "80px", objectFit: "cover", borderRadius: "8px" }}
                   />
                 </Paper>
               ))}
@@ -230,7 +227,10 @@ const MatteLaminatedStickers = ({ addToCart }) => {
             {Object.keys(priceMapping).map((pack) => (
               <Paper
                 key={pack}
-                onClick={() => setSelectedMaterial(pack)}
+                onClick={() => {
+                  setSelectedMaterial(pack);
+                  setActiveImageIndex(0);
+                }}
                 sx={{
                   p: 1.5,
                   px: 3,

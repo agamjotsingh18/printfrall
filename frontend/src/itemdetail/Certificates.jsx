@@ -11,16 +11,9 @@ import {
   Chip,
 } from "@mui/material";
 import { AddShoppingCart, Close, Description } from "@mui/icons-material";
+import { getCdnImage } from "../utils/imageLoader";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
-
-// ========== YOUR GENERATED CERTIFICATE IMAGES ==========
-import mainImg from "../assets/certificate-1.jpeg";
-import img2 from "../assets/certificate-2.png";
-import img3 from "../assets/certificate-3.png";
-import img4 from "../assets/certificate-4.png";
-import img5 from "../assets/certificate-5.png";
-// ======================================================
 
 const Certificates = ({ addToCart }) => {
   const priceMapping = {
@@ -35,12 +28,11 @@ const Certificates = ({ addToCart }) => {
 
   const [selectedSize, setSelectedSize] = useState(defaultSize);
   const [selectedFinish, setSelectedFinish] = useState(defaultFinish);
-  const [mainImage, setMainImage] = useState(mainImg);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   const certificateDetails = {
     name: "Custom Corporate Certificates",
-    image: mainImg,
     description:
       "Elegant and professional certificates for corporate recognition, employee awards, training completion, and special achievements. Fully customizable with your branding and text.",
     features: [
@@ -53,7 +45,13 @@ const Certificates = ({ addToCart }) => {
       "Eco-friendly options",
     ],
     sizes: ["A4", "A5", "Letter"],
-    extraImages: [img2, img3, img4, img5],
+    images: [
+      "certificate-1.jpeg",
+      "certificate-2.png",
+      "certificate-3.png",
+      "certificate-4.png",
+      "certificate-5.png"
+    ],
     tags: ["Formal", "Recognition", "Elegant"],
   };
 
@@ -61,7 +59,9 @@ const Certificates = ({ addToCart }) => {
 
   const handleAddToCart = () => {
     const item = {
-      ...certificateDetails,
+      name: certificateDetails.name,
+      image: getCdnImage(certificateDetails.images[0], { width: 150, height: 150 }),
+      description: certificateDetails.description,
       selectedSize,
       selectedFinish,
       price,
@@ -112,8 +112,10 @@ const Certificates = ({ addToCart }) => {
 
             <Zoom>
               <img
-                src={mainImage}
-                alt={certificateDetails.name}
+                src={getCdnImage(certificateDetails.images[activeImageIndex], { width: 600, height: 450 })}
+                alt={`${certificateDetails.name} primary view`}
+                width="600"
+                height="450"
                 style={{
                   width: "100%",
                   borderRadius: "12px",
@@ -131,18 +133,19 @@ const Certificates = ({ addToCart }) => {
                 mt: 2,
                 overflowX: "auto",
                 "&::-webkit-scrollbar": { display: "none" },
+                scrollbarWidth: "none",
               }}
             >
-              {certificateDetails.extraImages.map((img, idx) => (
+              {certificateDetails.images.map((imageName, idx) => (
                 <Paper
                   key={idx}
-                  onClick={() => setMainImage(img)}
+                  onClick={() => setActiveImageIndex(idx)}
                   sx={{
                     p: 1,
                     borderRadius: "10px",
                     cursor: "pointer",
                     border:
-                      mainImage === img
+                      activeImageIndex === idx
                         ? "2px solid #70CB97"
                         : "2px solid transparent",
                     "&:hover": { border: "2px solid #70CB97" },
@@ -151,8 +154,11 @@ const Certificates = ({ addToCart }) => {
                   }}
                 >
                   <img
-                    src={img}
-                    alt={`view ${idx + 1}`}
+                    src={getCdnImage(imageName, { width: 90, height: 90 })}
+                    alt={`${certificateDetails.name} thumbnail view ${idx + 1}`}
+                    width="90"
+                    height="90"
+                    loading="lazy"
                     style={{
                       width: "90px",
                       height: "90px",

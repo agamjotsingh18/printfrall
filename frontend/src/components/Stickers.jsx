@@ -3,35 +3,31 @@ import { Link } from "react-router-dom";
 import "../styles/Stickers.css";
 import { IconButton } from "@mui/material";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
-
-// Import images for each sticker type
-import matteLaminatedStickers from "../assets/matte-laminated-stickers.png";
-import holographicStickers from "../assets/holographic-stickers.png";
-import goldFoilingStickers from "../assets/gold-foiling-stickers.png";
-import spotUVStickers from "../assets/spot-uv-stickers.png";
-import silverFoilingStickers from "../assets/silver-foiling-stickers.png";
-import domeStickers from "../assets/dome-stickers.png";
-import frontAdhesiveStickers from "../assets/front-adhesive-stickers.png";
-import customOpaqueStickers from "../assets/custom-opaque-stickers.png";
-import clearStickers from "../assets/clear-sticker-2.png";
+import { getCdnImage } from "../utils/imageLoader";
 
 const stickerTypes = [
-  { name: "Matte Laminated Stickers", image: matteLaminatedStickers, price: 10, route: "/services/packaging-labels/stickers/matte-laminated-stickers" },
-  { name: "Holographic Stickers", image: holographicStickers, price: 15, route: "/services/packaging-labels/stickers/holographic-stickers" },
-  { name: "Gold Foiling Stickers", image: goldFoilingStickers, price: 20, route: "/services/packaging-labels/stickers/gold-foiling-stickers" },
-  { name: "Spot UV Stickers", image: spotUVStickers, price: 12, route: "/services/packaging-labels/stickers/spot-uv-stickers" },
-  { name: "Silver Foiling Stickers", image: silverFoilingStickers, price: 18, route: "/services/packaging-labels/stickers/silver-foiling-stickers" },
-  { name: "Dome Stickers", image: domeStickers, price: 25, route: "/services/packaging-labels/stickers/dome-stickers" },
-  { name: "Front Adhesive Stickers", image: frontAdhesiveStickers, price: 8, route: "/services/packaging-labels/stickers/front-adhesive-stickers" },
-  { name: "Custom Opaque Stickers", image: customOpaqueStickers, price: 22, route: "/services/packaging-labels/stickers/custom-opaque-stickers" },
-  { name: "Clear Stickers", image: clearStickers, price: 14, route: "/services/packaging-labels/stickers/clear-stickers" },
+  { name: "Matte Laminated Stickers", image: "matte-laminated-stickers.png", price: 10, route: "/services/packaging-labels/stickers/matte-laminated-stickers" },
+  { name: "Holographic Stickers", image: "holographic-stickers.png", price: 15, route: "/services/packaging-labels/stickers/holographic-stickers" },
+  { name: "Gold Foiling Stickers", image: "gold-foiling-stickers.png", price: 20, route: "/services/packaging-labels/stickers/gold-foiling-stickers" },
+  { name: "Spot UV Stickers", image: "spot-uv-stickers.png", price: 12, route: "/services/packaging-labels/stickers/spot-uv-stickers" },
+  { name: "Silver Foiling Stickers", image: "silver-foiling-stickers.png", price: 18, route: "/services/packaging-labels/stickers/silver-foiling-stickers" },
+  { name: "Dome Stickers", image: "dome-stickers.png", price: 25, route: "/services/packaging-labels/stickers/dome-stickers" },
+  { name: "Front Adhesive Stickers", image: "front-adhesive-stickers.png", price: 8, route: "/services/packaging-labels/stickers/front-adhesive-stickers" },
+  { name: "Custom Opaque Stickers", image: "custom-opaque-stickers.png", price: 22, route: "/services/packaging-labels/stickers/custom-opaque-stickers" },
+  { name: "Clear Stickers", image: "clear-sticker-2.png", price: 14, route: "/services/packaging-labels/stickers/clear-stickers" },
 ];
 
 const Stickers = ({ addToCart }) => {
   const handleAddToCart = (item, e) => {
     e?.preventDefault();
     e?.stopPropagation();
-    addToCart(item);
+    
+    const cartItem = {
+      ...item,
+      image: getCdnImage(item.image, { width: 150, height: 150 }),
+      quantity: 1
+    };
+    addToCart(cartItem);
   };
 
   return (
@@ -41,21 +37,22 @@ const Stickers = ({ addToCart }) => {
       <div className="stickers-container" aria-label="Sticker types collection">
         {stickerTypes.map((sticker, index) => (
           <div className="sticker-item" key={index} aria-label={`Product: ${sticker.name}`}>
-            {/* Wrap sticker details in a Link */}
             <Link 
               to={sticker.route} 
               className="sticker-link"
               aria-label={`View details of ${sticker.name}`}
             >
               <img 
-                src={sticker.image} 
+                src={getCdnImage(sticker.image, { width: 350, height: 350 })} 
                 alt={sticker.name} 
                 className="sticker-image" 
+                width="350"
+                height="350"
+                loading="lazy"
               />
               <p className="sticker-name">{sticker.name}</p>
               <p className="sticker-price" aria-label={`Price: ₹${sticker.price}`}>₹{sticker.price}</p>
             </Link>
-            {/* Add to Cart Button */}
             <IconButton
               aria-label={`Add ${sticker.name} to cart`}
               sx={{

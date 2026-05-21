@@ -13,17 +13,9 @@ import {
   InputAdornment,
 } from "@mui/material";
 import { AddShoppingCart, Close, VpnKey, WorkspacePremium } from "@mui/icons-material";
+import { getCdnImage } from "../utils/imageLoader";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
-
-// ========== MAIN PRODUCT IMAGE ==========
-import mainImg from "../assets/keychain.png";
-
-// ========== EXTRA ANGLES ==========
-import img2 from "../assets/keychain.png";
-import img3 from "../assets/keychain-1.png";
-import img4 from "../assets/keychain-2.png";
-import img5 from "../assets/keychain-3.png";
 
 const Keychains = ({ addToCart }) => {
   const priceMapping = {
@@ -38,7 +30,7 @@ const Keychains = ({ addToCart }) => {
 
   const [selectedOption, setSelectedOption] = useState(defaultOption);
   const [selectedMaterial, setSelectedMaterial] = useState(defaultMaterial);
-  const [mainImage, setMainImage] = useState(mainImg);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   // Custom quantity state
@@ -70,7 +62,6 @@ const Keychains = ({ addToCart }) => {
 
   const keychainDetails = {
     name: "Metallic Leather Keychain",
-    image: mainImg,
     description:
       "Carry your keys in style with our elegant vintage-designed keychain. Specifically crafted for car and bike enthusiasts, this sturdy metallic leather accessory features a rich brown color and high-quality metal construction.",
     features: [
@@ -84,7 +75,12 @@ const Keychains = ({ addToCart }) => {
     ],
     sizes: ["Single Unit", "Pack of 2"],
     materials: availableMaterials,
-    extraImages: [img2, img3, img4, img5],
+    images: [
+      "keychain.png",
+      "keychain-1.png",
+      "keychain-2.png",
+      "keychain-3.png"
+    ],
     tags: ["Personalized", "Vintage Design", "Sturdy Build"],
   };
 
@@ -92,8 +88,8 @@ const Keychains = ({ addToCart }) => {
     let item;
     if (isCustom) {
       item = {
-        name: "Metallic Leather Keychain",
-        image: mainImg,
+        name: keychainDetails.name,
+        image: getCdnImage(keychainDetails.images[0], { width: 150, height: 150 }),
         description: keychainDetails.description,
         features: keychainDetails.features,
         tags: keychainDetails.tags,
@@ -104,7 +100,11 @@ const Keychains = ({ addToCart }) => {
       };
     } else {
       item = {
-        ...keychainDetails,
+        name: keychainDetails.name,
+        image: getCdnImage(keychainDetails.images[0], { width: 150, height: 150 }),
+        description: keychainDetails.description,
+        features: keychainDetails.features,
+        tags: keychainDetails.tags,
         selectedSize: selectedOption,
         selectedMaterial: selectedMaterial,
         price: priceMapping[selectedOption],
@@ -149,8 +149,10 @@ const Keychains = ({ addToCart }) => {
 
             <Zoom>
               <img
-                src={mainImage}
-                alt={keychainDetails.name}
+                src={getCdnImage(keychainDetails.images[activeImageIndex], { width: 600, height: 450 })}
+                alt={`${keychainDetails.name} primary view`}
+                width="600"
+                height="450"
                 style={{
                   width: "100%",
                   borderRadius: "12px",
@@ -169,26 +171,30 @@ const Keychains = ({ addToCart }) => {
                 mt: 2,
                 overflowX: "auto",
                 "&::-webkit-scrollbar": { display: "none" },
+                scrollbarWidth: "none",
               }}
             >
-              {keychainDetails.extraImages.map((img, idx) => (
+              {keychainDetails.images.map((imageName, idx) => (
                 <Paper
                   key={idx}
-                  onClick={() => setMainImage(img)}
+                  onClick={() => setActiveImageIndex(idx)}
                   sx={{
                     p: 1,
                     borderRadius: "10px",
                     cursor: "pointer",
                     border:
-                      mainImage === img ? "2px solid #70CB97" : "2px solid transparent",
+                      activeImageIndex === idx ? "2px solid #70CB97" : "2px solid transparent",
                     "&:hover": { border: "2px solid #70CB97" },
                     flexShrink: 0,
                     transition: "all 0.2s",
                   }}
                 >
                   <img
-                    src={img}
-                    alt={`view ${idx + 1}`}
+                    src={getCdnImage(imageName, { width: 90, height: 90 })}
+                    alt={`${keychainDetails.name} thumbnail view ${idx + 1}`}
+                    width="90"
+                    height="90"
+                    loading="lazy"
                     style={{
                       width: "90px",
                       height: "90px",

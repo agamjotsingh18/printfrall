@@ -13,18 +13,9 @@ import {
   InputAdornment,
 } from "@mui/material";
 import { AddShoppingCart, Close, Nature, WorkspacePremium } from "@mui/icons-material";
+import { getCdnImage } from "../utils/imageLoader";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
-
-// ========== MAIN PEN IMAGE ==========
-import mainImg from "../assets/kraft-pen.png";
-
-// ========== EXTRA ANGLES ==========
-import img2 from "../assets/kraft-pen.png";
-import img3 from "../assets/kraft-pen-1.png";
-import img4 from "../assets/kraft-pen-2.png";
-import img5 from "../assets/kraft-pen-3.png";
-import img6 from "../assets/kraft-pen-4.png";
 
 const KraftPen = ({ addToCart }) => {
   // Predefined pack options with their total prices
@@ -40,7 +31,7 @@ const KraftPen = ({ addToCart }) => {
   const [selectedOption, setSelectedOption] = useState(packOptions[0]);
   const [customQuantity, setCustomQuantity] = useState(1);
   const [selectedColor, setSelectedColor] = useState("Natural Bamboo");
-  const [mainImage, setMainImage] = useState(mainImg);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   // Calculate total price based on selection
@@ -60,38 +51,8 @@ const KraftPen = ({ addToCart }) => {
     }
   };
 
-  const handleAddToCart = () => {
-    let item;
-    if (selectedOption.value === "Custom") {
-      item = {
-        name: "Kraft Pen",
-        image: mainImg,
-        description: kraftDetails.description,
-        features: kraftDetails.features,
-        tags: kraftDetails.tags,
-        selectedSize: `${customQuantity} pens`,
-        selectedMaterial: selectedColor,
-        selectedColor,
-        price: price,
-        quantity: customQuantity, // actual number of pens
-      };
-    } else {
-      item = {
-        ...kraftDetails,
-        selectedSize: selectedOption.label,
-        selectedMaterial: selectedColor,
-        selectedColor,
-        price: selectedOption.price,
-        quantity: 1,
-      };
-    }
-    addToCart(item);
-    setSnackbarOpen(true);
-  };
-
-  const kraftDetails = {
+  const productDetails = {
     name: "Kraft Pen",
-    image: mainImg,
     description:
       "Eco-friendly and stylish, this retractable ballpoint pen features a natural bamboo outer body with a sleek metal clip. Carved with unique inspirational sayings, it’s a meaningful gift designed to motivate and express care.",
     features: [
@@ -105,8 +66,47 @@ const KraftPen = ({ addToCart }) => {
     ],
     sizes: ["Single", "Pack of 5", "Pack of 12"],
     colors: ["Natural Bamboo"],
-    extraImages: [img2, img3, img4, img5, img6],
+    images: [
+      "kraft-pen.png",
+      "kraft-pen-1.png",
+      "kraft-pen-2.png",
+      "kraft-pen-3.png",
+      "kraft-pen-4.png"
+    ],
     tags: ["Eco-Friendly", "Inspirational", "Bamboo Wood"],
+  };
+
+  const handleAddToCart = () => {
+    let item;
+    if (selectedOption.value === "Custom") {
+      item = {
+        name: productDetails.name,
+        image: getCdnImage(productDetails.images[0], { width: 150, height: 150 }),
+        description: productDetails.description,
+        features: productDetails.features,
+        tags: productDetails.tags,
+        selectedSize: `${customQuantity} pens`,
+        selectedMaterial: selectedColor,
+        selectedColor,
+        price: price,
+        quantity: customQuantity, // actual number of pens
+      };
+    } else {
+      item = {
+        name: productDetails.name,
+        image: getCdnImage(productDetails.images[0], { width: 150, height: 150 }),
+        description: productDetails.description,
+        features: productDetails.features,
+        tags: productDetails.tags,
+        selectedSize: selectedOption.label,
+        selectedMaterial: selectedColor,
+        selectedColor,
+        price: selectedOption.price,
+        quantity: 1,
+      };
+    }
+    addToCart(item);
+    setSnackbarOpen(true);
   };
 
   const handleCloseSnackbar = () => setSnackbarOpen(false);
@@ -114,11 +114,11 @@ const KraftPen = ({ addToCart }) => {
   return (
     <Container sx={{ py: 6, maxWidth: 1200, margin: "40px auto 0 auto", px: { xs: 2, md: 3 } }}>
       <Grid container spacing={4}>
-        {/* Image Gallery (unchanged) */}
+        {/* Image Gallery */}
         <Grid item xs={12} md={6}>
           <Paper sx={{ p: 2, borderRadius: "16px", boxShadow: "0px 8px 24px rgba(0, 0, 0, 0.08)", bgcolor: "#fff" }}>
             <Box sx={{ display: "flex", gap: 1, mb: 2 }}>
-              {kraftDetails.tags.map((tag, idx) => (
+              {productDetails.tags.map((tag, idx) => (
                 <Chip
                   key={idx}
                   label={tag}
@@ -136,8 +136,10 @@ const KraftPen = ({ addToCart }) => {
 
             <Zoom>
               <img
-                src={mainImage}
-                alt={kraftDetails.name}
+                src={getCdnImage(productDetails.images[activeImageIndex], { width: 600, height: 450 })}
+                alt={`${productDetails.name} primary view`}
+                width="600"
+                height="450"
                 style={{
                   width: "100%",
                   borderRadius: "12px",
@@ -148,21 +150,38 @@ const KraftPen = ({ addToCart }) => {
               />
             </Zoom>
 
-            <Box sx={{ display: "flex", gap: 2, mt: 2, overflowX: "auto", "&::-webkit-scrollbar": { display: "none" } }}>
-              {kraftDetails.extraImages.map((img, idx) => (
+            <Box
+              sx={{
+                display: "flex",
+                gap: 2,
+                mt: 2,
+                overflowX: "auto",
+                "&::-webkit-scrollbar": { display: "none" },
+                scrollbarWidth: "none",
+              }}
+            >
+              {productDetails.images.map((imageName, idx) => (
                 <Paper
                   key={idx}
-                  onClick={() => setMainImage(img)}
+                  onClick={() => setActiveImageIndex(idx)}
                   sx={{
                     p: 1,
                     borderRadius: "10px",
                     cursor: "pointer",
-                    border: mainImage === img ? "2px solid #70CB97" : "2px solid transparent",
+                    border: activeImageIndex === idx ? "2px solid #70CB97" : "2px solid transparent",
                     "&:hover": { border: "2px solid #70CB97" },
                     flexShrink: 0,
+                    transition: "all 0.2s",
                   }}
                 >
-                  <img src={img} alt={`view ${idx + 1}`} style={{ width: "90px", height: "90px", borderRadius: "8px", objectFit: "cover" }} />
+                  <img
+                    src={getCdnImage(imageName, { width: 90, height: 90 })}
+                    alt={`${productDetails.name} thumbnail view ${idx + 1}`}
+                    width="90"
+                    height="90"
+                    loading="lazy"
+                    style={{ width: "90px", height: "90px", borderRadius: "8px", objectFit: "cover" }}
+                  />
                 </Paper>
               ))}
             </Box>
@@ -172,7 +191,7 @@ const KraftPen = ({ addToCart }) => {
         {/* Product Details */}
         <Grid item xs={12} md={6}>
           <Typography variant="h4" sx={{ fontWeight: 700, mb: 1, color: "#19485D", fontSize: { xs: "1.8rem", md: "2.5rem" } }}>
-            {kraftDetails.name}
+            {productDetails.name}
           </Typography>
 
           <Typography variant="h5" sx={{ color: "#70CB97", fontWeight: "bold", mb: 3, fontSize: { xs: "1.5rem", md: "2rem" } }}>
@@ -180,14 +199,14 @@ const KraftPen = ({ addToCart }) => {
           </Typography>
 
           <Typography variant="body1" sx={{ mb: 3, color: "#1e2a32", lineHeight: 1.6 }}>
-            {kraftDetails.description}
+            {productDetails.description}
           </Typography>
 
           <Typography variant="h6" sx={{ fontWeight: 600, mb: 2, color: "#19485D", fontSize: { xs: "1.2rem", md: "1.5rem" } }}>
             Key Highlights:
           </Typography>
           <Box component="ul" sx={{ ml: 2, mb: 3, listStyleType: "none", p: 0 }}>
-            {kraftDetails.features.map((feature, idx) => (
+            {productDetails.features.map((feature, idx) => (
               <li key={idx} style={{ marginBottom: "8px" }}>
                 <Typography variant="body1" sx={{ display: "flex", alignItems: "center", color: "#5a6e7a" }}>
                   <span style={{ display: "inline-block", width: "6px", height: "6px", backgroundColor: "#70CB97", borderRadius: "50%", marginRight: "8px" }}></span>
@@ -257,12 +276,12 @@ const KraftPen = ({ addToCart }) => {
             </Box>
           )}
 
-          {/* Color Options (only one, but keep consistent) */}
+          {/* Color Options */}
           <Typography variant="h6" sx={{ fontWeight: 600, mb: 2, color: "#19485D", fontSize: { xs: "1.2rem", md: "1.5rem" } }}>
             Color Options:
           </Typography>
           <Box sx={{ display: "flex", gap: 2, mb: 4, flexWrap: "wrap" }}>
-            {kraftDetails.colors.map((color, idx) => (
+            {productDetails.colors.map((color, idx) => (
               <Paper
                 key={idx}
                 onClick={() => setSelectedColor(color)}

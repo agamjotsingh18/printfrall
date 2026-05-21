@@ -10,16 +10,11 @@ import {
   IconButton,
 } from "@mui/material";
 import { AddShoppingCart, Close } from "@mui/icons-material";
-import a4FlyerImg from "../assets/a4-flyer-1-flatlay.png";
-import a4FlyerImg2 from "../assets/a4-flyer-2-hand.png";
-import a4FlyerImg3 from "../assets/a4-flyer-3-folded.png";
-import a4FlyerImg4 from "../assets/a4-flyer-4-stack.png";
-import a4FlyerImg5 from "../assets/a4-flyer-5-closeup.png";
+import { getCdnImage } from "../utils/imageLoader";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
 
 const A4FlyerPrinting = ({ addToCart }) => {
-  // Price mapping for each material
   const priceMapping = {
     "Glossy Paper": 50,
     "Matte Paper": 60,
@@ -28,12 +23,13 @@ const A4FlyerPrinting = ({ addToCart }) => {
 
   const defaultMaterial = "Glossy Paper";
   const [selectedMaterial, setSelectedMaterial] = useState(defaultMaterial);
-  const [mainImage, setMainImage] = useState(a4FlyerImg);
+  
+  // Track selected thumbnail index instead of raw imported objects
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   const a4FlyerDetails = {
     name: "A4 Flyer Printing",
-    image: a4FlyerImg,
     description:
       "High-quality A4 flyers for all your marketing needs. Perfect for events, promotions, and branding campaigns.",
     features: [
@@ -43,14 +39,23 @@ const A4FlyerPrinting = ({ addToCart }) => {
       "Durable and vibrant prints",
     ],
     materials: ["Glossy Paper", "Matte Paper", "Premium Paper"],
-    extraImages: [a4FlyerImg2, a4FlyerImg3, a4FlyerImg4, a4FlyerImg5],
+    // Clean strings representing filename keys for CDN delivery
+    images: [
+      "a4-flyer-1-flatlay.png",
+      "a4-flyer-2-hand.png",
+      "a4-flyer-3-folded.png",
+      "a4-flyer-4-stack.png",
+      "a4-flyer-5-closeup.png"
+    ]
   };
 
   const price = priceMapping[selectedMaterial];
 
   const handleAddToCart = () => {
     const item = {
-      ...a4FlyerDetails,
+      name: a4FlyerDetails.name,
+      image: getCdnImage(a4FlyerDetails.images[0], { width: 150, height: 150 }),
+      description: a4FlyerDetails.description,
       selectedMaterial,
       price,
       quantity: 1,
@@ -76,11 +81,13 @@ const A4FlyerPrinting = ({ addToCart }) => {
               backgroundColor: "#ffffff",
             }}
           >
-            {/* Main Image with Zoom */}
+            {/* Main Display Image */}
             <Zoom>
               <img
-                src={mainImage}
-                alt={a4FlyerDetails.name}
+                src={getCdnImage(a4FlyerDetails.images[activeImageIndex], { width: 600, height: 450 })}
+                alt={`${a4FlyerDetails.name} primary view`}
+                width="600"
+                height="450"
                 style={{
                   width: "100%",
                   borderRadius: "12px",
@@ -92,7 +99,7 @@ const A4FlyerPrinting = ({ addToCart }) => {
               />
             </Zoom>
 
-            {/* Thumbnail Gallery */}
+            {/* Thumbnail Carousel Strip */}
             <Box
               sx={{
                 display: "flex",
@@ -103,18 +110,18 @@ const A4FlyerPrinting = ({ addToCart }) => {
                 scrollbarWidth: "none",
               }}
             >
-              {a4FlyerDetails.extraImages.map((image, index) => (
+              {a4FlyerDetails.images.map((imageName, index) => (
                 <Paper
                   key={index}
-                  onClick={() => setMainImage(image)}
+                  onClick={() => setActiveImageIndex(index)}
                   sx={{
                     p: 1,
                     borderRadius: "10px",
                     boxShadow: "0px 2px 8px rgba(0, 0, 0, 0.1)",
                     cursor: "pointer",
                     border:
-                      mainImage === image
-                        ? `2px solid #70CB97` // brand green
+                      activeImageIndex === index
+                        ? `2px solid #70CB97`
                         : "2px solid transparent",
                     "&:hover": { border: "2px solid #70CB97" },
                     flexShrink: 0,
@@ -122,8 +129,11 @@ const A4FlyerPrinting = ({ addToCart }) => {
                   }}
                 >
                   <img
-                    src={image}
-                    alt={`${a4FlyerDetails.name} view ${index + 1}`}
+                    src={getCdnImage(imageName, { width: 90, height: 90 })}
+                    alt={`${a4FlyerDetails.name} thumbnail view ${index + 1}`}
+                    width="90"
+                    height="90"
+                    loading="lazy"
                     style={{
                       width: "90px",
                       height: "90px",
@@ -144,7 +154,7 @@ const A4FlyerPrinting = ({ addToCart }) => {
             sx={{
               fontWeight: 700,
               mb: 2,
-              color: "#19485D", // deep teal
+              color: "#19485D",
               letterSpacing: "-0.5px",
             }}
           >
@@ -154,7 +164,7 @@ const A4FlyerPrinting = ({ addToCart }) => {
           <Typography
             variant="h5"
             sx={{
-              color: "#70CB97", // brand green
+              color: "#70CB97",
               fontWeight: "bold",
               mb: 3,
             }}
@@ -173,7 +183,6 @@ const A4FlyerPrinting = ({ addToCart }) => {
             {a4FlyerDetails.description}
           </Typography>
 
-          {/* Features List */}
           <Typography
             variant="h6"
             sx={{
@@ -201,7 +210,6 @@ const A4FlyerPrinting = ({ addToCart }) => {
             ))}
           </Box>
 
-          {/* Materials Selection */}
           <Typography
             variant="h6"
             sx={{
@@ -252,7 +260,6 @@ const A4FlyerPrinting = ({ addToCart }) => {
             ))}
           </Box>
 
-          {/* Add to Cart Button */}
           <Button
             variant="contained"
             startIcon={<AddShoppingCart />}
@@ -280,7 +287,6 @@ const A4FlyerPrinting = ({ addToCart }) => {
         </Grid>
       </Grid>
 
-      {/* Success Snackbar */}
       <Snackbar
         open={snackbarOpen}
         autoHideDuration={3000}

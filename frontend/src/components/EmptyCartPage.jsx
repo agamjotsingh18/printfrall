@@ -17,7 +17,6 @@ const EmptyCartPage = () => {
       }}
       aria-label="Empty cart page"
     >
-      {/* Empty Cart Icon */}
       <ShoppingCartIcon
         sx={{
           fontSize: "6rem",
@@ -28,7 +27,6 @@ const EmptyCartPage = () => {
         aria-hidden="false"
       />
 
-      {/* Title */}
       <Typography
         variant="h4"
         sx={{
@@ -41,7 +39,6 @@ const EmptyCartPage = () => {
         Your Cart is Empty
       </Typography>
 
-      {/* Subtitle */}
       <Typography
         variant="body1"
         sx={{
@@ -55,7 +52,6 @@ const EmptyCartPage = () => {
         products and find something you love!
       </Typography>
 
-      {/* Explore Products Button */}
       <Button
         component={Link}
         to="/services"

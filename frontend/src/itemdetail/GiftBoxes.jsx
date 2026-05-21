@@ -14,30 +14,26 @@ import {
   InputAdornment,
 } from "@mui/material";
 import { AddShoppingCart, Close, Inventory, WorkspacePremium, AutoAwesome } from "@mui/icons-material";
+import { getCdnImage } from "../utils/imageLoader";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
-
-// ========== BOX TYPE IMAGES ==========
-import creatorCartonImg from "../assets/creator's-carton.png";
-import magneticMonarchImg from "../assets/magnetic-monarch.png";
-import celebrationBoxImg from "../assets/celebration-box.png";
 
 const GiftBoxes = ({ addToCart }) => {
   const boxTypes = {
     "Creator's Carton": {
-      img: creatorCartonImg,
+      img: "creator's-carton.png",
       basePrice: 195,
       desc: "Versatile e-commerce packaging. Full colour print options for short or long runs. Available in 13+ standard sizes.",
       specs: ["Full colour single/double side", "Minimum order: 50 units", "Custom sizes for 1000+ units"],
     },
     "Magnetic Monarch": {
-      img: magneticMonarchImg,
+      img: "magnetic-monarch.png",
       basePrice: 450,
       desc: "Premium rigid luxury packaging. Concealed magnetic closure with a heavy-duty sturdy construction.",
       specs: ["Concealed Magnetic Mechanism", "Matte/Glossy Luxury Finish", "Ideal for Corporate & High-end Gifting"],
     },
     "Celebration Box": {
-      img: celebrationBoxImg,
+      img: "celebration-box.png",
       basePrice: 320,
       desc: "Decorative folding paper box with a signature satin ribbon. Available in 9 elegant shades.",
       specs: ["26 x 21 x 11 cm dimensions", "DIY Folding design", "Premium Satin Ribbon Included"],
@@ -96,7 +92,6 @@ const GiftBoxes = ({ addToCart }) => {
   const handleOptionChange = (optionValue) => {
     setSelectedOption(optionValue);
     if (optionValue === "Custom") {
-      // Ensure custom quantity is at least 50
       setCustomQuantity((prev) => (prev < 50 ? 50 : prev));
     } else {
       const option = packOptions.find((opt) => opt.value === optionValue);
@@ -109,7 +104,7 @@ const GiftBoxes = ({ addToCart }) => {
     if (selectedOption === "Custom") {
       item = {
         name: `Premium Box: ${selectedType}`,
-        image: boxTypes[selectedType].img,
+        image: getCdnImage(boxTypes[selectedType].img, { width: 150, height: 150 }),
         description: boxTypes[selectedType].desc,
         specs: boxTypes[selectedType].specs,
         selectedSize: `${customQuantity} units (${selectedSize})`,
@@ -123,7 +118,7 @@ const GiftBoxes = ({ addToCart }) => {
       const option = packOptions.find((opt) => opt.value === selectedOption);
       item = {
         name: `Premium Box: ${selectedType}`,
-        image: boxTypes[selectedType].img,
+        image: getCdnImage(boxTypes[selectedType].img, { width: 150, height: 150 }),
         description: boxTypes[selectedType].desc,
         specs: boxTypes[selectedType].specs,
         selectedSize: `${option.label} (${selectedSize})`,
@@ -173,8 +168,10 @@ const GiftBoxes = ({ addToCart }) => {
 
             <Zoom>
               <img
-                src={boxTypes[selectedType].img}
-                alt={selectedType}
+                src={getCdnImage(boxTypes[selectedType].img, { width: 600, height: 450 })}
+                alt={`${selectedType} primary view`}
+                width="600"
+                height="450"
                 style={{
                   width: "100%",
                   borderRadius: "12px",
@@ -193,7 +190,6 @@ const GiftBoxes = ({ addToCart }) => {
                   <Box
                     onClick={() => {
                       setSelectedType(type);
-                      // Reset to Pack of 50 when switching box type
                       setSelectedOption("Pack of 50");
                       setCustomQuantity(50);
                     }}
@@ -207,8 +203,11 @@ const GiftBoxes = ({ addToCart }) => {
                     }}
                   >
                     <img
-                      src={boxTypes[type].img}
-                      alt={type}
+                      src={getCdnImage(boxTypes[type].img, { width: 120, height: 100 })}
+                      alt={`${type} option preview`}
+                      width="120"
+                      height="100"
+                      loading="lazy"
                       style={{ width: "100%", height: "80px", objectFit: "cover" }}
                     />
                     <Typography
@@ -237,7 +236,6 @@ const GiftBoxes = ({ addToCart }) => {
             {selectedType}
           </Typography>
 
-          {/* Show both per-unit price and total pack price */}
           <Box sx={{ display: "flex", alignItems: "baseline", gap: 2, flexWrap: "wrap", mb: 1 }}>
             <Typography variant="h5" sx={{ color: "#70CB97", fontWeight: "bold" }}>
               ₹{Math.round(totalPrice)}

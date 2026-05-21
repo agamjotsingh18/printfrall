@@ -3,62 +3,44 @@ import { Link } from "react-router-dom";
 import { IconButton } from "@mui/material";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 import "../styles/CorporateGifting.css";
-
-// Import images for each corporate gifting type
-import duoSetImg from "../assets/duo-sets.png";
-import festiveHampersImg from "../assets/festive-hampers.jpg";
-import welcomeKitsImg from "../assets/welcome-kits.png";
-// import engagementKitsImg from "../assets/engagement-kits.webp";
-
-// Import images for additional items
-import bagsImg from "../assets/bags.png";
-import drinkwareImg from "../assets/drinkware.png";
-import awardsImg from "../assets/awards-trophies.png";
-import medalsImg from "../assets/medals.png";
-import calendarsImg from "../assets/calendar.png";
-import desktopItemsImg from "../assets/desktop-items.png";
-import diariesImg from "../assets/diaries.png";
-import laptopSleevesImg from "../assets/laptop-sleeve.png";
-import certificatesImg from "../assets/certificates.png";
-import engravedPensImg from "../assets/pens.png";
-import keychainsImg from "../assets/keychain.png";
-import capsImg from "../assets/cap.png";
-import tshirtsImg from "../assets/tshirt.png";
-import mugsImg from "../assets/mugs.png";
-import mousepadImg from "../assets/mousepad.png";
-import luggageTagsImg from "../assets/luggage-tags.png";
+import { getCdnImage } from "../utils/imageLoader";
 
 const corporateGiftingTypes = [
-  { name: "Festive Hampers", image: festiveHampersImg, price: 1000, route: "/services/corporate-gifting/festive-hampers" },
-  { name: "Welcome Kits", image: welcomeKitsImg, price: 800, route: "/services/corporate-gifting/welcome-kits" },
-  { name: "Duo Sets", image: duoSetImg, price: 1200, route: "/services/corporate-gifting/duo-sets" },
-  // { name: "Engagement Kits", image: engagementKitsImg, price: 1500, route: "/services/corporate-gifting/engagement-kits" },
+  { name: "Festive Hampers", image: "festive-hampers.jpg", price: 1000, route: "/services/corporate-gifting/festive-hampers" },
+  { name: "Welcome Kits", image: "welcome-kits.png", price: 800, route: "/services/corporate-gifting/welcome-kits" },
+  { name: "Duo Sets", image: "duo-sets.png", price: 1200, route: "/services/corporate-gifting/duo-sets" },
 ];
 
 const additionalItems = [
-  { name: "Bags", image: bagsImg, price: 500, route: "/services/corporate-gifting/bags" },
-  { name: "Drinkware", image: drinkwareImg, price: 300, route: "/services/corporate-gifting/drinkware" },
-  { name: "Awards & Trophies", image: awardsImg, price: 700, route: "/services/corporate-gifting/awards-trophies" },
-  { name: "Medals", image: medalsImg, price: 200, route: "/services/corporate-gifting/medals" },
-  { name: "Calendars", image: calendarsImg, price: 250, route: "/services/personalized-gifts/calendars" },
-  { name: "Desktop Items", image: desktopItemsImg, price: 400, route: "/services/corporate-gifting/desktop-items" },
-  { name: "Diaries", image: diariesImg, price: 350, route: "/services/corporate-gifting/diaries" },
-  { name: "Laptop Sleeves", image: laptopSleevesImg, price: 600, route: "/services/corporate-gifting/bags/slimguard-laptop-sleeve" },
-  { name: "Certificates", image: certificatesImg, price: 100, route: "/services/corporate-gifting/certificates" },
-  { name: "Pens", image: engravedPensImg, price: 150, route: "/services/corporate-gifting/pens" },
-  { name: "Keychains", image: keychainsImg, price: 100, route: "/services/corporate-gifting/keychains" },
-  { name: "Caps", image: capsImg, price: 200, route: "/services/tshirt-printing/caps" },
-  { name: "T-Shirts", image: tshirtsImg, price: 300, route: "/services/personalized-gifts/tshirts" },
-  { name: "Mugs", image: mugsImg, price: 250, route: "/services/personalized-gifts/mugs" },
-  { name: "Mousepad", image: mousepadImg, price: 150, route: "/services/corporate-gifting/mousepad" },
-  { name: "Luggage Tags", image: luggageTagsImg, price: 100, route: "/services/corporate-gifting/luggage-tags" },
+  { name: "Bags", image: "bags.png", price: 500, route: "/services/corporate-gifting/bags" },
+  { name: "Drinkware", image: "drinkware.png", price: 300, route: "/services/corporate-gifting/drinkware" },
+  { name: "Awards & Trophies", image: "awards-trophies.png", price: 700, route: "/services/corporate-gifting/awards-trophies" },
+  { name: "Medals", image: "medals.png", price: 200, route: "/services/corporate-gifting/medals" },
+  { name: "Calendars", image: "calendar.png", price: 250, route: "/services/personalized-gifts/calendars" },
+  { name: "Desktop Items", image: "desktop-items.png", price: 400, route: "/services/corporate-gifting/desktop-items" },
+  { name: "Diaries", image: "diaries.png", price: 350, route: "/services/corporate-gifting/diaries" },
+  { name: "Laptop Sleeves", image: "laptop-sleeve.png", price: 600, route: "/services/corporate-gifting/bags/slimguard-laptop-sleeve" },
+  { name: "Certificates", image: "certificates.png", price: 100, route: "/services/corporate-gifting/certificates" },
+  { name: "Pens", image: "pens.png", price: 150, route: "/services/corporate-gifting/pens" },
+  { name: "Keychains", image: "keychain.png", price: 100, route: "/services/corporate-gifting/keychains" },
+  { name: "Caps", image: "cap.png", price: 200, route: "/services/tshirt-printing/caps" },
+  { name: "T-Shirts", image: "tshirt.png", price: 300, route: "/services/personalized-gifts/tshirts" },
+  { name: "Mugs", image: "mugs.png", price: 250, route: "/services/personalized-gifts/mugs" },
+  { name: "Mousepad", image: "mousepad.png", price: 150, route: "/services/corporate-gifting/mousepad" },
+  { name: "Luggage Tags", image: "luggage-tags.png", price: 100, route: "/services/corporate-gifting/luggage-tags" },
 ];
 
 const CorporateGifting = ({ addToCart }) => {
   const handleAddToCart = (item, e) => {
     e?.preventDefault();
     e?.stopPropagation();
-    addToCart(item);
+    
+    const cartItem = {
+      ...item,
+      image: getCdnImage(item.image, { width: 150, height: 150 }),
+      quantity: 1
+    };
+    addToCart(cartItem);
   };
 
   return (
@@ -66,7 +48,6 @@ const CorporateGifting = ({ addToCart }) => {
       <h2 className="section-title">Corporate Gifting</h2>
       <p className="section-subtitle">Thoughtful gifts for every occasion</p>
 
-      {/* Main Corporate Gifting Items */}
       <div className="gifts-container" aria-label="Main corporate gifting items">
         {corporateGiftingTypes.map((gift, index) => (
           <div className="gift-item" key={index}>
@@ -76,9 +57,12 @@ const CorporateGifting = ({ addToCart }) => {
               aria-label={`View details of ${gift.name}`}
             >
               <img 
-                src={gift.image} 
+                src={getCdnImage(gift.image, { width: 350, height: 350 })} 
                 alt={gift.name} 
                 className="gift-image" 
+                width="350"
+                height="350"
+                loading="lazy"
               />
               <p className="gift-name">{gift.name}</p>
               <p className="gift-price">₹{gift.price}</p>
@@ -105,7 +89,6 @@ const CorporateGifting = ({ addToCart }) => {
         ))}
       </div>
 
-      {/* Additional Items Section */}
       <p className="section-second-title" aria-label="Additional items to explore">Explore a wider range of options.</p>
       <div className="additional-items-container" aria-label="Additional corporate gifting items">
         {additionalItems.map((item, index) => (
@@ -116,9 +99,12 @@ const CorporateGifting = ({ addToCart }) => {
               aria-label={`View details of ${item.name}`}
             >
               <img 
-                src={item.image} 
+                src={getCdnImage(item.image, { width: 300, height: 300 })} 
                 alt={item.name} 
                 className="additional-item-image" 
+                width="300"
+                height="300"
+                loading="lazy"
               />
               <p className="additional-item-name">{item.name}</p>
               <p className="additional-item-price">₹{item.price}</p>

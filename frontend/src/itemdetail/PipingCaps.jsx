@@ -13,18 +13,9 @@ import {
   InputAdornment,
 } from "@mui/material";
 import { AddShoppingCart, Close, Verified, Checkroom } from "@mui/icons-material";
+import { getCdnImage } from "../utils/imageLoader";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
-
-// ========== MAIN PRODUCT IMAGE ==========
-import mainImg from "../assets/piping-cap.png";
-
-// ========== EXTRA ANGLES ==========
-import img2 from "../assets/piping-cap.png";
-import img3 from "../assets/piping-cap-1.png";
-import img4 from "../assets/piping-cap-2.png";
-import img5 from "../assets/piping-cap-3.png";
-import img6 from "../assets/piping-cap-4.png";
 
 const PipingCaps = ({ addToCart }) => {
   const priceMapping = {
@@ -49,7 +40,7 @@ const PipingCaps = ({ addToCart }) => {
   const [selectedMaterial] = useState(defaultMaterial);
   const [selectedColor, setSelectedColor] = useState(defaultColor);
   const [selectedPanel, setSelectedPanel] = useState(defaultPanel);
-  const [mainImage, setMainImage] = useState(mainImg);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   // Custom quantity state
@@ -84,7 +75,6 @@ const PipingCaps = ({ addToCart }) => {
 
   const capDetails = {
     name: "Custom Piping Caps",
-    image: mainImg,
     description:
       "Sharp looks and strong identity. These custom caps feature bold contrast piping and are built from 100% durable cotton. Designed as an embroidery-ready canvas, they add a polished vibe to any team kit or promotional event.",
     features: [
@@ -99,15 +89,21 @@ const PipingCaps = ({ addToCart }) => {
     tags: ["Contrast Piping", "Embroidery Ready", "Adjustable"],
     colors: availableColors,
     panelOptions: panelOptions,
-    extraImages: [img2, img3, img4, img5, img6],
+    images: [
+      "piping-cap.png",
+      "piping-cap-1.png",
+      "piping-cap-2.png",
+      "piping-cap-3.png",
+      "piping-cap-4.png"
+    ],
   };
 
   const handleAddToCart = () => {
     let item;
     if (selectedOption === "Custom") {
       item = {
-        name: "Custom Piping Caps",
-        image: mainImg,
+        name: capDetails.name,
+        image: getCdnImage(capDetails.images[0], { width: 150, height: 150 }),
         description: capDetails.description,
         features: capDetails.features,
         tags: capDetails.tags,
@@ -122,7 +118,11 @@ const PipingCaps = ({ addToCart }) => {
     } else {
       const option = packOptions.find((opt) => opt.value === selectedOption);
       item = {
-        ...capDetails,
+        name: capDetails.name,
+        image: getCdnImage(capDetails.images[0], { width: 150, height: 150 }),
+        description: capDetails.description,
+        features: capDetails.features,
+        tags: capDetails.tags,
         selectedSize: option.label,
         selectedMaterial: `${selectedMaterial} | ${selectedColor} | ${selectedPanel}`,
         selectedColor,
@@ -170,8 +170,10 @@ const PipingCaps = ({ addToCart }) => {
 
             <Zoom>
               <img
-                src={mainImage}
-                alt={capDetails.name}
+                src={getCdnImage(capDetails.images[activeImageIndex], { width: 600, height: 450 })}
+                alt={`${capDetails.name} primary view`}
+                width="600"
+                height="450"
                 style={{
                   width: "100%",
                   borderRadius: "12px",
@@ -190,26 +192,30 @@ const PipingCaps = ({ addToCart }) => {
                 mt: 2,
                 overflowX: "auto",
                 "&::-webkit-scrollbar": { display: "none" },
+                scrollbarWidth: "none",
               }}
             >
-              {capDetails.extraImages.map((img, idx) => (
+              {capDetails.images.map((imageName, idx) => (
                 <Paper
                   key={idx}
-                  onClick={() => setMainImage(img)}
+                  onClick={() => setActiveImageIndex(idx)}
                   sx={{
                     p: 1,
                     borderRadius: "10px",
                     cursor: "pointer",
                     border:
-                      mainImage === img ? "2px solid #70CB97" : "2px solid transparent",
+                      activeImageIndex === idx ? "2px solid #70CB97" : "2px solid transparent",
                     "&:hover": { border: "2px solid #70CB97" },
                     flexShrink: 0,
                     transition: "all 0.2s",
                   }}
                 >
                   <img
-                    src={img}
-                    alt={`view ${idx + 1}`}
+                    src={getCdnImage(imageName, { width: 90, height: 90 })}
+                    alt={`${capDetails.name} thumbnail view ${idx + 1}`}
+                    width="90"
+                    height="90"
+                    loading="lazy"
                     style={{
                       width: "90px",
                       height: "90px",

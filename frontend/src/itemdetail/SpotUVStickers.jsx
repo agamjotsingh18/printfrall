@@ -18,15 +18,9 @@ import {
   WorkspacePremium,
   AutoAwesome,
 } from "@mui/icons-material";
+import { getCdnImage } from "../utils/imageLoader";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
-
-// Import your actual spot UV sticker images – replace with real variants if available
-import spotUVStickersImg from "../assets/spot-uv-stickers.png";
-import spotUVStickersImg2 from "../assets/spot-uv-stickers-1.png";
-import spotUVStickersImg3 from "../assets/spot-uv-stickers-2.png";
-import spotUVStickersImg4 from "../assets/spot-uv-stickers-3.png";
-// import spotUVStickersImg5 from "../assets/spot-uv-stickers-4.png";
 
 const SpotUVStickers = ({ addToCart }) => {
   // Price mapping for premium spot UV raised range
@@ -46,15 +40,6 @@ const SpotUVStickers = ({ addToCart }) => {
     "Hexagon",
   ];
 
-  const [selectedMaterial, setSelectedMaterial] = useState("Classic Spot UV");
-  const [selectedShape, setSelectedShape] = useState("Circle");
-  const [mainImage, setMainImage] = useState(spotUVStickersImg);
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-
-  const unitPrice = priceMapping[selectedMaterial];
-  const moq = 50;
-  const totalPrice = unitPrice * moq;
-
   const productDetails = {
     name: "Premium Spot UV Stickers",
     description:
@@ -68,21 +53,28 @@ const SpotUVStickers = ({ addToCart }) => {
       "Fully customizable layout and accent placement",
       "Order from as low as 50 units — professional quality at any scale",
     ],
+    images: [
+      "spot-uv-stickers.png",
+      "spot-uv-stickers-1.png",
+      "spot-uv-stickers-2.png",
+      "spot-uv-stickers-3.png"
+    ],
     tags: ["Raised Accent", "Glossy Contrast", "Sophisticated Finish"],
   };
 
-  const thumbnailImages = [
-    spotUVStickersImg,
-    spotUVStickersImg2,
-    spotUVStickersImg3,
-    spotUVStickersImg4,
-    // spotUVStickersImg5,
-  ];
+  const [selectedMaterial, setSelectedMaterial] = useState("Classic Spot UV");
+  const [selectedShape, setSelectedShape] = useState("Circle");
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+
+  const unitPrice = priceMapping[selectedMaterial];
+  const moq = 50;
+  const totalPrice = unitPrice * moq;
 
   const handleAddToCart = () => {
     const item = {
       name: productDetails.name,
-      image: mainImage,
+      image: getCdnImage(productDetails.images[0], { width: 150, height: 150 }),
       description: productDetails.description,
       selectedMaterial,
       selectedShape,
@@ -116,44 +108,29 @@ const SpotUVStickers = ({ addToCart }) => {
               position: "relative",
             }}
           >
-            <Box
-              sx={{
-                position: "absolute",
-                top: 20,
-                left: 20,
-                zIndex: 10,
-                display: "flex",
-                gap: 1,
-              }}
-            >
-              <Chip
-                label="SPOT UV"
-                size="small"
-                icon={<WorkspacePremium />}
-                sx={{
-                  bgcolor: "#19485D",
-                  color: "white",
-                  fontWeight: "bold",
-                  borderRadius: "40px",
-                }}
-              />
-              <Chip
-                label="RAISED FINISH"
-                size="small"
-                icon={<AutoAwesome />}
-                sx={{
-                  bgcolor: "#70CB97",
-                  color: "white",
-                  fontWeight: "bold",
-                  borderRadius: "40px",
-                }}
-              />
+            <Box sx={{ display: "flex", gap: 1, mb: 2 }}>
+              {productDetails.tags.map((tag, idx) => (
+                <Chip
+                  key={idx}
+                  label={tag}
+                  size="small"
+                  icon={tag === "Raised Accent" ? <WorkspacePremium fontSize="small" /> : <AutoAwesome fontSize="small" />}
+                  sx={{
+                    backgroundColor: "rgba(112, 203, 151, 0.1)",
+                    color: "#70CB97",
+                    fontWeight: "bold",
+                    borderRadius: 2,
+                  }}
+                />
+              ))}
             </Box>
 
             <Zoom>
               <img
-                src={mainImage}
-                alt={productDetails.name}
+                src={getCdnImage(productDetails.images[activeImageIndex], { width: 600, height: 450 })}
+                alt={`${productDetails.name} primary view`}
+                width="600"
+                height="450"
                 style={{
                   width: "100%",
                   borderRadius: "12px",
@@ -163,7 +140,7 @@ const SpotUVStickers = ({ addToCart }) => {
               />
             </Zoom>
 
-            {/* Thumbnails */}
+            {/* Thumbnail Gallery */}
             <Box
               sx={{
                 display: "flex",
@@ -171,27 +148,36 @@ const SpotUVStickers = ({ addToCart }) => {
                 mt: 2,
                 overflowX: "auto",
                 "&::-webkit-scrollbar": { display: "none" },
+                scrollbarWidth: "none",
               }}
             >
-              {thumbnailImages.map((image, index) => (
+              {productDetails.images.map((imageName, idx) => (
                 <Paper
-                  key={index}
-                  onClick={() => setMainImage(image)}
+                  key={idx}
+                  onClick={() => setActiveImageIndex(idx)}
                   sx={{
                     p: 1,
-                    borderRadius: "12px",
+                    borderRadius: "10px",
                     cursor: "pointer",
                     border:
-                      mainImage === image ? "2px solid #70CB97" : "1px solid #e0e7ed",
+                      activeImageIndex === idx ? "2px solid #70CB97" : "2px solid transparent",
+                    "&:hover": { border: "2px solid #70CB97" },
                     flexShrink: 0,
                     transition: "all 0.2s",
-                    "&:hover": { transform: "translateY(-2px)" },
                   }}
                 >
                   <img
-                    src={image}
-                    alt={`View ${index + 1}`}
-                    style={{ width: "80px", height: "80px", objectFit: "cover" }}
+                    src={getCdnImage(imageName, { width: 90, height: 90 })}
+                    alt={`${productDetails.name} thumbnail view ${idx + 1}`}
+                    width="90"
+                    height="90"
+                    loading="lazy"
+                    style={{
+                      width: "90px",
+                      height: "90px",
+                      borderRadius: "8px",
+                      objectFit: "cover",
+                    }}
                   />
                 </Paper>
               ))}
@@ -242,7 +228,10 @@ const SpotUVStickers = ({ addToCart }) => {
             {Object.keys(priceMapping).map((material) => (
               <Paper
                 key={material}
-                onClick={() => setSelectedMaterial(material)}
+                onClick={() => {
+                  setSelectedMaterial(material);
+                  setActiveImageIndex(0);
+                }}
                 sx={{
                   p: 1.5,
                   px: 3,

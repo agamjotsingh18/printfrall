@@ -13,17 +13,9 @@ import {
   InputAdornment,
 } from "@mui/material";
 import { AddShoppingCart, Close, Layers, WorkspacePremium } from "@mui/icons-material";
+import { getCdnImage } from "../utils/imageLoader";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
-
-// ========== MAIN PRODUCT IMAGE ==========
-import mainImg from "../assets/custom-opaque-stickers.png";
-
-// ========== EXTRA ANGLES ==========
-import img2 from "../assets/custom-opaque-stickers.png";
-import img3 from "../assets/custom-opaque-stickers-1.png";
-// import img4 from "../assets/custom-opaque-stickers.png";
-// import img5 from "../assets/custom-opaque-stickers.png";
 
 const CustomOpaqueStickers = ({ addToCart }) => {
   const priceMapping = {
@@ -35,7 +27,7 @@ const CustomOpaqueStickers = ({ addToCart }) => {
   const defaultMaterial = "Opaque (Teisei Art 8E)";
 
   const [selectedMaterial, setSelectedMaterial] = useState(defaultMaterial);
-  const [mainImage, setMainImage] = useState(mainImg);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   // Custom quantity state
@@ -70,7 +62,6 @@ const CustomOpaqueStickers = ({ addToCart }) => {
 
   const stickerDetails = {
     name: "Custom Opaque Stickers",
-    image: mainImg,
     description:
       "Our Custom Opaque Stickers (Teisei Art 8E) feature a specialized white base that is completely non-see-through. Perfect for covering existing labels or branding surfaces where total opacity and high color vibrancy are required.",
     features: [
@@ -83,7 +74,10 @@ const CustomOpaqueStickers = ({ addToCart }) => {
       "Ideal for professional product labeling and branding",
     ],
     materials: ["Opaque (Teisei Art 8E)", "Mirro Cote Glossy", "Matte White Waterproof"],
-    extraImages: [img2, img3],
+    images: [
+      "custom-opaque-stickers.png",
+      "custom-opaque-stickers-1.png"
+    ],
     tags: ["Non See-Through", "Kiss-Cut", "CMYK Ready"],
   };
 
@@ -92,7 +86,7 @@ const CustomOpaqueStickers = ({ addToCart }) => {
     if (selectedOption === "Custom") {
       item = {
         name: "Custom Opaque Stickers",
-        image: mainImg,
+        image: getCdnImage(stickerDetails.images[0], { width: 150, height: 150 }),
         description: stickerDetails.description,
         features: stickerDetails.features,
         tags: stickerDetails.tags,
@@ -104,7 +98,11 @@ const CustomOpaqueStickers = ({ addToCart }) => {
     } else {
       const option = packOptions.find((opt) => opt.value === selectedOption);
       item = {
-        ...stickerDetails,
+        name: stickerDetails.name,
+        image: getCdnImage(stickerDetails.images[0], { width: 150, height: 150 }),
+        description: stickerDetails.description,
+        features: stickerDetails.features,
+        tags: stickerDetails.tags,
         selectedSize: option.label,
         selectedMaterial: selectedMaterial,
         price: option.price,
@@ -149,8 +147,10 @@ const CustomOpaqueStickers = ({ addToCart }) => {
 
             <Zoom>
               <img
-                src={mainImage}
-                alt={stickerDetails.name}
+                src={getCdnImage(stickerDetails.images[activeImageIndex], { width: 600, height: 450 })}
+                alt={`${stickerDetails.name} primary view`}
+                width="600"
+                height="450"
                 style={{
                   width: "100%",
                   borderRadius: "12px",
@@ -169,26 +169,30 @@ const CustomOpaqueStickers = ({ addToCart }) => {
                 mt: 2,
                 overflowX: "auto",
                 "&::-webkit-scrollbar": { display: "none" },
+                scrollbarWidth: "none",
               }}
             >
-              {stickerDetails.extraImages.map((img, idx) => (
+              {stickerDetails.images.map((imageName, idx) => (
                 <Paper
                   key={idx}
-                  onClick={() => setMainImage(img)}
+                  onClick={() => setActiveImageIndex(idx)}
                   sx={{
                     p: 1,
                     borderRadius: "10px",
                     cursor: "pointer",
                     border:
-                      mainImage === img ? "2px solid #70CB97" : "2px solid transparent",
+                      activeImageIndex === idx ? "2px solid #70CB97" : "2px solid transparent",
                     "&:hover": { border: "2px solid #70CB97" },
                     flexShrink: 0,
                     transition: "all 0.2s",
                   }}
                 >
                   <img
-                    src={img}
-                    alt={`view ${idx + 1}`}
+                    src={getCdnImage(imageName, { width: 90, height: 90 })}
+                    alt={`${stickerDetails.name} thumbnail view ${idx + 1}`}
+                    width="90"
+                    height="90"
+                    loading="lazy"
                     style={{
                       width: "90px",
                       height: "90px",

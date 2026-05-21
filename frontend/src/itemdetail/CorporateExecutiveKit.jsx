@@ -38,46 +38,30 @@ import {
   Build,
   VerifiedUser,
 } from "@mui/icons-material";
+import { getCdnImage } from "../utils/imageLoader";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
 import { motion } from "framer-motion";
 
-// ========== MAIN KIT IMAGE ==========
-import corporateExecutiveKitImg from "../assets/welcome-kits.png";
-
-// ========== EXTRA ANGLES ==========
-import extraImg1 from "../assets/welcome-kits-1.png";
-import extraImg2 from "../assets/welcome-kits-2.png";
-import extraImg3 from "../assets/welcome-kits-3.png";
-
-// ========== INCLUDED ITEMS ==========
-import vintageTanDiaryImg from "../assets/vintage-tan-diaries.png";
-import apexCarryLaptopBagImg from "../assets/apex-carry-laptop-bag.png";
-import poloShirtImg from "../assets/polo-t-shirt.png";
-import premiumBlackSipperImg from "../assets/premium-black-sipper.png";
-import giltRollerPenImg from "../assets/gilt-roller-pen.png";
-import a5StickerSheetImg from "../assets/sticker.png";
-
-// ========== TESTIMONIALS ==========
 const testimonials = [
   {
     name: "Rahul Mehta",
-    role: "CEO, TechSolutions India",
-    avatar: "https://randomuser.me/api/portraits/men/1.jpg",
+    role: "CEO, VaeloBound India",
+    avatar: "testimonial-rahul.png", // Updated to ImageKit asset path
     text: "The Corporate Executive Kit elevated our onboarding experience. Every item exudes quality and attention to detail. Highly recommended!",
     rating: 5,
   },
   {
     name: "Priya Sharma",
-    role: "HR Director, Global Corp",
-    avatar: "https://randomuser.me/api/portraits/women/2.jpg",
+    role: "HR Director, KithAlign",
+    avatar: "testimonial-priya.png", // Updated to ImageKit asset path
     text: "We ordered 50 kits for our leadership team. The custom branding was perfect, and the packaging impressed everyone.",
     rating: 5,
   },
   {
     name: "Amit Patel",
-    role: "Founder, Startup Hub",
-    avatar: "https://randomuser.me/api/portraits/men/3.jpg",
+    role: "Founder, MerxFold",
+    avatar: "testimonial-amit.png", // Updated to ImageKit asset path
     text: "Value for money is incredible. The leather diary and pen are now my daily essentials.",
     rating: 4,
   },
@@ -85,58 +69,61 @@ const testimonials = [
 
 const CorporateExecutiveKit = ({ addToCart }) => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [mainImage, setMainImage] = useState(corporateExecutiveKitImg);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [lightboxOpen, setLightboxOpen] = useState(false);
-  const [lightboxIndex, setLightboxIndex] = useState(0);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   const kitDetails = {
     name: "Corporate Executive Kit",
-    image: corporateExecutiveKitImg,
     price: 2500,
     description:
       "A premium kit designed for corporate executives, featuring high-quality items for professional and personal use. Each component is meticulously chosen to reflect excellence and functionality.",
     items: [
       {
         name: "Vintage Tan Diary",
-        image: vintageTanDiaryImg,
+        image: "vintage-tan-diaries.png",
         description: "Premium leather-bound notebook with 192 pages",
         price: 500,
       },
       {
         name: "Apex Carry Laptop Bag",
-        image: apexCarryLaptopBagImg,
+        image: "apex-carry-laptop-bag.png",
         description: "Professional laptop bag with multiple compartments",
         price: 1200,
       },
       {
         name: "Polo T-shirt",
-        image: poloShirtImg,
+        image: "polo-t-shirt.png",
         description: "Premium cotton polo with custom embroidery",
         price: 600,
       },
       {
         name: "Premium Black Sipper",
-        image: premiumBlackSipperImg,
+        image: "premium-black-sipper.png",
         description: "Insulated stainless steel water bottle",
         price: 800,
       },
       {
         name: "Gilt Roller Pen",
-        image: giltRollerPenImg,
+        image: "gilt-roller-pen.png",
         description: "Luxury rollerball pen with gold accents",
         price: 300,
       },
       {
         name: "A5 Sticker Sheet",
-        image: a5StickerSheetImg,
+        image: "sticker.png",
         description: "Set of premium branded stickers",
         price: 150,
       },
     ],
     tags: ["Professional", "Premium", "Executive", "Luxury"],
-    extraImages: [extraImg1, extraImg2, extraImg3],
+    images: [
+      "welcome-kits.png",
+      "welcome-kits-1.png",
+      "welcome-kits-2.png",
+      "welcome-kits-3.png"
+    ],
     highlights: [
       {
         icon: "💼",
@@ -176,11 +163,12 @@ const CorporateExecutiveKit = ({ addToCart }) => {
     warranty: "1 year against manufacturing defects on all items",
   };
 
-  const allImages = [kitDetails.image, ...kitDetails.extraImages];
-
   const handleAddToCart = () => {
     addToCart({
-      ...kitDetails,
+      name: kitDetails.name,
+      image: getCdnImage(kitDetails.images[0], { width: 150, height: 150 }),
+      description: kitDetails.description,
+      price: kitDetails.price,
       type: "Corporate Executive Kit",
     });
     setSnackbarOpen(true);
@@ -188,15 +176,6 @@ const CorporateExecutiveKit = ({ addToCart }) => {
 
   const handleCloseSnackbar = () => {
     setSnackbarOpen(false);
-  };
-
-  const openLightbox = (index) => {
-    setLightboxIndex(index);
-    setLightboxOpen(true);
-  };
-
-  const closeLightbox = () => {
-    setLightboxOpen(false);
   };
 
   return (
@@ -285,9 +264,9 @@ const CorporateExecutiveKit = ({ addToCart }) => {
               }}
             />
 
-            {/* Main Image with Zoom - Click outside Zoom to open lightbox */}
+            {/* Main Image with Zoom */}
             <Box
-              onClick={() => openLightbox(allImages.indexOf(mainImage))}
+              onClick={() => setLightboxOpen(true)}
               sx={{ cursor: "pointer" }}
             >
               <Zoom zoomMargin={40}>
@@ -300,15 +279,16 @@ const CorporateExecutiveKit = ({ addToCart }) => {
                   }}
                 >
                   <img
-                    src={mainImage}
-                    alt={kitDetails.name}
+                    src={getCdnImage(kitDetails.images[activeImageIndex], { width: 600, height: 450 })}
+                    alt={`${kitDetails.name} primary view`}
+                    width="600"
+                    height="450"
                     style={{
                       width: "100%",
                       height: "auto",
                       maxHeight: "500px",
                       objectFit: "contain",
                       display: "block",
-                      pointerEvents: "none", // Prevents Zoom from capturing clicks
                     }}
                   />
                 </Box>
@@ -326,24 +306,27 @@ const CorporateExecutiveKit = ({ addToCart }) => {
                 scrollbarWidth: "none",
               }}
             >
-              {allImages.map((img, idx) => (
+              {kitDetails.images.map((imageName, idx) => (
                 <Paper
                   key={idx}
-                  onClick={() => setMainImage(img)}
+                  onClick={() => setActiveImageIndex(idx)}
                   sx={{
                     p: 1,
                     borderRadius: 2,
                     cursor: "pointer",
                     border:
-                      mainImage === img ? "2px solid #70CB97" : "1px solid #e2e8f0",
+                      activeImageIndex === idx ? "2px solid #70CB97" : "1px solid #e2e8f0",
                     "&:hover": { border: "2px solid #70CB97" },
                     flexShrink: 0,
                     transition: "all 0.2s",
                   }}
                 >
                   <img
-                    src={img}
-                    alt={`view ${idx + 1}`}
+                    src={getCdnImage(imageName, { width: 80, height: 80 })}
+                    alt={`${kitDetails.name} thumbnail view ${idx + 1}`}
+                    width="80"
+                    height="80"
+                    loading="lazy"
                     style={{
                       width: "80px",
                       height: "80px",
@@ -355,10 +338,10 @@ const CorporateExecutiveKit = ({ addToCart }) => {
               ))}
             </Box>
 
-            {/* Lightbox Dialog - Fixed */}
+            {/* Lightbox Dialog */}
             <Dialog
               open={lightboxOpen}
-              onClose={closeLightbox}
+              onClose={() => setLightboxOpen(false)}
               maxWidth="lg"
               fullWidth
               scroll="paper"
@@ -372,7 +355,7 @@ const CorporateExecutiveKit = ({ addToCart }) => {
             >
               <DialogContent sx={{ p: 0, position: "relative", minHeight: "60vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
                 <MuiIconButton
-                  onClick={closeLightbox}
+                  onClick={() => setLightboxOpen(false)}
                   sx={{
                     position: "absolute",
                     top: 16,
@@ -386,8 +369,8 @@ const CorporateExecutiveKit = ({ addToCart }) => {
                   <Close />
                 </MuiIconButton>
                 <img
-                  src={allImages[lightboxIndex]}
-                  alt="Full size"
+                  src={getCdnImage(kitDetails.images[activeImageIndex], { width: 1000, height: 750 })}
+                  alt="Full size display"
                   style={{
                     maxWidth: "90%",
                     maxHeight: "80vh",
@@ -529,9 +512,9 @@ const CorporateExecutiveKit = ({ addToCart }) => {
                       >
                         <CardMedia
                           component="img"
-                          image={item.image}
+                          image={getCdnImage(item.image, { width: 120, height: 100 })}
                           alt={item.name}
-                          sx={{
+                          style={{
                             width: "auto",
                             maxWidth: "100%",
                             height: "70%",
@@ -656,12 +639,16 @@ const CorporateExecutiveKit = ({ addToCart }) => {
                   p: 3,
                   borderRadius: 4,
                   height: "100%",
-                  boxShadow: "0 8px 20px rgba(0,0,0,0.05)",
+                  boxShadow: "0 8px 20px rgba(0, 0, 0, 0.05)",
                   border: "1px solid #e2e8f0",
                 }}
               >
+                {/* Fixed the duplicate spacing={2} prop error here */}
                 <Stack direction="row" spacing={2} alignItems="center" mb={2}>
-                  <Avatar src={t.avatar} sx={{ width: 56, height: 56 }} />
+                  <Avatar 
+                    src={getCdnImage(t.avatar, { width: 56, height: 56 })} 
+                    sx={{ width: 56, height: 56 }} 
+                  />
                   <Box>
                     <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
                       {t.name}
@@ -688,7 +675,7 @@ const CorporateExecutiveKit = ({ addToCart }) => {
           p: { xs: 4, md: 6 },
           backgroundColor: "white",
           borderRadius: 4,
-          boxShadow: "0 8px 32px rgba(0,0,0,0.05)",
+          boxShadow: "0 8px 32px rgba(0, 0, 0, 0.05)",
           border: "1px solid #e2e8f0",
         }}
       >
@@ -708,7 +695,7 @@ const CorporateExecutiveKit = ({ addToCart }) => {
                   transition: "all 0.3s",
                   "&:hover": {
                     transform: "translateY(-5px)",
-                    boxShadow: "0 8px 24px rgba(0,0,0,0.08)",
+                    boxShadow: "0 8px 24px rgba(0, 0, 0, 0.08)",
                     borderColor: "#70CB97",
                   },
                 }}

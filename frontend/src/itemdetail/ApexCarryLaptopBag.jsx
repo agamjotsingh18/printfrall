@@ -11,16 +11,9 @@ import {
   Chip,
 } from "@mui/material";
 import { AddShoppingCart, Close, Business } from "@mui/icons-material";
+import { getCdnImage } from "../utils/imageLoader";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
-
-// ========== YOUR GENERATED BAG IMAGES ==========
-import mainImg from "../assets/apex-carry-laptop-bag.png";
-import img2 from "../assets/apex-carry-laptop-bag-1.png";
-import img3 from "../assets/apex-carry-laptop-bag-2.png";
-import img4 from "../assets/apex-carry-laptop-bag-3.png";
-// import img5 from "../assets/apex-bag-5-closeup.png";
-// ===============================================
 
 const ApexCarryLaptopBag = ({ addToCart }) => {
   const priceMapping = {
@@ -34,12 +27,11 @@ const ApexCarryLaptopBag = ({ addToCart }) => {
 
   const [selectedSize, setSelectedSize] = useState(defaultSize);
   const [selectedColor, setSelectedColor] = useState(defaultColor);
-  const [mainImage, setMainImage] = useState(mainImg);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   const apexBagDetails = {
     name: "Apex Carry Laptop Bag",
-    image: mainImg,
     description:
       "Premium professional laptop bag with superior protection and organization. Features a padded laptop compartment, multiple pockets, and a sleek design perfect for business professionals.",
     features: [
@@ -51,7 +43,12 @@ const ApexCarryLaptopBag = ({ addToCart }) => {
       "Corporate branding options available",
     ],
     sizes: ["15-inch", "17-inch"],
-    extraImages: [img2, img3, img4],
+    images: [
+      "apex-carry-laptop-bag.png",
+      "apex-carry-laptop-bag-1.png",
+      "apex-carry-laptop-bag-2.png",
+      "apex-carry-laptop-bag-3.png",
+    ],
     tags: ["Professional", "Durable", "Premium"],
   };
 
@@ -59,7 +56,9 @@ const ApexCarryLaptopBag = ({ addToCart }) => {
 
   const handleAddToCart = () => {
     const item = {
-      ...apexBagDetails,
+      name: apexBagDetails.name,
+      image: getCdnImage(apexBagDetails.images[0], { width: 150, height: 150 }),
+      description: apexBagDetails.description,
       selectedSize,
       selectedMaterial: selectedColor,
       selectedColor,
@@ -111,8 +110,10 @@ const ApexCarryLaptopBag = ({ addToCart }) => {
 
             <Zoom>
               <img
-                src={mainImage}
-                alt={apexBagDetails.name}
+                src={getCdnImage(apexBagDetails.images[activeImageIndex], { width: 600, height: 450 })}
+                alt={`${apexBagDetails.name} primary view`}
+                width="600"
+                height="450"
                 style={{
                   width: "100%",
                   borderRadius: "12px",
@@ -130,18 +131,19 @@ const ApexCarryLaptopBag = ({ addToCart }) => {
                 mt: 2,
                 overflowX: "auto",
                 "&::-webkit-scrollbar": { display: "none" },
+                scrollbarWidth: "none",
               }}
             >
-              {apexBagDetails.extraImages.map((img, idx) => (
+              {apexBagDetails.images.map((imageName, idx) => (
                 <Paper
                   key={idx}
-                  onClick={() => setMainImage(img)}
+                  onClick={() => setActiveImageIndex(idx)}
                   sx={{
                     p: 1,
                     borderRadius: "10px",
                     cursor: "pointer",
                     border:
-                      mainImage === img
+                      activeImageIndex === idx
                         ? "2px solid #70CB97"
                         : "2px solid transparent",
                     "&:hover": { border: "2px solid #70CB97" },
@@ -150,8 +152,11 @@ const ApexCarryLaptopBag = ({ addToCart }) => {
                   }}
                 >
                   <img
-                    src={img}
-                    alt={`view ${idx + 1}`}
+                    src={getCdnImage(imageName, { width: 90, height: 90 })}
+                    alt={`${apexBagDetails.name} thumbnail view ${idx + 1}`}
+                    width="90"
+                    height="90"
+                    loading="lazy"
                     style={{
                       width: "90px",
                       height: "90px",

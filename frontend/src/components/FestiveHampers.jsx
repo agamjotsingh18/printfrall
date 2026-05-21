@@ -3,30 +3,15 @@ import { Link } from "react-router-dom";
 import { IconButton } from "@mui/material";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 import "../styles/FestiveHampers.css";
-
-// Import images for hampers (replace with actual images)
-import colorSplashImg from "../assets/color-splash-hamper.png";
-import ecoFriendlyImg from "../assets/eco-hamper.png";
-import premiumHoliImg from "../assets/premium-hamper.png";
-import customFestiveHamperImg from "../assets/custom-festive-hamper.webp";
-
-// Import images for customizable items (same as before)
-import festiveDiaryImg from "../assets/wave-texture-diaries.png";
-import colorfulPensImg from "../assets/scribble-pen.png";
-import holiTShirtImg from "../assets/tshirt.png";
-import ecoFriendlyBagImg from "../assets/laptop-bag.png";
-import holiMugImg from "../assets/mug.png";
-import festiveStickersImg from "../assets/sticker.png";
-import thankYouCardImg from "../assets/thank-you-card.png";
+import { getCdnImage } from "../utils/imageLoader";
 
 const FestiveHampers = ({ addToCart }) => {
   const [selectedItems, setSelectedItems] = useState([]);
 
-  // Updated main hampers data with new products and links
   const mainHampers = [
     {
       name: "Color Splash Hamper",
-      image: colorSplashImg,
+      image: "color-splash-hamper.png",
       price: 1500,
       link: "/services/corporate-gifting/festive-hampers/color-splash-hamper",
       items: [
@@ -38,7 +23,7 @@ const FestiveHampers = ({ addToCart }) => {
     },
     {
       name: "Eco-Friendly Holi Hamper",
-      image: ecoFriendlyImg,
+      image: "eco-hamper.png",
       price: 2000,
       link: "/services/corporate-gifting/festive-hampers/eco-friendly-holi-hamper",
       items: [
@@ -50,7 +35,7 @@ const FestiveHampers = ({ addToCart }) => {
     },
     {
       name: "Premium Holi Hamper",
-      image: premiumHoliImg,
+      image: "premium-hamper.png",
       price: 2500,
       link: "/services/corporate-gifting/festive-hampers/premium-holi-hamper",
       items: [
@@ -62,31 +47,30 @@ const FestiveHampers = ({ addToCart }) => {
     },
   ];
 
-  // Customizable items data (unchanged)
   const customizableItems = {
     Diaries: [
-      { name: "Festive Diary", image: festiveDiaryImg, price: 400 },
-      { name: "Eco-Friendly Diary", image: festiveDiaryImg, price: 450 },
-      { name: "Luxury Festive Diary", image: festiveDiaryImg, price: 500 },
-      { name: "Custom Diary", image: festiveDiaryImg, price: 550 },
+      { name: "Festive Diary", image: "wave-texture-diaries.png", price: 400 },
+      { name: "Eco-Friendly Diary", image: "wave-texture-diaries.png", price: 450 },
+      { name: "Luxury Festive Diary", image: "wave-texture-diaries.png", price: 500 },
+      { name: "Custom Diary", image: "wave-texture-diaries.png", price: 550 },
     ],
     Pens: [
-      { name: "Colorful Pens", image: colorfulPensImg, price: 100 },
-      { name: "Natural Color Pack", image: colorfulPensImg, price: 150 },
-      { name: "Premium Pens", image: colorfulPensImg, price: 200 },
+      { name: "Colorful Pens", image: "scribble-pen.png", price: 100 },
+      { name: "Natural Color Pack", image: "scribble-pen.png", price: 150 },
+      { name: "Premium Pens", image: "scribble-pen.png", price: 200 },
     ],
     TShirts: [
-      { name: "Holi T-Shirt", image: holiTShirtImg, price: 500 },
-      { name: "Organic T-Shirt", image: holiTShirtImg, price: 600 },
-      { name: "Designer T-Shirt", image: holiTShirtImg, price: 700 },
+      { name: "Holi T-Shirt", image: "tshirt.png", price: 500 },
+      { name: "Organic T-Shirt", image: "tshirt.png", price: 600 },
+      { name: "Designer T-Shirt", image: "tshirt.png", price: 700 },
     ],
     Bags: [
-      { name: "Eco-Friendly Bag", image: ecoFriendlyBagImg, price: 800 },
-      { name: "Reusable Bag", image: ecoFriendlyBagImg, price: 850 },
+      { name: "Eco-Friendly Bag", image: "laptop-bag.png", price: 800 },
+      { name: "Reusable Bag", image: "laptop-bag.png", price: 850 },
     ],
-    Mugs: [{ name: "Custom Mug", image: holiMugImg, price: 300 }],
-    Stickers: [{ name: "Festive Stickers", image: festiveStickersImg, price: 50 }],
-    Cards: [{ name: "Thank You Card", image: thankYouCardImg, price: 50 }],
+    Mugs: [{ name: "Custom Mug", image: "mug.png", price: 300 }],
+    Stickers: [{ name: "Festive Stickers", image: "sticker.png", price: 50 }],
+    Cards: [{ name: "Thank You Card", image: "thank-you-card.png", price: 50 }],
   };
 
   const handleAddItem = (item) => {
@@ -101,19 +85,28 @@ const FestiveHampers = ({ addToCart }) => {
     return selectedItems.reduce((total, item) => total + item.price, 0);
   };
 
+  const handleAddMainHamperToCart = (hamper) => {
+    const cartItem = {
+      ...hamper,
+      image: getCdnImage(hamper.image, { width: 150, height: 150 }),
+      quantity: 1
+    };
+    addToCart(cartItem);
+  };
+
   const handleAddCustomHamperToCart = () => {
     const customHamper = {
       name: "Custom Hamper",
-      image: customFestiveHamperImg,
+      image: getCdnImage("custom-festive-hamper.webp", { width: 150, height: 150 }),
       items: selectedItems,
       price: calculateTotalPrice(),
+      quantity: 1
     };
     addToCart(customHamper);
   };
 
   return (
     <section className="festive-hampers" aria-label="Festive Hampers Collection">
-      {/* Diwali Banner */}
       <div className="diwali-banner" aria-label="Diwali announcement banner">
         <div className="banner-content">
           <span className="banner-icon" aria-label="Diya icon">🪔</span>
@@ -126,13 +119,18 @@ const FestiveHampers = ({ addToCart }) => {
       <h2 className="section-title">Festive Hampers</h2>
       <p className="section-subtitle">Celebrate Holi with our exclusive hampers</p>
 
-      {/* Main Hampers Section */}
       <div className="main-hampers-container" aria-label="Premium festive hampers">
         {mainHampers.map((hamper, index) => (
           <div key={index} className="hamper-card" aria-label={`Hamper: ${hamper.name}`}>
-            {/* Wrap everything except the button in a Link */}
             <Link to={hamper.link} className="hamper-link" aria-label={`View details of ${hamper.name}`}>
-              <img src={hamper.image} alt={hamper.name} className="hamper-image" />
+              <img 
+                src={getCdnImage(hamper.image, { width: 350, height: 350 })} 
+                alt={hamper.name} 
+                className="hamper-image" 
+                width="350"
+                height="350"
+                loading="lazy"
+              />
               <h3 className="hamper-name">{hamper.name}</h3>
               <p className="hamper-price" aria-label={`Price: ₹${hamper.price}`}>₹{hamper.price}</p>
               <ul className="hamper-items" aria-label={`Items included in ${hamper.name}`}>
@@ -154,7 +152,7 @@ const FestiveHampers = ({ addToCart }) => {
                   background: "#5cb67f",
                 },
               }}
-              onClick={() => addToCart(hamper)}
+              onClick={() => handleAddMainHamperToCart(hamper)}
             >
               Add to Cart &nbsp;
               <AddShoppingCartIcon aria-hidden="true" />
@@ -163,7 +161,6 @@ const FestiveHampers = ({ addToCart }) => {
         ))}
       </div>
 
-      {/* Customizable Hamper Section */}
       <h2 className="section-title">Create Your Custom Hamper</h2>
       <div className="customizable-hamper">
         <div className="categories" aria-label="Customizable items categories">
@@ -184,7 +181,13 @@ const FestiveHampers = ({ addToCart }) => {
                       }
                     }}
                   >
-                    <img src={item.image} alt={item.name} />
+                    <img 
+                      src={getCdnImage(item.image, { width: 80, height: 80 })} 
+                      alt={item.name} 
+                      width="80"
+                      height="80"
+                      loading="lazy"
+                    />
                     <p>{item.name}</p>
                     <p aria-label={`Price: ₹${item.price}`}>₹{item.price}</p>
                   </li>
@@ -202,7 +205,12 @@ const FestiveHampers = ({ addToCart }) => {
             <ul aria-label="Selected items list">
               {selectedItems.map((item, index) => (
                 <li key={index} className="selected-item" aria-label={`Selected item: ${item.name}`}>
-                  <img src={item.image} alt={item.name} />
+                  <img 
+                    src={getCdnImage(item.image, { width: 50, height: 50 })} 
+                    alt={item.name} 
+                    width="50"
+                    height="50"
+                  />
                   <p>{item.name}</p>
                   <p>₹{item.price}</p>
                   <button 

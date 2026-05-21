@@ -10,20 +10,11 @@ import {
   IconButton,
 } from "@mui/material";
 import { AddShoppingCart, Close } from "@mui/icons-material";
+import { getCdnImage } from "../utils/imageLoader";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
 
-// ========== IMPORT YOUR OWN IMAGES HERE ==========
-// Replace these placeholder imports with your generated mockups
-import a5FlyerImg from "../assets/a5-flyer-1-flatlay.png";      // Main image
-import a5FlyerImg2 from "../assets/a5-flyer-2-hand.png";     // Extra angle 1
-import a5FlyerImg3 from "../assets/a5-flyer-3-folded.png";     // Extra angle 2
-import a5FlyerImg4 from "../assets/a5-flyer-4-stack.png";     // Extra angle 3
-// import a5FlyerImg5 from "../assets/a5-flyer-printing.png";     // Extra angle 4
-// ==================================================
-
 const A5FlyerPrinting = ({ addToCart }) => {
-  // Price mapping for each material
   const priceMapping = {
     "Glossy Paper": 40,
     "Matte Paper": 50,
@@ -32,12 +23,11 @@ const A5FlyerPrinting = ({ addToCart }) => {
 
   const defaultMaterial = "Glossy Paper";
   const [selectedMaterial, setSelectedMaterial] = useState(defaultMaterial);
-  const [mainImage, setMainImage] = useState(a5FlyerImg);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   const a5FlyerDetails = {
     name: "A5 Flyer Printing",
-    image: a5FlyerImg,
     description:
       "High-quality A5 flyers for all your marketing needs. Perfect for events, promotions, and branding campaigns.",
     features: [
@@ -47,14 +37,21 @@ const A5FlyerPrinting = ({ addToCart }) => {
       "Durable and vibrant prints",
     ],
     materials: ["Glossy Paper", "Matte Paper", "Premium Paper"],
-    extraImages: [a5FlyerImg2, a5FlyerImg3, a5FlyerImg4],
+    images: [
+      "a5-flyer-1-flatlay.png",
+      "a5-flyer-2-hand.png",
+      "a5-flyer-3-folded.png",
+      "a5-flyer-4-stack.png",
+    ],
   };
 
   const price = priceMapping[selectedMaterial];
 
   const handleAddToCart = () => {
     const item = {
-      ...a5FlyerDetails,
+      name: a5FlyerDetails.name,
+      image: getCdnImage(a5FlyerDetails.images[0], { width: 150, height: 150 }),
+      description: a5FlyerDetails.description,
       selectedMaterial,
       price,
       quantity: 1,
@@ -82,8 +79,10 @@ const A5FlyerPrinting = ({ addToCart }) => {
           >
             <Zoom>
               <img
-                src={mainImage}
-                alt={a5FlyerDetails.name}
+                src={getCdnImage(a5FlyerDetails.images[activeImageIndex], { width: 600, height: 450 })}
+                alt={`${a5FlyerDetails.name} primary view`}
+                width="600"
+                height="450"
                 style={{
                   width: "100%",
                   borderRadius: "12px",
@@ -106,17 +105,17 @@ const A5FlyerPrinting = ({ addToCart }) => {
                 scrollbarWidth: "none",
               }}
             >
-              {a5FlyerDetails.extraImages.map((image, index) => (
+              {a5FlyerDetails.images.map((imageName, index) => (
                 <Paper
                   key={index}
-                  onClick={() => setMainImage(image)}
+                  onClick={() => setActiveImageIndex(index)}
                   sx={{
                     p: 1,
                     borderRadius: "10px",
                     boxShadow: "0px 2px 8px rgba(0, 0, 0, 0.1)",
                     cursor: "pointer",
                     border:
-                      mainImage === image
+                      activeImageIndex === index
                         ? "2px solid #70CB97"
                         : "2px solid transparent",
                     "&:hover": { border: "2px solid #70CB97" },
@@ -125,8 +124,11 @@ const A5FlyerPrinting = ({ addToCart }) => {
                   }}
                 >
                   <img
-                    src={image}
-                    alt={`${a5FlyerDetails.name} view ${index + 1}`}
+                    src={getCdnImage(imageName, { width: 90, height: 90 })}
+                    alt={`${a5FlyerDetails.name} thumbnail view ${index + 1}`}
+                    width="90"
+                    height="90"
+                    loading="lazy"
                     style={{
                       width: "90px",
                       height: "90px",

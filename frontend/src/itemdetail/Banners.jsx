@@ -11,21 +11,9 @@ import {
   Chip,
 } from "@mui/material";
 import { AddShoppingCart, Close } from "@mui/icons-material";
+import { getCdnImage } from "../utils/imageLoader";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
-
-// ========== YOUR GENERATED BANNER IMAGES ==========
-import mainImg from "../assets/banner-1-hung.png";
-import img2 from "../assets/banner-2-standee.png";
-import img3 from "../assets/banner-3-real.png";
-import img4 from "../assets/banner-4.png";
-import img5 from "../assets/banner-5.png";
-import img6 from "../assets/banner-6.png";
-// =================================================
-
-// Optional: extra images for finish options
-import finishNoEyeletsImg from "../assets/finish-trimmed.png";
-import finishEyeletsImg from "../assets/finish-eyelets.png";
 
 const Banners = ({ addToCart }) => {
   // Price mapping for each size and material combination
@@ -75,12 +63,11 @@ const Banners = ({ addToCart }) => {
   const [selectedSize, setSelectedSize] = useState(defaultSize);
   const [selectedMaterial, setSelectedMaterial] = useState(defaultMaterial);
   const [selectedFinish, setSelectedFinish] = useState(defaultFinish);
-  const [mainImage, setMainImage] = useState(mainImg);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   const bannerDetails = {
     name: "Banners",
-    image: mainImg,
     description:
       "High-quality banners for all your marketing needs. Perfect for events, promotions, and branding. Available in various sizes, materials, and finish options.",
     features: [
@@ -97,10 +84,17 @@ const Banners = ({ addToCart }) => {
       "Premium Fabric (450 gsm)",
     ],
     finishes: ["Trimmed, without Eyelets", "Eyelets in corners"],
-    extraImages: [img2, img3, img4, img5, img6],
+    images: [
+      "banner-1-hung.png",
+      "banner-2-standee.png",
+      "banner-3-real.png",
+      "banner-4.png",
+      "banner-5.png",
+      "banner-6.png",
+    ],
     finishImages: {
-      "Trimmed, without Eyelets": finishNoEyeletsImg,
-      "Eyelets in corners": finishEyeletsImg,
+      "Trimmed, without Eyelets": "finish-trimmed.png",
+      "Eyelets in corners": "finish-eyelets.png",
     },
     tags: ["Durable", "Weather-Resistant", "Eco-Solvent"],
   };
@@ -109,7 +103,9 @@ const Banners = ({ addToCart }) => {
 
   const handleAddToCart = () => {
     const item = {
-      ...bannerDetails,
+      name: bannerDetails.name,
+      image: getCdnImage(bannerDetails.images[0], { width: 150, height: 150 }),
+      description: bannerDetails.description,
       selectedSize,
       selectedMaterial,
       selectedFinish,
@@ -149,8 +145,10 @@ const Banners = ({ addToCart }) => {
 
             <Zoom>
               <img
-                src={mainImage}
-                alt={bannerDetails.name}
+                src={getCdnImage(bannerDetails.images[activeImageIndex], { width: 600, height: 450 })}
+                alt={`${bannerDetails.name} primary view`}
+                width="600"
+                height="450"
                 style={{
                   width: "100%",
                   borderRadius: "12px",
@@ -168,26 +166,30 @@ const Banners = ({ addToCart }) => {
                 mt: 2,
                 overflowX: "auto",
                 "&::-webkit-scrollbar": { display: "none" },
+                scrollbarWidth: "none",
               }}
             >
-              {bannerDetails.extraImages.map((img, idx) => (
+              {bannerDetails.images.map((imageName, idx) => (
                 <Paper
                   key={idx}
-                  onClick={() => setMainImage(img)}
+                  onClick={() => setActiveImageIndex(idx)}
                   sx={{
                     p: 1,
                     borderRadius: "10px",
                     cursor: "pointer",
                     border:
-                      mainImage === img ? "2px solid #70CB97" : "2px solid transparent",
+                      activeImageIndex === idx ? "2px solid #70CB97" : "2px solid transparent",
                     "&:hover": { border: "2px solid #70CB97" },
                     flexShrink: 0,
                     transition: "all 0.2s",
                   }}
                 >
                   <img
-                    src={img}
-                    alt={`view ${idx + 1}`}
+                    src={getCdnImage(imageName, { width: 90, height: 90 })}
+                    alt={`${bannerDetails.name} thumbnail view ${idx + 1}`}
+                    width="90"
+                    height="90"
+                    loading="lazy"
                     style={{ width: "90px", height: "90px", borderRadius: "8px", objectFit: "cover" }}
                   />
                 </Paper>
@@ -317,13 +319,16 @@ const Banners = ({ addToCart }) => {
             ))}
           </Box>
 
-          {/* Visual explanation of finishes (optional thumbnails) */}
+          {/* Visual explanation of finishes */}
           <Box sx={{ display: "flex", gap: 2, mb: 3 }}>
             {bannerDetails.finishes.map((finish, idx) => (
               <Box key={idx} sx={{ textAlign: "center", width: "100px" }}>
                 <img
-                  src={bannerDetails.finishImages[finish]}
+                  src={getCdnImage(bannerDetails.finishImages[finish], { width: 80, height: 80 })}
                   alt={finish}
+                  width="80"
+                  height="80"
+                  loading="lazy"
                   style={{ width: "80px", height: "80px", borderRadius: "8px", objectFit: "cover", border: "1px solid #e0e7ed" }}
                 />
                 <Typography variant="caption" sx={{ display: "block", mt: 0.5, color: "#5a6e7a" }}>

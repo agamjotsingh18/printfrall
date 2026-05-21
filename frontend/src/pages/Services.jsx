@@ -11,94 +11,63 @@ import {
 } from "react-icons/fa";
 import { IconButton, Snackbar } from "@mui/material";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
+import { getCdnImage } from "../utils/imageLoader";
 
-// Import assets for each service item
-import businessCardImg from "../assets/business-card.jpg";
-import letterheadImg from "../assets/letterhead.avif";
-import envelopeImg from "../assets/envelope.png";
-import invoiceImg from "../assets/invoice.png";
-import flyerImg from "../assets/flyer.png";
-import standeesImg from "../assets/standees.png";
-import customStandeeCutoutImg from "../assets/custom-standee-cutout.png";
-import posterImg from "../assets/poster.png";
-import brochureImg from "../assets/brochure.png";
-import bannerImg from "../assets/banner-1-hung.png";
-import mugImg from "../assets/mug.png";
-import tshirtImg from "../assets/tshirt.png";
-import photoFrameImg from "../assets/photo-frame.png";
-import calendarImg from "../assets/calendar.png";
-import stickerImg from "../assets/sticker.png";
-import labelImg from "../assets/label.png";
-import paperBagImg from "../assets/paper-bag.png";
-import giftBoxImg from "../assets/gift-box.png";
-import hoodieImg from "../assets/hoodie.png";
-import sweatshirtImg from "../assets/sweatshirt.png";
-import capImg from "../assets/cap.png";
-import jacketImg from "../assets/jacket.png";
-import acrylicSignBoardImg from "../assets/acrylic-sign-board.png";
-import photoSelfieBoothImg from "../assets/photo-selfie-booth.png";
-
-// Import assets for Corporate Gifting
-import duoSetImg from "../assets/duo-sets.png";
-import festiveHampersImg from "../assets/festive-hampers.jpg";
-import welcomeKitsImg from "../assets/welcome-kits.png";
-import drinkwareImg from "../assets/drinkware.png";
-import bagsImg from "../assets/laptop-bag.png";
 
 const services = [
-  {
+ {
     name: "Marketing Materials",
     icon: <FaPrint />,
     items: [
-      { name: "Banners", image: bannerImg, link: "/services/marketing-materials/banners", price: 100 },
-      { name: "Custom Standee Cutout", image: customStandeeCutoutImg, link: "/services/marketing-materials/custom-standee-cutout", price: 150 },
-      { name: "Acrylic Sign Board", image: acrylicSignBoardImg, link: "/services/marketing-materials/acrylic-sign-board", price: 200 },
-      { name: "Posters", image: posterImg, link: "/services/marketing-materials/posters", price: 50 },
-      { name: "Photo Selfie Booth", image: photoSelfieBoothImg, link: "/services/marketing-materials/photo-selfie-booth", price: 300 },
-      { name: "Brochures", image: brochureImg, link: "/services/marketing-materials/brochures", price: 30 },
-      { name: "Flyers", image: flyerImg, link: "/services/marketing-materials/flyers", price: 20 },
-      { name: "Standees", image: standeesImg, link: "/services/marketing-materials/standees", price: 120 },
+      { name: "Banners", image: "banner-1-hung.png", link: "/services/marketing-materials/banners", price: 100 },
+      { name: "Custom Standee Cutout", image: "custom-standee-cutout.png", link: "/services/marketing-materials/custom-standee-cutout", price: 150 },
+      { name: "Acrylic Sign Board", image: "acrylic-sign-board.png", link: "/services/marketing-materials/acrylic-sign-board", price: 200 },
+      { name: "Posters", image: "poster.png", link: "/services/marketing-materials/posters", price: 50 },
+      { name: "Photo Selfie Booth", image: "photo-selfie-booth.png", link: "/services/marketing-materials/photo-selfie-booth", price: 300 },
+      { name: "Brochures", image: "brochure.png", link: "/services/marketing-materials/brochures", price: 30 },
+      { name: "Flyers", image: "flyer.png", link: "/services/marketing-materials/flyers", price: 20 },
+      { name: "Standees", image: "standees.png", link: "/services/marketing-materials/standees", price: 120 },
     ],
   },
   {
     name: "Packaging & Labels",
     icon: <FaBox />,
     items: [
-      { name: "Stickers", image: stickerImg, link: "/services/packaging-labels/stickers", price: 10 },
-      { name: "Labels", image: labelImg, link: "/services/packaging-labels/labels", price: 15 },
-      { name: "Paper Bags", image: paperBagImg, link: "/services/packaging-labels/paper-bags", price: 25 },
-      { name: "Gift Boxes", image: giftBoxImg, link: "/services/packaging-labels/gift-boxes", price: 40 },
+      { name: "Stickers", image: "sticker.png", link: "/services/packaging-labels/stickers", price: 10 },
+      { name: "Labels", image: "label.png", link: "/services/packaging-labels/labels", price: 15 },
+      { name: "Paper Bags", image: "paper-bag.png", link: "/services/packaging-labels/paper-bags", price: 25 },
+      { name: "Gift Boxes", image: "gift-box.png", link: "/services/packaging-labels/gift-boxes", price: 40 },
     ],
   },
   {
     name: "Personalized Gifts",
     icon: <FaGift />,
     items: [
-      { name: "Mugs", image: mugImg, link: "/services/personalized-gifts/mugs", price: 20 },
-      { name: "T-Shirts", image: tshirtImg, link: "/services/personalized-gifts/tshirts", price: 25 },
-      { name: "Photo Frames", image: photoFrameImg, link: "/services/personalized-gifts/photo-frames", price: 30 },
-      { name: "Calendars", image: calendarImg, link: "/services/personalized-gifts/calendars", price: 15 },
+      { name: "Mugs", image: "mug.png", link: "/services/personalized-gifts/mugs", price: 20 },
+      { name: "T-Shirts", image: "tshirt.png", link: "/services/personalized-gifts/tshirts", price: 25 },
+      { name: "Photo Frames", image: "photo-frame.png", link: "/services/personalized-gifts/photo-frames", price: 30 },
+      { name: "Calendars", image: "calendar.png", link: "/services/personalized-gifts/calendars", price: 15 },
     ],
   },
   {
     name: "Business Essentials",
     icon: <FaFileAlt />,
     items: [
-      { name: "Business Cards", image: businessCardImg, link: "/services/business-essentials/business-cards", price: 10 },
-      { name: "Letterheads", image: letterheadImg, link: "/services/business-essentials/letterheads", price: 20 },
-      { name: "Envelopes", image: envelopeImg, link: "/services/business-essentials/envelopes", price: 15 },
-      { name: "Invoices", image: invoiceImg, link: "/services/business-essentials/invoices", price: 5 },
+      { name: "Business Cards", image: "business-card.jpg", link: "/services/business-essentials/business-cards", price: 10 },
+      { name: "Letterheads", image: "letterhead.avif", link: "/services/business-essentials/letterheads", price: 20 },
+      { name: "Envelopes", image: "envelope.png", link: "/services/business-essentials/envelopes", price: 15 },
+      { name: "Invoices", image: "invoice.png", link: "/services/business-essentials/invoices", price: 5 },
     ],
   },
   {
     name: "T-Shirt Printing",
     icon: <FaTshirt />,
     items: [
-      { name: "Custom T-Shirts", image: tshirtImg, link: "/services/personalized-gifts/tshirts", price: 25 },
-      { name: "Hoodies", image: hoodieImg, link: "/services/tshirt-printing/hoodies", price: 40 },
-      { name: "Sweatshirts", image: sweatshirtImg, link: "/services/tshirt-printing/sweatshirts", price: 35 },
-      { name: "Caps", image: capImg, link: "/services/tshirt-printing/caps", price: 20 },
-      { name: "Jackets", image: jacketImg, link: "/services/tshirt-printing/jackets", price: 50 },
+      { name: "Custom T-Shirts", image: "tshirt.png", link: "/services/personalized-gifts/tshirts", price: 25 },
+      { name: "Hoodies", image: "hoodie.png", link: "/services/tshirt-printing/hoodies", price: 40 },
+      { name: "Sweatshirts", image: "sweatshirt.png", link: "/services/tshirt-printing/sweatshirts", price: 35 },
+      { name: "Caps", image: "cap.png", link: "/services/tshirt-printing/caps", price: 20 },
+      { name: "Jackets", image: "jacket.png", link: "/services/tshirt-printing/jackets", price: 50 },
     ],
   },
 ];
@@ -107,11 +76,11 @@ const corporateGifting = {
   name: "Corporate Gifting",
   icon: <FaGift />,
   items: [
-    { name: "Duo Sets", image: duoSetImg, link: "/services/corporate-gifting/duo-sets", price: 100 },
-    { name: "Festive Hampers", image: festiveHampersImg, link: "/services/corporate-gifting/festive-hampers", price: 150 },
-    { name: "Welcome Kits", image: welcomeKitsImg, link: "/services/corporate-gifting/welcome-kits", price: 200 },
-    { name: "Drinkware", image: drinkwareImg, link: "/services/corporate-gifting/drinkware", price: 50 },
-    { name: "Bags", image: bagsImg, link: "/services/corporate-gifting/bags", price: 80 },
+    { name: "Duo Sets", image: "duo-sets.png", link: "/services/corporate-gifting/duo-sets", price: 100 },
+    { name: "Festive Hampers", image: "festive-hampers.jpg", link: "/services/corporate-gifting/festive-hampers", price: 150 },
+    { name: "Welcome Kits", image: "welcome-kits.png", link: "/services/corporate-gifting/welcome-kits", price: 200 },
+    { name: "Drinkware", image: "drinkware.png", link: "/services/corporate-gifting/drinkware", price: 50 },
+    { name: "Bags", image: "laptop-bag.png", link: "/services/corporate-gifting/bags", price: 80 },
   ],
 };
 
@@ -192,12 +161,10 @@ const Services = ({ addToCart }) => {
                 <div className="service-card" key={idx}>
                   <Link to={item.link}>
                     <img
-                      src={item.image}
+                      src={getCdnImage(item.image, { width: 400, height: 400 })}
                       alt={item.name}
                       className="service-image"
-                      loading="lazy"  // Add this
-                      width="400"
-                      height="400"
+                      loading="lazy"  
                     />
                     <p className="service-item-name">{item.name}</p>
                     <p className="service-item-price">₹{item.price}</p>
@@ -255,11 +222,9 @@ const Services = ({ addToCart }) => {
                 <div className="service-card" key={idx}>
                   <Link to={item.link}>
                     <img
-                      src={item.image}
+                      src={getCdnImage(item.image, { width: 400, height: 400 })}
                       alt={item.name}
                       className="service-image"
-                      width="400"
-                      height="400"
                       loading="lazy"
                     />
                     <p className="service-item-name">{item.name}</p>

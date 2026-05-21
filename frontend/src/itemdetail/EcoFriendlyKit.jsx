@@ -38,47 +38,30 @@ import {
   Build,
   VerifiedUser,
 } from "@mui/icons-material";
+import { getCdnImage } from "../utils/imageLoader";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
 import { motion } from "framer-motion";
 
-// ========== MAIN KIT IMAGE ==========
-import ecoFriendlyKitImg from "../assets/eco-kit-1.png";
-
-// ========== EXTRA ANGLES (generate with DALL·E prompts below) ==========
-import extraImg1 from "../assets/eco-kit-2.png";
-import extraImg2 from "../assets/eco-kit-3.png";
-import extraImg3 from "../assets/eco-kit-4.png";
-// import extraImg4 from "../assets/eco-kit-4-packaging.png";
-// import extraImg5 from "../assets/eco-kit-5-closeup.png";
-
-// ========== INCLUDED ITEMS ==========
-import ecoKraftCoverDiaryImg from "../assets/eco-kraft-cover-diaries.png";
-import kraftPenImg from "../assets/kraft-pen.png";
-import pureCopperBottleImg from "../assets/pure-copper-bottle.png";
-import a5StickerSheetImg from "../assets/sticker.png";
-import thankYouCardImg from "../assets/thank-you-card.png";
-
-// ========== TESTIMONIALS ==========
 const testimonials = [
   {
     name: "Neha Gupta",
-    role: "Sustainability Head, GreenFuture Ltd",
-    avatar: "https://randomuser.me/api/portraits/women/7.jpg",
+    role: "Sustainability Head, Plantypoint",
+    avatar: "testimonial-neha-g.png", 
     text: "The Eco-Friendly Kit aligns perfectly with our green initiatives. High quality, sustainable, and beautifully packaged.",
     rating: 5,
   },
   {
     name: "Rohan Desai",
-    role: "CSR Manager, EcoCorp",
-    avatar: "https://randomuser.me/api/portraits/men/8.jpg",
+    role: "Manager, SilexPrint",
+    avatar: "testimonial-rohan.jpg", // Updated to ImageKit path
     text: "Our team loved the copper bottle and kraft diary. A thoughtful, planet‑friendly gift.",
     rating: 5,
   },
   {
     name: "Ananya Sharma",
-    role: "Founder, ZeroWaste Store",
-    avatar: "https://randomuser.me/api/portraits/women/9.jpg",
+    role: "Founder, Crestvibe",
+    avatar: "testimonial-ananya.png", // Updated to ImageKit path
     text: "The plantable thank you card was a delightful surprise. Highly recommended for eco-conscious brands.",
     rating: 4,
   },
@@ -86,52 +69,55 @@ const testimonials = [
 
 const EcoFriendlyKit = ({ addToCart }) => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [mainImage, setMainImage] = useState(ecoFriendlyKitImg);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [lightboxOpen, setLightboxOpen] = useState(false);
-  const [lightboxIndex, setLightboxIndex] = useState(0);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   const kitDetails = {
     name: "Eco-Friendly Kit",
-    image: ecoFriendlyKitImg,
     price: 2000,
     description:
       "Sustainable and environmentally conscious products designed for eco-friendly corporate gifting and personal use.",
     items: [
       {
         name: "Eco Kraft Cover Diary",
-        image: ecoKraftCoverDiaryImg,
+        image: "eco-kraft-cover-diaries.png",
         description: "Recycled paper notebook with kraft cover",
         price: 400,
       },
       {
         name: "Kraft Pen",
-        image: kraftPenImg,
+        image: "kraft-pen.png",
         description: "Biodegradable pen with sustainable materials",
         price: 150,
       },
       {
         name: "Pure Copper Water Bottle",
-        image: pureCopperBottleImg,
+        image: "pure-copper-bottle.png",
         description: "Chemical-free copper bottle with natural benefits",
         price: 900,
       },
       {
         name: "A5 Sticker Sheet",
-        image: a5StickerSheetImg,
+        image: "sticker.png",
         description: "Eco-friendly adhesive stickers",
         price: 100,
       },
       {
         name: "Thank You Card",
-        image: thankYouCardImg,
+        image: "thank-you-card.png",
         description: "Recycled paper with plantable seed option",
         price: 50,
       },
     ],
     tags: ["Sustainable", "Eco-Conscious", "Green", "Recycled"],
-    extraImages: [extraImg1, extraImg2, extraImg3],
+    images: [
+      "eco-kit-1.png",
+      "eco-kit-2.png",
+      "eco-kit-3.png",
+      "eco-kit-4.png"
+    ],
     highlights: [
       {
         icon: "🌱",
@@ -171,11 +157,12 @@ const EcoFriendlyKit = ({ addToCart }) => {
     warranty: "1 year against manufacturing defects",
   };
 
-  const allImages = [kitDetails.image, ...kitDetails.extraImages];
-
   const handleAddToCart = () => {
     addToCart({
-      ...kitDetails,
+      name: kitDetails.name,
+      image: getCdnImage(kitDetails.images[0], { width: 150, height: 150 }),
+      description: kitDetails.description,
+      price: kitDetails.price,
       type: "Eco-Friendly Kit",
     });
     setSnackbarOpen(true);
@@ -183,15 +170,6 @@ const EcoFriendlyKit = ({ addToCart }) => {
 
   const handleCloseSnackbar = () => {
     setSnackbarOpen(false);
-  };
-
-  const openLightbox = (index) => {
-    setLightboxIndex(index);
-    setLightboxOpen(true);
-  };
-
-  const closeLightbox = () => {
-    setLightboxOpen(false);
   };
 
   return (
@@ -281,7 +259,7 @@ const EcoFriendlyKit = ({ addToCart }) => {
 
             {/* Main Image with Zoom */}
             <Box
-              onClick={() => openLightbox(allImages.indexOf(mainImage))}
+              onClick={() => setLightboxOpen(true)}
               sx={{ cursor: "pointer" }}
             >
               <Zoom zoomMargin={40}>
@@ -294,15 +272,16 @@ const EcoFriendlyKit = ({ addToCart }) => {
                   }}
                 >
                   <img
-                    src={mainImage}
-                    alt={kitDetails.name}
+                    src={getCdnImage(kitDetails.images[activeImageIndex], { width: 600, height: 450 })}
+                    alt={`${kitDetails.name} primary view`}
+                    width="600"
+                    height="450"
                     style={{
                       width: "100%",
                       height: "auto",
                       maxHeight: "500px",
                       objectFit: "contain",
                       display: "block",
-                      pointerEvents: "none",
                     }}
                   />
                 </Box>
@@ -320,24 +299,27 @@ const EcoFriendlyKit = ({ addToCart }) => {
                 scrollbarWidth: "none",
               }}
             >
-              {allImages.map((img, idx) => (
+              {kitDetails.images.map((imageName, idx) => (
                 <Paper
                   key={idx}
-                  onClick={() => setMainImage(img)}
+                  onClick={() => setActiveImageIndex(idx)}
                   sx={{
                     p: 1,
                     borderRadius: 2,
                     cursor: "pointer",
                     border:
-                      mainImage === img ? "2px solid #70CB97" : "1px solid #e2e8f0",
+                      activeImageIndex === idx ? "2px solid #70CB97" : "1px solid #e2e8f0",
                     "&:hover": { border: "2px solid #70CB97" },
                     flexShrink: 0,
                     transition: "all 0.2s",
                   }}
                 >
                   <img
-                    src={img}
-                    alt={`view ${idx + 1}`}
+                    src={getCdnImage(imageName, { width: 80, height: 80 })}
+                    alt={`${kitDetails.name} thumbnail view ${idx + 1}`}
+                    width="80"
+                    height="80"
+                    loading="lazy"
                     style={{
                       width: "80px",
                       height: "80px",
@@ -349,10 +331,10 @@ const EcoFriendlyKit = ({ addToCart }) => {
               ))}
             </Box>
 
-            {/* Lightbox Dialog - Fixed */}
+            {/* Lightbox Dialog */}
             <Dialog
               open={lightboxOpen}
-              onClose={closeLightbox}
+              onClose={() => setLightboxOpen(false)}
               maxWidth="lg"
               fullWidth
               scroll="paper"
@@ -375,7 +357,7 @@ const EcoFriendlyKit = ({ addToCart }) => {
                 }}
               >
                 <MuiIconButton
-                  onClick={closeLightbox}
+                  onClick={() => setLightboxOpen(false)}
                   sx={{
                     position: "absolute",
                     top: 16,
@@ -389,8 +371,8 @@ const EcoFriendlyKit = ({ addToCart }) => {
                   <Close />
                 </MuiIconButton>
                 <img
-                  src={allImages[lightboxIndex]}
-                  alt="Full size"
+                  src={getCdnImage(kitDetails.images[activeImageIndex], { width: 1000, height: 750 })}
+                  alt="Full size display"
                   style={{
                     maxWidth: "90%",
                     maxHeight: "80vh",
@@ -532,9 +514,9 @@ const EcoFriendlyKit = ({ addToCart }) => {
                       >
                         <CardMedia
                           component="img"
-                          image={item.image}
+                          image={getCdnImage(item.image, { width: 120, height: 100 })}
                           alt={item.name}
-                          sx={{
+                          style={{
                             width: "auto",
                             maxWidth: "100%",
                             height: "70%",
@@ -667,7 +649,10 @@ const EcoFriendlyKit = ({ addToCart }) => {
                 }}
               >
                 <Stack direction="row" spacing={2} alignItems="center" mb={2}>
-                  <Avatar src={t.avatar} sx={{ width: 56, height: 56 }} />
+                  <Avatar 
+                    src={getCdnImage(t.avatar, { width: 56, height: 56 })} 
+                    sx={{ width: 56, height: 56 }} 
+                  />
                   <Box>
                     <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
                       {t.name}

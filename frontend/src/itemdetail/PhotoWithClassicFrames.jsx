@@ -19,15 +19,9 @@ import {
   WorkspacePremium,
   AutoAwesome,
 } from "@mui/icons-material";
+import { getCdnImage } from "../utils/imageLoader";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
-
-// Import your frame images – replace with real variants
-import photoWithClassicFrameImg from "../assets/photo-with-classic-frame.png";
-import photoWithClassicFrameImg2 from "../assets/photo-with-classic-frame-1.png";
-import photoWithClassicFrameImg3 from "../assets/photo-with-classic-frame-2.png";
-import photoWithClassicFrameImg4 from "../assets/photo-with-classic-frame-3.png";
-import photoWithClassicFrameImg5 from "../assets/photo-with-classic-frame-4.png";
 
 const PhotoWithClassicFrames = ({ addToCart }) => {
   // Frame styles
@@ -58,34 +52,37 @@ const PhotoWithClassicFrames = ({ addToCart }) => {
     { name: "Matte Coated Paper", desc: "Smooth, sharp, non-glossy" },
   ];
 
-  // Product features (for specifications panel)
-  const productFeatures = [
-    "High-quality synthetic frame (0.68\" thickness)",
-    "MDF wood base for durability and stability",
-    "Clear acrylic protection shields your photo",
-    "Available in 10+ elegant frame finishes",
-    "Comes with both desktop stand and wall hooks",
-    "Premium archival-grade print materials",
-    "Ready to hang or display on any surface",
-  ];
+  const productDetails = {
+    name: "Classic Photo Frames",
+    description:
+      "Capture and celebrate your cherished moments with our high-quality synthetic frames (0.68\" thickness). Featuring an MDF wood base and clear acrylic protection.",
+    features: [
+      "High-quality synthetic frame (0.68\" thickness)",
+      "MDF wood base for durability and stability",
+      "Clear acrylic protection shields your photo",
+      "Available in 10+ elegant frame finishes",
+      "Comes with both desktop stand and wall hooks",
+      "Premium archival-grade print materials",
+      "Ready to hang or display on any surface",
+    ],
+    images: [
+      "photo-with-classic-frame.png",
+      "photo-with-classic-frame-1.png",
+      "photo-with-classic-frame-2.png",
+      "photo-with-classic-frame-3.png",
+      "photo-with-classic-frame-4.png"
+    ],
+  };
 
   // State
   const [selectedSize, setSelectedSize] = useState(sizeOptions[1]);
   const [selectedStyle, setSelectedStyle] = useState(frameStyles[2]); // Sleek Black
   const [selectedMaterial, setSelectedMaterial] = useState(printMaterials[1]);
   const [orientation, setOrientation] = useState("Portrait");
-  const [mainImage, setMainImage] = useState(photoWithClassicFrameImg);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   const totalPrice = selectedSize.price;
-
-  const thumbnailImages = [
-    photoWithClassicFrameImg,
-    photoWithClassicFrameImg2,
-    photoWithClassicFrameImg3,
-    photoWithClassicFrameImg4,
-    photoWithClassicFrameImg5,
-  ];
 
   const handleAddToCart = () => {
     const item = {
@@ -96,7 +93,7 @@ const PhotoWithClassicFrames = ({ addToCart }) => {
       orientation: orientation,
       price: totalPrice,
       quantity: 1,
-      image: mainImage,
+      image: getCdnImage(productDetails.images[0], { width: 150, height: 150 }),
     };
     addToCart(item);
     setSnackbarOpen(true);
@@ -161,8 +158,10 @@ const PhotoWithClassicFrames = ({ addToCart }) => {
 
             <Zoom>
               <img
-                src={mainImage}
-                alt="Classic Frame Preview"
+                src={getCdnImage(productDetails.images[activeImageIndex], { width: 600, height: 450 })}
+                alt={`${productDetails.name} primary view`}
+                width="600"
+                height="450"
                 style={{
                   width: "100%",
                   borderRadius: "12px",
@@ -181,26 +180,30 @@ const PhotoWithClassicFrames = ({ addToCart }) => {
                 mt: 2,
                 overflowX: "auto",
                 "&::-webkit-scrollbar": { display: "none" },
+                scrollbarWidth: "none",
               }}
             >
-              {thumbnailImages.map((image, index) => (
+              {productDetails.images.map((imageName, index) => (
                 <Paper
                   key={index}
-                  onClick={() => setMainImage(image)}
+                  onClick={() => setActiveImageIndex(index)}
                   sx={{
                     p: 1,
                     borderRadius: "12px",
                     cursor: "pointer",
                     border:
-                      mainImage === image ? "2px solid #70CB97" : "1px solid #e0e7ed",
+                      activeImageIndex === index ? "2px solid #70CB97" : "1px solid #e0e7ed",
                     flexShrink: 0,
                     transition: "all 0.2s",
                     "&:hover": { transform: "translateY(-2px)" },
                   }}
                 >
                   <img
-                    src={image}
-                    alt={`View ${index + 1}`}
+                    src={getCdnImage(imageName, { width: 80, height: 80 })}
+                    alt={`${productDetails.name} thumbnail view ${index + 1}`}
+                    width="80"
+                    height="80"
+                    loading="lazy"
                     style={{
                       width: "80px",
                       height: "80px",
@@ -225,7 +228,7 @@ const PhotoWithClassicFrames = ({ addToCart }) => {
               fontSize: { xs: "1.8rem", md: "2.5rem" },
             }}
           >
-            Classic Photo Frames
+            {productDetails.name}
           </Typography>
 
           <Box sx={{ display: "flex", alignItems: "baseline", gap: 2, flexWrap: "wrap", mb: 1 }}>
@@ -238,19 +241,20 @@ const PhotoWithClassicFrames = ({ addToCart }) => {
           </Box>
 
           <Typography variant="body1" sx={{ mb: 3, color: "#1e2a32", lineHeight: 1.6 }}>
-            Capture and celebrate your cherished moments with our high-quality synthetic frames (0.68"
-            thickness). Featuring an MDF wood base and clear acrylic protection.
+            {productDetails.description}
           </Typography>
 
           <Divider sx={{ mb: 3 }} />
 
-          {/* Orientation Selection (pill‑shaped) */}
+          {/* Orientation Selection */}
           <Typography
             variant="h6"
             sx={{ fontWeight: 600, mb: 2, color: "#19485D", fontSize: "1.1rem" }}
           >
             <CropRotate sx={{ mr: 1, verticalAlign: "middle" }} /> Select Orientation
           </Typography>
+          
+          {/* FIXED: added missing sx property wrapper here */}
           <Box sx={{ display: "flex", gap: 2, mb: 4 }}>
             {["Portrait", "Landscape"].map((o) => (
               <Paper
@@ -278,7 +282,7 @@ const PhotoWithClassicFrames = ({ addToCart }) => {
             ))}
           </Box>
 
-          {/* Frame Size (pill‑shaped) */}
+          {/* Frame Size */}
           <Typography
             variant="h6"
             sx={{ fontWeight: 600, mb: 2, color: "#19485D", fontSize: "1.1rem" }}
@@ -317,7 +321,7 @@ const PhotoWithClassicFrames = ({ addToCart }) => {
             ))}
           </Box>
 
-          {/* Frame Style (pill‑shaped chips) */}
+          {/* Frame Style */}
           <Typography
             variant="h6"
             sx={{ fontWeight: 600, mb: 2, color: "#19485D", fontSize: "1.1rem" }}
@@ -347,7 +351,7 @@ const PhotoWithClassicFrames = ({ addToCart }) => {
             ))}
           </Box>
 
-          {/* Print Material (pill‑shaped) */}
+          {/* Print Material */}
           <Typography
             variant="h6"
             sx={{ fontWeight: 600, mb: 2, color: "#19485D", fontSize: "1.1rem" }}
@@ -400,7 +404,7 @@ const PhotoWithClassicFrames = ({ addToCart }) => {
             <Typography variant="subtitle1" sx={{ fontWeight: 700, mb: 2, color: "#19485D" }}>
               Frame Specifications:
             </Typography>
-            {productFeatures.map((feature, i) => (
+            {productDetails.features.map((feature, i) => (
               <Box key={i} sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
                 <Inventory sx={{ fontSize: 16, color: "#70CB97" }} />
                 <Typography variant="body2" sx={{ color: "#5a6e7a" }}>
@@ -443,6 +447,7 @@ const PhotoWithClassicFrames = ({ addToCart }) => {
         </Grid>
       </Grid>
 
+      {/* Snackbar */}
       <Snackbar
         open={snackbarOpen}
         autoHideDuration={3000}

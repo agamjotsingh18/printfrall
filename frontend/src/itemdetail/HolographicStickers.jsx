@@ -19,15 +19,9 @@ import {
   WaterDrop,
   PlayCircle,
 } from "@mui/icons-material";
+import { getCdnImage } from "../utils/imageLoader";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
-
-// Import your actual holographic sticker assets
-import holographicStickersImg from "../assets/holographic-stickers.png";
-import holographicStickersImg2 from "../assets/holographic-stickers-1.png";
-import holographicStickersImg3 from "../assets/holographic-stickers-2.png";
-import holographicStickersImg4 from "../assets/holographic-stickers-3.png";
-import holographicVideo from "../assets/holographic-stickers-demo.mp4";
 
 const HolographicStickers = ({ addToCart }) => {
   // Price mapping for rainbow-effect vinyl range
@@ -50,7 +44,7 @@ const HolographicStickers = ({ addToCart }) => {
 
   const [selectedMaterial, setSelectedMaterial] = useState("Standard Holographic");
   const [selectedShape, setSelectedShape] = useState("Circle");
-  const [mainMedia, setMainMedia] = useState({ type: "image", url: holographicStickersImg });
+  const [mainMedia, setMainMedia] = useState({ type: "image", index: 0 });
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   const unitPrice = priceMapping[selectedMaterial];
@@ -70,20 +64,20 @@ const HolographicStickers = ({ addToCart }) => {
       "Ideal for laptops, water bottles, branding, and personal style",
       "Order as low as 50 units for premium shimmering statements",
     ],
+    images: [
+      "holographic-stickers.png",
+      "holographic-stickers-1.png",
+      "holographic-stickers-2.png",
+      "holographic-stickers-3.png"
+    ],
+    video: "holographic-stickers-demo.mp4",
     tags: ["Rainbow Effect", "Waterproof", "Glossy Finish"],
   };
-
-  const thumbnailImages = [
-    holographicStickersImg,
-    holographicStickersImg2,
-    holographicStickersImg3,
-    holographicStickersImg4,
-  ];
 
   const handleAddToCart = () => {
     const item = {
       name: productDetails.name,
-      image: mainMedia.type === "image" ? mainMedia.url : holographicStickersImg,
+      image: getCdnImage(productDetails.images[0], { width: 150, height: 150 }),
       description: productDetails.description,
       selectedMaterial,
       selectedShape,
@@ -154,8 +148,10 @@ const HolographicStickers = ({ addToCart }) => {
             {mainMedia.type === "image" ? (
               <Zoom>
                 <img
-                  src={mainMedia.url}
-                  alt={productDetails.name}
+                  src={getCdnImage(productDetails.images[mainMedia.index], { width: 600, height: 450 })}
+                  alt={`${productDetails.name} view ${mainMedia.index + 1}`}
+                  width="600"
+                  height="450"
                   style={{
                     width: "100%",
                     borderRadius: "12px",
@@ -167,7 +163,7 @@ const HolographicStickers = ({ addToCart }) => {
               </Zoom>
             ) : (
               <video
-                src={mainMedia.url}
+                src={getCdnImage(productDetails.video)}
                 controls
                 autoPlay
                 muted
@@ -190,17 +186,18 @@ const HolographicStickers = ({ addToCart }) => {
                 mt: 2,
                 overflowX: "auto",
                 "&::-webkit-scrollbar": { display: "none" },
+                scrollbarWidth: "none",
               }}
             >
               {/* Video Thumbnail */}
               <Paper
-                onClick={() => setMainMedia({ type: "video", url: holographicVideo })}
+                onClick={() => setMainMedia({ type: "video", index: -1 })}
                 sx={{
                   p: 1,
                   borderRadius: "12px",
                   cursor: "pointer",
                   border:
-                    mainMedia.url === holographicVideo
+                    mainMedia.type === "video"
                       ? "2px solid #70CB97"
                       : "1px solid #e0e7ed",
                   position: "relative",
@@ -224,24 +221,29 @@ const HolographicStickers = ({ addToCart }) => {
               </Paper>
 
               {/* Image Thumbnails */}
-              {thumbnailImages.map((img, index) => (
+              {productDetails.images.map((imageName, index) => (
                 <Paper
                   key={index}
-                  onClick={() => setMainMedia({ type: "image", url: img })}
+                  onClick={() => setMainMedia({ type: "image", index: index })}
                   sx={{
                     p: 1,
                     borderRadius: "12px",
                     cursor: "pointer",
                     border:
-                      mainMedia.url === img ? "2px solid #70CB97" : "1px solid #e0e7ed",
+                      mainMedia.type === "image" && mainMedia.index === index
+                        ? "2px solid #70CB97"
+                        : "1px solid #e0e7ed",
                     flexShrink: 0,
                     transition: "all 0.2s",
                     "&:hover": { transform: "translateY(-2px)" },
                   }}
                 >
                   <img
-                    src={img}
-                    alt={`View ${index + 1}`}
+                    src={getCdnImage(imageName, { width: 80, height: 80 })}
+                    alt={`${productDetails.name} thumbnail view ${index + 1}`}
+                    width="80"
+                    height="80"
+                    loading="lazy"
                     style={{ width: "80px", height: "80px", objectFit: "cover", borderRadius: "8px" }}
                   />
                 </Paper>

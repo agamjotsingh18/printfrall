@@ -19,14 +19,9 @@ import {
   Timer,
   AutoAwesome,
 } from "@mui/icons-material";
+import { getCdnImage } from "../utils/imageLoader";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
-
-// Asset paths
-import standardBusinessCardImg from "../assets/standard-business-card.png";
-import standardBusinessCardImg2 from "../assets/standard-business-card-1.png";
-import standardBusinessCardImg3 from "../assets/standard-business-card-2.png";
-import standardBusinessCardImg4 from "../assets/standard-business-card-3.jpg";
 
 const StandardBusinessCard = ({ addToCart }) => {
   const paperOptions = [
@@ -40,7 +35,7 @@ const StandardBusinessCard = ({ addToCart }) => {
     { label: "Glossy Lamination", extra: 50 },
   ];
 
-  const cardDetails = {
+  const productDetails = {
     name: "Standard Business Cards",
     description:
       "Clean, polished, and versatile—perfect for everyday interactions. Our cards use premium Lykam coated paper to ensure a professional look that clearly communicates your contact details.",
@@ -53,33 +48,32 @@ const StandardBusinessCard = ({ addToCart }) => {
       "Same‑day ready production for quick turnarounds",
       "Ideal for professionals, startups, and corporate teams",
     ],
+    images: [
+      "standard-business-card.png",
+      "standard-business-card-1.png",
+      "standard-business-card-2.png",
+      "standard-business-card-3.jpg"
+    ],
     tags: ["300 GSM", "Same Day Ready", "Premium Lykam"],
   };
 
   const [selectedPaper, setSelectedPaper] = useState(paperOptions[0]);
   const [selectedLamination, setSelectedLamination] = useState(laminationOptions[0]);
-  const [mainImage, setMainImage] = useState(standardBusinessCardImg);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   const totalPrice = selectedPaper.price + selectedLamination.extra;
   const moq = 50;
 
-  const thumbnailImages = [
-    standardBusinessCardImg,
-    standardBusinessCardImg2,
-    standardBusinessCardImg3,
-    standardBusinessCardImg4,
-  ];
-
   const handleAddToCart = () => {
     const item = {
-      name: cardDetails.name,
+      name: productDetails.name,
       size: "3.5 x 2 inches",
       material: selectedPaper.name,
       lamination: selectedLamination.label,
       price: totalPrice,
       quantity: moq,
-      image: mainImage,
+      image: getCdnImage(productDetails.images[0], { width: 150, height: 150 }),
     };
     addToCart(item);
     setSnackbarOpen(true);
@@ -109,7 +103,7 @@ const StandardBusinessCard = ({ addToCart }) => {
           >
             {/* Chips inside flex row (no absolute positioning) */}
             <Box sx={{ display: "flex", gap: 1, mb: 2 }}>
-              {cardDetails.tags.map((tag, idx) => (
+              {productDetails.tags.map((tag, idx) => (
                 <Chip
                   key={idx}
                   label={tag}
@@ -135,8 +129,10 @@ const StandardBusinessCard = ({ addToCart }) => {
 
             <Zoom>
               <img
-                src={mainImage}
-                alt="Business Card Preview"
+                src={getCdnImage(productDetails.images[activeImageIndex], { width: 600, height: 450 })}
+                alt={`${productDetails.name} primary view`}
+                width="600"
+                height="450"
                 style={{
                   width: "100%",
                   borderRadius: "12px",
@@ -155,26 +151,30 @@ const StandardBusinessCard = ({ addToCart }) => {
                 mt: 2,
                 overflowX: "auto",
                 "&::-webkit-scrollbar": { display: "none" },
+                scrollbarWidth: "none",
               }}
             >
-              {thumbnailImages.map((img, idx) => (
+              {productDetails.images.map((imageName, idx) => (
                 <Paper
                   key={idx}
-                  onClick={() => setMainImage(img)}
+                  onClick={() => setActiveImageIndex(idx)}
                   sx={{
                     p: 1,
                     borderRadius: "10px",
                     cursor: "pointer",
                     border:
-                      mainImage === img ? "2px solid #70CB97" : "2px solid transparent",
+                      activeImageIndex === idx ? "2px solid #70CB97" : "2px solid transparent",
                     "&:hover": { border: "2px solid #70CB97" },
                     flexShrink: 0,
                     transition: "all 0.2s",
                   }}
                 >
                   <img
-                    src={img}
-                    alt={`view ${idx + 1}`}
+                    src={getCdnImage(imageName, { width: 90, height: 90 })}
+                    alt={`${productDetails.name} thumbnail view ${idx + 1}`}
+                    width="90"
+                    height="90"
+                    loading="lazy"
                     style={{
                       width: "90px",
                       height: "90px",
@@ -199,7 +199,7 @@ const StandardBusinessCard = ({ addToCart }) => {
               fontSize: { xs: "1.8rem", md: "2.5rem" },
             }}
           >
-            {cardDetails.name}
+            {productDetails.name}
           </Typography>
 
           <Typography
@@ -215,7 +215,7 @@ const StandardBusinessCard = ({ addToCart }) => {
           </Typography>
 
           <Typography variant="body1" sx={{ mb: 3, color: "#1e2a32", lineHeight: 1.6 }}>
-            {cardDetails.description}
+            {productDetails.description}
           </Typography>
 
           <Divider sx={{ mb: 3 }} />
@@ -239,7 +239,10 @@ const StandardBusinessCard = ({ addToCart }) => {
             {paperOptions.map((paper) => (
               <Paper
                 key={paper.name}
-                onClick={() => setSelectedPaper(paper)}
+                onClick={() => {
+                  setSelectedPaper(paper);
+                  setActiveImageIndex(0);
+                }}
                 sx={{
                   flex: 1,
                   p: 1.5,
@@ -319,7 +322,7 @@ const StandardBusinessCard = ({ addToCart }) => {
             <Typography variant="subtitle1" sx={{ fontWeight: 700, mb: 2, color: "#19485D" }}>
               Product Specifications:
             </Typography>
-            {cardDetails.features.map((feature, i) => (
+            {productDetails.features.map((feature, i) => (
               <Box key={i} sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
                 <span
                   style={{

@@ -11,16 +11,9 @@ import {
   Chip,
 } from "@mui/material";
 import { AddShoppingCart, Close, Star } from "@mui/icons-material";
+import { getCdnImage } from "../utils/imageLoader";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
-
-// ========== YOUR GENERATED AWARD IMAGES ==========
-import mainImg from "../assets/award-1-pedestal.png";
-import img2 from "../assets/award-2-tilted.png";
-import img3 from "../assets/award-3-set.png";
-import img4 from "../assets/award-4-ceremony.jpg";
-import img5 from "../assets/award-5-closeup.png";
-// ================================================
 
 const AwardsTrophies = ({ addToCart }) => {
   const priceMapping = {
@@ -35,12 +28,11 @@ const AwardsTrophies = ({ addToCart }) => {
 
   const [selectedSize, setSelectedSize] = useState(defaultSize);
   const [selectedMaterial, setSelectedMaterial] = useState(defaultMaterial);
-  const [mainImage, setMainImage] = useState(mainImg);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   const awardDetails = {
     name: "Premium Corporate Awards & Trophies",
-    image: mainImg,
     description:
       "Elegant and prestigious awards and trophies designed to recognize excellence. Perfect for corporate awards ceremonies, employee recognition, and achievement celebrations.",
     features: [
@@ -53,7 +45,13 @@ const AwardsTrophies = ({ addToCart }) => {
       "Bulk order discounts",
     ],
     sizes: ["Small (15cm)", "Medium (25cm)", "Large (35cm)"],
-    extraImages: [img2, img3, img4, img5],
+    images: [
+      "award-1-pedestal.png",
+      "award-2-tilted.png",
+      "award-3-set.png",
+      "award-4-ceremony.jpg",
+      "award-5-closeup.png"
+    ],
     tags: ["Prestige", "Customizable", "Recognition"],
   };
 
@@ -61,7 +59,9 @@ const AwardsTrophies = ({ addToCart }) => {
 
   const handleAddToCart = () => {
     const item = {
-      ...awardDetails,
+      name: awardDetails.name,
+      image: getCdnImage(awardDetails.images[0], { width: 150, height: 150 }),
+      description: awardDetails.description,
       selectedSize,
       selectedMaterial,
       price,
@@ -112,8 +112,10 @@ const AwardsTrophies = ({ addToCart }) => {
 
             <Zoom>
               <img
-                src={mainImage}
-                alt={awardDetails.name}
+                src={getCdnImage(awardDetails.images[activeImageIndex], { width: 600, height: 450 })}
+                alt={`${awardDetails.name} primary view`}
+                width="600"
+                height="450"
                 style={{
                   width: "100%",
                   borderRadius: "12px",
@@ -131,18 +133,19 @@ const AwardsTrophies = ({ addToCart }) => {
                 mt: 2,
                 overflowX: "auto",
                 "&::-webkit-scrollbar": { display: "none" },
+                scrollbarWidth: "none",
               }}
             >
-              {awardDetails.extraImages.map((img, idx) => (
+              {awardDetails.images.map((imageName, idx) => (
                 <Paper
                   key={idx}
-                  onClick={() => setMainImage(img)}
+                  onClick={() => setActiveImageIndex(idx)}
                   sx={{
                     p: 1,
                     borderRadius: "10px",
                     cursor: "pointer",
                     border:
-                      mainImage === img
+                      activeImageIndex === idx
                         ? "2px solid #70CB97"
                         : "2px solid transparent",
                     "&:hover": { border: "2px solid #70CB97" },
@@ -151,8 +154,11 @@ const AwardsTrophies = ({ addToCart }) => {
                   }}
                 >
                   <img
-                    src={img}
-                    alt={`view ${idx + 1}`}
+                    src={getCdnImage(imageName, { width: 90, height: 90 })}
+                    alt={`${awardDetails.name} thumbnail view ${idx + 1}`}
+                    width="90"
+                    height="90"
+                    loading="lazy"
                     style={{
                       width: "90px",
                       height: "90px",

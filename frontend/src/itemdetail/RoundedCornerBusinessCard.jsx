@@ -18,14 +18,9 @@ import {
   ChangeHistory,
   AutoAwesome,
 } from "@mui/icons-material";
+import { getCdnImage } from "../utils/imageLoader";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
-
-// Asset paths
-import roundedCornerBusinessCardImg from "../assets/rounded-corner-business-card.png";
-import roundedCornerBusinessCardImg2 from "../assets/rounded-corner-business-card-1.png";
-import roundedCornerBusinessCardImg3 from "../assets/rounded-corner-business-card-2.png";
-import roundedCornerBusinessCardImg4 from "../assets/rounded-corner-business-card-3.png";
 
 const RoundedCornerBusinessCard = ({ addToCart }) => {
   const paperStocks = [
@@ -47,22 +42,21 @@ const RoundedCornerBusinessCard = ({ addToCart }) => {
       "Same‑day delivery available in Mumbai & Kolkata (order before 12 PM)",
       "Ideal for creative professionals, startups, and luxury brands",
     ],
+    images: [
+      "rounded-corner-business-card.png",
+      "rounded-corner-business-card-1.png",
+      "rounded-corner-business-card-2.png",
+      "rounded-corner-business-card-3.png"
+    ],
     tags: ["0.6cm Radius", "Same Day Ready", "Modern Edge"],
   };
 
   const [selectedStock, setSelectedStock] = useState(paperStocks[0]);
-  const [mainImage, setMainImage] = useState(roundedCornerBusinessCardImg);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   const moq = 50;
   const totalPrice = selectedStock.price;
-
-  const thumbnailImages = [
-    roundedCornerBusinessCardImg,
-    roundedCornerBusinessCardImg2,
-    roundedCornerBusinessCardImg3,
-    roundedCornerBusinessCardImg4,
-  ];
 
   const handleAddToCart = () => {
     const item = {
@@ -72,7 +66,7 @@ const RoundedCornerBusinessCard = ({ addToCart }) => {
       material: selectedStock.name,
       price: totalPrice,
       quantity: moq,
-      image: mainImage,
+      image: getCdnImage(cardDetails.images[0], { width: 150, height: 150 }),
     };
     addToCart(item);
     setSnackbarOpen(true);
@@ -128,8 +122,10 @@ const RoundedCornerBusinessCard = ({ addToCart }) => {
 
             <Zoom>
               <img
-                src={mainImage}
-                alt="Rounded Corner Card Preview"
+                src={getCdnImage(cardDetails.images[activeImageIndex], { width: 600, height: 450 })}
+                alt={`${cardDetails.name} primary view`}
+                width="600"
+                height="450"
                 style={{
                   width: "100%",
                   borderRadius: "12px",
@@ -148,26 +144,30 @@ const RoundedCornerBusinessCard = ({ addToCart }) => {
                 mt: 2,
                 overflowX: "auto",
                 "&::-webkit-scrollbar": { display: "none" },
+                scrollbarWidth: "none",
               }}
             >
-              {thumbnailImages.map((img, idx) => (
+              {cardDetails.images.map((imageName, idx) => (
                 <Paper
                   key={idx}
-                  onClick={() => setMainImage(img)}
+                  onClick={() => setActiveImageIndex(idx)}
                   sx={{
                     p: 1,
                     borderRadius: "10px",
                     cursor: "pointer",
                     border:
-                      mainImage === img ? "2px solid #70CB97" : "2px solid transparent",
+                      activeImageIndex === idx ? "2px solid #70CB97" : "2px solid transparent",
                     "&:hover": { border: "2px solid #70CB97" },
                     flexShrink: 0,
                     transition: "all 0.2s",
                   }}
                 >
                   <img
-                    src={img}
-                    alt={`view ${idx + 1}`}
+                    src={getCdnImage(imageName, { width: 90, height: 90 })}
+                    alt={`${cardDetails.name} thumbnail view ${idx + 1}`}
+                    width="90"
+                    height="90"
+                    loading="lazy"
                     style={{
                       width: "90px",
                       height: "90px",
@@ -244,7 +244,10 @@ const RoundedCornerBusinessCard = ({ addToCart }) => {
             {paperStocks.map((stock) => (
               <Paper
                 key={stock.name}
-                onClick={() => setSelectedStock(stock)}
+                onClick={() => {
+                  setSelectedStock(stock);
+                  setActiveImageIndex(0);
+                }}
                 sx={{
                   flex: 1,
                   p: 1.5,

@@ -19,15 +19,9 @@ import {
   Inventory,
   AutoAwesome,
 } from "@mui/icons-material";
+import { getCdnImage } from "../utils/imageLoader";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
-
-// Asset paths kept exactly as requested
-import selfieBoothImg from "../assets/photo-selfie-booth.png";
-import selfieBoothImg2 from "../assets/photo-selfie-booth-1.png";
-import selfieBoothImg3 from "../assets/photo-selfie-booth-2.png";
-import selfieBoothImg4 from "../assets/photo-selfie-booth-3.png";
-import selfieBoothImg5 from "../assets/photo-selfie-booth-4.png";
 
 const PhotoSelfieBooth = ({ addToCart }) => {
   // Size options (Rectangle & Square)
@@ -41,42 +35,45 @@ const PhotoSelfieBooth = ({ addToCart }) => {
     { id: "36x36", label: "36 x 36 in", shape: "Square", price: 2950 },
   ];
 
-  // Product features (for specifications panel)
-  const productFeatures = [
-    "Made of sturdy 5mm white sun board – durable yet lightweight",
-    "Single‑sided high‑definition UV printing for vibrant graphics",
-    "Perfect for weddings, birthdays, graduations, and corporate events",
-    "Easy to assemble and designed for all‑day guest handling",
-    "Custom cut to any shape (square or rectangle) as per your size",
-    "Weather‑resistant finish suitable for indoor/outdoor use",
-    "Comes with a free easel stand for tabletop display",
-  ];
+  const productDetails = {
+    name: "Custom Selfie Photo Booth",
+    description:
+      "Personalize your event with a custom Selfie Photo Booth. Crafted from premium 5mm White Sun Board, these frames are a durable and fun addition to weddings, graduations, and corporate parties. High‑quality single‑sided printing ensures your brand or event details pop in every photo.",
+    features: [
+      "Made of sturdy 5mm white sun board – durable yet lightweight",
+      "Single‑sided high‑definition UV printing for vibrant graphics",
+      "Perfect for weddings, birthdays, graduations, and corporate events",
+      "Easy to assemble and designed for all‑day guest handling",
+      "Custom cut to any shape (square or rectangle) as per your size",
+      "Weather‑resistant finish suitable for indoor/outdoor use",
+      "Comes with a free easel stand for tabletop display",
+    ],
+    images: [
+      "photo-selfie-booth.png",
+      "photo-selfie-booth-1.png",
+      "photo-selfie-booth-2.png",
+      "photo-selfie-booth-3.png",
+      "photo-selfie-booth-4.png"
+    ],
+    tags: ["5MM SUN BOARD", "UV PRINT"]
+  };
 
   // State
   const [selectedSize, setSelectedSize] = useState(sizeOptions[1]); // Default 24x18
-  const [mainImage, setMainImage] = useState(selfieBoothImg);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   const totalPrice = selectedSize.price;
 
-  // Thumbnails array
-  const thumbnailImages = [
-    selfieBoothImg,
-    selfieBoothImg2,
-    selfieBoothImg3,
-    selfieBoothImg4,
-    selfieBoothImg5,
-  ];
-
   const handleAddToCart = () => {
     const item = {
-      name: "Custom Selfie Photo Booth",
+      name: productDetails.name,
       size: selectedSize.label,
       shape: selectedSize.shape,
       material: "5mm White Sun Board",
       price: totalPrice,
       quantity: 1,
-      image: mainImage,
+      image: getCdnImage(productDetails.images[0], { width: 150, height: 150 }),
     };
     addToCart(item);
     setSnackbarOpen(true);
@@ -141,8 +138,10 @@ const PhotoSelfieBooth = ({ addToCart }) => {
 
             <Zoom>
               <img
-                src={mainImage}
-                alt="Selfie Booth Preview"
+                src={getCdnImage(productDetails.images[activeImageIndex], { width: 600, height: 450 })}
+                alt={`${productDetails.name} primary view`}
+                width="600"
+                height="450"
                 style={{
                   width: "100%",
                   borderRadius: "12px",
@@ -160,26 +159,30 @@ const PhotoSelfieBooth = ({ addToCart }) => {
                 mt: 2,
                 overflowX: "auto",
                 "&::-webkit-scrollbar": { display: "none" },
+                scrollbarWidth: "none",
               }}
             >
-              {thumbnailImages.map((image, index) => (
+              {productDetails.images.map((imageName, index) => (
                 <Paper
                   key={index}
-                  onClick={() => setMainImage(image)}
+                  onClick={() => setActiveImageIndex(index)}
                   sx={{
                     p: 1,
                     borderRadius: "12px",
                     cursor: "pointer",
                     border:
-                      mainImage === image ? "2px solid #70CB97" : "1px solid #e0e7ed",
+                      activeImageIndex === index ? "2px solid #70CB97" : "1px solid #e0e7ed",
                     flexShrink: 0,
                     transition: "all 0.2s",
                     "&:hover": { transform: "translateY(-2px)" },
                   }}
                 >
                   <img
-                    src={image}
-                    alt={`View ${index + 1}`}
+                    src={getCdnImage(imageName, { width: 80, height: 80 })}
+                    alt={`${productDetails.name} thumbnail view ${index + 1}`}
+                    width="80"
+                    height="80"
+                    loading="lazy"
                     style={{
                       width: "80px",
                       height: "80px",
@@ -285,7 +288,7 @@ const PhotoSelfieBooth = ({ addToCart }) => {
             <Typography variant="subtitle1" sx={{ fontWeight: 700, mb: 2, color: "#19485D" }}>
               Key Features:
             </Typography>
-            {productFeatures.map((feature, i) => (
+            {productDetails.features.map((feature, i) => (
               <Box key={i} sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
                 <Inventory sx={{ fontSize: 16, color: "#70CB97" }} />
                 <Typography variant="body2" sx={{ color: "#5a6e7a" }}>

@@ -38,46 +38,40 @@ import {
   Build,
   VerifiedUser,
 } from "@mui/icons-material";
+import { getCdnImage } from "../utils/imageLoader";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
 import { motion } from "framer-motion";
 
-import mainImg from "../assets/premium-hamper.png";
-import extraImg1 from "../assets/premium-hamper-1.png";
-
-import classicLeatherComboImg from "../assets/classic-leather-combo.png";
-import giltRollerPenImg from "../assets/gilt-roller-pen.png";
-import infinityLaptopBagImg from "../assets/infinity-laptop-bag.png";
-import standardMugImg from "../assets/mug.png";
-
 const testimonials = [
-  { name: "Rahul Malhotra", role: "CEO, LuxeCorp", avatar: "https://randomuser.me/api/portraits/men/19.jpg", text: "The Premium Holi Hamper screams luxury. Every item is top‑notch. Our top clients were thrilled.", rating: 5 },
-  { name: "Sneha Kapoor", role: "Director, Elite Events", avatar: "https://randomuser.me/api/portraits/women/20.jpg", text: "The leather combo and pen are exquisite. Perfect for high‑end corporate gifting.", rating: 5 },
-  { name: "Vikram Singh", role: "Procurement Head, Global Inc.", avatar: "https://randomuser.me/api/portraits/men/21.jpg", text: "Worth every rupee. The laptop bag and mug are daily favourites in our office.", rating: 5 },
+  { name: "Rahul Malhotra", role: "CEO, LuxembCorp", avatar: "testimonial-rahul-m.png", text: "The Premium Holi Hamper screams luxury. Every item is top‑notch. Our top clients were thrilled.", rating: 5 },
+  { name: "Jasreen Kaur", role: "Director, EliteNorm Events", avatar: "testimonial-jasreen.png", text: "The leather combo and pen are exquisite. Perfect for high‑end corporate gifting.", rating: 5 },
+  { name: "Vikram Singh", role: "Procurement Head, Polkin Solutions", avatar: "testimonial-vikram-si.png", text: "Worth every rupee. The laptop bag and mug are daily favourites in our office.", rating: 5 },
 ];
 
 const PremiumHoliHamper = ({ addToCart }) => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [mainImage, setMainImage] = useState(mainImg);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [lightboxOpen, setLightboxOpen] = useState(false);
-  const [lightboxIndex, setLightboxIndex] = useState(0);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   const hamperDetails = {
     name: "Premium Holi Hamper",
-    image: mainImg,
     price: 2500,
     description:
       "Experience the ultimate luxury this Holi with our Premium Holi Hamper. Includes a classic leather combo (diary + pen + keychain), gilt roller pen, infinity laptop bag, and a custom mug – perfect for your most valued clients and executives.",
     items: [
-      { name: "Classic Leather Combo", image: classicLeatherComboImg, description: "Leather diary + pen + keychain", price: 899 },
-      { name: "Gilt Roller Ball Pen", image: giltRollerPenImg, description: "Luxury rollerball pen", price: 250 },
-      { name: "Infinity Laptop Bag", image: infinityLaptopBagImg, description: "Executive laptop backpack", price: 1600 },
-      { name: "Custom Standard Mug", image: standardMugImg, description: "Premium ceramic mug", price: 300 },
+      { name: "Classic Leather Combo", image: "classic-leather-combo.png", description: "Leather diary + pen + keychain", price: 899 },
+      { name: "Gilt Roller Ball Pen", image: "gilt-roller-pen.png", description: "Luxury rollerball pen", price: 250 },
+      { name: "Infinity Laptop Bag", image: "infinity-laptop-bag.png", description: "Executive laptop backpack", price: 1600 },
+      { name: "Custom Standard Mug", image: "mug.png", description: "Premium ceramic mug", price: 300 },
     ],
     tags: ["Luxury", "Executive", "Limited Edition"],
-    extraImages: [extraImg1],
+    images: [
+      "premium-hamper.png",
+      "premium-hamper-1.png"
+    ],
     highlights: [
       { icon: "👑", title: "Premium Quality", description: "Only the finest materials" },
       { icon: "💎", title: "Executive Appeal", description: "Designed for top‑tier clients" },
@@ -100,15 +94,20 @@ const PremiumHoliHamper = ({ addToCart }) => {
     warranty: "1 year against manufacturing defects",
   };
 
-  const allImages = [hamperDetails.image, ...hamperDetails.extraImages];
-
   const handleAddToCart = () => {
-    addToCart({ ...hamperDetails, type: "Premium Holi Hamper", quantity: 1 });
+    addToCart({
+      name: hamperDetails.name,
+      image: getCdnImage(hamperDetails.images[0], { width: 150, height: 150 }),
+      price: hamperDetails.price,
+      description: hamperDetails.description,
+      tags: hamperDetails.tags,
+      type: "Premium Holi Hamper",
+      quantity: 1,
+    });
     setSnackbarOpen(true);
   };
+  
   const handleCloseSnackbar = () => setSnackbarOpen(false);
-  const openLightbox = (index) => { setLightboxIndex(index); setLightboxOpen(true); };
-  const closeLightbox = () => setLightboxOpen(false);
 
   return (
     <Container maxWidth="xl" sx={{ py: 8, px: isMobile ? 2 : 4, backgroundColor: "#f8fafc" }}>
@@ -123,20 +122,41 @@ const PremiumHoliHamper = ({ addToCart }) => {
         <Grid item xs={12} md={6}>
           <Paper sx={{ p: 3, borderRadius: 4, boxShadow: "0px 20px 40px rgba(0,0,0,0.05)", bgcolor: "white", position: "relative" }}>
             <Chip label="Limited Edition" size="medium" sx={{ position: "absolute", top: 20, right: 20, zIndex: 2, fontWeight: 700, backgroundColor: "#70CB97", color: "white" }} />
-            <Box onClick={() => openLightbox(allImages.indexOf(mainImage))} sx={{ cursor: "pointer" }}>
-              <Zoom zoomMargin={40}><Box sx={{ borderRadius: 3, overflow: "hidden", boxShadow: "0 8px 24px rgba(0,0,0,0.1)", border: "1px solid #e2e8f0" }}><img src={mainImage} alt={hamperDetails.name} style={{ width: "100%", height: "auto", maxHeight: "500px", objectFit: "contain", display: "block", pointerEvents: "none" }} /></Box></Zoom>
+            <Box onClick={() => setLightboxOpen(true)} sx={{ cursor: "pointer" }}>
+              <Zoom zoomMargin={40}>
+                <Box sx={{ borderRadius: 3, overflow: "hidden", boxShadow: "0 8px 24px rgba(0,0,0,0.1)", border: "1px solid #e2e8f0" }}>
+                  <img
+                    src={getCdnImage(hamperDetails.images[activeImageIndex], { width: 600, height: 450 })}
+                    alt={`${hamperDetails.name} primary view`}
+                    width="600"
+                    height="450"
+                    style={{ width: "100%", height: "auto", maxHeight: "500px", objectFit: "contain", display: "block", pointerEvents: "none" }}
+                  />
+                </Box>
+              </Zoom>
             </Box>
-            <Box sx={{ display: "flex", gap: 2, mt: 3, overflowX: "auto" }}>
-              {allImages.map((img, idx) => (
-                <Paper key={idx} onClick={() => setMainImage(img)} sx={{ p: 1, borderRadius: 2, cursor: "pointer", border: mainImage === img ? "2px solid #70CB97" : "1px solid #e2e8f0", "&:hover": { border: "2px solid #70CB97" }, flexShrink: 0 }}>
-                  <img src={img} alt={`view ${idx + 1}`} style={{ width: "80px", height: "80px", borderRadius: "8px", objectFit: "cover" }} />
+            <Box sx={{ display: "flex", gap: 2, mt: 3, overflowX: "auto", scrollbarWidth: "none", "&::-webkit-scrollbar": { display: "none" } }}>
+              {hamperDetails.images.map((imageName, idx) => (
+                <Paper key={idx} onClick={() => setActiveImageIndex(idx)} sx={{ p: 1, borderRadius: 2, cursor: "pointer", border: activeImageIndex === idx ? "2px solid #70CB97" : "1px solid #e2e8f0", "&:hover": { border: "2px solid #70CB97" }, flexShrink: 0 }}>
+                  <img
+                    src={getCdnImage(imageName, { width: 80, height: 80 })}
+                    alt={`${hamperDetails.name} thumbnail view ${idx + 1}`}
+                    width="80"
+                    height="80"
+                    loading="lazy"
+                    style={{ width: "80px", height: "80px", borderRadius: "8px", objectFit: "cover" }}
+                  />
                 </Paper>
               ))}
             </Box>
-            <Dialog open={lightboxOpen} onClose={closeLightbox} maxWidth="lg" fullWidth PaperProps={{ sx: { bgcolor: "rgba(0,0,0,0.9)" } }}>
+            <Dialog open={lightboxOpen} onClose={() => setLightboxOpen(false)} maxWidth="lg" fullWidth PaperProps={{ sx: { bgcolor: "rgba(0,0,0,0.9)" } }}>
               <DialogContent sx={{ p: 0, position: "relative", minHeight: "60vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                <MuiIconButton onClick={closeLightbox} sx={{ position: "absolute", top: 16, right: 16, color: "white", bgcolor: "rgba(0,0,0,0.5)" }}><Close /></MuiIconButton>
-                <img src={allImages[lightboxIndex]} alt="Full size" style={{ maxWidth: "90%", maxHeight: "80vh", borderRadius: "8px" }} />
+                <MuiIconButton onClick={() => setLightboxOpen(false)} sx={{ position: "absolute", top: 16, right: 16, color: "white", bgcolor: "rgba(0,0,0,0.5)" }}><Close /></MuiIconButton>
+                <img
+                  src={getCdnImage(hamperDetails.images[activeImageIndex], { width: 1024, height: 768 })}
+                  alt={`${hamperDetails.name} full view`}
+                  style={{ maxWidth: "90%", maxHeight: "80vh", borderRadius: "8px" }}
+                />
               </DialogContent>
             </Dialog>
           </Paper>
@@ -164,7 +184,12 @@ const PremiumHoliHamper = ({ addToCart }) => {
                   <Grid item xs={6} sm={4} key={idx}>
                     <Card sx={{ height: "100%", display: "flex", flexDirection: "column", p: 2, borderRadius: 3, bgcolor: "#fff", border: "1px solid #e2e8f0", transition: "all 0.2s", "&:hover": { scale: 1.02 } }}>
                       <Box sx={{ width: "100%", height: "100px", display: "flex", alignItems: "center", justifyContent: "center", mb: 2, bgcolor: "#f8fafc", borderRadius: 2 }}>
-                        <CardMedia component="img" image={item.image} alt={item.name} sx={{ width: "auto", maxWidth: "100%", height: "70%", objectFit: "contain" }} />
+                        <CardMedia
+                          component="img"
+                          image={getCdnImage(item.image, { width: 120, height: 100 })}
+                          alt={`${item.name} custom infrastructure component preview`}
+                          sx={{ width: "auto", maxWidth: "100%", height: "70%", objectFit: "contain" }}
+                        />
                       </Box>
                       <CardContent sx={{ p: 0, flexGrow: 1 }}>
                         <Typography variant="subtitle2" sx={{ fontWeight: 700, color: "#19485D" }}>{item.name}</Typography>
@@ -194,7 +219,26 @@ const PremiumHoliHamper = ({ addToCart }) => {
 
       <Box sx={{ mt: 10, mb: 8 }}>
         <Typography variant="h3" sx={{ fontWeight: 800, mb: 5, textAlign: "center", color: "#19485D" }}>Trusted by Industry Leaders</Typography>
-        <Grid container spacing={4}>{testimonials.map((t, idx) => (<Grid item xs={12} md={4} key={idx}><Card sx={{ p: 3, borderRadius: 4, height: "100%", boxShadow: "0 8px 20px rgba(0,0,0,0.05)", border: "1px solid #e2e8f0" }}><Stack direction="row" spacing={2} alignItems="center" mb={2}><Avatar src={t.avatar} sx={{ width: 56, height: 56 }} /><Box><Typography variant="subtitle1" sx={{ fontWeight: 700 }}>{t.name}</Typography><Typography variant="body2" sx={{ color: "#64748b" }}>{t.role}</Typography></Box></Stack><Rating value={t.rating} readOnly sx={{ mb: 2, color: "#E7C727" }} /><Typography variant="body2" sx={{ fontStyle: "italic", color: "#334155" }}>“{t.text}”</Typography></Card></Grid>))}</Grid>
+        <Grid container spacing={4}>
+          {testimonials.map((t, idx) => (
+            <Grid item xs={12} md={4} key={idx}>
+              <Card sx={{ p: 3, borderRadius: 4, height: "100%", boxShadow: "0 8px 20px rgba(0,0,0,0.05)", border: "1px solid #e2e8f0" }}>
+                <Stack direction="row" spacing={2} alignItems="center" mb={2}>
+                  <Avatar 
+                    src={getCdnImage(t.avatar, { width: 56, height: 56 })} 
+                    sx={{ width: 56, height: 56 }} 
+                  />
+                  <Box>
+                    <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>{t.name}</Typography>
+                    <Typography variant="body2" sx={{ color: "#64748b" }}>{t.role}</Typography>
+                  </Box>
+                </Stack>
+                <Rating value={t.rating} readOnly sx={{ mb: 2, color: "#E7C727" }} />
+                <Typography variant="body2" sx={{ fontStyle: "italic", color: "#334155" }}>“{t.text}”</Typography>
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
       </Box>
 
       <Box sx={{ mt: 6, p: { xs: 4, md: 6 }, bgcolor: "white", borderRadius: 4, boxShadow: "0 8px 32px rgba(0,0,0,0.05)", border: "1px solid #e2e8f0" }}>

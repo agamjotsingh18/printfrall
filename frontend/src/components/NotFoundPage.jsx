@@ -17,7 +17,6 @@ const NotFoundPage = () => {
       }}
       aria-label="404 Page Not Found"
     >
-      {/* 404 Icon */}
       <ErrorOutlineIcon
         sx={{
           fontSize: "6rem",
@@ -28,7 +27,6 @@ const NotFoundPage = () => {
         aria-hidden="false"
       />
 
-      {/* Title */}
       <Typography
         variant="h4"
         sx={{
@@ -41,7 +39,6 @@ const NotFoundPage = () => {
         404 - Page Not Found
       </Typography>
 
-      {/* Subtitle */}
       <Typography
         variant="body1"
         sx={{
@@ -54,7 +51,6 @@ const NotFoundPage = () => {
         Oops! The page you're looking for doesn't exist. It might have been moved or deleted.
       </Typography>
 
-      {/* Go Home Button */}
       <Button
         component={Link}
         to="/"

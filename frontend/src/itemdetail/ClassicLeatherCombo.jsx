@@ -12,33 +12,17 @@ import {
   useMediaQuery
 } from "@mui/material";
 import { AddShoppingCart, Close, Star, Description, Create, VpnKey } from "@mui/icons-material";
+import { getCdnImage } from "../utils/imageLoader";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
 
-// ========== MAIN COMBO IMAGE ==========
-import mainImg from "../assets/classic-leather-combo.png";
-
-// ========== EXTRA ANGLES (generate with DALL·E prompts below) ==========
-import extraImg1 from "../assets/classic-leather-combo-angle1.png";   // Open box view
-import extraImg2 from "../assets/classic-leather-combo-angle2.png";   // All items laid out
-import extraImg3 from "../assets/classic-leather-combo-angle3.png";   // Diary open with pen
-import extraImg4 from "../assets/classic-leather-combo-angle4.png";   // Gift box closed
-// import extraImg5 from "../assets/classic-leather-combo-angle5.png";   // Close-up of logo on diary
-
-// Included items images (keep as is)
-import fauxLeatherDiaryImg from "../assets/faux-leather-diaries.png";
-import skatePenImg from "../assets/skate-ballpoint-pen.png";
-import keychainImg from "../assets/keychain.png";
-// =======================================================
-
 const ClassicLeatherCombo = ({ addToCart }) => {
   const isMobile = useMediaQuery('(max-width:600px)');
-  const [mainImage, setMainImage] = useState(mainImg);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   const productDetails = {
     name: "Classic Leather Combo",
-    image: mainImg,
     price: 899,
     originalPrice: 1099,
     description: "A sophisticated set featuring a faux leather diary, premium skate ballpoint pen, and elegant keychain - perfect for professionals who appreciate classic style.",
@@ -53,30 +37,39 @@ const ClassicLeatherCombo = ({ addToCart }) => {
     includedItems: [
       { 
         name: "Faux Leather Diary", 
-        image: fauxLeatherDiaryImg,
+        image: "faux-leather-diaries.png",
         price: 450,
         route: "/services/corporate-gifting/faux-leather-diaries"
       },
       { 
         name: "Skate Ballpoint Pen", 
-        image: skatePenImg,
+        image: "skate-ballpoint-pen.png",
         price: 299,
         route: "/services/corporate-gifting/skate-ballpoint-pen"
       },
       { 
         name: "Premium Keychain", 
-        image: keychainImg,
+        image: "keychain.png",
         price: 350,
         route: "/services/corporate-gifting/keychain"
       }
     ],
     tags: ["Classic", "Professional", "Luxury"],
-    extraImages: [extraImg1, extraImg2, extraImg3, extraImg4] // Array of extra angles
+    images: [
+      "classic-leather-combo.png",
+      "classic-leather-combo-angle1.png",
+      "classic-leather-combo-angle2.png",
+      "classic-leather-combo-angle3.png",
+      "classic-leather-combo-angle4.png"
+    ]
   };
 
   const handleAddToCart = () => {
     const item = {
-      ...productDetails,
+      name: productDetails.name,
+      image: getCdnImage(productDetails.images[0], { width: 150, height: 150 }),
+      description: productDetails.description,
+      price: productDetails.price,
       quantity: 1
     };
     addToCart(item);
@@ -143,8 +136,10 @@ const ClassicLeatherCombo = ({ addToCart }) => {
             {/* Main Image with Zoom */}
             <Zoom>
               <img
-                src={mainImage}
-                alt={productDetails.name}
+                src={getCdnImage(productDetails.images[activeImageIndex], { width: 600, height: 450 })}
+                alt={`${productDetails.name} primary view`}
+                width="600"
+                height="450"
                 style={{
                   width: "100%",
                   borderRadius: "12px",
@@ -155,7 +150,7 @@ const ClassicLeatherCombo = ({ addToCart }) => {
               />
             </Zoom>
 
-            {/* Thumbnail Gallery - Extra Images */}
+            {/* Thumbnail Gallery */}
             <Box
               sx={{
                 display: "flex",
@@ -166,23 +161,26 @@ const ClassicLeatherCombo = ({ addToCart }) => {
                 scrollbarWidth: "none",
               }}
             >
-              {productDetails.extraImages.map((img, idx) => (
+              {productDetails.images.map((imageName, idx) => (
                 <Paper
                   key={idx}
-                  onClick={() => setMainImage(img)}
+                  onClick={() => setActiveImageIndex(idx)}
                   sx={{
                     p: 1,
                     borderRadius: "10px",
                     cursor: "pointer",
-                    border: mainImage === img ? "2px solid #70CB97" : "2px solid transparent",
+                    border: activeImageIndex === idx ? "2px solid #70CB97" : "2px solid transparent",
                     "&:hover": { border: "2px solid #70CB97" },
                     flexShrink: 0,
                     transition: "all 0.2s",
                   }}
                 >
                   <img
-                    src={img}
-                    alt={`${productDetails.name} view ${idx + 1}`}
+                    src={getCdnImage(imageName, { width: 90, height: 90 })}
+                    alt={`${productDetails.name} thumbnail view ${idx + 1}`}
+                    width="90"
+                    height="90"
+                    loading="lazy"
                     style={{
                       width: "90px",
                       height: "90px",
@@ -196,7 +194,7 @@ const ClassicLeatherCombo = ({ addToCart }) => {
           </Paper>
         </Grid>
 
-        {/* Details Section (unchanged from previous update) */}
+        {/* Details Section */}
         <Grid item xs={12} md={6}>
           <Typography 
             variant="h4" 
@@ -323,8 +321,11 @@ const ClassicLeatherCombo = ({ addToCart }) => {
                     </Typography>
                   </Box>
                   <img 
-                    src={item.image} 
+                    src={getCdnImage(item.image, { width: 120, height: 100 })} 
                     alt={item.name} 
+                    width="120"
+                    height="100"
+                    loading="lazy"
                     style={{
                       width: "100%",
                       height: "100px",

@@ -18,17 +18,12 @@ import {
   WorkspacePremium,
   WaterDrop,
 } from "@mui/icons-material";
+import { getCdnImage } from "../utils/imageLoader";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
 
-// Import your actual white label images – replace with real variants if available
-import premiumWhiteLabelsImg from "../assets/premium-white-labels.png";
-import premiumWhiteLabelsImg3 from "../assets/premium-white-labels-1.png";
-import premiumWhiteLabelsImg4 from "../assets/premium-white-labels-2.png";
-import premiumWhiteLabelsImg5 from "../assets/premium-white-labels-3.png";
-
 const PremiumWhiteLabels = ({ addToCart }) => {
-  // Price mapping for high-quality  white range
+  // Price mapping for high-quality white range
   const priceMapping = {
     "Matte White ": 100,
     "Glossy White ": 120,
@@ -39,7 +34,7 @@ const PremiumWhiteLabels = ({ addToCart }) => {
 
   const [selectedMaterial, setSelectedMaterial] = useState("Matte White ");
   const [selectedShape, setSelectedShape] = useState("Circle");
-  const [mainImage, setMainImage] = useState(premiumWhiteLabelsImg);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   const unitPrice = priceMapping[selectedMaterial];
@@ -59,20 +54,19 @@ const PremiumWhiteLabels = ({ addToCart }) => {
       "Adhesion: Strong self-adhesive backing for reliable placement",
       "Low MOQ: Order from just 50 units",
     ],
+    images: [
+      "premium-white-labels.png",
+      "premium-white-labels-1.png",
+      "premium-white-labels-2.png",
+      "premium-white-labels-3.png"
+    ],
     tags: [" Material", "Sleek Finish", "Water Resistant"],
   };
-
-  const thumbnailImages = [
-    premiumWhiteLabelsImg,
-    premiumWhiteLabelsImg3,
-    premiumWhiteLabelsImg4,
-    premiumWhiteLabelsImg5,
-  ];
 
   const handleAddToCart = () => {
     const item = {
       name: productDetails.name,
-      image: mainImage,
+      image: getCdnImage(productDetails.images[0], { width: 150, height: 150 }),
       description: productDetails.description,
       selectedMaterial,
       selectedShape,
@@ -142,8 +136,10 @@ const PremiumWhiteLabels = ({ addToCart }) => {
 
             <Zoom>
               <img
-                src={mainImage}
-                alt={productDetails.name}
+                src={getCdnImage(productDetails.images[activeImageIndex], { width: 600, height: 450 })}
+                alt={`${productDetails.name} primary view`}
+                width="600"
+                height="450"
                 style={{
                   width: "100%",
                   borderRadius: "12px",
@@ -161,26 +157,30 @@ const PremiumWhiteLabels = ({ addToCart }) => {
                 mt: 2,
                 overflowX: "auto",
                 "&::-webkit-scrollbar": { display: "none" },
+                scrollbarWidth: "none",
               }}
             >
-              {thumbnailImages.map((image, index) => (
+              {productDetails.images.map((imageName, index) => (
                 <Paper
                   key={index}
-                  onClick={() => setMainImage(image)}
+                  onClick={() => setActiveImageIndex(index)}
                   sx={{
                     p: 1,
                     borderRadius: "12px",
                     cursor: "pointer",
                     border:
-                      mainImage === image ? "2px solid #70CB97" : "1px solid #e0e7ed",
+                      activeImageIndex === index ? "2px solid #70CB97" : "1px solid #e0e7ed",
                     flexShrink: 0,
                     transition: "all 0.2s",
                     "&:hover": { transform: "translateY(-2px)" },
                   }}
                 >
                   <img
-                    src={image}
-                    alt={`View ${index + 1}`}
+                    src={getCdnImage(imageName, { width: 80, height: 80 })}
+                    alt={`${productDetails.name} thumbnail view ${index + 1}`}
+                    width="80"
+                    height="80"
+                    loading="lazy"
                     style={{ width: "80px", height: "80px", objectFit: "cover", borderRadius: "8px" }}
                   />
                 </Paper>
@@ -221,7 +221,7 @@ const PremiumWhiteLabels = ({ addToCart }) => {
 
           <Divider sx={{ mb: 3 }} />
 
-          {/*  Finish Selection */}
+          {/* Finish Selection */}
           <Typography
             variant="h6"
             sx={{ fontWeight: 600, mb: 2, color: "#19485D", fontSize: "1.1rem" }}
@@ -232,7 +232,10 @@ const PremiumWhiteLabels = ({ addToCart }) => {
             {Object.keys(priceMapping).map((material) => (
               <Paper
                 key={material}
-                onClick={() => setSelectedMaterial(material)}
+                onClick={() => {
+                  setSelectedMaterial(material);
+                  setActiveImageIndex(0);
+                }}
                 sx={{
                   p: 1.5,
                   px: 3,

@@ -1,34 +1,35 @@
 import React, { useState } from 'react';
 import './CustomizableWelcomeKit.css';
+import { getCdnImage } from "../utils/imageLoader";
 
 const CustomizableWelcomeKit = () => {
   const [selectedItems, setSelectedItems] = useState([]);
 
   const categories = {
     Notebooks: [
-      { name: "Matte Finish Diaries", image: "matteFinishDiariesImg", link: "/matte-finish-diaries" },
-      { name: "Vintage Tan Diaries", image: "vintageTanDiariesImg", link: "/vintage-tan-diaries" },
-      { name: "Faux Leather Diaries", image: "fauxLeatherDiariesImg", link: "/faux-leather-diaries" },
-      { name: "Eco Kraft Cover Diaries", image: "ecoKraftCoverDiariesImg", link: "/eco-kraft-cover-diaries" },
+      { name: "Matte Finish Diaries", image: "matte-finish-diaries.png", link: "/matte-finish-diaries" },
+      { name: "Vintage Tan Diaries", image: "vintage-tan-diaries.png", link: "/vintage-tan-diaries" },
+      { name: "Faux Leather Diaries", image: "faux-leather-diaries.png", link: "/faux-leather-diaries" },
+      { name: "Eco Kraft Cover Diaries", image: "eco-kraft-cover-diaries.png", link: "/eco-kraft-cover-diaries" },
     ],
     Pens: [
-      { name: "Stylus Pen", image: "stylusPenImg", link: "/stylus-pen" },
-      { name: "Kraft Pen", image: "kraftPenImg", link: "/kraft-pen" },
-      { name: "Adroit Pen", image: "adroitPenImg", link: "/adroit-pen" },
-      { name: "Gilt Roller Ball Pen", image: "giltRollerPenImg", link: "/gilt-roller-pen" },
+      { name: "Stylus Pen", image: "stylus-pen.png", link: "/stylus-pen" },
+      { name: "Kraft Pen", image: "kraft-pen.png", link: "/kraft-pen" },
+      { name: "Adroit Pen", image: "adroit-pen.png", link: "/adroit-pen" },
+      { name: "Gilt Roller Ball Pen", image: "gilt-roller-pen.png", link: "/gilt-roller-pen" },
     ],
     Stickers: [
-      { name: "Matte Laminated Stickers", image: "matteLaminatedStickers", link: "/matte-laminated-stickers" },
-      { name: "Holographic Stickers", image: "holographicStickers", link: "/holographic-stickers" },
-      { name: "Gold Foiling Stickers", image: "goldFoilingStickers", link: "/gold-foiling-stickers" },
+      { name: "Matte Laminated Stickers", image: "matte-laminated-stickers.png", link: "/matte-laminated-stickers" },
+      { name: "Holographic Stickers", image: "holographic-stickers.png", link: "/holographic-stickers" },
+      { name: "Gold Foiling Stickers", image: "gold-foiling-stickers.png", link: "/gold-foiling-stickers" },
     ],
     Mugs: [
-      { name: "Standard Mug", image: "standardMugImg", link: "/standard-mug" },
-      { name: "Shimmer Dark Grey Mug", image: "shimmerMugImg", link: "/shimmer-mug" },
+      { name: "Standard Mug", image: "standard-mug.png", link: "/standard-mug" },
+      { name: "Shimmer Dark Grey Mug", image: "shimmer-dark-grey-mug.png", link: "/shimmer-mug" },
     ],
     "Laptop Bags": [
-      { name: "Apex Carry Laptop Bag", image: "apexLaptopBagImg", link: "/apex-laptop-bag" },
-      { name: "Elite Horizon Laptop Bag", image: "eliteLaptopBagImg", link: "/elite-laptop-bag" },
+      { name: "Apex Carry Laptop Bag", image: "apex-carry-laptop-bag.png", link: "/apex-laptop-bag" },
+      { name: "Elite Horizon Laptop Bag", image: "laptop-bag.png", link: "/elite-laptop-bag" },
     ],
   };
 
@@ -48,10 +49,11 @@ const CustomizableWelcomeKit = () => {
           {Object.keys(categories).map((category) => (
             <div key={category} className="category" aria-label={`${category} category`}>
               <h3>{category}</h3>
-              <ul aria-label={`${category} items list`}>
+              <div className="category-grid" aria-label={`${category} items list`}>
                 {categories[category].map((item, index) => (
-                  <li 
+                  <div 
                     key={index} 
+                    className="kit-item-card"
                     onClick={() => handleAddItem(item)}
                     aria-label={`Add ${item.name} to your kit`}
                     role="button"
@@ -62,10 +64,18 @@ const CustomizableWelcomeKit = () => {
                       }
                     }}
                   >
-                    {item.name}
-                  </li>
+                    <img 
+                      src={getCdnImage(item.image, { width: 120, height: 120 })} 
+                      alt={item.name}
+                      className="kit-item-thumbnail"
+                      loading="lazy"
+                      width="120"
+                      height="120"
+                    />
+                    <p className="kit-item-name">{item.name}</p>
+                  </div>
                 ))}
-              </ul>
+              </div>
             </div>
           ))}
         </div>
@@ -77,7 +87,14 @@ const CustomizableWelcomeKit = () => {
             <ul aria-label="Selected items list">
               {selectedItems.map((item, index) => (
                 <li key={index} className="selected-item" aria-label={`Selected item: ${item.name}`}>
-                  {item.name}
+                  <img 
+                    src={getCdnImage(item.image, { width: 50, height: 50 })} 
+                    alt="" 
+                    className="selected-item-mini"
+                    width="50"
+                    height="50"
+                  />
+                  <span>{item.name}</span>
                   <button 
                     onClick={() => handleRemoveItem(item)}
                     aria-label={`Remove ${item.name} from your kit`}

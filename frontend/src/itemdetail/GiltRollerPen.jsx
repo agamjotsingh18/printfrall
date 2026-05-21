@@ -13,17 +13,9 @@ import {
   InputAdornment,
 } from "@mui/material";
 import { AddShoppingCart, Close, WorkspacePremium, CardGiftcard } from "@mui/icons-material";
+import { getCdnImage } from "../utils/imageLoader";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
-
-// ========== MAIN PEN IMAGE ==========
-import mainImg from "../assets/gilt-roller-pen.png";
-
-// ========== EXTRA ANGLES ==========
-import img2 from "../assets/gilt-roller-pen.png";
-import img3 from "../assets/gilt-roller-pen-1.png";
-import img4 from "../assets/gilt-roller-pen-2.png";
-import img5 from "../assets/gilt-roller-pen-3.png";
 
 const GiltRollerPen = ({ addToCart }) => {
   // Predefined pack options with total prices
@@ -39,7 +31,7 @@ const GiltRollerPen = ({ addToCart }) => {
   const [selectedOption, setSelectedOption] = useState(packOptions[0]);
   const [customQuantity, setCustomQuantity] = useState(1);
   const [selectedColor, setSelectedColor] = useState("Deep Black");
-  const [mainImage, setMainImage] = useState(mainImg);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   // Calculate total price
@@ -59,38 +51,8 @@ const GiltRollerPen = ({ addToCart }) => {
     }
   };
 
-  const handleAddToCart = () => {
-    let item;
-    if (selectedOption.value === "Custom") {
-      item = {
-        name: "Gilt Rollerball Pen",
-        image: mainImg,
-        description: giltDetails.description,
-        features: giltDetails.features,
-        tags: giltDetails.tags,
-        selectedSize: `${customQuantity} pens`,
-        selectedMaterial: selectedColor,
-        selectedColor,
-        price: price,
-        quantity: customQuantity,
-      };
-    } else {
-      item = {
-        ...giltDetails,
-        selectedSize: selectedOption.label,
-        selectedMaterial: selectedColor,
-        selectedColor,
-        price: selectedOption.price,
-        quantity: 1,
-      };
-    }
-    addToCart(item);
-    setSnackbarOpen(true);
-  };
-
-  const giltDetails = {
+  const productDetails = {
     name: "Gilt Rollerball Pen",
-    image: mainImg,
     description:
       "A sheer quality metallic writing instrument finished in a deep black matte. Designed for high-impact corporate gifting and executive use, this pen combines a heavy, balanced feel with precision performance.",
     features: [
@@ -105,8 +67,46 @@ const GiltRollerPen = ({ addToCart }) => {
     ],
     sizes: ["Single", "Pack of 2", "Pack of 5"],
     colors: ["Deep Black"],
-    extraImages: [img2, img3, img4, img5],
+    images: [
+      "gilt-roller-pen.png",
+      "gilt-roller-pen-1.png",
+      "gilt-roller-pen-2.png",
+      "gilt-roller-pen-3.png"
+    ],
     tags: ["Laser Engraved", "Executive", "Gold Accent"],
+  };
+
+  const handleAddToCart = () => {
+    let item;
+    if (selectedOption.value === "Custom") {
+      item = {
+        name: productDetails.name,
+        image: getCdnImage(productDetails.images[0], { width: 150, height: 150 }),
+        description: productDetails.description,
+        features: productDetails.features,
+        tags: productDetails.tags,
+        selectedSize: `${customQuantity} pens`,
+        selectedMaterial: selectedColor,
+        selectedColor,
+        price: price,
+        quantity: customQuantity,
+      };
+    } else {
+      item = {
+        name: productDetails.name,
+        image: getCdnImage(productDetails.images[0], { width: 150, height: 150 }),
+        description: productDetails.description,
+        features: productDetails.features,
+        tags: productDetails.tags,
+        selectedSize: selectedOption.label,
+        selectedMaterial: selectedColor,
+        selectedColor,
+        price: selectedOption.price,
+        quantity: 1,
+      };
+    }
+    addToCart(item);
+    setSnackbarOpen(true);
   };
 
   const handleCloseSnackbar = () => setSnackbarOpen(false);
@@ -125,7 +125,7 @@ const GiltRollerPen = ({ addToCart }) => {
             }}
           >
             <Box sx={{ display: "flex", gap: 1, mb: 2 }}>
-              {giltDetails.tags.map((tag, idx) => (
+              {productDetails.tags.map((tag, idx) => (
                 <Chip
                   key={idx}
                   label={tag}
@@ -143,8 +143,10 @@ const GiltRollerPen = ({ addToCart }) => {
 
             <Zoom>
               <img
-                src={mainImage}
-                alt={giltDetails.name}
+                src={getCdnImage(productDetails.images[activeImageIndex], { width: 600, height: 450 })}
+                alt={`${productDetails.name} primary view`}
+                width="600"
+                height="450"
                 style={{
                   width: "100%",
                   borderRadius: "12px",
@@ -162,25 +164,30 @@ const GiltRollerPen = ({ addToCart }) => {
                 mt: 2,
                 overflowX: "auto",
                 "&::-webkit-scrollbar": { display: "none" },
+                scrollbarWidth: "none",
               }}
             >
-              {giltDetails.extraImages.map((img, idx) => (
+              {productDetails.images.map((imageName, idx) => (
                 <Paper
                   key={idx}
-                  onClick={() => setMainImage(img)}
+                  onClick={() => setActiveImageIndex(idx)}
                   sx={{
                     p: 1,
                     borderRadius: "10px",
                     cursor: "pointer",
                     border:
-                      mainImage === img ? "2px solid #70CB97" : "2px solid transparent",
+                      activeImageIndex === idx ? "2px solid #70CB97" : "2px solid transparent",
                     "&:hover": { border: "2px solid #70CB97" },
                     flexShrink: 0,
+                    transition: "all 0.2s",
                   }}
                 >
                   <img
-                    src={img}
-                    alt={`view ${idx + 1}`}
+                    src={getCdnImage(imageName, { width: 90, height: 90 })}
+                    alt={`${productDetails.name} thumbnail view ${idx + 1}`}
+                    width="90"
+                    height="90"
+                    loading="lazy"
                     style={{
                       width: "90px",
                       height: "90px",
@@ -200,7 +207,7 @@ const GiltRollerPen = ({ addToCart }) => {
             variant="h4"
             sx={{ fontWeight: 700, mb: 1, color: "#19485D", fontSize: { xs: "1.8rem", md: "2.5rem" } }}
           >
-            {giltDetails.name}
+            {productDetails.name}
           </Typography>
 
           <Typography
@@ -214,7 +221,7 @@ const GiltRollerPen = ({ addToCart }) => {
             variant="body1"
             sx={{ mb: 3, color: "#1e2a32", lineHeight: 1.6 }}
           >
-            {giltDetails.description}
+            {productDetails.description}
           </Typography>
 
           <Typography
@@ -224,7 +231,7 @@ const GiltRollerPen = ({ addToCart }) => {
             Specifications:
           </Typography>
           <Box component="ul" sx={{ ml: 2, mb: 3, listStyleType: "none", p: 0 }}>
-            {giltDetails.features.map((feature, idx) => (
+            {productDetails.features.map((feature, idx) => (
               <li key={idx} style={{ marginBottom: "8px" }}>
                 <Typography variant="body1" sx={{ display: "flex", alignItems: "center", color: "#5a6e7a" }}>
                   <span
@@ -306,7 +313,7 @@ const GiltRollerPen = ({ addToCart }) => {
             </Box>
           )}
 
-          {/* Color Options (only one, but keep consistent) */}
+          {/* Color Options */}
           <Typography
             variant="h6"
             sx={{ fontWeight: 600, mb: 2, color: "#19485D", fontSize: { xs: "1.2rem", md: "1.5rem" } }}
@@ -314,7 +321,7 @@ const GiltRollerPen = ({ addToCart }) => {
             Color Options:
           </Typography>
           <Box sx={{ display: "flex", gap: 2, mb: 4, flexWrap: "wrap" }}>
-            {giltDetails.colors.map((color, idx) => (
+            {productDetails.colors.map((color, idx) => (
               <Paper
                 key={idx}
                 onClick={() => setSelectedColor(color)}

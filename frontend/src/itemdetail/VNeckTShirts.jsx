@@ -13,20 +13,9 @@ import {
   InputAdornment,
 } from "@mui/material";
 import { AddShoppingCart, Close, Checkroom, LocalLaundryService } from "@mui/icons-material";
+import { getCdnImage } from "../utils/imageLoader";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
-
-// ========== MAIN PRODUCT IMAGE ==========
-import mainImg from "../assets/v-neck-t-shirt.png";
-
-// ========== EXTRA ANGLES ==========
-import img2 from "../assets/v-neck-t-shirt.png";
-import img3 from "../assets/v-neck-t-shirt-1.png";
-import img4 from "../assets/v-neck-t-shirt-2.png";
-import img5 from "../assets/v-neck-t-shirt-3.png";
-import img6 from "../assets/v-neck-t-shirt-4.jpeg";
-import img7 from "../assets/v-neck-t-shirt-5.png";
-import img8 from "../assets/v-neck-t-shirt-6.png";
 
 const VNeckTShirts = ({ addToCart }) => {
   const priceMapping = {
@@ -43,11 +32,40 @@ const VNeckTShirts = ({ addToCart }) => {
   const defaultSize = "M";
   const defaultSide = "Front Only";
 
+  const productDetails = {
+    name: "Women’s V-Neck T-Shirt",
+    description:
+      "Embrace ultimate comfort and a polished everyday look. This premium V-neck is crafted from bio-washed combed cotton for a soft-flow dyed finish that ensures lasting colors and anti-pilling performance.",
+    features: [
+      "100% Bio-wash Superior Combed Cotton (180 GSM)",
+      "Soft flow dyed for vibrant, lasting colors",
+      "Anti-Pilling fabric with a relaxed fit",
+      "Side-seamed construction for a feminine silhouette",
+      "High-resolution Digital Printing available",
+      "Standard Print Area: 8.27 x 11.69 inches",
+      "Fabric Warranty: Guaranteed up to 25 washes",
+    ],
+    tags: ["Soft Fabric", "V-Neck Style", "Bio-Washed"],
+    colors: availableColors,
+    sizes: availableSizes,
+    printSides: printingOptions,
+    materials: ["100% Combed Cotton", "Cotton-Poly Heather"],
+    images: [
+      "v-neck-t-shirt.png",
+      "v-neck-t-shirt-1.png",
+      "v-neck-t-shirt-2.png",
+      "v-neck-t-shirt-3.png",
+      "v-neck-t-shirt-4.jpeg",
+      "v-neck-t-shirt-5.png",
+      "v-neck-t-shirt-6.png"
+    ],
+  };
+
   const [selectedMaterial, setSelectedMaterial] = useState(defaultMaterial);
   const [selectedColor, setSelectedColor] = useState(defaultColor);
   const [selectedSize, setSelectedSize] = useState(defaultSize);
   const [selectedSide, setSelectedSide] = useState(defaultSide);
-  const [mainImage, setMainImage] = useState(mainImg);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   // Custom quantity state
@@ -80,37 +98,15 @@ const VNeckTShirts = ({ addToCart }) => {
     }
   };
 
-  const tShirtDetails = {
-    name: "Women’s V-Neck T-Shirt",
-    image: mainImg,
-    description:
-      "Embrace ultimate comfort and a polished everyday look. This premium V-neck is crafted from bio-washed combed cotton for a soft-flow dyed finish that ensures lasting colors and anti-pilling performance.",
-    features: [
-      "100% Bio-wash Superior Combed Cotton (180 GSM)",
-      "Soft flow dyed for vibrant, lasting colors",
-      "Anti-Pilling fabric with a relaxed fit",
-      "Side-seamed construction for a feminine silhouette",
-      "High-resolution Digital Printing available",
-      "Standard Print Area: 8.27 x 11.69 inches",
-      "Fabric Warranty: Guaranteed up to 25 washes",
-    ],
-    tags: ["Soft Fabric", "V-Neck Style", "Bio-Washed"],
-    colors: availableColors,
-    sizes: availableSizes,
-    printSides: printingOptions,
-    materials: ["100% Combed Cotton", "Cotton-Poly Heather"],
-    extraImages: [img2, img3, img4, img5, img6, img7, img8],
-  };
-
   const handleAddToCart = () => {
     let item;
     if (selectedOption === "Custom") {
       item = {
-        name: "Women’s V-Neck T-Shirt",
-        image: mainImg,
-        description: tShirtDetails.description,
-        features: tShirtDetails.features,
-        tags: tShirtDetails.tags,
+        name: productDetails.name,
+        image: getCdnImage(productDetails.images[0], { width: 150, height: 150 }),
+        description: productDetails.description,
+        features: productDetails.features,
+        tags: productDetails.tags,
         selectedSize: `${customQuantity} pieces`,
         selectedMaterial: `${selectedMaterial} | ${selectedColor} | Size ${selectedSize} | Print: ${selectedSide}`,
         selectedColor,
@@ -123,7 +119,11 @@ const VNeckTShirts = ({ addToCart }) => {
     } else {
       const option = packOptions.find((opt) => opt.value === selectedOption);
       item = {
-        ...tShirtDetails,
+        name: productDetails.name,
+        image: getCdnImage(productDetails.images[0], { width: 150, height: 150 }),
+        description: productDetails.description,
+        features: productDetails.features,
+        tags: productDetails.tags,
         selectedSize: option.label,
         selectedMaterial: `${selectedMaterial} | ${selectedColor} | Size ${selectedSize} | Print: ${selectedSide}`,
         selectedColor,
@@ -154,7 +154,7 @@ const VNeckTShirts = ({ addToCart }) => {
             }}
           >
             <Box sx={{ display: "flex", gap: 1, mb: 2 }}>
-              {tShirtDetails.tags.map((tag, idx) => (
+              {productDetails.tags.map((tag, idx) => (
                 <Chip
                   key={idx}
                   label={tag}
@@ -172,8 +172,10 @@ const VNeckTShirts = ({ addToCart }) => {
 
             <Zoom>
               <img
-                src={mainImage}
-                alt={tShirtDetails.name}
+                src={getCdnImage(productDetails.images[activeImageIndex], { width: 600, height: 450 })}
+                alt={`${productDetails.name} primary view`}
+                width="600"
+                height="450"
                 style={{
                   width: "100%",
                   borderRadius: "12px",
@@ -192,26 +194,30 @@ const VNeckTShirts = ({ addToCart }) => {
                 mt: 2,
                 overflowX: "auto",
                 "&::-webkit-scrollbar": { display: "none" },
+                scrollbarWidth: "none",
               }}
             >
-              {tShirtDetails.extraImages.map((img, idx) => (
+              {productDetails.images.map((imageName, idx) => (
                 <Paper
                   key={idx}
-                  onClick={() => setMainImage(img)}
+                  onClick={() => setActiveImageIndex(idx)}
                   sx={{
                     p: 1,
                     borderRadius: "10px",
                     cursor: "pointer",
                     border:
-                      mainImage === img ? "2px solid #70CB97" : "2px solid transparent",
+                      activeImageIndex === idx ? "2px solid #70CB97" : "2px solid transparent",
                     "&:hover": { border: "2px solid #70CB97" },
                     flexShrink: 0,
                     transition: "all 0.2s",
                   }}
                 >
                   <img
-                    src={img}
-                    alt={`view ${idx + 1}`}
+                    src={getCdnImage(imageName, { width: 90, height: 90 })}
+                    alt={`${productDetails.name} thumbnail view ${idx + 1}`}
+                    width="90"
+                    height="90"
+                    loading="lazy"
                     style={{
                       width: "90px",
                       height: "90px",
@@ -231,7 +237,7 @@ const VNeckTShirts = ({ addToCart }) => {
             variant="h4"
             sx={{ fontWeight: 700, mb: 1, color: "#19485D", fontSize: { xs: "1.8rem", md: "2.5rem" } }}
           >
-            {tShirtDetails.name}
+            {productDetails.name}
           </Typography>
 
           <Typography
@@ -245,7 +251,7 @@ const VNeckTShirts = ({ addToCart }) => {
             variant="body1"
             sx={{ mb: 3, color: "#1e2a32", lineHeight: 1.6 }}
           >
-            {tShirtDetails.description}
+            {productDetails.description}
           </Typography>
 
           <Typography
@@ -255,7 +261,7 @@ const VNeckTShirts = ({ addToCart }) => {
             Features:
           </Typography>
           <Box component="ul" sx={{ ml: 2, mb: 3, listStyleType: "none", p: 0 }}>
-            {tShirtDetails.features.map((feature, idx) => (
+            {productDetails.features.map((feature, idx) => (
               <li key={idx} style={{ marginBottom: "8px" }}>
                 <Typography variant="body1" sx={{ display: "flex", alignItems: "center", color: "#5a6e7a" }}>
                   <span
@@ -282,13 +288,14 @@ const VNeckTShirts = ({ addToCart }) => {
             Fabric Material:
           </Typography>
           <Box sx={{ display: "flex", gap: 2, mb: 3, flexWrap: "wrap" }}>
-            {tShirtDetails.materials.map((material, idx) => (
+            {productDetails.materials.map((material, idx) => (
               <Paper
                 key={idx}
                 onClick={() => {
                   setSelectedMaterial(material);
                   setSelectedOption("Single");
                   setCustomQuantity(1);
+                  setActiveImageIndex(0);
                 }}
                 sx={{
                   p: 1.5,
@@ -383,7 +390,7 @@ const VNeckTShirts = ({ addToCart }) => {
             Choose Print Side:
           </Typography>
           <Box sx={{ display: "flex", gap: 1, mb: 3, flexWrap: "wrap" }}>
-            {tShirtDetails.printSides.map((side) => (
+            {productDetails.printSides.map((side) => (
               <Paper
                 key={side}
                 onClick={() => setSelectedSide(side)}
@@ -416,7 +423,7 @@ const VNeckTShirts = ({ addToCart }) => {
             Choose Size:
           </Typography>
           <Box sx={{ display: "flex", gap: 1, mb: 3, flexWrap: "wrap" }}>
-            {tShirtDetails.sizes.map((size) => (
+            {productDetails.sizes.map((size) => (
               <Paper
                 key={size}
                 onClick={() => setSelectedSize(size)}
@@ -450,7 +457,7 @@ const VNeckTShirts = ({ addToCart }) => {
             Select Color:
           </Typography>
           <Box sx={{ display: "flex", gap: 1, mb: 4, flexWrap: "wrap" }}>
-            {tShirtDetails.colors.map((color) => (
+            {productDetails.colors.map((color) => (
               <Paper
                 key={color}
                 onClick={() => setSelectedColor(color)}

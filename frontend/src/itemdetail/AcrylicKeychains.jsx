@@ -12,14 +12,7 @@ import {
 import { AddShoppingCart, Close } from "@mui/icons-material";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
-
-// ========== YOUR GENERATED ACRYLIC KEYCHAIN IMAGES ==========
-import mainImg from "../assets/acrylic-keychain-1-flatlay.png";
-import img2 from "../assets/acrylic-keychain-2-hanging.png";
-import img3 from "../assets/acrylic-keychain-3-tilted.png";
-import img4 from "../assets/acrylic-keychain-4-row.png";
-import img5 from "../assets/acrylic-keychain-5-closeup.png";
-// ============================================================
+import { getCdnImage } from "../utils/imageLoader";
 
 const AcrylicKeychains = ({ addToCart }) => {
   // Price mapping for each size and material combination
@@ -34,12 +27,11 @@ const AcrylicKeychains = ({ addToCart }) => {
 
   const [selectedSize, setSelectedSize] = useState(defaultSize);
   const [selectedMaterial, setSelectedMaterial] = useState(defaultMaterial);
-  const [mainImage, setMainImage] = useState(mainImg);
+const [mainImage, setMainImage] = useState("acrylic-keychain-1-flatlay.png");
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   const details = {
     name: "Acrylic Keychains",
-    image: mainImg,
     description:
       "Add a personal touch to your keys with our premium acrylic keychains. Sleek, modern, and durable, these keychains are perfect for personal or promotional use.",
     features: [
@@ -50,7 +42,13 @@ const AcrylicKeychains = ({ addToCart }) => {
     ],
     sizes: ["Small (1.5x1.5 inches)", "Medium (2x2 inches)", "Large (3x3 inches)"],
     materials: ["Clear Acrylic", "Frosted Acrylic", "Colored Acrylic"],
-    extraImages: [img2, img3, img4, img5],
+    extraImages: [
+      "acrylic-keychain-1-flatlay.png",
+      "acrylic-keychain-2-hanging.png",
+      "acrylic-keychain-3-tilted.png",
+      "acrylic-keychain-4-row.png",
+      "acrylic-keychain-5-closeup.png"
+    ],
   };
 
   const price = priceMapping[selectedSize][selectedMaterial];
@@ -58,6 +56,7 @@ const AcrylicKeychains = ({ addToCart }) => {
   const handleAddToCart = () => {
     const item = {
       ...details,
+      image: getCdnImage(mainImage, { width: 200, height: 200 }),
       selectedSize,
       selectedMaterial,
       price,
@@ -72,7 +71,6 @@ const AcrylicKeychains = ({ addToCart }) => {
   return (
     <Container sx={{ py: 6, maxWidth: 1200, margin: "40px auto 0 auto" }}>
       <Grid container spacing={4}>
-        {/* Image Gallery */}
         <Grid item xs={12} md={6}>
           <Paper
             sx={{
@@ -84,7 +82,7 @@ const AcrylicKeychains = ({ addToCart }) => {
           >
             <Zoom>
               <img
-                src={mainImage}
+               src={getCdnImage(mainImage, { width: 600, quality: 85 })}
                 alt={details.name}
                 style={{
                   width: "100%",
@@ -121,7 +119,7 @@ const AcrylicKeychains = ({ addToCart }) => {
                   }}
                 >
                   <img
-                    src={img}
+                   src={getCdnImage(img, { width: 90, height: 90 })}
                     alt={`view ${idx + 1}`}
                     style={{
                       width: "90px",

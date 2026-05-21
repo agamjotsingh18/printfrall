@@ -10,16 +10,9 @@ import {
   IconButton,
 } from "@mui/material";
 import { AddShoppingCart, Close } from "@mui/icons-material";
+import { getCdnImage } from "../utils/imageLoader";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
-
-// ========== YOUR GENERATED BUSINESS FLYER IMAGES ==========
-import mainImg from "../assets/business-flyer-1.png";
-import img2 from "../assets/business-flyer-2.png";
-import img3 from "../assets/business-flyer-3.png";
-import img4 from "../assets/business-flyer-4.png";
-import img5 from "../assets/business-flyer-5.png";
-// ========================================================
 
 const BusinessFlyers = ({ addToCart }) => {
   const priceMapping = {
@@ -33,12 +26,11 @@ const BusinessFlyers = ({ addToCart }) => {
 
   const [selectedSize, setSelectedSize] = useState(defaultSize);
   const [selectedMaterial, setSelectedMaterial] = useState(defaultMaterial);
-  const [mainImage, setMainImage] = useState(mainImg);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   const details = {
     name: "Business Flyers",
-    image: mainImg,
     description:
       "Promote your business with our high-quality flyers. Perfect for marketing campaigns, events, and brand awareness.",
     features: [
@@ -49,14 +41,22 @@ const BusinessFlyers = ({ addToCart }) => {
     ],
     sizes: ["A4 (210x297 mm)", "A5 (148x210 mm)", "DL (99x210 mm)"],
     materials: ["Glossy Paper", "Matte Paper", "Premium Paper"],
-    extraImages: [img2, img3, img4, img5],
+    images: [
+      "business-flyer-1.png",
+      "business-flyer-2.png",
+      "business-flyer-3.png",
+      "business-flyer-4.png",
+      "business-flyer-5.png"
+    ],
   };
 
   const price = priceMapping[selectedSize][selectedMaterial];
 
   const handleAddToCart = () => {
     const item = {
-      ...details,
+      name: details.name,
+      image: getCdnImage(details.images[0], { width: 150, height: 150 }),
+      description: details.description,
       selectedSize,
       selectedMaterial,
       price,
@@ -83,8 +83,10 @@ const BusinessFlyers = ({ addToCart }) => {
           >
             <Zoom>
               <img
-                src={mainImage}
-                alt={details.name}
+                src={getCdnImage(details.images[activeImageIndex], { width: 600, height: 450 })}
+                alt={`${details.name} primary view`}
+                width="600"
+                height="450"
                 style={{
                   width: "100%",
                   borderRadius: "12px",
@@ -102,26 +104,30 @@ const BusinessFlyers = ({ addToCart }) => {
                 mt: 2,
                 overflowX: "auto",
                 "&::-webkit-scrollbar": { display: "none" },
+                scrollbarWidth: "none",
               }}
             >
-              {details.extraImages.map((img, idx) => (
+              {details.images.map((imageName, idx) => (
                 <Paper
                   key={idx}
-                  onClick={() => setMainImage(img)}
+                  onClick={() => setActiveImageIndex(idx)}
                   sx={{
                     p: 1,
                     borderRadius: "10px",
                     cursor: "pointer",
                     border:
-                      mainImage === img ? "2px solid #70CB97" : "2px solid transparent",
+                      activeImageIndex === idx ? "2px solid #70CB97" : "2px solid transparent",
                     "&:hover": { border: "2px solid #70CB97" },
                     flexShrink: 0,
                     transition: "all 0.2s",
                   }}
                 >
                   <img
-                    src={img}
-                    alt={`view ${idx + 1}`}
+                    src={getCdnImage(imageName, { width: 90, height: 90 })}
+                    alt={`${details.name} thumbnail view ${idx + 1}`}
+                    width="90"
+                    height="90"
+                    loading="lazy"
                     style={{
                       width: "90px",
                       height: "90px",

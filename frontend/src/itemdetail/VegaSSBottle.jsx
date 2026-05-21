@@ -11,15 +11,9 @@ import {
   Chip,
 } from "@mui/material";
 import { AddShoppingCart, Close, LocalDrink } from "@mui/icons-material";
+import { getCdnImage } from "../utils/imageLoader";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
-
-// ========== MAIN BOTTLE IMAGE ==========
-import mainImg from "../assets/vega-ss-bottle.png";
-
-// ========== EXTRA ANGLES ==========
-import img2 from "../assets/vega-ss-bottle-1.png";
-import img3 from "../assets/vega-ss-bottle-2.png";
 
 const VegaSSBottle = ({ addToCart }) => {
   // Price mapping
@@ -32,14 +26,8 @@ const VegaSSBottle = ({ addToCart }) => {
   const defaultSize = "750ml";
   const defaultColor = "Matte Black";
 
-  const [selectedSize] = useState(defaultSize);
-  const [selectedColor, setSelectedColor] = useState(defaultColor);
-  const [mainImage, setMainImage] = useState(mainImg);
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-
-  const bottleDetails = {
+  const productDetails = {
     name: "Vega SS Bottle",
-    image: mainImg,
     description:
       "Custom SS water bottles specifically designed for business promotions and corporate gifting. This sleek, matte black bottle offers a professional canvas for your brand identity.",
     features: [
@@ -52,15 +40,28 @@ const VegaSSBottle = ({ addToCart }) => {
     ],
     sizes: ["750ml"],
     colors: availableColors,
-    extraImages: [img2, img3],
+    images: [
+      "vega-ss-bottle.png",
+      "vega-ss-bottle-1.png",
+      "vega-ss-bottle-2.png"
+    ],
     tags: ["Promotional", "Eco-Friendly", "Corporate"],
   };
+
+  const [selectedSize] = useState(defaultSize);
+  const [selectedColor, setSelectedColor] = useState(defaultColor);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   const price = priceMapping[selectedSize];
 
   const handleAddToCart = () => {
     const item = {
-      ...bottleDetails,
+      name: productDetails.name,
+      image: getCdnImage(productDetails.images[0], { width: 150, height: 150 }),
+      description: productDetails.description,
+      features: productDetails.features,
+      tags: productDetails.tags,
       selectedSize,
       selectedColor,
       price,
@@ -85,10 +86,30 @@ const VegaSSBottle = ({ addToCart }) => {
               bgcolor: "#fff",
             }}
           >
+            {/* Tags */}
+            <Box sx={{ display: "flex", gap: 1, mb: 2, flexWrap: "wrap" }}>
+              {productDetails.tags.map((tag, idx) => (
+                <Chip
+                  key={idx}
+                  label={tag}
+                  size="small"
+                  icon={<LocalDrink fontSize="small" />}
+                  sx={{
+                    backgroundColor: "rgba(112, 203, 151, 0.1)",
+                    color: "#70CB97",
+                    fontWeight: 600,
+                    borderRadius: 2,
+                  }}
+                />
+              ))}
+            </Box>
+
             <Zoom>
               <img
-                src={mainImage}
-                alt={bottleDetails.name}
+                src={getCdnImage(productDetails.images[activeImageIndex], { width: 600, height: 450 })}
+                alt={`${productDetails.name} primary view`}
+                width="600"
+                height="450"
                 style={{
                   width: "100%",
                   borderRadius: "12px",
@@ -107,26 +128,30 @@ const VegaSSBottle = ({ addToCart }) => {
                 mt: 2,
                 overflowX: "auto",
                 "&::-webkit-scrollbar": { display: "none" },
+                scrollbarWidth: "none",
               }}
             >
-              {bottleDetails.extraImages.map((img, idx) => (
+              {productDetails.images.map((imageName, idx) => (
                 <Paper
                   key={idx}
-                  onClick={() => setMainImage(img)}
+                  onClick={() => setActiveImageIndex(idx)}
                   sx={{
                     p: 1,
                     borderRadius: "10px",
                     cursor: "pointer",
                     border:
-                      mainImage === img ? "2px solid #70CB97" : "2px solid transparent",
+                      activeImageIndex === idx ? "2px solid #70CB97" : "2px solid transparent",
                     "&:hover": { border: "2px solid #70CB97" },
                     flexShrink: 0,
                     transition: "all 0.2s",
                   }}
                 >
                   <img
-                    src={img}
-                    alt={`view ${idx + 1}`}
+                    src={getCdnImage(imageName, { width: 90, height: 90 })}
+                    alt={`${productDetails.name} thumbnail view ${idx + 1}`}
+                    width="90"
+                    height="90"
+                    loading="lazy"
                     style={{
                       width: "90px",
                       height: "90px",
@@ -142,29 +167,11 @@ const VegaSSBottle = ({ addToCart }) => {
 
         {/* Product Details */}
         <Grid item xs={12} md={6}>
-          {/* Tags */}
-          <Box sx={{ display: "flex", gap: 1, mb: 2, flexWrap: "wrap" }}>
-            {bottleDetails.tags.map((tag, idx) => (
-              <Chip
-                key={idx}
-                label={tag}
-                size="small"
-                icon={<LocalDrink fontSize="small" />}
-                sx={{
-                  backgroundColor: "rgba(112, 203, 151, 0.1)",
-                  color: "#70CB97",
-                  fontWeight: 600,
-                  borderRadius: 2,
-                }}
-              />
-            ))}
-          </Box>
-
           <Typography
             variant="h4"
             sx={{ fontWeight: 700, mb: 2, color: "#19485D", fontSize: { xs: "1.8rem", md: "2.5rem" } }}
           >
-            {bottleDetails.name}
+            {productDetails.name}
           </Typography>
 
           <Typography
@@ -178,7 +185,7 @@ const VegaSSBottle = ({ addToCart }) => {
             variant="body1"
             sx={{ mb: 3, color: "#1e2a32", lineHeight: 1.6 }}
           >
-            {bottleDetails.description}
+            {productDetails.description}
           </Typography>
 
           {/* Features */}
@@ -189,7 +196,7 @@ const VegaSSBottle = ({ addToCart }) => {
             Specifications:
           </Typography>
           <Box component="ul" sx={{ ml: 2, mb: 3, listStyleType: "none", p: 0 }}>
-            {bottleDetails.features.map((feature, idx) => (
+            {productDetails.features.map((feature, idx) => (
               <li key={idx} style={{ marginBottom: "8px" }}>
                 <Typography variant="body1" sx={{ display: "flex", alignItems: "center", color: "#5a6e7a" }}>
                   <span
@@ -216,10 +223,13 @@ const VegaSSBottle = ({ addToCart }) => {
             Color Options:
           </Typography>
           <Box sx={{ display: "flex", gap: 2, mb: 4, flexWrap: "wrap" }}>
-            {bottleDetails.colors.map((color, idx) => (
+            {productDetails.colors.map((color, idx) => (
               <Paper
                 key={idx}
-                onClick={() => setSelectedColor(color)}
+                onClick={() => {
+                  setSelectedColor(color);
+                  setActiveImageIndex(0);
+                }}
                 sx={{
                   p: 1.5,
                   px: 2.5,
@@ -250,7 +260,7 @@ const VegaSSBottle = ({ addToCart }) => {
             Capacity:
           </Typography>
           <Box sx={{ display: "flex", gap: 2, mb: 4, flexWrap: "wrap" }}>
-            {bottleDetails.sizes.map((size, idx) => (
+            {productDetails.sizes.map((size, idx) => (
               <Paper
                 key={idx}
                 sx={{

@@ -10,16 +10,9 @@ import {
   IconButton,
 } from "@mui/material";
 import { AddShoppingCart, Close } from "@mui/icons-material";
+import { getCdnImage } from "../utils/imageLoader";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
-
-// ========== YOUR GENERATED ENVELOPE IMAGES ==========
-import a5EnvelopeMain from "../assets/a5-envelope-1-flatlay.png";
-import a5EnvelopeTilted from "../assets/a5-envelope-2-tilted.png";
-import a5EnvelopeOpen from "../assets/a5-envelope-3-open.png";
-import a5EnvelopeStack from "../assets/a5-envelope-4-stack.png";
-import a5EnvelopeCloseup from "../assets/a5-envelope-5-closeup.png";
-// ====================================================
 
 const A5Envelope = ({ addToCart }) => {
   const priceMapping = {
@@ -30,12 +23,11 @@ const A5Envelope = ({ addToCart }) => {
 
   const defaultMaterial = "White Paper";
   const [selectedMaterial, setSelectedMaterial] = useState(defaultMaterial);
-  const [mainImage, setMainImage] = useState(a5EnvelopeMain);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   const a5EnvelopeDetails = {
     name: "A5 Envelope",
-    image: a5EnvelopeMain,
     description:
       "Our A5 Envelopes are perfect for mailing invitations, brochures, and other documents. Available in a variety of materials to suit your needs.",
     features: [
@@ -45,14 +37,22 @@ const A5Envelope = ({ addToCart }) => {
       "Ideal for invitations and brochures",
     ],
     materials: ["White Paper", "Ivory Paper", "Recycled Paper"],
-    extraImages: [a5EnvelopeTilted, a5EnvelopeOpen, a5EnvelopeStack, a5EnvelopeCloseup],
+    images: [
+      "a5-envelope-1-flatlay.png",
+      "a5-envelope-2-tilted.png",
+      "a5-envelope-3-open.png",
+      "a5-envelope-4-stack.png",
+      "a5-envelope-5-closeup.png"
+    ]
   };
 
   const price = priceMapping[selectedMaterial];
 
   const handleAddToCart = () => {
     const item = {
-      ...a5EnvelopeDetails,
+      name: a5EnvelopeDetails.name,
+      image: getCdnImage(a5EnvelopeDetails.images[0], { width: 150, height: 150 }),
+      description: a5EnvelopeDetails.description,
       selectedMaterial,
       price,
       quantity: 1,
@@ -78,8 +78,10 @@ const A5Envelope = ({ addToCart }) => {
           >
             <Zoom>
               <img
-                src={mainImage}
-                alt={a5EnvelopeDetails.name}
+                src={getCdnImage(a5EnvelopeDetails.images[activeImageIndex], { width: 600, height: 450 })}
+                alt={`${a5EnvelopeDetails.name} primary view`}
+                width="600"
+                height="450"
                 style={{
                   width: "100%",
                   borderRadius: "12px",
@@ -97,24 +99,28 @@ const A5Envelope = ({ addToCart }) => {
                 mt: 2,
                 overflowX: "auto",
                 "&::-webkit-scrollbar": { display: "none" },
+                scrollbarWidth: "none",
               }}
             >
-              {a5EnvelopeDetails.extraImages.map((img, idx) => (
+              {a5EnvelopeDetails.images.map((imageName, idx) => (
                 <Paper
                   key={idx}
-                  onClick={() => setMainImage(img)}
+                  onClick={() => setActiveImageIndex(idx)}
                   sx={{
                     p: 1,
                     borderRadius: "10px",
                     cursor: "pointer",
-                    border: mainImage === img ? "2px solid #70CB97" : "2px solid transparent",
+                    border: activeImageIndex === idx ? "2px solid #70CB97" : "2px solid transparent",
                     "&:hover": { border: "2px solid #70CB97" },
                     flexShrink: 0,
                   }}
                 >
                   <img
-                    src={img}
-                    alt={`view ${idx + 1}`}
+                    src={getCdnImage(imageName, { width: 90, height: 90 })}
+                    alt={`${a5EnvelopeDetails.name} thumbnail view ${idx + 1}`}
+                    width="90"
+                    height="90"
+                    loading="lazy"
                     style={{ width: "90px", height: "90px", borderRadius: "8px", objectFit: "cover" }}
                   />
                 </Paper>

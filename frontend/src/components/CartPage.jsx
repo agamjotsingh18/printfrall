@@ -17,7 +17,6 @@ const CartPage = ({ cartItems, removeFromCart }) => {
     return item.selectedFinish || null;
   };
 
-  // Helper to calculate unit price (for display)
   const getUnitPrice = (item) => {
     if (item.quantity > 1 && item.price && item.quantity) {
       return item.price / item.quantity;
@@ -81,7 +80,7 @@ const CartPage = ({ cartItems, removeFromCart }) => {
                 <img
                   src={item.image}
                   alt={item.name}
-                  style={{ width: "100px", height: "100px", borderRadius: "10px" }}
+                  style={{ width: "100px", height: "100px", borderRadius: "10px", objectFit: "cover" }}
                 />
                 <Box sx={{ flex: 1 }}>
                   <Typography variant="h6" sx={{ fontWeight: "bold", color: "#19485D" }}>

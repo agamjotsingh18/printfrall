@@ -18,15 +18,9 @@ import {
   AspectRatio,
   AutoAwesome,
 } from "@mui/icons-material";
+import { getCdnImage } from "../utils/imageLoader";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
-
-// Asset paths
-import squareBusinessCardImg from "../assets/square-business-card.png";
-import squareBusinessCardImg2 from "../assets/square-business-card-1.png";
-import squareBusinessCardImg3 from "../assets/square-business-card-2.png";
-import squareBusinessCardImg4 from "../assets/square-business-card-3.png";
-import squareBusinessCardImg5 from "../assets/square-business-card-4.png";
 
 const SquareBusinessCard = ({ addToCart }) => {
   const sizeOptions = [
@@ -48,7 +42,7 @@ const SquareBusinessCard = ({ addToCart }) => {
     "Velvet Touch",
   ];
 
-  const cardDetails = {
+  const productDetails = {
     name: "Square Visiting Cards",
     description:
       "Make a bold, modern statement with our unique square cards. Perfect for entrepreneurs, creative freelancers, and brands looking to stand out from the traditional rectangular crowd.",
@@ -61,35 +55,34 @@ const SquareBusinessCard = ({ addToCart }) => {
       "Quantity: Pack of 50 cards (MOQ)",
       "Same‑day delivery available in select cities (order before 12 PM)",
     ],
+    images: [
+      "square-business-card.png",
+      "square-business-card-1.png",
+      "square-business-card-2.png",
+      "square-business-card-3.png",
+      "square-business-card-4.png"
+    ],
     tags: ["Unique Shape", "Same Day Ready", "Square Format"],
   };
 
   const [selectedSize, setSelectedSize] = useState(sizeOptions[1]); 
   const [selectedStock, setSelectedStock] = useState(paperStocks[0]);
   const [selectedFinish, setSelectedFinish] = useState(finishOptions[1]);
-  const [mainImage, setMainImage] = useState(squareBusinessCardImg);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   const moq = 50;
   const totalPrice = selectedSize.price;
 
-  const thumbnailImages = [
-    squareBusinessCardImg,
-    squareBusinessCardImg2,
-    squareBusinessCardImg3,
-    squareBusinessCardImg4,
-    squareBusinessCardImg5,
-  ];
-
   const handleAddToCart = () => {
     const item = {
-      name: cardDetails.name,
+      name: productDetails.name,
       size: selectedSize.label,
       paper: selectedStock.name,
       finish: selectedFinish,
       price: totalPrice,
       quantity: moq,
-      image: mainImage,
+      image: getCdnImage(productDetails.images[0], { width: 150, height: 150 }),
     };
     addToCart(item);
     setSnackbarOpen(true);
@@ -117,9 +110,9 @@ const SquareBusinessCard = ({ addToCart }) => {
               bgcolor: "#fff",
             }}
           >
-            {/* Inline chips (no absolute positioning) */}
+            {/* Inline chips */}
             <Box sx={{ display: "flex", gap: 1, mb: 2 }}>
-              {cardDetails.tags.map((tag, idx) => (
+              {productDetails.tags.map((tag, idx) => (
                 <Chip
                   key={idx}
                   label={tag}
@@ -145,8 +138,10 @@ const SquareBusinessCard = ({ addToCart }) => {
 
             <Zoom>
               <img
-                src={mainImage}
-                alt="Square Visiting Card Preview"
+                src={getCdnImage(productDetails.images[activeImageIndex], { width: 600, height: 450 })}
+                alt={`${productDetails.name} primary view`}
+                width="600"
+                height="450"
                 style={{
                   width: "100%",
                   borderRadius: "12px",
@@ -165,26 +160,30 @@ const SquareBusinessCard = ({ addToCart }) => {
                 mt: 2,
                 overflowX: "auto",
                 "&::-webkit-scrollbar": { display: "none" },
+                scrollbarWidth: "none",
               }}
             >
-              {thumbnailImages.map((img, idx) => (
+              {productDetails.images.map((imageName, idx) => (
                 <Paper
                   key={idx}
-                  onClick={() => setMainImage(img)}
+                  onClick={() => setActiveImageIndex(idx)}
                   sx={{
                     p: 1,
                     borderRadius: "10px",
                     cursor: "pointer",
                     border:
-                      mainImage === img ? "2px solid #70CB97" : "2px solid transparent",
+                      activeImageIndex === idx ? "2px solid #70CB97" : "2px solid transparent",
                     "&:hover": { border: "2px solid #70CB97" },
                     flexShrink: 0,
                     transition: "all 0.2s",
                   }}
                 >
                   <img
-                    src={img}
-                    alt={`view ${idx + 1}`}
+                    src={getCdnImage(imageName, { width: 90, height: 90 })}
+                    alt={`${productDetails.name} thumbnail view ${idx + 1}`}
+                    width="90"
+                    height="90"
+                    loading="lazy"
                     style={{
                       width: "90px",
                       height: "90px",
@@ -197,7 +196,7 @@ const SquareBusinessCard = ({ addToCart }) => {
             </Box>
           </Paper>
 
-          {/* Design Tip Card (green‑themed) */}
+          {/* Design Tip Card */}
           <Paper
             sx={{
               p: 2,
@@ -228,7 +227,7 @@ const SquareBusinessCard = ({ addToCart }) => {
               fontSize: { xs: "1.8rem", md: "2.5rem" },
             }}
           >
-            {cardDetails.name}
+            {productDetails.name}
           </Typography>
 
           <Typography
@@ -244,12 +243,12 @@ const SquareBusinessCard = ({ addToCart }) => {
           </Typography>
 
           <Typography variant="body1" sx={{ mb: 3, color: "#1e2a32", lineHeight: 1.6 }}>
-            {cardDetails.description}
+            {productDetails.description}
           </Typography>
 
           <Divider sx={{ mb: 3 }} />
 
-          {/* Size Selection (pill‑shaped) */}
+          {/* Size Selection */}
           <Typography
             variant="h6"
             sx={{ fontWeight: 600, mb: 2, color: "#19485D", fontSize: "1.1rem" }}
@@ -260,7 +259,10 @@ const SquareBusinessCard = ({ addToCart }) => {
             {sizeOptions.map((size) => (
               <Paper
                 key={size.id}
-                onClick={() => setSelectedSize(size)}
+                onClick={() => {
+                  setSelectedSize(size);
+                  setActiveImageIndex(0);
+                }}
                 sx={{
                   flex: 1,
                   p: 1.5,
@@ -288,7 +290,7 @@ const SquareBusinessCard = ({ addToCart }) => {
             ))}
           </Box>
 
-          {/* Paper Stock Selection (pill‑shaped grid) */}
+          {/* Paper Stock Selection */}
           <Typography
             variant="h6"
             sx={{ fontWeight: 600, mb: 2, color: "#19485D", fontSize: "1.1rem" }}
@@ -299,7 +301,10 @@ const SquareBusinessCard = ({ addToCart }) => {
             {paperStocks.map((stock) => (
               <Grid item xs={6} key={stock.name}>
                 <Paper
-                  onClick={() => setSelectedStock(stock)}
+                  onClick={() => {
+                    setSelectedStock(stock);
+                    setActiveImageIndex(0);
+                  }}
                   sx={{
                     p: 1.5,
                     textAlign: "center",
@@ -326,7 +331,7 @@ const SquareBusinessCard = ({ addToCart }) => {
             ))}
           </Grid>
 
-          {/* Lamination Finish (pill‑shaped) */}
+          {/* Lamination Finish */}
           <Typography
             variant="h6"
             sx={{ fontWeight: 600, mb: 2, color: "#19485D", fontSize: "1.1rem" }}
@@ -373,7 +378,7 @@ const SquareBusinessCard = ({ addToCart }) => {
             <Typography variant="subtitle1" sx={{ fontWeight: 700, mb: 2, color: "#19485D" }}>
               Product Specifications:
             </Typography>
-            {cardDetails.features.map((feature, i) => (
+            {productDetails.features.map((feature, i) => (
               <Box key={i} sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
                 <span
                   style={{

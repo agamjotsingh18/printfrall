@@ -6,19 +6,14 @@ import "swiper/css";
 import "swiper/css/effect-fade";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
-
-// Asset imports
-import hero1 from "../assets/hero-1.jpg";
-import hero2 from "../assets/hero-2.jpg";
-import hero3 from "../assets/hero-3.jpg";
-
+import { getCdnImage } from "../utils/imageLoader";
 import "../styles/Hero.css";
 
 const Hero = () => {
   const slides = [
-    { src: hero1, alt: "Hero image showing printing services" },
-    { src: hero2, alt: "Hero image showing custom printing solutions" },
-    { src: hero3, alt: "Hero image showing corporate gifting" },
+    { src: "hero-1.jpg", alt: "Hero image showing printing services" },
+    { src: "hero-2.jpg", alt: "Hero image showing custom printing solutions" },
+    { src: "hero-3.jpg", alt: "Hero image showing corporate gifting" },
   ];
 
   return (
@@ -45,7 +40,7 @@ const Hero = () => {
           <SwiperSlide key={idx}>
             <div className="hero-slide-modern">
               <img
-                src={slide.src}
+                src={getCdnImage(slide.src, { width: 1920, quality: 90 })}
                 alt={slide.alt}
                 className="hero-image"
                 loading="eager"
@@ -58,7 +53,6 @@ const Hero = () => {
         ))}
       </Swiper>
       
-      {/* Custom Minimal Arrows */}
       <div 
         className="custom-prev" 
         aria-label="Previous slide"

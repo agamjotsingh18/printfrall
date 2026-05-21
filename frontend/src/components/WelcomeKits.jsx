@@ -3,71 +3,7 @@ import { Link } from "react-router-dom";
 import { IconButton } from "@mui/material";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 import "../styles/WelcomeKits.css";
-
-// Import images for kits (replace with actual image paths)
-import corporateExecutiveKitImg from "../assets/welcome-kits.png";
-import creativeProfessionalKitImg from "../assets/creative-kit-2.png";
-import ecoFriendlyKitImg from "../assets/eco-kit-3.png";
-import startupEssentialsKitImg from "../assets/startup-kit-2.png";
-import customWelcomeKitImg from "../assets/custom-welcome-kit.png"; 
-
-import matteFinishDiariesImg from "../assets/matte-finish-diaries.png";
-import vintageTanDiariesImg from "../assets/vintage-tan-diaries.png";
-import fauxLeatherDiariesImg from "../assets/faux-leather-diaries.png";
-import customCanvasDiariesImg from "../assets/custom-canvas-diaries.png";
-import waveTextureDiariesImg from "../assets/wave-texture-diaries.png";
-import ecoKraftCoverDiariesImg from "../assets/eco-kraft-cover-diaries.png";
-import stylusPenImg from "../assets/stylus-pen.png";
-import kraftPenImg from "../assets/kraft-pen.png";
-import scribblePenImg from "../assets/scribble-pen.png";
-import adroitPenImg from "../assets/adroit-pen.png";
-import giltRollerPenImg from "../assets/gilt-roller-pen.png";
-import skateBallpointPenImg from "../assets/skate-ballpoint-pen.png";
-import matteLaminatedStickersImg from "../assets/sticker.png";
-import holographicStickersImg from "../assets/sticker.png";
-import goldFoilingStickersImg from "../assets/sticker.png";
-import spotUVStickersImg from "../assets/sticker.png";
-import silverFoilingStickersImg from "../assets/sticker.png";
-import domeStickersImg from "../assets/sticker.png";
-import frontAdhesiveStickersImg from "../assets/sticker.png";
-import customOpaqueStickersImg from "../assets/sticker.png";
-import clearStickersImg from "../assets/sticker.png";
-import standardMugImg from "../assets/mug.png";
-import slimSSBottleImg from "../assets/slim-ss-bottle.png";
-import floralSSBottleImg from "../assets/floral-ss-bottle.png";
-import vegaSSBottleImg from "../assets/vega-ss-bottle.png";
-import premiumBlackSipperImg from "../assets/premium-black-sipper.png";
-import multicolorSteelBottleImg from "../assets/multicolor-steel-bottle.png";
-import pureCopperBottleImg from "../assets/pure-copper-bottle.png";
-import lancyHotColdSipperImg from "../assets/lancy-hot-cold-sipper.png";
-import glossyWhiteSipperImg from "../assets/glossy-white-sipper.png";
-import supremeBlueSipperImg from "../assets/supreme-blue-sipper.png";
-import classicBlackSipperImg from "../assets/classic-black-sipper.png";
-import shimmerDarkGreyMugImg from "../assets/shimmer-dark-grey-mug.png";
-import regalBlackMugImg from "../assets/regal-black-mug.png";
-import travelerBlackMugImg from "../assets/traveler-black-mug.png";
-import sleekBlackMugImg from "../assets/sleek-black-mug.png";
-import miniMugImg from "../assets/mini-mug.png";
-import roundNeckTShirtImg from "../assets/tshirt.png";
-import poloTShirtImg from "../assets/tshirt.png";
-import vNeckTShirtImg from "../assets/tshirt.png";
-import apexCarryLaptopBagImg from "../assets/laptop-bag.png";
-import prestigeProLaptopBagImg from "../assets/laptop-bag.png";
-import vanguardLaptopBagImg from "../assets/laptop-bag.png";
-import nexusEssentialLaptopBagImg from "../assets/laptop-bag.png";
-import eliteHorizonLaptopBagImg from "../assets/laptop-bag.png";
-import slimGuardLaptopSleeveImg from "../assets/laptop-sleeve.png";
-import infinityLaptopBagImg from "../assets/laptop-bag.png";
-import mobilePopSocketImg from "../assets/mobile-pop-socket.png";
-import customLuggageTagImg from "../assets/luggage-tag.png";
-import calendarImg from "../assets/calendar.png";
-import thankYouCardImg from "../assets/thank-you-card.png";
-import temperatureDisplayFlaskImg from "../assets/temperature-display-flask.png";
-import clockWithSpeakerImg from "../assets/clock-with-speaker.png";
-import standardIdCardSetImg from "../assets/standardIdCardSetImg.png";
-import premiumIdCardSetImg from "../assets/premiumIdCardSetImg.png";
-import idCardStandardHolderImg from "../assets/idCardStandardHolderImg.png";
-import idCardPremiumHolderSetImg from "../assets/idCardPremiumHolderSetImg.png";
+import { getCdnImage } from "../utils/imageLoader";
 
 const WelcomeKits = ({ addToCart }) => {
   const [selectedItems, setSelectedItems] = useState([]);
@@ -76,7 +12,7 @@ const WelcomeKits = ({ addToCart }) => {
   const mainKits = [
     {
       name: "Corporate Executive Kit",
-      image: corporateExecutiveKitImg,
+      image: "welcome-kits.png",
       price: 2500,
       route: "/services/corporate-gifting/welcome-kits/corporate-executive-kit",
       items: [
@@ -90,7 +26,7 @@ const WelcomeKits = ({ addToCart }) => {
     },
     {
       name: "Creative Professional Kit",
-      image: creativeProfessionalKitImg,
+      image: "creative-kit-2.png",
       price: 3000,
       route: "/services/corporate-gifting/welcome-kits/creative-professional-kit",
       items: [
@@ -105,7 +41,7 @@ const WelcomeKits = ({ addToCart }) => {
     },
     {
       name: "Eco-Friendly Kit",
-      image: ecoFriendlyKitImg,
+      image: "eco-kit-3.png",
       price: 2000,
       route: "/services/corporate-gifting/welcome-kits/eco-friendly-kit",
       items: [
@@ -118,7 +54,7 @@ const WelcomeKits = ({ addToCart }) => {
     },
     {
       name: "Startup Essentials Kit",
-      image: startupEssentialsKitImg,
+      image: "startup-kit-2.png",
       price: 1800,
       route: "/services/corporate-gifting/welcome-kits/startup-essentials-kit",
       items: [
@@ -135,109 +71,115 @@ const WelcomeKits = ({ addToCart }) => {
   // Customizable items data
   const customizableItems = {
     "Notebooks/Diaries": [
-      { name: "Matte Finish Diaries", image: matteFinishDiariesImg, price: 400 },
-      { name: "Vintage Tan Diaries", image: vintageTanDiariesImg, price: 450 },
-      { name: "Faux Leather Diaries", image: fauxLeatherDiariesImg, price: 500 },
-      { name: "Custom Canvas Diaries", image: customCanvasDiariesImg, price: 550 },
-      { name: "Wave Texture Diaries", image: waveTextureDiariesImg, price: 600 },
-      { name: "Eco Kraft Cover Diaries", image: ecoKraftCoverDiariesImg, price: 350 },
+      { name: "Matte Finish Diaries", image: "matte-finish-diaries.png", price: 400 },
+      { name: "Vintage Tan Diaries", image: "vintage-tan-diaries.png", price: 450 },
+      { name: "Faux Leather Diaries", image: "faux-leather-diaries.png", price: 500 },
+      { name: "Custom Canvas Diaries", image: "custom-canvas-diaries.png", price: 550 },
+      { name: "Wave Texture Diaries", image: "wave-texture-diaries.png", price: 600 },
+      { name: "Eco Kraft Cover Diaries", image: "eco-kraft-cover-diaries.png", price: 350 },
     ],
     Pens: [
-      { name: "Stylus Pen", image: stylusPenImg, price: 100 },
-      { name: "Kraft Pen", image: kraftPenImg, price: 120 },
-      { name: "Scribble Pen", image: scribblePenImg, price: 150 },
-      { name: "Adroit Pen", image: adroitPenImg, price: 200 },
-      { name: "Gilt Roller Ball Pen", image: giltRollerPenImg, price: 250 },
-      { name: "Skate Ballpoint Pen", image: skateBallpointPenImg, price: 180 },
+      { name: "Stylus Pen", image: "stylus-pen.png", price: 100 },
+      { name: "Kraft Pen", image: "kraft-pen.png", price: 120 },
+      { name: "Scribble Pen", image: "scribble-pen.png", price: 150 },
+      { name: "Adroit Pen", image: "adroit-pen.png", price: 200 },
+      { name: "Gilt Roller Ball Pen", image: "gilt-roller-pen.png", price: 250 },
+      { name: "Skate Ballpoint Pen", image: "skate-ballpoint-pen.png", price: 180 },
     ],
-    Bookmarks: [{ name: "Custom Bookmarks", image: thankYouCardImg, price: 50 }],
+    Bookmarks: [{ name: "Custom Bookmarks", image: "thank-you-card.png", price: 50 }],
     Stickers: [
-      { name: "Matte Laminated Stickers", image: matteLaminatedStickersImg, price: 30 },
-      { name: "Holographic Stickers", image: holographicStickersImg, price: 40 },
-      { name: "Gold Foiling Stickers", image: goldFoilingStickersImg, price: 50 },
-      { name: "Spot UV Stickers", image: spotUVStickersImg, price: 60 },
-      { name: "Silver Foiling Stickers", image: silverFoilingStickersImg, price: 70 },
-      { name: "Dome Stickers", image: domeStickersImg, price: 80 },
-      { name: "Front Adhesive Stickers", image: frontAdhesiveStickersImg, price: 90 },
-      { name: "Custom Opaque Stickers", image: customOpaqueStickersImg, price: 100 },
-      { name: "Clear Stickers", image: clearStickersImg, price: 110 },
+      { name: "Matte Laminated Stickers", image: "sticker.png", price: 30 },
+      { name: "Holographic Stickers", image: "sticker.png", price: 40 },
+      { name: "Gold Foiling Stickers", image: "sticker.png", price: 50 },
+      { name: "Spot UV Stickers", image: "sticker.png", price: 60 },
+      { name: "Silver Foiling Stickers", image: "sticker.png", price: 70 },
+      { name: "Dome Stickers", image: "sticker.png", price: 80 },
+      { name: "Front Adhesive Stickers", image: "sticker.png", price: 90 },
+      { name: "Custom Opaque Stickers", image: "sticker.png", price: 100 },
+      { name: "Clear Stickers", image: "sticker.png", price: 110 },
     ],
-    "A5 Posters": [{ name: "A5 Posters", image: calendarImg, price: 200 }],
-    "Button Badges": [{ name: "Button Badges", image: customLuggageTagImg, price: 150 }],
+    "A5 Posters": [{ name: "A5 Posters", image: "calendar.png", price: 200 }],
+    "Button Badges": [{ name: "Button Badges", image: "luggage-tag.png", price: 150 }],
     Mugs: [
-      { name: "Standard Mug", image: standardMugImg, price: 300 },
-      { name: "Shimmer Dark Grey Mug", image: shimmerDarkGreyMugImg, price: 350 },
-      { name: "Regal Black Mug", image: regalBlackMugImg, price: 400 },
-      { name: "Traveler Black Mug", image: travelerBlackMugImg, price: 450 },
-      { name: "Sleek Black Mug", image: sleekBlackMugImg, price: 500 },
-      { name: "Mini Mug", image: miniMugImg, price: 250 },
+      { name: "Standard Mug", image: "mug.png", price: 300 },
+      { name: "Shimmer Dark Grey Mug", image: "shimmer-dark-grey-mug.png", price: 350 },
+      { name: "Regal Black Mug", image: "regal-black-mug.png", price: 400 },
+      { name: "Traveler Black Mug", image: "traveler-black-mug.png", price: 450 },
+      { name: "Sleek Black Mug", image: "sleek-black-mug.png", price: 500 },
+      { name: "Mini Mug", image: "mini-mug.png", price: 250 },
     ],
     "Sippers & Mugs": [
-      { name: "Slim SS Bottle", image: slimSSBottleImg, price: 600 },
-      { name: "Floral SS Bottle", image: floralSSBottleImg, price: 650 },
-      { name: "Vega SS Bottle", image: vegaSSBottleImg, price: 700 },
-      { name: "Premium Black Sipper", image: premiumBlackSipperImg, price: 750 },
-      { name: "Multicolour Steel Bottle", image: multicolorSteelBottleImg, price: 800 },
-      { name: "Pure Copper Water Bottle", image: pureCopperBottleImg, price: 900 },
-      { name: "Lancy Hot & Cold White Sipper", image: lancyHotColdSipperImg, price: 850 },
-      { name: "Glossy White Sipper", image: glossyWhiteSipperImg, price: 800 },
-      { name: "Supreme Blue Sipper", image: supremeBlueSipperImg, price: 750 },
-      { name: "Classic Black Sipper", image: classicBlackSipperImg, price: 700 },
+      { name: "Slim SS Bottle", image: "slim-ss-bottle.png", price: 600 },
+      { name: "Floral SS Bottle", image: "floral-ss-bottle.png", price: 650 },
+      { name: "Vega SS Bottle", image: "vega-ss-bottle.png", price: 700 },
+      { name: "Premium Black Sipper", image: "premium-black-sipper.png", price: 750 },
+      { name: "Multicolour Steel Bottle", image: "multicolor-steel-bottle.png", price: 800 },
+      { name: "Pure Copper Water Bottle", image: "pure-copper-bottle.png", price: 900 },
+      { name: "Lancy Hot & Cold White Sipper", image: "lancy-hot-cold-sipper.png", price: 850 },
+      { name: "Glossy White Sipper", image: "glossy-white-sipper.png", price: 800 },
+      { name: "Supreme Blue Sipper", image: "supreme-blue-sipper.png", price: 750 },
+      { name: "Classic Black Sipper", image: "classic-black-sipper.png", price: 700 },
     ],
     "T-Shirts": [
-      { name: "Round Neck T-shirts", image: roundNeckTShirtImg, price: 500 },
-      { name: "Polo T-shirts", image: poloTShirtImg, price: 600 },
-      { name: "V-Neck T-shirts", image: vNeckTShirtImg, price: 550 },
+      { name: "Round Neck T-shirts", image: "tshirt.png", price: 500 },
+      { name: "Polo T-shirts", image: "tshirt.png", price: 600 },
+      { name: "V-Neck T-shirts", image: "tshirt.png", price: 550 },
     ],
     "Laptop Bags/Backpacks": [
-      { name: "Apex Carry Laptop Bag", image: apexCarryLaptopBagImg, price: 1200 },
-      { name: "Prestige Pro Laptop Bag", image: prestigeProLaptopBagImg, price: 1300 },
-      { name: "Vanguard Laptop Bag", image: vanguardLaptopBagImg, price: 1400 },
-      { name: "Nexus Essential Laptop Bag", image: nexusEssentialLaptopBagImg, price: 1100 },
-      { name: "Elite Horizon Laptop Bag", image: eliteHorizonLaptopBagImg, price: 1500 },
-      { name: "SlimGuard Laptop Sleeve", image: slimGuardLaptopSleeveImg, price: 1000 },
-      { name: "Infinity Laptop Bag", image: infinityLaptopBagImg, price: 1600 },
+      { name: "Apex Carry Laptop Bag", image: "laptop-bag.png", price: 1200 },
+      { name: "Prestige Pro Laptop Bag", image: "laptop-bag.png", price: 1300 },
+      { name: "Vanguard Laptop Bag", image: "laptop-bag.png", price: 1400 },
+      { name: "Nexus Essential Laptop Bag", image: "laptop-bag.png", price: 1100 },
+      { name: "Elite Horizon Laptop Bag", image: "laptop-bag.png", price: 1500 },
+      { name: "SlimGuard Laptop Sleeve", image: "laptop-sleeve.png", price: 1000 },
+      { name: "Infinity Laptop Bag", image: "laptop-bag.png", price: 1600 },
     ],
-    "Mobile Pop Socket": [{ name: "Mobile Pop Socket", image: mobilePopSocketImg, price: 200 }],
+    "Mobile Pop Socket": [{ name: "Mobile Pop Socket", image: "mobile-pop-socket.png", price: 200 }],
     "Custom Printed Luggage Tag": [
-      { name: "Custom Printed Luggage Tag", image: customLuggageTagImg, price: 250 },
+      { name: "Custom Printed Luggage Tag", image: "luggage-tag.png", price: 250 },
     ],
-    "A5 Landscape Calendar": [{ name: "A5 Landscape Calendar", image: calendarImg, price: 300 }],
+    "A5 Landscape Calendar": [{ name: "A5 Landscape Calendar", image: "calendar.png", price: 300 }],
     "ID Card Set": [
-      { name: "Standard ID Card and Lanyard Combo", image: standardIdCardSetImg, price: 400 },
-      { name: "Premium ID Card and Lanyard Combo", image: premiumIdCardSetImg, price: 500 },
-      { name: "ID Card and Standard Holder Combo", image: idCardStandardHolderImg, price: 450 },
-      { name: "ID Card and Premium Holder Combo", image: idCardPremiumHolderSetImg, price: 550 },
+      { name: "Standard ID Card and Lanyard Combo", image: "standardIdCardSetImg.png", price: 400 },
+      { name: "Premium ID Card and Lanyard Combo", image: "premiumIdCardSetImg.png", price: 500 },
+      { name: "ID Card and Standard Holder Combo", image: "idCardStandardHolderImg.png", price: 450 },
+      { name: "ID Card and Premium Holder Combo", image: "idCardPremiumHolderSetImg.png", price: 550 },
     ],
-    "Thank You Card": [{ name: "Thank You Card", image: thankYouCardImg, price: 50 }],
+    "Thank You Card": [{ name: "Thank You Card", image: "thank-you-card.png", price: 50 }],
     "Temperature Display Flask": [
-      { name: "Temperature Display Flask", image: temperatureDisplayFlaskImg, price: 1000 },
+      { name: "Temperature Display Flask", image: "temperature-display-flask.png", price: 1000 },
     ],
-    "Clock with Speaker": [{ name: "Clock with Speaker", image: clockWithSpeakerImg, price: 1200 }],
+    "Clock with Speaker": [{ name: "Clock with Speaker", image: "clock-with-speaker.png", price: 1200 }],
   };
 
-  // Add item to selected items
   const handleAddItem = (item) => {
     setSelectedItems([...selectedItems, item]);
   };
 
-  // Remove item from selected items
   const handleRemoveItem = (item) => {
     setSelectedItems(selectedItems.filter((i) => i.name !== item.name));
   };
 
-  // Calculate total price of selected items
   const calculateTotalPrice = () => {
     return selectedItems.reduce((total, item) => total + item.price, 0);
   };
 
-  // Add custom kit to cart
+  const handleAddMainKitToCart = (kit) => {
+    const cartItem = {
+      ...kit,
+      image: getCdnImage(kit.image, { width: 150, height: 150 }),
+      quantity: 1
+    };
+    addToCart(cartItem);
+  };
+
   const handleAddCustomKitToCart = () => {
     const customKit = {
       name: "Custom Kit",
-      image: customWelcomeKitImg,
+      image: getCdnImage("custom-welcome-kit.png", { width: 150, height: 150 }),
       items: selectedItems,
       price: calculateTotalPrice(),
+      quantity: 1
     };
     addToCart(customKit);
   };
@@ -247,7 +189,6 @@ const WelcomeKits = ({ addToCart }) => {
       <h2 className="section-title">Welcome Kits</h2>
       <p className="section-subtitle">Our best-selling kits for every need</p>
 
-      {/* Main Kits Section - Updated with Links */}
       <div className="main-kits-container" aria-label="Premium welcome kits">
         {mainKits.map((kit, index) => (
           <div key={index} className="kit-card" aria-label={`Kit: ${kit.name}`}>
@@ -256,7 +197,14 @@ const WelcomeKits = ({ addToCart }) => {
               className="kit-link"
               aria-label={`View details of ${kit.name}`}
             >
-              <img src={kit.image} alt={kit.name} className="kit-image" />
+              <img 
+                src={getCdnImage(kit.image, { width: 350, height: 350 })} 
+                alt={kit.name} 
+                className="kit-image" 
+                width="350"
+                height="350"
+                loading="lazy"
+              />
               <h3 className="kit-name">{kit.name}</h3>
               <p className="kit-price" aria-label={`Price: ₹${kit.price}`}>₹{kit.price}</p>
               <ul className="kit-items" aria-label={`Items included in ${kit.name}`}>
@@ -278,7 +226,7 @@ const WelcomeKits = ({ addToCart }) => {
                   background: "#5cb67f",
                 },
               }}
-              onClick={() => addToCart(kit)}
+              onClick={() => handleAddMainKitToCart(kit)}
             >
               Add to Cart &nbsp;
               <AddShoppingCartIcon aria-hidden="true" />
@@ -287,10 +235,8 @@ const WelcomeKits = ({ addToCart }) => {
         ))}
       </div>
 
-      {/* Customizable Kit Section */}
       <h2 className="section-title">Create Your Custom Kit</h2>
       <div className="customizable-kit">
-        {/* Categories */}
         <div className="categories" aria-label="Customizable items categories">
           {Object.keys(customizableItems).map((category) => (
             <div key={category} className="category" aria-label={`${category} category`}>
@@ -309,7 +255,13 @@ const WelcomeKits = ({ addToCart }) => {
                       }
                     }}
                   >
-                    <img src={item.image} alt={item.name} />
+                    <img 
+                      src={getCdnImage(item.image, { width: 80, height: 80 })} 
+                      alt={item.name} 
+                      width="80"
+                      height="80"
+                      loading="lazy"
+                    />
                     <p>{item.name}</p>
                     <p aria-label={`Price: ₹${item.price}`}>₹{item.price}</p>
                   </li>
@@ -319,7 +271,6 @@ const WelcomeKits = ({ addToCart }) => {
           ))}
         </div>
 
-        {/* Selected Items */}
         <div className="selected-items" aria-label="Your custom kit selection">
           <h3>Your Kit</h3>
           {selectedItems.length === 0 ? (
@@ -328,7 +279,12 @@ const WelcomeKits = ({ addToCart }) => {
             <ul aria-label="Selected items list">
               {selectedItems.map((item, index) => (
                 <li key={index} className="selected-item" aria-label={`Selected item: ${item.name}`}>
-                  <img src={item.image} alt={item.name} />
+                  <img 
+                    src={getCdnImage(item.image, { width: 50, height: 50 })} 
+                    alt={item.name} 
+                    width="50"
+                    height="50"
+                  />
                   <p>{item.name}</p>
                   <p>₹{item.price}</p>
                   <button 

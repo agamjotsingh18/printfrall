@@ -20,15 +20,9 @@ import {
   LocalOffer,
   AutoAwesome,
 } from "@mui/icons-material";
+import { getCdnImage } from "../utils/imageLoader";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
-
-// ========== EXTRA IMAGES (placeholders – replace with real variants) ==========
-import offerFlyerImg from "../assets/offer-flyer.png";
-import offerFlyerImg2 from "../assets/offer-flyer-1.png";
-import offerFlyerImg3 from "../assets/offer-flyer-2.png";
-import offerFlyerImg4 from "../assets/offer-flyer-3.png";
-// import offerFlyerImg5 from "../assets/offer-flyer-4.png";
 
 const OfferFlyers = ({ addToCart }) => {
   // Size options
@@ -71,23 +65,33 @@ const OfferFlyers = ({ addToCart }) => {
 
   const sideOptions = ["Single Sided", "Double Sided"];
 
-  // Product features
-  const productFeatures = [
-    "High‑quality CMYK full‑colour printing",
-    "Choice of Digital (quick turnaround) or Offset (bulk savings)",
-    "Premium 130 GSM glossy art paper or economical 90 GSM coated paper",
-    "Single or double‑sided printing options",
-    "Minimum order quantity: 25 units",
-    "Crisp text and vibrant images – ideal for promotions",
-    "Custom shapes and finishes available on request",
-  ];
-
   // State
   const [selectedSize, setSelectedSize] = useState(sizeOptions[1]); // A5 default
   const [selectedMaterial, setSelectedMaterial] = useState(materialOptions[0]);
   const [selectedSide, setSelectedSide] = useState("Single Sided");
-  const [mainImage, setMainImage] = useState(offerFlyerImg);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
+
+  const productDetails = {
+    name: "Professional Offer Flyers",
+    description:
+      "Drive sales with high-quality pamphlets. Choose lightweight materials for easy distribution or premium glossy art paper for a professional brand feel.",
+    features: [
+      "High‑quality CMYK full‑colour printing",
+      "Choice of Digital (quick turnaround) or Offset (bulk savings)",
+      "Premium 130 GSM glossy art paper or economical 90 GSM coated paper",
+      "Single or double‑sided printing options",
+      "Minimum order quantity: 25 units",
+      "Crisp text and vibrant images – ideal for promotions",
+      "Custom shapes and finishes available on request",
+    ],
+    images: [
+      "offer-flyer.png",
+      "offer-flyer-1.png",
+      "offer-flyer-2.png",
+      "offer-flyer-3.png"
+    ],
+  };
 
   // Price calculation
   const unitPrice =
@@ -97,23 +101,15 @@ const OfferFlyers = ({ addToCart }) => {
   const totalPrice = unitPrice; // per unit
   const moq = selectedSize.moq;
 
-  // Thumbnail images array (now with 5 placeholders)
-  const thumbnailImages = [
-    offerFlyerImg,
-    offerFlyerImg2,
-    offerFlyerImg3,
-    offerFlyerImg4,
-  ];
-
   const handleAddToCart = () => {
     const item = {
-      name: "Offer Flyers",
+      name: productDetails.name,
       size: selectedSize.label,
       material: selectedMaterial.name,
       sides: selectedSide,
       price: unitPrice,
       quantity: moq,
-      image: mainImage,
+      image: getCdnImage(productDetails.images[0], { width: 150, height: 150 }),
     };
     addToCart(item);
     setSnackbarOpen(true);
@@ -178,8 +174,10 @@ const OfferFlyers = ({ addToCart }) => {
 
             <Zoom>
               <img
-                src={mainImage}
-                alt="Offer Flyer Preview"
+                src={getCdnImage(productDetails.images[activeImageIndex], { width: 600, height: 450 })}
+                alt={`${productDetails.name} primary view`}
+                width="600"
+                height="450"
                 style={{
                   width: "100%",
                   borderRadius: "12px",
@@ -189,7 +187,7 @@ const OfferFlyers = ({ addToCart }) => {
               />
             </Zoom>
 
-            {/* Thumbnail Gallery - now with multiple images */}
+            {/* Thumbnail Gallery */}
             <Box
               sx={{
                 display: "flex",
@@ -197,26 +195,30 @@ const OfferFlyers = ({ addToCart }) => {
                 mt: 2,
                 overflowX: "auto",
                 "&::-webkit-scrollbar": { display: "none" },
+                scrollbarWidth: "none",
               }}
             >
-              {thumbnailImages.map((image, index) => (
+              {productDetails.images.map((imageName, index) => (
                 <Paper
                   key={index}
-                  onClick={() => setMainImage(image)}
+                  onClick={() => setActiveImageIndex(index)}
                   sx={{
                     p: 1,
                     borderRadius: "12px",
                     cursor: "pointer",
                     border:
-                      mainImage === image ? "2px solid #70CB97" : "1px solid #e0e7ed",
+                      activeImageIndex === index ? "2px solid #70CB97" : "1px solid #e0e7ed",
                     flexShrink: 0,
                     transition: "all 0.2s",
                     "&:hover": { transform: "translateY(-2px)" },
                   }}
                 >
                   <img
-                    src={image}
-                    alt={`View ${index + 1}`}
+                    src={getCdnImage(imageName, { width: 80, height: 80 })}
+                    alt={`${productDetails.name} thumbnail view ${index + 1}`}
+                    width="80"
+                    height="80"
+                    loading="lazy"
                     style={{
                       width: "80px",
                       height: "80px",
@@ -266,7 +268,7 @@ const OfferFlyers = ({ addToCart }) => {
               fontSize: { xs: "1.8rem", md: "2.5rem" },
             }}
           >
-            Professional Offer Flyers
+            {productDetails.name}
           </Typography>
 
           <Box sx={{ display: "flex", alignItems: "baseline", gap: 2, flexWrap: "wrap", mb: 1 }}>
@@ -279,8 +281,7 @@ const OfferFlyers = ({ addToCart }) => {
           </Box>
 
           <Typography variant="body1" sx={{ mb: 3, color: "#1e2a32", lineHeight: 1.6 }}>
-            Drive sales with high-quality pamphlets. Choose lightweight materials for easy
-            distribution or premium glossy art paper for a professional brand feel.
+            {productDetails.description}
           </Typography>
 
           <Divider sx={{ mb: 3 }} />
@@ -339,7 +340,10 @@ const OfferFlyers = ({ addToCart }) => {
             {materialOptions.map((mat) => (
               <Paper
                 key={mat.name}
-                onClick={() => setSelectedMaterial(mat)}
+                onClick={() => {
+                  setSelectedMaterial(mat);
+                  setActiveImageIndex(0);
+                }}
                 sx={{
                   flex: 1,
                   p: 1.5,
@@ -418,7 +422,7 @@ const OfferFlyers = ({ addToCart }) => {
             <Typography variant="subtitle1" sx={{ fontWeight: 700, mb: 2, color: "#19485D" }}>
               Printing Specifications:
             </Typography>
-            {productFeatures.map((feature, i) => (
+            {productDetails.features.map((feature, i) => (
               <Box key={i} sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
                 <Inventory sx={{ fontSize: 16, color: "#70CB97" }} />
                 <Typography variant="body2" sx={{ color: "#5a6e7a" }}>

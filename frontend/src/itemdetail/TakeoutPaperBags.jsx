@@ -18,17 +18,9 @@ import {
   AutoAwesome,
   Restaurant,
 } from "@mui/icons-material";
+import { getCdnImage } from "../utils/imageLoader";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
-
-// Import your actual takeout bag images here – replace with real variants if available
-import takeoutPaperBagImg from "../assets/takeout-paper-bag.png";
-import takeoutPaperBagImg2 from "../assets/takeout-paper-bag-1.png";
-import takeoutPaperBagImg3 from "../assets/takeout-paper-bag-2.png";
-import takeoutPaperBagImg4 from "../assets/takeout-paper-bag-3.png";
-import takeoutPaperBagImg5 from "../assets/takeout-paper-bag-4.png";
-import takeoutPaperBagImg6 from "../assets/takeout-paper-bag-5.png";
-import takeoutPaperBagImg7 from "../assets/takeout-paper-bag-6.png";
 
 const TakeoutPaperBags = ({ addToCart }) => {
   // Price per unit for each size/style
@@ -40,14 +32,6 @@ const TakeoutPaperBags = ({ addToCart }) => {
 
   const availableSizes = ["Small (8x4x10 inch)", "Large (11x6x15 inch)", "V-Bottom (Standard)"];
   const defaultSize = "Small (8x4x10 inch)";
-
-  const [selectedSize, setSelectedSize] = useState(defaultSize);
-  const [mainImage, setMainImage] = useState(takeoutPaperBagImg);
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-
-  const unitPrice = priceMapping[selectedSize];
-  const moq = 100; // Minimum order quantity
-  const totalPrice = unitPrice * moq;
 
   const productDetails = {
     name: "Custom Takeout Paper Bags",
@@ -62,23 +46,30 @@ const TakeoutPaperBags = ({ addToCart }) => {
       "Customization: High-definition digital logo printing",
       "MOQ: Bulk ordering available starting from 100 units",
     ],
+    images: [
+      "takeout-paper-bag.png",
+      "takeout-paper-bag-1.png",
+      "takeout-paper-bag-2.png",
+      "takeout-paper-bag-3.png",
+      "takeout-paper-bag-4.png",
+      "takeout-paper-bag-5.png",
+      "takeout-paper-bag-6.png"
+    ],
     tags: ["Food Grade", "Reinforced Bottom", "Eco-Friendly"],
   };
 
-  const thumbnailImages = [
-    takeoutPaperBagImg,
-    takeoutPaperBagImg2,
-    takeoutPaperBagImg3,
-    takeoutPaperBagImg4,
-    takeoutPaperBagImg5,
-    takeoutPaperBagImg6,
-    takeoutPaperBagImg7,
-  ];
+  const [selectedSize, setSelectedSize] = useState(defaultSize);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+
+  const unitPrice = priceMapping[selectedSize];
+  const moq = 100; // Minimum order quantity
+  const totalPrice = unitPrice * moq;
 
   const handleAddToCart = () => {
     const item = {
       name: productDetails.name,
-      image: mainImage,
+      image: getCdnImage(productDetails.images[0], { width: 150, height: 150 }),
       description: productDetails.description,
       selectedSize: `${moq} units (${selectedSize})`,
       selectedMaterial: "Premium Kraft Paper",
@@ -112,44 +103,29 @@ const TakeoutPaperBags = ({ addToCart }) => {
               position: "relative",
             }}
           >
-            <Box
-              sx={{
-                position: "absolute",
-                top: 20,
-                left: 20,
-                zIndex: 10,
-                display: "flex",
-                gap: 1,
-              }}
-            >
-              <Chip
-                label="FOOD GRADE"
-                size="small"
-                icon={<Restaurant />}
-                sx={{
-                  bgcolor: "#19485D",
-                  color: "white",
-                  fontWeight: "bold",
-                  borderRadius: "40px",
-                }}
-              />
-              <Chip
-                label="ECO-FRIENDLY"
-                size="small"
-                icon={<AutoAwesome />}
-                sx={{
-                  bgcolor: "#70CB97",
-                  color: "white",
-                  fontWeight: "bold",
-                  borderRadius: "40px",
-                }}
-              />
+            <Box sx={{ display: "flex", gap: 1, mb: 2 }}>
+              {productDetails.tags.map((tag, idx) => (
+                <Chip
+                  key={idx}
+                  label={tag}
+                  size="small"
+                  icon={tag === "Food Grade" ? <Restaurant fontSize="small" /> : <AutoAwesome fontSize="small" />}
+                  sx={{
+                    backgroundColor: "rgba(112, 203, 151, 0.1)",
+                    color: "#70CB97",
+                    fontWeight: "bold",
+                    borderRadius: 2,
+                  }}
+                />
+              ))}
             </Box>
 
             <Zoom>
               <img
-                src={mainImage}
-                alt={productDetails.name}
+                src={getCdnImage(productDetails.images[activeImageIndex], { width: 600, height: 450 })}
+                alt={`${productDetails.name} primary view`}
+                width="600"
+                height="450"
                 style={{
                   width: "100%",
                   borderRadius: "12px",
@@ -167,27 +143,31 @@ const TakeoutPaperBags = ({ addToCart }) => {
                 mt: 2,
                 overflowX: "auto",
                 "&::-webkit-scrollbar": { display: "none" },
+                scrollbarWidth: "none",
               }}
             >
-              {thumbnailImages.map((image, index) => (
+              {productDetails.images.map((imageName, index) => (
                 <Paper
                   key={index}
-                  onClick={() => setMainImage(image)}
+                  onClick={() => setActiveImageIndex(index)}
                   sx={{
                     p: 1,
                     borderRadius: "12px",
                     cursor: "pointer",
                     border:
-                      mainImage === image ? "2px solid #70CB97" : "1px solid #e0e7ed",
+                      activeImageIndex === index ? "2px solid #70CB97" : "1px solid #e0e7ed",
                     flexShrink: 0,
                     transition: "all 0.2s",
                     "&:hover": { transform: "translateY(-2px)" },
                   }}
                 >
                   <img
-                    src={image}
-                    alt={`View ${index + 1}`}
-                    style={{ width: "80px", height: "80px", objectFit: "cover" }}
+                    src={getCdnImage(imageName, { width: 80, height: 80 })}
+                    alt={`${productDetails.name} thumbnail view ${index + 1}`}
+                    width="80"
+                    height="80"
+                    loading="lazy"
+                    style={{ width: "80px", height: "80px", objectFit: "cover", borderRadius: "8px" }}
                   />
                 </Paper>
               ))}
@@ -238,7 +218,10 @@ const TakeoutPaperBags = ({ addToCart }) => {
             {availableSizes.map((size) => (
               <Paper
                 key={size}
-                onClick={() => setSelectedSize(size)}
+                onClick={() => {
+                  setSelectedSize(size);
+                  setActiveImageIndex(0);
+                }}
                 sx={{
                   p: 1.5,
                   px: 3,
@@ -261,7 +244,7 @@ const TakeoutPaperBags = ({ addToCart }) => {
             ))}
           </Box>
 
-          {/* Specifications Panel (matches GiftBoxes style) */}
+          {/* Specifications Panel */}
           <Paper
             sx={{
               p: 3,

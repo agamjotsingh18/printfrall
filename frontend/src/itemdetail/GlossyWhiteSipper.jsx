@@ -11,16 +11,9 @@ import {
   Chip,
 } from "@mui/material";
 import { AddShoppingCart, Close, Security, Speed } from "@mui/icons-material";
+import { getCdnImage } from "../utils/imageLoader";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
-
-// ========== MAIN BOTTLE IMAGE ==========
-import mainImg from "../assets/glossy-white-sipper.png";
-
-// ========== EXTRA ANGLES ==========
-import img2 from "../assets/glossy-white-sipper.png";
-import img3 from "../assets/glossy-white-sipper-1.png";
-import img4 from "../assets/glossy-white-sipper-2.png";
 
 const GlossyWhiteSipper = ({ addToCart }) => {
   // Price mapping
@@ -35,12 +28,11 @@ const GlossyWhiteSipper = ({ addToCart }) => {
 
   const [selectedSize] = useState(defaultSize);
   const [selectedColor, setSelectedColor] = useState(defaultColor);
-  const [mainImage, setMainImage] = useState(mainImg);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   const sipperDetails = {
     name: "Glaze Spill Free Sipper - White",
-    image: mainImg,
     description:
       "Tired of spills ruining your day? This innovative spill-proof bottle features a specialized tight grip-pad bottom that prevents accidental tips while maintaining a sleek, professional look.",
     features: [
@@ -54,7 +46,11 @@ const GlossyWhiteSipper = ({ addToCart }) => {
     ],
     sizes: ["400ml"],
     colors: availableColors,
-    extraImages: [img2, img3, img4],
+    images: [
+      "glossy-white-sipper.png",
+      "glossy-white-sipper-1.png",
+      "glossy-white-sipper-2.png"
+    ],
     tags: ["Spill-Proof", "Vacuum Insulated", "BPA Free"],
   };
 
@@ -62,7 +58,11 @@ const GlossyWhiteSipper = ({ addToCart }) => {
 
   const handleAddToCart = () => {
     const item = {
-      ...sipperDetails,
+      name: sipperDetails.name,
+      image: getCdnImage(sipperDetails.images[0], { width: 150, height: 150 }),
+      description: sipperDetails.description,
+      features: sipperDetails.features,
+      tags: sipperDetails.tags,
       selectedSize,
       selectedColor,
       price,
@@ -89,8 +89,10 @@ const GlossyWhiteSipper = ({ addToCart }) => {
           >
             <Zoom>
               <img
-                src={mainImage}
-                alt={sipperDetails.name}
+                src={getCdnImage(sipperDetails.images[activeImageIndex], { width: 600, height: 450 })}
+                alt={`${sipperDetails.name} primary view`}
+                width="600"
+                height="450"
                 style={{
                   width: "100%",
                   borderRadius: "12px",
@@ -109,26 +111,30 @@ const GlossyWhiteSipper = ({ addToCart }) => {
                 mt: 2,
                 overflowX: "auto",
                 "&::-webkit-scrollbar": { display: "none" },
+                scrollbarWidth: "none",
               }}
             >
-              {sipperDetails.extraImages.map((img, idx) => (
+              {sipperDetails.images.map((imageName, idx) => (
                 <Paper
                   key={idx}
-                  onClick={() => setMainImage(img)}
+                  onClick={() => setActiveImageIndex(idx)}
                   sx={{
                     p: 1,
                     borderRadius: "10px",
                     cursor: "pointer",
                     border:
-                      mainImage === img ? "2px solid #70CB97" : "2px solid transparent",
+                      activeImageIndex === idx ? "2px solid #70CB97" : "2px solid transparent",
                     "&:hover": { border: "2px solid #70CB97" },
                     flexShrink: 0,
                     transition: "all 0.2s",
                   }}
                 >
                   <img
-                    src={img}
-                    alt={`view ${idx + 1}`}
+                    src={getCdnImage(imageName, { width: 90, height: 90 })}
+                    alt={`${sipperDetails.name} thumbnail view ${idx + 1}`}
+                    width="90"
+                    height="90"
+                    loading="lazy"
                     style={{
                       width: "90px",
                       height: "90px",

@@ -18,15 +18,9 @@ import {
   Wallpaper,
   WorkspacePremium,
 } from "@mui/icons-material";
+import { getCdnImage } from "../utils/imageLoader";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
-
-// Import your wall frame images – replace with real variants
-import photoWithWallFrameImg from "../assets/photo-with-wall-frame.png";
-import photoWithWallFrameImg2 from "../assets/photo-with-wall-frame-1.png";
-import photoWithWallFrameImg3 from "../assets/photo-with-wall-frame-2.png";
-import photoWithWallFrameImg4 from "../assets/photo-with-wall-frame-3.png";
-import photoWithWallFrameImg5 from "../assets/photo-with-wall-frame-4.png";
 
 const PhotoWithWallFrames = ({ addToCart }) => {
   // Frame styles (10 options)
@@ -61,16 +55,27 @@ const PhotoWithWallFrames = ({ addToCart }) => {
 
   const laminationOptions = ["Matte", "Glossy"];
 
-  // Product features (for specifications panel)
-  const productFeatures = [
-    "Gallery‑quality wall frames for professional display",
-    "Premium MDF wood base with durable synthetic frame",
-    "No acrylic/glass – preserves natural canvas/vinyl texture",
-    "Available in 10+ elegant finishes (gold, bronze, black, etc.)",
-    "Ready to hang – includes wall mounting hardware",
-    "Archival‑grade materials resist fading and moisture",
-    "Perfect for home, office galleries, exhibitions",
-  ];
+  const productDetails = {
+    name: "Wall Photo Frames",
+    description:
+      "Turn any wall into a stunning gallery. These frames are delivered without acrylic or glass to preserve the rich, natural texture of the premium canvas or vinyl finish.",
+    features: [
+      "Gallery‑quality wall frames for professional display",
+      "Premium MDF wood base with durable synthetic frame",
+      "No acrylic/glass – preserves natural canvas/vinyl texture",
+      "Available in 10+ elegant finishes (gold, bronze, black, etc.)",
+      "Ready to hang – includes wall mounting hardware",
+      "Archival‑grade materials resist fading and moisture",
+      "Perfect for home, office galleries, exhibitions",
+    ],
+    images: [
+      "photo-with-wall-frame.png",
+      "photo-with-wall-frame-1.png",
+      "photo-with-wall-frame-2.png",
+      "photo-with-wall-frame-3.png",
+      "photo-with-wall-frame-4.png"
+    ],
+  };
 
   // State
   const [selectedSize, setSelectedSize] = useState(sizeOptions[2]); // 14x18 default
@@ -78,18 +83,10 @@ const PhotoWithWallFrames = ({ addToCart }) => {
   const [selectedMaterial, setSelectedMaterial] = useState(printMaterials[0]); // Canvas
   const [selectedLamination, setSelectedLamination] = useState("Matte");
   const [orientation, setOrientation] = useState("Portrait");
-  const [mainImage, setMainImage] = useState(photoWithWallFrameImg);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   const totalPrice = selectedSize.price;
-
-  const thumbnailImages = [
-    photoWithWallFrameImg,
-    photoWithWallFrameImg2,
-    photoWithWallFrameImg3,
-    photoWithWallFrameImg4,
-    photoWithWallFrameImg5,
-  ];
 
   const handleAddToCart = () => {
     const item = {
@@ -101,7 +98,7 @@ const PhotoWithWallFrames = ({ addToCart }) => {
       orientation: orientation,
       price: totalPrice,
       quantity: 1,
-      image: mainImage,
+      image: getCdnImage(productDetails.images[0], { width: 150, height: 150 }),
     };
     addToCart(item);
     setSnackbarOpen(true);
@@ -166,8 +163,10 @@ const PhotoWithWallFrames = ({ addToCart }) => {
 
             <Zoom>
               <img
-                src={mainImage}
-                alt="Wall Frame Preview"
+                src={getCdnImage(productDetails.images[activeImageIndex], { width: 600, height: 450 })}
+                alt={`${productDetails.name} primary view`}
+                width="600"
+                height="450"
                 style={{
                   width: "100%",
                   borderRadius: "12px",
@@ -186,26 +185,30 @@ const PhotoWithWallFrames = ({ addToCart }) => {
                 mt: 2,
                 overflowX: "auto",
                 "&::-webkit-scrollbar": { display: "none" },
+                scrollbarWidth: "none",
               }}
             >
-              {thumbnailImages.map((image, index) => (
+              {productDetails.images.map((imageName, index) => (
                 <Paper
                   key={index}
-                  onClick={() => setMainImage(image)}
+                  onClick={() => setActiveImageIndex(index)}
                   sx={{
                     p: 1,
                     borderRadius: "12px",
                     cursor: "pointer",
                     border:
-                      mainImage === image ? "2px solid #70CB97" : "1px solid #e0e7ed",
+                      activeImageIndex === index ? "2px solid #70CB97" : "1px solid #e0e7ed",
                     flexShrink: 0,
                     transition: "all 0.2s",
                     "&:hover": { transform: "translateY(-2px)" },
                   }}
                 >
                   <img
-                    src={image}
-                    alt={`View ${index + 1}`}
+                    src={getCdnImage(imageName, { width: 80, height: 80 })}
+                    alt={`${productDetails.name} thumbnail view ${index + 1}`}
+                    width="80"
+                    height="80"
+                    loading="lazy"
                     style={{
                       width: "80px",
                       height: "80px",
@@ -230,7 +233,7 @@ const PhotoWithWallFrames = ({ addToCart }) => {
               fontSize: { xs: "1.8rem", md: "2.5rem" },
             }}
           >
-            Wall Photo Frames
+            {productDetails.name}
           </Typography>
 
           <Box sx={{ display: "flex", alignItems: "baseline", gap: 2, flexWrap: "wrap", mb: 1 }}>
@@ -243,8 +246,7 @@ const PhotoWithWallFrames = ({ addToCart }) => {
           </Box>
 
           <Typography variant="body1" sx={{ mb: 3, color: "#1e2a32", lineHeight: 1.6 }}>
-            Turn any wall into a stunning gallery. These frames are delivered without acrylic or glass
-            to preserve the rich, natural texture of the premium canvas or vinyl finish.
+            {productDetails.description}
           </Typography>
 
           <Divider sx={{ mb: 3 }} />
@@ -295,7 +297,7 @@ const PhotoWithWallFrames = ({ addToCart }) => {
               >
                 Select Size
               </Typography>
-              <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+              <Box sx={{ display: "flex", gap: 1, maxHeight: "160px", overflowY: "auto", pr: 0.5, scrollbarWidth: "thin" }}>
                 {sizeOptions.map((size) => (
                   <Paper
                     key={size.label}
@@ -335,7 +337,10 @@ const PhotoWithWallFrames = ({ addToCart }) => {
             {printMaterials.map((mat) => (
               <Paper
                 key={mat.name}
-                onClick={() => setSelectedMaterial(mat)}
+                onClick={() => {
+                  setSelectedMaterial(mat);
+                  setActiveImageIndex(0);
+                }}
                 sx={{
                   flex: 1,
                   p: 1.5,
@@ -441,7 +446,7 @@ const PhotoWithWallFrames = ({ addToCart }) => {
             <Typography variant="subtitle1" sx={{ fontWeight: 700, mb: 2, color: "#19485D" }}>
               Gallery Features:
             </Typography>
-            {productFeatures.map((feature, i) => (
+            {productDetails.features.map((feature, i) => (
               <Box key={i} sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
                 <Inventory sx={{ fontSize: 16, color: "#70CB97" }} />
                 <Typography variant="body2" sx={{ color: "#5a6e7a" }}>

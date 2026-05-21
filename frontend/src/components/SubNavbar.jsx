@@ -307,7 +307,6 @@ const SubNavbar = () => {
     setOpenDropdown(openDropdown === index ? null : index);
   };
 
-  // Helper to convert product name to URL slug
   const getProductSlug = (productName) => {
     return productName
       .toLowerCase()

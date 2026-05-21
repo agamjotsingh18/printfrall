@@ -13,22 +13,9 @@ import {
   InputAdornment,
 } from "@mui/material";
 import { AddShoppingCart, Close, WorkspacePremium, Thermostat, MenuBook, Create } from "@mui/icons-material";
+import { getCdnImage } from "../utils/imageLoader";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
-
-// ========== MAIN COMBO IMAGE ==========
-import mainImg from "../assets/elite-executive-combo.png";
-
-// ========== EXTRA ANGLES ==========
-import img2 from "../assets/elite-executive-combo.png";
-import img3 from "../assets/elite-executive-combo-1.png";
-import img4 from "../assets/elite-executive-combo-2.png";
-import img5 from "../assets/elite-executive-combo-3.png";
-
-// ========== INCLUDED ITEMS ==========
-import vintageTanDiariesImg from "../assets/vintage-tan-diaries.png";
-import giltRollerPenImg from "../assets/gilt-roller-pen.png";
-import glossyWhiteSipperImg from "../assets/glossy-white-sipper.png";
 
 const EliteExecutiveCombo = ({ addToCart }) => {
   // Pack options with quantity and price
@@ -43,7 +30,7 @@ const EliteExecutiveCombo = ({ addToCart }) => {
 
   const [selectedOption, setSelectedOption] = useState(packOptions[0]);
   const [customQuantity, setCustomQuantity] = useState(1);
-  const [mainImage, setMainImage] = useState(mainImg);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   const getTotalPrice = () => {
@@ -64,7 +51,6 @@ const EliteExecutiveCombo = ({ addToCart }) => {
 
   const productDetails = {
     name: "Elite Executive Combo",
-    image: mainImg,
     originalPrice: 1200,
     description:
       "A thoughtful and smart utility gift set designed for clients and employees. This trendy white-brown collection features a vacuum bottle with smart temperature tech, a premium leatherette diary, and a matching metal pen.",
@@ -78,11 +64,16 @@ const EliteExecutiveCombo = ({ addToCart }) => {
       "Premium Gift Packaging included (25.5 x 29.5 x 7 cm)",
     ],
     sizes: ["Single", "Pack of 2", "Pack of 5"],
-    extraImages: [img2, img3, img4, img5],
+    images: [
+      "elite-executive-combo.png",
+      "elite-executive-combo-1.png",
+      "elite-executive-combo-2.png",
+      "elite-executive-combo-3.png"
+    ],
     includedItems: [
-      { name: "PU Leather Diary", image: vintageTanDiariesImg, spec: "150 Nos Pages" },
-      { name: "Metal 0.6mm Pen", image: giltRollerPenImg, spec: "Matte Finish" },
-      { name: "Smart SS Bottle", image: glossyWhiteSipperImg, spec: "500ML Capacity" },
+      { name: "PU Leather Diary", image: "vintage-tan-diaries.png", spec: "150 Nos Pages" },
+      { name: "Metal 0.6mm Pen", image: "gilt-roller-pen.png", spec: "Matte Finish" },
+      { name: "Smart SS Bottle", image: "glossy-white-sipper.png", spec: "500ML Capacity" },
     ],
     tags: ["Smart Utility", "Executive", "Festive Edition"],
   };
@@ -92,7 +83,7 @@ const EliteExecutiveCombo = ({ addToCart }) => {
     if (selectedOption.value === "Custom") {
       item = {
         name: "Elite Executive Combo",
-        image: mainImg,
+        image: getCdnImage(productDetails.images[0], { width: 150, height: 150 }),
         description: productDetails.description,
         features: productDetails.features,
         tags: productDetails.tags,
@@ -103,7 +94,11 @@ const EliteExecutiveCombo = ({ addToCart }) => {
       };
     } else {
       item = {
-        ...productDetails,
+        name: productDetails.name,
+        image: getCdnImage(productDetails.images[0], { width: 150, height: 150 }),
+        description: productDetails.description,
+        features: productDetails.features,
+        tags: productDetails.tags,
         selectedSize: selectedOption.label,
         selectedMaterial: "Premium Set (Diary + Pen + Bottle)",
         price: selectedOption.price,
@@ -148,8 +143,10 @@ const EliteExecutiveCombo = ({ addToCart }) => {
 
             <Zoom>
               <img
-                src={mainImage}
-                alt={productDetails.name}
+                src={getCdnImage(productDetails.images[activeImageIndex], { width: 600, height: 450 })}
+                alt={`${productDetails.name} primary view`}
+                width="600"
+                height="450"
                 style={{
                   width: "100%",
                   borderRadius: "12px",
@@ -168,26 +165,30 @@ const EliteExecutiveCombo = ({ addToCart }) => {
                 mt: 2,
                 overflowX: "auto",
                 "&::-webkit-scrollbar": { display: "none" },
+                scrollbarWidth: "none",
               }}
             >
-              {productDetails.extraImages.map((img, idx) => (
+              {productDetails.images.map((imageName, idx) => (
                 <Paper
                   key={idx}
-                  onClick={() => setMainImage(img)}
+                  onClick={() => setActiveImageIndex(idx)}
                   sx={{
                     p: 1,
                     borderRadius: "10px",
                     cursor: "pointer",
                     border:
-                      mainImage === img ? "2px solid #70CB97" : "2px solid transparent",
+                      activeImageIndex === idx ? "2px solid #70CB97" : "2px solid transparent",
                     "&:hover": { border: "2px solid #70CB97" },
                     flexShrink: 0,
                     transition: "all 0.2s",
                   }}
                 >
                   <img
-                    src={img}
-                    alt={`view ${idx + 1}`}
+                    src={getCdnImage(imageName, { width: 90, height: 90 })}
+                    alt={`${productDetails.name} thumbnail view ${idx + 1}`}
+                    width="90"
+                    height="90"
+                    loading="lazy"
                     style={{
                       width: "90px",
                       height: "90px",
@@ -348,8 +349,11 @@ const EliteExecutiveCombo = ({ addToCart }) => {
                   {idx === 1 && <Create sx={{ color: "#70CB97", fontSize: "1.2rem", mb: 0.5 }} />}
                   {idx === 2 && <Thermostat sx={{ color: "#70CB97", fontSize: "1.2rem", mb: 0.5 }} />}
                   <img
-                    src={item.image}
-                    alt={item.name}
+                    src={getCdnImage(item.image, { width: 120, height: 100 })}
+                    alt={`${item.name} inclusion detail`}
+                    width="120"
+                    height="100"
+                    loading="lazy"
                     style={{ width: "100%", height: "60px", objectFit: "contain", margin: "5px 0" }}
                   />
                   <Typography variant="caption" sx={{ display: "block", fontWeight: 700, color: "#19485D", fontSize: "0.7rem" }}>

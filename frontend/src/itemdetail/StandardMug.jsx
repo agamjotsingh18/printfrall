@@ -12,18 +12,9 @@ import {
   Tooltip,
 } from "@mui/material";
 import { AddShoppingCart, Close, Print, InfoOutlined } from "@mui/icons-material";
+import { getCdnImage } from "../utils/imageLoader";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
-
-// ========== MAIN MUG IMAGE ==========
-import mainImg from "../assets/mug.png";
-
-// ========== EXTRA ANGLES ==========
-import img2 from "../assets/mug.png";
-import img3 from "../assets/mug-1.png";
-import img4 from "../assets/mug-2.png";
-import img5 from "../assets/mug-3.png";
-import img6 from "../assets/mug-4.png";
 
 const StandardMug = ({ addToCart }) => {
   // Printing Methods with price per unit
@@ -50,13 +41,8 @@ const StandardMug = ({ addToCart }) => {
     },
   ];
 
-  const [selectedMethod, setSelectedMethod] = useState(printingMethods[0]);
-  const [mainImage, setMainImage] = useState(mainImg);
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-
-  const mugDetails = {
+  const productDetails = {
     name: "Custom Standard Mug",
-    image: mainImg,
     description:
       "High-quality personalized mugs crafted using India's latest printing technologies. Choose the perfect method for your brand or gift.",
     features: [
@@ -65,15 +51,27 @@ const StandardMug = ({ addToCart }) => {
       "Eco-friendly inks used",
       "Available for single unit or bulk",
     ],
-    extraImages: [img2, img3, img4, img5, img6],
-    printingMethods: printingMethods,
+    images: [
+      "mug.png",
+      "mug-1.png",
+      "mug-2.png",
+      "mug-3.png",
+      "mug-4.png"
+    ],
   };
+
+  const [selectedMethod, setSelectedMethod] = useState(printingMethods[0]);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   const handleAddToCart = () => {
     const item = {
-      ...mugDetails,
-      selectedMaterial: selectedMethod.type,   // ✅ FIX: ensures cart displays the printing method
-      selectedSize: "Standard (11 oz)",        // optional but keeps cart consistent
+      name: productDetails.name,
+      image: getCdnImage(productDetails.images[0], { width: 150, height: 150 }),
+      description: productDetails.description,
+      features: productDetails.features,
+      selectedMaterial: selectedMethod.type,   // Ensures cart displays the printing method
+      selectedSize: "Standard (11 oz)",        // Keeps cart consistent
       price: selectedMethod.price,
       quantity: 1,
     };
@@ -105,8 +103,10 @@ const StandardMug = ({ addToCart }) => {
           >
             <Zoom>
               <img
-                src={mainImage}
-                alt={mugDetails.name}
+                src={getCdnImage(productDetails.images[activeImageIndex], { width: 600, height: 450 })}
+                alt={`${productDetails.name} primary view`}
+                width="600"
+                height="450"
                 style={{
                   width: "100%",
                   borderRadius: "12px",
@@ -125,26 +125,30 @@ const StandardMug = ({ addToCart }) => {
                 mt: 2,
                 overflowX: "auto",
                 "&::-webkit-scrollbar": { display: "none" },
+                scrollbarWidth: "none",
               }}
             >
-              {mugDetails.extraImages.map((img, idx) => (
+              {productDetails.images.map((imageName, idx) => (
                 <Paper
                   key={idx}
-                  onClick={() => setMainImage(img)}
+                  onClick={() => setActiveImageIndex(idx)}
                   sx={{
                     p: 1,
                     borderRadius: "10px",
                     cursor: "pointer",
                     border:
-                      mainImage === img ? "2px solid #70CB97" : "2px solid transparent",
+                      activeImageIndex === idx ? "2px solid #70CB97" : "2px solid transparent",
                     "&:hover": { border: "2px solid #70CB97" },
                     flexShrink: 0,
                     transition: "all 0.2s",
                   }}
                 >
                   <img
-                    src={img}
-                    alt={`view ${idx + 1}`}
+                    src={getCdnImage(imageName, { width: 90, height: 90 })}
+                    alt={`${productDetails.name} thumbnail view ${idx + 1}`}
+                    width="90"
+                    height="90"
+                    loading="lazy"
                     style={{
                       width: "90px",
                       height: "90px",
@@ -164,7 +168,7 @@ const StandardMug = ({ addToCart }) => {
             variant="h4"
             sx={{ fontWeight: 700, mb: 1, color: "#19485D", fontSize: { xs: "1.8rem", md: "2.5rem" } }}
           >
-            {mugDetails.name}
+            {productDetails.name}
           </Typography>
 
           <Typography
@@ -178,7 +182,7 @@ const StandardMug = ({ addToCart }) => {
             variant="body1"
             sx={{ mb: 3, color: "#1e2a32", lineHeight: 1.6 }}
           >
-            {mugDetails.description}
+            {productDetails.description}
           </Typography>
 
           {/* Printing Method Selection */}
@@ -190,10 +194,13 @@ const StandardMug = ({ addToCart }) => {
           </Typography>
           <Box sx={{ display: "flex", gap: 2, mb: 4, flexWrap: "wrap" }}>
             {printingMethods.map((method) => (
-              <Box key={method.type} sx={{ position: "relative" }}>
+              <Box key={method.type} sx={{ display: "flex", alignItems: "center" }}>
                 <Chip
                   label={method.type}
-                  onClick={() => setSelectedMethod(method)}
+                  onClick={() => {
+                    setSelectedMethod(method);
+                    setActiveImageIndex(0);
+                  }}
                   icon={<Print />}
                   sx={{
                     p: 1.5,
@@ -215,15 +222,9 @@ const StandardMug = ({ addToCart }) => {
                   }}
                 />
                 <Tooltip title={method.info} arrow placement="top">
-                  <InfoOutlined
-                    sx={{
-                      fontSize: 16,
-                      ml: 0.5,
-                      verticalAlign: "middle",
-                      cursor: "pointer",
-                      color: "#5a6e7a",
-                    }}
-                  />
+                  <IconButton size="small" sx={{ ml: 0.2, color: "#5a6e7a" }}>
+                    <InfoOutlined sx={{ fontSize: 18 }} />
+                  </IconButton>
                 </Tooltip>
               </Box>
             ))}
@@ -237,7 +238,7 @@ const StandardMug = ({ addToCart }) => {
             Highlights:
           </Typography>
           <Box component="ul" sx={{ ml: 2, mb: 4, listStyleType: "none", p: 0 }}>
-            {mugDetails.features.map((feature, idx) => (
+            {productDetails.features.map((feature, idx) => (
               <li key={idx} style={{ marginBottom: "8px" }}>
                 <Typography variant="body1" sx={{ display: "flex", alignItems: "center", color: "#5a6e7a" }}>
                   <span

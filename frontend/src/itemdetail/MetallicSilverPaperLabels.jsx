@@ -18,15 +18,9 @@ import {
   WorkspacePremium,
   AutoAwesome,
 } from "@mui/icons-material";
+import { getCdnImage } from "../utils/imageLoader";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
-
-// Import your actual silver label images – replace with real variants if available
-import metallicSilverPaperLabelsImg from "../assets/metallic-silver-paper-labels.png";
-import metallicSilverPaperLabelsImg2 from "../assets/metallic-silver-paper-labels-1.png";
-import metallicSilverPaperLabelsImg3 from "../assets/metallic-silver-paper-labels-2.png";
-import metallicSilverPaperLabelsImg4 from "../assets/metallic-silver-paper-labels-3.png";
-// import metallicSilverPaperLabelsImg5 from "../assets/metallic-silver-paper-labels.png";
 
 const MetallicSilverPaperLabels = ({ addToCart }) => {
   // Price mapping for premium 80 GSM Silver Paper labels
@@ -40,7 +34,7 @@ const MetallicSilverPaperLabels = ({ addToCart }) => {
 
   const [selectedMaterial, setSelectedMaterial] = useState("Subtle Sleek Silver");
   const [selectedShape, setSelectedShape] = useState("Circle");
-  const [mainImage, setMainImage] = useState(metallicSilverPaperLabelsImg);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   const unitPrice = priceMapping[selectedMaterial];
@@ -60,20 +54,19 @@ const MetallicSilverPaperLabels = ({ addToCart }) => {
       "Branding: Ideal for premium goods, invitations, and retail",
       "Low MOQ: Start your sophisticated branding with just 50 labels",
     ],
+    images: [
+      "metallic-silver-paper-labels.png",
+      "metallic-silver-paper-labels-1.png",
+      "metallic-silver-paper-labels-2.png",
+      "metallic-silver-paper-labels-3.png"
+    ],
     tags: ["80 GSM", "Subtle Shine", "Self-Adhesive"],
   };
-
-  const thumbnailImages = [
-    metallicSilverPaperLabelsImg,
-    metallicSilverPaperLabelsImg2,
-    metallicSilverPaperLabelsImg3,
-    metallicSilverPaperLabelsImg4,
-  ];
 
   const handleAddToCart = () => {
     const item = {
       name: productDetails.name,
-      image: mainImage,
+      image: getCdnImage(productDetails.images[0], { width: 150, height: 150 }),
       description: productDetails.description,
       selectedMaterial,
       selectedShape,
@@ -143,8 +136,10 @@ const MetallicSilverPaperLabels = ({ addToCart }) => {
 
             <Zoom>
               <img
-                src={mainImage}
-                alt={productDetails.name}
+                src={getCdnImage(productDetails.images[activeImageIndex], { width: 600, height: 450 })}
+                alt={`${productDetails.name} primary view`}
+                width="600"
+                height="450"
                 style={{
                   width: "100%",
                   borderRadius: "12px",
@@ -162,26 +157,30 @@ const MetallicSilverPaperLabels = ({ addToCart }) => {
                 mt: 2,
                 overflowX: "auto",
                 "&::-webkit-scrollbar": { display: "none" },
+                scrollbarWidth: "none",
               }}
             >
-              {thumbnailImages.map((image, index) => (
+              {productDetails.images.map((imageName, index) => (
                 <Paper
                   key={index}
-                  onClick={() => setMainImage(image)}
+                  onClick={() => setActiveImageIndex(index)}
                   sx={{
                     p: 1,
                     borderRadius: "12px",
                     cursor: "pointer",
                     border:
-                      mainImage === image ? "2px solid #70CB97" : "1px solid #e0e7ed",
+                      activeImageIndex === index ? "2px solid #70CB97" : "1px solid #e0e7ed",
                     flexShrink: 0,
                     transition: "all 0.2s",
                     "&:hover": { transform: "translateY(-2px)" },
                   }}
                 >
                   <img
-                    src={image}
-                    alt={`View ${index + 1}`}
+                    src={getCdnImage(imageName, { width: 80, height: 80 })}
+                    alt={`${productDetails.name} thumbnail view ${index + 1}`}
+                    width="80"
+                    height="80"
+                    loading="lazy"
                     style={{ width: "80px", height: "80px", objectFit: "cover", borderRadius: "8px" }}
                   />
                 </Paper>
@@ -233,7 +232,10 @@ const MetallicSilverPaperLabels = ({ addToCart }) => {
             {Object.keys(priceMapping).map((material) => (
               <Paper
                 key={material}
-                onClick={() => setSelectedMaterial(material)}
+                onClick={() => {
+                  setSelectedMaterial(material);
+                  setActiveImageIndex(0);
+                }}
                 sx={{
                   p: 1.5,
                   px: 3,

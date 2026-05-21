@@ -18,15 +18,9 @@ import {
   Layers,
   AutoAwesome,
 } from "@mui/icons-material";
+import { getCdnImage } from "../utils/imageLoader";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
-
-// Asset paths
-import premiumLaminatedCardImg from "../assets/premium-laminated-card.png";
-import premiumLaminatedCardImg2 from "../assets/premium-laminated-card-1.png";
-import premiumLaminatedCardImg3 from "../assets/premium-laminated-card-2.png";
-import premiumLaminatedCardImg4 from "../assets/premium-laminated-card-3.png";
-import premiumLaminatedCardImg5 from "../assets/premium-laminated-card-4.png";
 
 const PremiumLaminatedCard = ({ addToCart }) => {
   const paperGSMs = [
@@ -59,25 +53,24 @@ const PremiumLaminatedCard = ({ addToCart }) => {
       "Quantity: Pack of 50 cards (MOQ)",
       "Perfect for high‑end branding and corporate gifting",
     ],
+    images: [
+      "premium-laminated-card.png",
+      "premium-laminated-card-1.png",
+      "premium-laminated-card-2.png",
+      "premium-laminated-card-3.png",
+      "premium-laminated-card-4.png"
+    ],
     tags: ["Premium Lykam", "MOQ: 50", "Laminated Finish"],
   };
 
   const [selectedGSM, setSelectedGSM] = useState(paperGSMs[0]);
   const [selectedLamination, setSelectedLamination] = useState(laminationOptions[0]);
   const [selectedSide, setSelectedSide] = useState("Single-sided");
-  const [mainImage, setMainImage] = useState(premiumLaminatedCardImg);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   const totalPrice = selectedGSM.basePrice + (selectedSide === "Double-sided" ? 100 : 0);
   const moq = 50;
-
-  const thumbnailImages = [
-    premiumLaminatedCardImg,
-    premiumLaminatedCardImg2,
-    premiumLaminatedCardImg3,
-    premiumLaminatedCardImg4,
-    premiumLaminatedCardImg5,
-  ];
 
   const handleAddToCart = () => {
     const item = {
@@ -88,7 +81,7 @@ const PremiumLaminatedCard = ({ addToCart }) => {
       sides: selectedSide,
       price: totalPrice,
       quantity: moq,
-      image: mainImage,
+      image: getCdnImage(cardDetails.images[0], { width: 150, height: 150 }),
     };
     addToCart(item);
     setSnackbarOpen(true);
@@ -144,8 +137,10 @@ const PremiumLaminatedCard = ({ addToCart }) => {
 
             <Zoom>
               <img
-                src={mainImage}
-                alt="Premium Business Card Preview"
+                src={getCdnImage(cardDetails.images[activeImageIndex], { width: 600, height: 450 })}
+                alt={`${cardDetails.name} primary view`}
+                width="600"
+                height="450"
                 style={{
                   width: "100%",
                   borderRadius: "12px",
@@ -164,26 +159,30 @@ const PremiumLaminatedCard = ({ addToCart }) => {
                 mt: 2,
                 overflowX: "auto",
                 "&::-webkit-scrollbar": { display: "none" },
+                scrollbarWidth: "none",
               }}
             >
-              {thumbnailImages.map((img, idx) => (
+              {cardDetails.images.map((imageName, idx) => (
                 <Paper
                   key={idx}
-                  onClick={() => setMainImage(img)}
+                  onClick={() => setActiveImageIndex(idx)}
                   sx={{
                     p: 1,
                     borderRadius: "10px",
                     cursor: "pointer",
                     border:
-                      mainImage === img ? "2px solid #70CB97" : "2px solid transparent",
+                      activeImageIndex === idx ? "2px solid #70CB97" : "2px solid transparent",
                     "&:hover": { border: "2px solid #70CB97" },
                     flexShrink: 0,
                     transition: "all 0.2s",
                   }}
                 >
                   <img
-                    src={img}
-                    alt={`view ${idx + 1}`}
+                    src={getCdnImage(imageName, { width: 90, height: 90 })}
+                    alt={`${cardDetails.name} thumbnail view ${idx + 1}`}
+                    width="90"
+                    height="90"
+                    loading="lazy"
                     style={{
                       width: "90px",
                       height: "90px",

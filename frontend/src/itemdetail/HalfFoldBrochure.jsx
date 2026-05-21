@@ -20,15 +20,9 @@ import {
   Inventory,
   AutoAwesome,
 } from "@mui/icons-material";
+import { getCdnImage } from "../utils/imageLoader";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
-
-// Asset paths kept exactly as requested
-import halfFoldBrochureImg from "../assets/half-fold-brochure.png";
-import halfFoldBrochureImg2 from "../assets/half-fold-brochure-1.png";
-import halfFoldBrochureImg3 from "../assets/half-fold-brochure-2.png";
-import halfFoldBrochureImg4 from "../assets/half-fold-brochure-3.png";
-// import halfFoldBrochureImg5 from "../assets/half-fold-brochure.png";
 
 const HalfFoldBrochure = ({ addToCart }) => {
   // Size options
@@ -60,14 +54,14 @@ const HalfFoldBrochure = ({ addToCart }) => {
   // State
   const [selectedSize, setSelectedSize] = useState(sizeOptions[0]); // A4 default
   const [selectedPaper, setSelectedPaper] = useState(paperCategories[0]);
-  const [mainImage, setMainImage] = useState(halfFoldBrochureImg);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
-  const thumbnailImages = [
-    halfFoldBrochureImg,
-    halfFoldBrochureImg2,
-    halfFoldBrochureImg3,
-    halfFoldBrochureImg4,
+  const images = [
+    "half-fold-brochure.png",
+    "half-fold-brochure-1.png",
+    "half-fold-brochure-2.png",
+    "half-fold-brochure-3.png"
   ];
 
   const handleAddToCart = () => {
@@ -78,7 +72,7 @@ const HalfFoldBrochure = ({ addToCart }) => {
       paperType: selectedPaper.name,
       price: selectedSize.price,
       quantity: selectedSize.moq,
-      image: mainImage,
+      image: getCdnImage(images[0], { width: 150, height: 150 }),
     };
     addToCart(item);
     setSnackbarOpen(true);
@@ -143,8 +137,10 @@ const HalfFoldBrochure = ({ addToCart }) => {
 
             <Zoom>
               <img
-                src={mainImage}
-                alt="Half-Fold Brochure Preview"
+                src={getCdnImage(images[activeImageIndex], { width: 600, height: 450 })}
+                alt="Half-Fold Brochure primary view"
+                width="600"
+                height="450"
                 style={{
                   width: "100%",
                   borderRadius: "12px",
@@ -162,26 +158,30 @@ const HalfFoldBrochure = ({ addToCart }) => {
                 mt: 2,
                 overflowX: "auto",
                 "&::-webkit-scrollbar": { display: "none" },
+                scrollbarWidth: "none",
               }}
             >
-              {thumbnailImages.map((image, index) => (
+              {images.map((imageName, index) => (
                 <Paper
                   key={index}
-                  onClick={() => setMainImage(image)}
+                  onClick={() => setActiveImageIndex(index)}
                   sx={{
                     p: 1,
                     borderRadius: "12px",
                     cursor: "pointer",
                     border:
-                      mainImage === image ? "2px solid #70CB97" : "1px solid #e0e7ed",
+                      activeImageIndex === index ? "2px solid #70CB97" : "1px solid #e0e7ed",
                     flexShrink: 0,
                     transition: "all 0.2s",
                     "&:hover": { transform: "translateY(-2px)" },
                   }}
                 >
                   <img
-                    src={image}
-                    alt={`View ${index + 1}`}
+                    src={getCdnImage(imageName, { width: 80, height: 80 })}
+                    alt={`Half-Fold Brochure thumbnail view ${index + 1}`}
+                    width="80"
+                    height="80"
+                    loading="lazy"
                     style={{
                       width: "80px",
                       height: "80px",
@@ -194,7 +194,7 @@ const HalfFoldBrochure = ({ addToCart }) => {
             </Box>
           </Paper>
 
-          {/* Design Guidelines Note (green‑themed) */}
+          {/* Design Guidelines Note */}
           <Paper
             sx={{
               p: 2,
@@ -240,7 +240,7 @@ const HalfFoldBrochure = ({ addToCart }) => {
             Professional Half-Fold Brochures
           </Typography>
 
-          <Box sx={{ display: "flex", alignItems: "baseline", gap: 2, flexWrap: "wrap", mb: 1 }}>
+          <Box sx={{ display: "flex", alignItems: "baseline", gap: 2, flexWrap: "wrap" }} mb={1}>
             <Typography variant="h5" sx={{ color: "#70CB97", fontWeight: "bold" }}>
               ₹{selectedSize.price}
             </Typography>
@@ -256,7 +256,7 @@ const HalfFoldBrochure = ({ addToCart }) => {
 
           <Divider sx={{ mb: 3 }} />
 
-          {/* Size Selection (pill‑shaped) */}
+          {/* Size Selection */}
           <Typography
             variant="h6"
             sx={{
@@ -303,7 +303,7 @@ const HalfFoldBrochure = ({ addToCart }) => {
             ))}
           </Box>
 
-          {/* Paper Type & Material (pill‑shaped cards) */}
+          {/* Paper Type & Material */}
           <Typography
             variant="h6"
             sx={{ fontWeight: 600, mb: 2, color: "#19485D", fontSize: "1.1rem" }}

@@ -18,18 +18,12 @@ import {
   WaterDrop,
   WorkspacePremium,
 } from "@mui/icons-material";
+import { getCdnImage } from "../utils/imageLoader";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
 
-// Import your actual waterproof label images – replace with real variants if available
-import waterproofLabelsImg from "../assets/water-proof-labels.png";
-import waterproofLabelsImg2 from "../assets/water-proof-labels-1.png";
-import waterproofLabelsImg3 from "../assets/water-proof-labels-2.png";
-import waterproofLabelsImg4 from "../assets/water-proof-labels-3.png";
-// import waterproofLabelsImg5 from "../assets/water-proof-labels.png";
-
 const WaterproofLabels = ({ addToCart }) => {
-  // Price mapping for durable  waterproof range
+  // Price mapping for durable waterproof range
   const priceMapping = {
     "White Waterproof ": 150,
     "Clear Waterproof ": 180,
@@ -38,21 +32,12 @@ const WaterproofLabels = ({ addToCart }) => {
 
   const shapes = ["Circle", "Oval", "Square", "Rectangle", "Rounded Corner"];
 
-  const [selectedMaterial, setSelectedMaterial] = useState("White Waterproof ");
-  const [selectedShape, setSelectedShape] = useState("Circle");
-  const [mainImage, setMainImage] = useState(waterproofLabelsImg);
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-
-  const unitPrice = priceMapping[selectedMaterial];
-  const moq = 50;
-  const totalPrice = unitPrice * moq;
-
   const productDetails = {
-    name: "Durable Waterproof  Labels",
+    name: "Durable Waterproof Labels",
     description:
-      "Keep your packaging looking sharp, even in rough conditions. Our Waterproof  Labels are engineered for both indoor and outdoor usage, ensuring your branding remains intact against moisture, oil, and weather. Available in White or Clear backgrounds to suit any aesthetic.",
+      "Keep your packaging looking sharp, even in rough conditions. Our Waterproof Labels are engineered for both indoor and outdoor usage, ensuring your branding remains intact against moisture, oil, and weather. Available in White or Clear backgrounds to suit any aesthetic.",
     features: [
-      "Material: High-grade  (Waterproof & Tear-resistant)",
+      "Material: High-grade (Waterproof & Tear-resistant)",
       "Background Options: Choose from White or transparent Clear base",
       "Usage: Fully suitable for both Outdoor and Indoor environments",
       "Shapes: Available in 5 precision-cut standard shapes",
@@ -60,21 +45,31 @@ const WaterproofLabels = ({ addToCart }) => {
       "Durability: Resistant to moisture, smudging, and fading",
       "Low MOQ: Professional durability starting from just 50 labels",
     ],
-    tags: [" Material", "Weatherproof", "Clear Option Available"],
+    images: [
+      "water-proof-labels.png",
+      "water-proof-labels-1.png",
+      "water-proof-labels-2.png",
+      "water-proof-labels-3.png"
+    ],
+    tags: ["Material", "Weatherproof", "Clear Option Available"],
   };
 
-  const thumbnailImages = [
-    waterproofLabelsImg,
-    waterproofLabelsImg2,
-    waterproofLabelsImg3,
-    waterproofLabelsImg4,
-  ];
+  const [selectedMaterial, setSelectedMaterial] = useState("White Waterproof ");
+  const [selectedShape, setSelectedShape] = useState("Circle");
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+
+  const unitPrice = priceMapping[selectedMaterial];
+  const moq = 50;
+  const totalPrice = unitPrice * moq;
 
   const handleAddToCart = () => {
     const item = {
       name: productDetails.name,
-      image: mainImage,
+      image: getCdnImage(productDetails.images[0], { width: 150, height: 150 }),
       description: productDetails.description,
+      features: productDetails.features,
+      tags: productDetails.tags,
       selectedMaterial,
       selectedShape,
       price: totalPrice,
@@ -107,44 +102,37 @@ const WaterproofLabels = ({ addToCart }) => {
               position: "relative",
             }}
           >
-            <Box
-              sx={{
-                position: "absolute",
-                top: 20,
-                left: 20,
-                zIndex: 10,
-                display: "flex",
-                gap: 1,
-              }}
-            >
+            <Box sx={{ display: "flex", gap: 1, mb: 2 }}>
               <Chip
                 label="WEATHERPROOF"
                 size="small"
-                icon={<WaterDrop />}
+                icon={<WaterDrop fontSize="small" />}
                 sx={{
-                  bgcolor: "#19485D",
-                  color: "white",
+                  backgroundColor: "rgba(112, 203, 151, 0.1)",
+                  color: "#70CB97",
                   fontWeight: "bold",
-                  borderRadius: "40px",
+                  borderRadius: 2,
                 }}
               />
               <Chip
-                label=" MATERIAL"
+                label="MATERIAL"
                 size="small"
-                icon={<WorkspacePremium />}
+                icon={<WorkspacePremium fontSize="small" />}
                 sx={{
-                  bgcolor: "#70CB97",
-                  color: "white",
+                  backgroundColor: "rgba(112, 203, 151, 0.1)",
+                  color: "#70CB97",
                   fontWeight: "bold",
-                  borderRadius: "40px",
+                  borderRadius: 2,
                 }}
               />
             </Box>
 
             <Zoom>
               <img
-                src={mainImage}
-                alt={productDetails.name}
+                src={getCdnImage(productDetails.images[activeImageIndex], { width: 600, height: 450 })}
+                alt={`${productDetails.name} primary view`}
+                width="600"
+                height="450"
                 style={{
                   width: "100%",
                   borderRadius: "12px",
@@ -154,7 +142,7 @@ const WaterproofLabels = ({ addToCart }) => {
               />
             </Zoom>
 
-            {/* Thumbnails */}
+            {/* Thumbnail Gallery */}
             <Box
               sx={{
                 display: "flex",
@@ -162,26 +150,30 @@ const WaterproofLabels = ({ addToCart }) => {
                 mt: 2,
                 overflowX: "auto",
                 "&::-webkit-scrollbar": { display: "none" },
+                scrollbarWidth: "none",
               }}
             >
-              {thumbnailImages.map((image, index) => (
+              {productDetails.images.map((imageName, index) => (
                 <Paper
                   key={index}
-                  onClick={() => setMainImage(image)}
+                  onClick={() => setActiveImageIndex(index)}
                   sx={{
                     p: 1,
                     borderRadius: "12px",
                     cursor: "pointer",
                     border:
-                      mainImage === image ? "2px solid #70CB97" : "1px solid #e0e7ed",
+                      activeImageIndex === index ? "2px solid #70CB97" : "2px solid transparent",
                     flexShrink: 0,
                     transition: "all 0.2s",
-                    "&:hover": { transform: "translateY(-2px)" },
+                    "&:hover": { border: "2px solid #70CB97" },
                   }}
                 >
                   <img
-                    src={image}
-                    alt={`View ${index + 1}`}
+                    src={getCdnImage(imageName, { width: 90, height: 90 })}
+                    alt={`${productDetails.name} thumbnail view ${index + 1}`}
+                    width="90"
+                    height="90"
+                    loading="lazy"
                     style={{ width: "80px", height: "80px", objectFit: "cover", borderRadius: "8px" }}
                   />
                 </Paper>
@@ -233,7 +225,10 @@ const WaterproofLabels = ({ addToCart }) => {
             {Object.keys(priceMapping).map((material) => (
               <Paper
                 key={material}
-                onClick={() => setSelectedMaterial(material)}
+                onClick={() => {
+                  setSelectedMaterial(material);
+                  setActiveImageIndex(0);
+                }}
                 sx={{
                   p: 1.5,
                   px: 3,
@@ -342,7 +337,7 @@ const WaterproofLabels = ({ addToCart }) => {
             variant="caption"
             sx={{ display: "block", mt: 2, textAlign: "center", color: "#5a6e7a" }}
           >
-            * Weatherproof branding solutions powered by PrintfrAll  Technology.
+            * Weatherproof branding solutions powered by PrintfrAll Technology.
           </Typography>
         </Grid>
       </Grid>

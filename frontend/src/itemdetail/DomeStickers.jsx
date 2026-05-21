@@ -13,17 +13,9 @@ import {
   InputAdornment,
 } from "@mui/material";
 import { AddShoppingCart, Close, Layers, WorkspacePremium } from "@mui/icons-material";
+import { getCdnImage } from "../utils/imageLoader";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
-
-// ========== MAIN PRODUCT IMAGE ==========
-import mainImg from "../assets/dome-stickers.png";
-
-// ========== EXTRA ANGLES ==========
-import img2 from "../assets/dome-stickers.png";
-import img3 from "../assets/dome-stickers-1.png";
-import img4 from "../assets/dome-stickers-2.png";
-import img5 from "../assets/dome-stickers-3.png";
 
 const DomeStickers = ({ addToCart }) => {
   const priceMapping = {
@@ -54,7 +46,7 @@ const DomeStickers = ({ addToCart }) => {
   const [selectedMaterial, setSelectedMaterial] = useState(defaultMaterial);
   const [selectedShape, setSelectedShape] = useState(defaultShape);
   const [selectedSize, setSelectedSize] = useState(defaultSize);
-  const [mainImage, setMainImage] = useState(mainImg);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   // Custom quantity / pack options
@@ -88,7 +80,6 @@ const DomeStickers = ({ addToCart }) => {
 
   const productDetails = {
     name: "Dome Stickers",
-    image: mainImg,
     description:
       "Premium 3D Dome Stickers featuring a crystal-clear epoxy coating. These glossy, scratch-resistant stickers create a raised surface that enhances colors and adds a professional look to product branding, logo labeling, and electronics.",
     features: [
@@ -104,15 +95,20 @@ const DomeStickers = ({ addToCart }) => {
     materials: ["Crystal Clear Epoxy", "UV Resistant Resin"],
     shapes: availableShapes,
     sizes: availableSizes,
-    extraImages: [img2, img3, img4, img5],
+    images: [
+      "dome-stickers.png",
+      "dome-stickers-1.png",
+      "dome-stickers-2.png",
+      "dome-stickers-3.png"
+    ],
   };
 
   const handleAddToCart = () => {
     let item;
     if (selectedOption === "Custom") {
       item = {
-        name: "Dome Stickers",
-        image: mainImg,
+        name: productDetails.name,
+        image: getCdnImage(productDetails.images[0], { width: 150, height: 150 }),
         description: productDetails.description,
         features: productDetails.features,
         tags: productDetails.tags,
@@ -127,7 +123,11 @@ const DomeStickers = ({ addToCart }) => {
     } else {
       const option = packOptions.find((opt) => opt.value === selectedOption);
       item = {
-        ...productDetails,
+        name: productDetails.name,
+        image: getCdnImage(productDetails.images[0], { width: 150, height: 150 }),
+        description: productDetails.description,
+        features: productDetails.features,
+        tags: productDetails.tags,
         selectedSize: `${option.label} (${selectedSize}, ${selectedShape})`,
         selectedMaterial: `${selectedMaterial} | ${selectedShape} | ${selectedSize}`,
         shape: selectedShape,
@@ -175,8 +175,10 @@ const DomeStickers = ({ addToCart }) => {
 
             <Zoom>
               <img
-                src={mainImage}
-                alt={productDetails.name}
+                src={getCdnImage(productDetails.images[activeImageIndex], { width: 600, height: 450 })}
+                alt={`${productDetails.name} primary view`}
+                width="600"
+                height="450"
                 style={{
                   width: "100%",
                   borderRadius: "12px",
@@ -195,26 +197,30 @@ const DomeStickers = ({ addToCart }) => {
                 mt: 2,
                 overflowX: "auto",
                 "&::-webkit-scrollbar": { display: "none" },
+                scrollbarWidth: "none",
               }}
             >
-              {productDetails.extraImages.map((img, idx) => (
+              {productDetails.images.map((imageName, idx) => (
                 <Paper
                   key={idx}
-                  onClick={() => setMainImage(img)}
+                  onClick={() => setActiveImageIndex(idx)}
                   sx={{
                     p: 1,
                     borderRadius: "10px",
                     cursor: "pointer",
                     border:
-                      mainImage === img ? "2px solid #70CB97" : "2px solid transparent",
+                      activeImageIndex === idx ? "2px solid #70CB97" : "2px solid transparent",
                     "&:hover": { border: "2px solid #70CB97" },
                     flexShrink: 0,
                     transition: "all 0.2s",
                   }}
                 >
                   <img
-                    src={img}
-                    alt={`view ${idx + 1}`}
+                    src={getCdnImage(imageName, { width: 90, height: 90 })}
+                    alt={`${productDetails.name} thumbnail view ${idx + 1}`}
+                    width="90"
+                    height="90"
+                    loading="lazy"
                     style={{
                       width: "90px",
                       height: "90px",

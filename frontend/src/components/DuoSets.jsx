@@ -3,41 +3,30 @@ import { Link } from "react-router-dom";
 import "../styles/DuoSets.css";
 import { IconButton } from "@mui/material";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
-
-// Import images
-import ecoGripNotebookImg from "../assets/eco-grip-notebook.png";
-import elegantJournalComboImg from "../assets/elegant-journal-combo.png";
-import eliteExecutiveComboImg from "../assets/elite-executive-combo.png";
-import classicLeatherComboImg from "../assets/classic-leather-combo.png";
-import matteFinishDiariesImg from "../assets/matte-finish-diaries.png";
-import vintageTanDiariesImg from "../assets/vintage-tan-diaries.png";
-import fauxLeatherDiariesImg from "../assets/faux-leather-diaries.png";
-import customCanvasDiariesImg from "../assets/custom-canvas-diaries.png";
-import waveTextureDiariesImg from "../assets/wave-texture-diaries.png";
-import ecoKraftCoverDiariesImg from "../assets/eco-kraft-cover-diaries.png";
+import { getCdnImage } from "../utils/imageLoader";
 
 const mainItems = [
   { 
     name: "EcoGrip Notebook", 
-    image: ecoGripNotebookImg, 
+    image: "eco-grip-notebook.png", 
     price: 500, 
     route: "/services/corporate-gifting/duo-sets/eco-grip-notebook" 
   },
   { 
     name: "Elegant Journal Combo", 
-    image: elegantJournalComboImg, 
+    image: "elegant-journal-combo.png", 
     price: 700, 
     route: "/services/corporate-gifting/duo-sets/elegant-journal-combo" 
   },
   { 
     name: "Elite Executive Combo", 
-    image: eliteExecutiveComboImg, 
+    image: "elite-executive-combo.png", 
     price: 900, 
     route: "/services/corporate-gifting/duo-sets/elite-executive-combo" 
   },
   { 
     name: "Classic Leather Combo", 
-    image: classicLeatherComboImg, 
+    image: "classic-leather-combo.png", 
     price: 1000, 
     route: "/services/corporate-gifting/duo-sets/classic-leather-combo" 
   },
@@ -46,37 +35,37 @@ const mainItems = [
 const additionalItems = [
   { 
     name: "Matte Finish Diaries", 
-    image: matteFinishDiariesImg, 
+    image: "matte-finish-diaries.png", 
     price: 400, 
     route: "/services/corporate-gifting/duo-sets/matte-finish-diaries" 
   },
   { 
     name: "Vintage Tan Diaries", 
-    image: vintageTanDiariesImg, 
+    image: "vintage-tan-diaries.png", 
     price: 450, 
     route: "/services/corporate-gifting/duo-sets/vintage-tan-diaries" 
   },
   { 
     name: "Faux Leather Diaries", 
-    image: fauxLeatherDiariesImg, 
+    image: "faux-leather-diaries.png", 
     price: 500, 
     route: "/services/corporate-gifting/duo-sets/faux-leather-diaries" 
   },
   { 
     name: "Custom Canvas Diaries", 
-    image: customCanvasDiariesImg, 
+    image: "custom-canvas-diaries.png", 
     price: 550, 
     route: "/services/corporate-gifting/duo-sets/custom-canvas-diaries" 
   },
   { 
     name: "Wave Texture Diaries", 
-    image: waveTextureDiariesImg, 
+    image: "wave-texture-diaries.png", 
     price: 600, 
     route: "/services/corporate-gifting/duo-sets/wave-texture-diaries" 
   },
   { 
     name: "Eco Kraft Cover Diaries", 
-    image: ecoKraftCoverDiariesImg, 
+    image: "eco-kraft-cover-diaries.png", 
     price: 350, 
     route: "/services/corporate-gifting/duo-sets/eco-kraft-cover-diaries" 
   },
@@ -86,7 +75,13 @@ const DuoSets = ({ addToCart }) => {
   const handleAddToCart = (item, e) => {
     e?.preventDefault();
     e?.stopPropagation();
-    addToCart(item);
+    
+    const cartItem = {
+      ...item,
+      image: getCdnImage(item.image, { width: 150, height: 150 }),
+      quantity: 1
+    };
+    addToCart(cartItem);
   };
 
   return (
@@ -94,7 +89,6 @@ const DuoSets = ({ addToCart }) => {
       <h2 className="section-title">Duo Sets</h2>
       <p className="section-subtitle">Premium combos for corporate gifting</p>
 
-      {/* Main Items Section */}
       <div className="main-items-container" aria-label="Premium duo sets">
         {mainItems.map((item, index) => (
           <div className="main-item" key={index} aria-label={`Product: ${item.name}`}>
@@ -104,9 +98,12 @@ const DuoSets = ({ addToCart }) => {
               aria-label={`View details of ${item.name}`}
             >
               <img 
-                src={item.image} 
+                src={getCdnImage(item.image, { width: 350, height: 350 })} 
                 alt={item.name} 
                 className="main-item-image" 
+                width="350"
+                height="350"
+                loading="lazy"
               />
               <p className="main-item-name">{item.name}</p>
               <p className="main-item-price" aria-label={`Price: ₹${item.price}`}>₹{item.price}</p>
@@ -134,7 +131,6 @@ const DuoSets = ({ addToCart }) => {
         ))}
       </div>
 
-      {/* Additional Items Section */}
       <h3 className="section-title" aria-label="Additional items section">Explore More</h3>
       <div className="additional-items-container" aria-label="Additional diaries collection">
         {additionalItems.map((item, index) => (
@@ -145,9 +141,12 @@ const DuoSets = ({ addToCart }) => {
               aria-label={`View details of ${item.name}`}
             >
               <img 
-                src={item.image} 
+                src={getCdnImage(item.image, { width: 300, height: 300 })} 
                 alt={item.name} 
                 className="additional-item-image" 
+                width="300"
+                height="300"
+                loading="lazy"
               />
               <p className="additional-item-name">{item.name}</p>
               <p className="additional-item-price" aria-label={`Price: ₹${item.price}`}>₹{item.price}</p>

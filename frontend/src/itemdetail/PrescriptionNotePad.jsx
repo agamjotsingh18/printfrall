@@ -19,16 +19,9 @@ import {
   Inventory,
   AutoAwesome,
 } from "@mui/icons-material";
+import { getCdnImage } from "../utils/imageLoader";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
-
-// Asset paths kept exactly as requested
-import prescriptionNotePadImg from "../assets/prescription-note-pad.png";
-import prescriptionNotePadImg2 from "../assets/prescription-note-pad-1.png";
-import prescriptionNotePadImg3 from "../assets/prescription-note-pad-2.png";
-import prescriptionNotePadImg4 from "../assets/prescription-note-pad-3.png";
-import prescriptionNotePadImg5 from "../assets/prescription-note-pad-4.png";
-import prescriptionNotePadImg6 from "../assets/prescription-note-pad-5.png";
 
 const PrescriptionNotePad = ({ addToCart }) => {
   // Size options
@@ -48,35 +41,38 @@ const PrescriptionNotePad = ({ addToCart }) => {
     { label: "Black & White", extra: 150 },
   ];
 
-  // Product features (for specifications panel)
-  const productFeatures = [
-    "Premium hardbound cover for durability and professional look",
-    "48 sheets (96 pages) of high‑quality paper",
-    "Customisable with your clinic logo, name, and registration details",
-    "Choice of A4, A5, or A6 sizes – ideal for prescription writing",
-    "Full‑colour or black‑white front printing options",
-    "Optional back printing (black‑white) for additional information",
-    "Perfect for doctors, clinics, hospitals, and healthcare professionals",
-  ];
+  const productDetails = {
+    name: "Doctor Prescription Pads",
+    description:
+      "Essential for every healthcare professional. Our RX pads offer design flexibility, allowing you to tailor layouts and branding to establish a professional image for your clinic or hospital.",
+    features: [
+      "Premium hardbound cover for durability and professional look",
+      "48 sheets (96 pages) of high‑quality paper",
+      "Customisable with your clinic logo, name, and registration details",
+      "Choice of A4, A5, or A6 sizes – ideal for prescription writing",
+      "Full‑colour or black‑white front printing options",
+      "Optional back printing (black‑white) for additional information",
+      "Perfect for doctors, clinics, hospitals, and healthcare professionals",
+    ],
+    images: [
+      "prescription-note-pad.png",
+      "prescription-note-pad-1.png",
+      "prescription-note-pad-2.png",
+      "prescription-note-pad-3.png",
+      "prescription-note-pad-4.png",
+      "prescription-note-pad-5.png"
+    ],
+  };
 
   // State
   const [selectedSize, setSelectedSize] = useState(sizeOptions[0]); // Default A4
   const [selectedFront, setSelectedFront] = useState(frontPrintOptions[1]); // Default Full Colour
   const [selectedBack, setSelectedBack] = useState(backPrintOptions[0]); // Default None
-  const [mainImage, setMainImage] = useState(prescriptionNotePadImg);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   // Dynamic price calculation
   const totalPrice = selectedSize.basePrice + selectedFront.extra + selectedBack.extra;
-
-  const thumbnailImages = [
-    prescriptionNotePadImg,
-    prescriptionNotePadImg2,
-    prescriptionNotePadImg3,
-    prescriptionNotePadImg4,
-    prescriptionNotePadImg5,
-    prescriptionNotePadImg6,
-  ];
 
   const handleAddToCart = () => {
     const item = {
@@ -87,7 +83,7 @@ const PrescriptionNotePad = ({ addToCart }) => {
       sheets: 48,
       price: totalPrice,
       quantity: 1,
-      image: mainImage,
+      image: getCdnImage(productDetails.images[0], { width: 150, height: 150 }),
     };
     addToCart(item);
     setSnackbarOpen(true);
@@ -152,8 +148,10 @@ const PrescriptionNotePad = ({ addToCart }) => {
 
             <Zoom>
               <img
-                src={mainImage}
-                alt="Prescription Pad Preview"
+                src={getCdnImage(productDetails.images[activeImageIndex], { width: 600, height: 450 })}
+                alt={`${productDetails.name} primary view`}
+                width="600"
+                height="450"
                 style={{
                   width: "100%",
                   borderRadius: "12px",
@@ -171,26 +169,30 @@ const PrescriptionNotePad = ({ addToCart }) => {
                 mt: 2,
                 overflowX: "auto",
                 "&::-webkit-scrollbar": { display: "none" },
+                scrollbarWidth: "none",
               }}
             >
-              {thumbnailImages.map((image, index) => (
+              {productDetails.images.map((imageName, index) => (
                 <Paper
                   key={index}
-                  onClick={() => setMainImage(image)}
+                  onClick={() => setActiveImageIndex(index)}
                   sx={{
                     p: 1,
                     borderRadius: "12px",
                     cursor: "pointer",
                     border:
-                      mainImage === image ? "2px solid #70CB97" : "1px solid #e0e7ed",
+                      activeImageIndex === index ? "2px solid #70CB97" : "1px solid #e0e7ed",
                     flexShrink: 0,
                     transition: "all 0.2s",
                     "&:hover": { transform: "translateY(-2px)" },
                   }}
                 >
                   <img
-                    src={image}
-                    alt={`View ${index + 1}`}
+                    src={getCdnImage(imageName, { width: 80, height: 80 })}
+                    alt={`${productDetails.name} thumbnail view ${index + 1}`}
+                    width="80"
+                    height="80"
+                    loading="lazy"
                     style={{
                       width: "80px",
                       height: "80px",
@@ -204,7 +206,7 @@ const PrescriptionNotePad = ({ addToCart }) => {
           </Paper>
         </Grid>
 
-        {/* Right Side: Customization */}
+        {/* Right Side: Details */}
         <Grid item xs={12} md={6}>
           <Typography
             variant="h4"
@@ -215,7 +217,7 @@ const PrescriptionNotePad = ({ addToCart }) => {
               fontSize: { xs: "1.8rem", md: "2.5rem" },
             }}
           >
-            Doctor Prescription Pads
+            {productDetails.name}
           </Typography>
 
           <Box sx={{ display: "flex", alignItems: "baseline", gap: 2, flexWrap: "wrap", mb: 1 }}>
@@ -228,13 +230,12 @@ const PrescriptionNotePad = ({ addToCart }) => {
           </Box>
 
           <Typography variant="body1" sx={{ mb: 3, color: "#1e2a32", lineHeight: 1.6 }}>
-            Essential for every healthcare professional. Our RX pads offer design flexibility, allowing
-            you to tailor layouts and branding to establish a professional image for your clinic or hospital.
+            {productDetails.description}
           </Typography>
 
           <Divider sx={{ mb: 3 }} />
 
-          {/* Size Selection (pill‑shaped) */}
+          {/* Size Selection */}
           <Typography
             variant="h6"
             sx={{
@@ -253,7 +254,10 @@ const PrescriptionNotePad = ({ addToCart }) => {
             {sizeOptions.map((size) => (
               <Paper
                 key={size.id}
-                onClick={() => setSelectedSize(size)}
+                onClick={() => {
+                  setSelectedSize(size);
+                  setActiveImageIndex(0);
+                }}
                 sx={{
                   flex: 1,
                   p: 1.5,
@@ -278,7 +282,7 @@ const PrescriptionNotePad = ({ addToCart }) => {
             ))}
           </Box>
 
-          {/* Front Printing (pill‑shaped) */}
+          {/* Front Printing */}
           <Typography
             variant="h6"
             sx={{ fontWeight: 600, mb: 2, color: "#19485D", fontSize: "1.1rem" }}
@@ -317,7 +321,7 @@ const PrescriptionNotePad = ({ addToCart }) => {
             ))}
           </Box>
 
-          {/* Back Printing (pill‑shaped) */}
+          {/* Back Printing */}
           <Typography
             variant="h6"
             sx={{ fontWeight: 600, mb: 2, color: "#19485D", fontSize: "1.1rem" }}
@@ -369,7 +373,7 @@ const PrescriptionNotePad = ({ addToCart }) => {
             <Typography variant="subtitle1" sx={{ fontWeight: 700, mb: 2, color: "#19485D" }}>
               Product Specifications:
             </Typography>
-            {productFeatures.map((feature, i) => (
+            {productDetails.features.map((feature, i) => (
               <Box key={i} sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
                 <Inventory sx={{ fontSize: 16, color: "#70CB97" }} />
                 <Typography variant="body2" sx={{ color: "#5a6e7a" }}>

@@ -13,17 +13,9 @@ import {
   InputAdornment,
 } from "@mui/material";
 import { AddShoppingCart, Close, MenuBook, WorkspacePremium } from "@mui/icons-material";
+import { getCdnImage } from "../utils/imageLoader";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
-
-// ========== MAIN PRODUCT IMAGE ==========
-import mainImg from "../assets/full-colour-printed-bill-books.png";
-
-// ========== EXTRA ANGLES ==========
-import img2 from "../assets/full-colour-printed-bill-books.png";
-import img3 from "../assets/full-colour-printed-bill-books-1.png";
-import img4 from "../assets/full-colour-printed-bill-books-2.png";
-import img5 from "../assets/full-colour-printed-bill-books-3.png";
 
 const FullColourPrintedBillBooks = ({ addToCart }) => {
   const priceMapping = {
@@ -37,7 +29,7 @@ const FullColourPrintedBillBooks = ({ addToCart }) => {
   const defaultSize = "A5 Size";
 
   const [selectedSize, setSelectedSize] = useState(defaultSize);
-  const [mainImage, setMainImage] = useState(mainImg);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   // Custom quantity / pack options
@@ -71,7 +63,6 @@ const FullColourPrintedBillBooks = ({ addToCart }) => {
 
   const productDetails = {
     name: "Full Colour Printed Bill Books",
-    image: mainImg,
     description:
       "Create a professional image with vibrant, full-colour bill books. Perfect for branding invoices or running promotions. Upload your own design or personalize with your logo and address.",
     features: [
@@ -84,7 +75,12 @@ const FullColourPrintedBillBooks = ({ addToCart }) => {
       "Available in 4 versatile sizes",
     ],
     sizeOptions: sizes,
-    extraImages: [img2, img3, img4, img5],
+    images: [
+      "full-colour-printed-bill-books.png",
+      "full-colour-printed-bill-books-1.png",
+      "full-colour-printed-bill-books-2.png",
+      "full-colour-printed-bill-books-3.png"
+    ],
     tags: ["90 GSM", "Full Colour", "Customizable"],
   };
 
@@ -92,8 +88,8 @@ const FullColourPrintedBillBooks = ({ addToCart }) => {
     let item;
     if (selectedOption === "Custom") {
       item = {
-        name: "Full Colour Printed Bill Books",
-        image: mainImg,
+        name: productDetails.name,
+        image: getCdnImage(productDetails.images[0], { width: 150, height: 150 }),
         description: productDetails.description,
         features: productDetails.features,
         tags: productDetails.tags,
@@ -105,7 +101,11 @@ const FullColourPrintedBillBooks = ({ addToCart }) => {
     } else {
       const option = packOptions.find((opt) => opt.value === selectedOption);
       item = {
-        ...productDetails,
+        name: productDetails.name,
+        image: getCdnImage(productDetails.images[0], { width: 150, height: 150 }),
+        description: productDetails.description,
+        features: productDetails.features,
+        tags: productDetails.tags,
         selectedSize: `${option.label} (${selectedSize})`,
         selectedMaterial: selectedSize,
         price: option.price,
@@ -150,8 +150,10 @@ const FullColourPrintedBillBooks = ({ addToCart }) => {
 
             <Zoom>
               <img
-                src={mainImage}
-                alt={productDetails.name}
+                src={getCdnImage(productDetails.images[activeImageIndex], { width: 600, height: 450 })}
+                alt={`${productDetails.name} primary view`}
+                width="600"
+                height="450"
                 style={{
                   width: "100%",
                   borderRadius: "12px",
@@ -170,26 +172,30 @@ const FullColourPrintedBillBooks = ({ addToCart }) => {
                 mt: 2,
                 overflowX: "auto",
                 "&::-webkit-scrollbar": { display: "none" },
+                scrollbarWidth: "none",
               }}
             >
-              {productDetails.extraImages.map((img, idx) => (
+              {productDetails.images.map((imageName, idx) => (
                 <Paper
                   key={idx}
-                  onClick={() => setMainImage(img)}
+                  onClick={() => setActiveImageIndex(idx)}
                   sx={{
                     p: 1,
                     borderRadius: "10px",
                     cursor: "pointer",
                     border:
-                      mainImage === img ? "2px solid #70CB97" : "2px solid transparent",
+                      activeImageIndex === idx ? "2px solid #70CB97" : "2px solid transparent",
                     "&:hover": { border: "2px solid #70CB97" },
                     flexShrink: 0,
                     transition: "all 0.2s",
                   }}
                 >
                   <img
-                    src={img}
-                    alt={`view ${idx + 1}`}
+                    src={getCdnImage(imageName, { width: 90, height: 90 })}
+                    alt={`${productDetails.name} thumbnail view ${idx + 1}`}
+                    width="90"
+                    height="90"
+                    loading="lazy"
                     style={{
                       width: "90px",
                       height: "90px",
@@ -374,7 +380,7 @@ const FullColourPrintedBillBooks = ({ addToCart }) => {
             Add to Cart – ₹{Math.round(price)}
           </Button>
 
-          <Typography variant="body2" sx={{ mt: 2, color: "#5a6e7a", fontStyle: "italic", textAlign: "center" }}>
+          <Typography variant="body2" sx={{ mt: 2, color: "#5a6e7a", fontStyle: "italic", textAlign: "center" }} >
             * Personalization powered by PrintfrAll High-Resolution Printing.
           </Typography>
         </Grid>

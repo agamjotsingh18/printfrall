@@ -13,18 +13,9 @@ import {
   InputAdornment,
 } from "@mui/material";
 import { AddShoppingCart, Close, WorkspacePremium, LocalOffer } from "@mui/icons-material";
+import { getCdnImage } from "../utils/imageLoader";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
-
-// ========== MAIN PRODUCT IMAGE ==========
-import mainImg from "../assets/vintage-tan-diaries.png";
-
-// ========== EXTRA ANGLES ==========
-import img2 from "../assets/vintage-tan-diaries.png";
-import img3 from "../assets/vintage-tan-diaries-1.png";
-import img4 from "../assets/vintage-tan-diaries-2.png";
-import img5 from "../assets/vintage-tan-diaries-3.png";
-import img6 from "../assets/vintage-tan-diaries-4.png";
 
 const VintageTanDiaries = ({ addToCart }) => {
   // Pack options with quantity and price
@@ -37,10 +28,36 @@ const VintageTanDiaries = ({ addToCart }) => {
 
   const unitPrice = 450; // Price per single diary
 
+  const productDetails = {
+    name: "Vintage Tan Diaries",
+    description:
+      "A refined organiser that brings a luxe, professional touch to daily planning. Crafted with a soft-touch texture and a classic retro tan tone, this diary is designed for executives who value heritage aesthetics and modern functionality.",
+    features: [
+      "Classic Retro Tan with a textured, soft-touch finish",
+      "Secure Magnetic Lock closure for easy access",
+      "192 ruled pages on 80 GSM NS Maplitho paper",
+      "Includes 14 pages for monthly and annual planners",
+      "Ribbon bookmark with an elegant metal tag",
+      "Custom Sublimation print on gold nameplate (65 × 15 mm)",
+      "Portable A5 format (220 mm x 150 mm) for business needs",
+    ],
+    sizes: ["A5"],
+    colors: ["Retro Tan"],
+    images: [
+      "vintage-tan-diaries.png",
+      "vintage-tan-diaries-1.png",
+      "vintage-tan-diaries-2.png",
+      "vintage-tan-diaries-3.png",
+      "vintage-tan-diaries-4.png"
+    ],
+    tags: ["Retro Tan", "Magnetic Lock", "Executive"],
+    brandingArea: "Gold Nameplate (65 × 15 mm)",
+  };
+
   const [selectedOption, setSelectedOption] = useState(packOptions[0]);
   const [customQuantity, setCustomQuantity] = useState(1);
   const [selectedColor, setSelectedColor] = useState("Retro Tan");
-  const [mainImage, setMainImage] = useState(mainImg);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   const getTotalPrice = () => {
@@ -59,33 +76,12 @@ const VintageTanDiaries = ({ addToCart }) => {
     }
   };
 
-  const productDetails = {
-    name: "Vintage Tan Diaries",
-    image: mainImg,
-    description:
-      "A refined organiser that brings a luxe, professional touch to daily planning. Crafted with a soft-touch texture and a classic retro tan tone, this diary is designed for executives who value heritage aesthetics and modern functionality.",
-    features: [
-      "Classic Retro Tan with a textured, soft-touch finish",
-      "Secure Magnetic Lock closure for easy access",
-      "192 ruled pages on 80 GSM NS Maplitho paper",
-      "Includes 14 pages for monthly and annual planners",
-      "Ribbon bookmark with an elegant metal tag",
-      "Custom Sublimation print on gold nameplate (65 × 15 mm)",
-      "Portable A5 format (220 mm x 150 mm) for business needs",
-    ],
-    sizes: ["A5"],
-    colors: ["Retro Tan"],
-    extraImages: [img2, img3, img4, img5, img6],
-    tags: ["Retro Tan", "Magnetic Lock", "Executive"],
-    brandingArea: "Gold Nameplate (65 × 15 mm)",
-  };
-
   const handleAddToCart = () => {
     let item;
     if (selectedOption.value === "Custom") {
       item = {
-        name: "Vintage Tan Diaries",
-        image: mainImg,
+        name: productDetails.name,
+        image: getCdnImage(productDetails.images[0], { width: 150, height: 150 }),
         description: productDetails.description,
         features: productDetails.features,
         tags: productDetails.tags,
@@ -98,7 +94,11 @@ const VintageTanDiaries = ({ addToCart }) => {
       };
     } else {
       item = {
-        ...productDetails,
+        name: productDetails.name,
+        image: getCdnImage(productDetails.images[0], { width: 150, height: 150 }),
+        description: productDetails.description,
+        features: productDetails.features,
+        tags: productDetails.tags,
         selectedSize: selectedOption.label,
         selectedMaterial: selectedColor,
         selectedColor,
@@ -145,8 +145,10 @@ const VintageTanDiaries = ({ addToCart }) => {
 
             <Zoom>
               <img
-                src={mainImage}
-                alt={productDetails.name}
+                src={getCdnImage(productDetails.images[activeImageIndex], { width: 600, height: 450 })}
+                alt={`${productDetails.name} primary view`}
+                width="600"
+                height="450"
                 style={{
                   width: "100%",
                   borderRadius: "12px",
@@ -165,26 +167,30 @@ const VintageTanDiaries = ({ addToCart }) => {
                 mt: 2,
                 overflowX: "auto",
                 "&::-webkit-scrollbar": { display: "none" },
+                scrollbarWidth: "none",
               }}
             >
-              {productDetails.extraImages.map((img, idx) => (
+              {productDetails.images.map((imageName, idx) => (
                 <Paper
                   key={idx}
-                  onClick={() => setMainImage(img)}
+                  onClick={() => setActiveImageIndex(idx)}
                   sx={{
                     p: 1,
                     borderRadius: "10px",
                     cursor: "pointer",
                     border:
-                      mainImage === img ? "2px solid #70CB97" : "2px solid transparent",
+                      activeImageIndex === idx ? "2px solid #70CB97" : "2px solid transparent",
                     "&:hover": { border: "2px solid #70CB97" },
                     flexShrink: 0,
                     transition: "all 0.2s",
                   }}
                 >
                   <img
-                    src={img}
-                    alt={`view ${idx + 1}`}
+                    src={getCdnImage(imageName, { width: 90, height: 90 })}
+                    alt={`${productDetails.name} thumbnail view ${idx + 1}`}
+                    width="90"
+                    height="90"
+                    loading="lazy"
                     style={{
                       width: "90px",
                       height: "90px",
@@ -310,7 +316,7 @@ const VintageTanDiaries = ({ addToCart }) => {
             </Box>
           )}
 
-          {/* Color Options (only one, but keep consistent) */}
+          {/* Color Options */}
           <Typography
             variant="h6"
             sx={{ fontWeight: 600, mb: 2, color: "#19485D", fontSize: { xs: "1.2rem", md: "1.5rem" } }}
@@ -321,7 +327,10 @@ const VintageTanDiaries = ({ addToCart }) => {
             {productDetails.colors.map((color, idx) => (
               <Paper
                 key={idx}
-                onClick={() => setSelectedColor(color)}
+                onClick={() => {
+                  setSelectedColor(color);
+                  setActiveImageIndex(0);
+                }}
                 sx={{
                   p: 1.5,
                   px: 2.5,
@@ -393,6 +402,7 @@ const VintageTanDiaries = ({ addToCart }) => {
         </Grid>
       </Grid>
 
+      {/* Snackbar */}
       <Snackbar
         open={snackbarOpen}
         autoHideDuration={3000}

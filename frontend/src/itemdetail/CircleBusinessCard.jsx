@@ -10,17 +10,9 @@ import {
   IconButton,
 } from "@mui/material";
 import { AddShoppingCart, Close } from "@mui/icons-material";
+import { getCdnImage } from "../utils/imageLoader";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
-
-// ========== YOUR GENERATED CIRCLE BUSINESS CARD IMAGES ==========
-import mainImg from "../assets/circle-card-1.png";
-import img2 from "../assets/circle-card-2.png";
-import img3 from "../assets/circle-card-3.png";
-import img4 from "../assets/circle-card-4.png";
-import img5 from "../assets/circle-card-5.png";
-import img6 from "../assets/circle-card-6.png";
-// ===============================================================
 
 const CircleBusinessCard = ({ addToCart }) => {
   const priceMapping = {
@@ -31,12 +23,11 @@ const CircleBusinessCard = ({ addToCart }) => {
 
   const defaultMaterial = "Glossy Finish";
   const [selectedMaterial, setSelectedMaterial] = useState(defaultMaterial);
-  const [mainImage, setMainImage] = useState(mainImg);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   const details = {
     name: "Circle Business Card",
-    image: mainImg,
     description:
       "Stand out from the crowd with our unique circle-shaped business cards. Perfect for creative professionals and businesses looking to make a bold statement.",
     features: [
@@ -46,14 +37,23 @@ const CircleBusinessCard = ({ addToCart }) => {
       "Quick turnaround time",
     ],
     materials: ["Glossy Finish", "Matte Finish", "Soft Touch Finish"],
-    extraImages: [img2, img3, img4, img5, img6],
+    images: [
+      "circle-card-1.png",
+      "circle-card-2.png",
+      "circle-card-3.png",
+      "circle-card-4.png",
+      "circle-card-5.png",
+      "circle-card-6.png",
+    ],
   };
 
   const price = priceMapping[selectedMaterial];
 
   const handleAddToCart = () => {
     const item = {
-      ...details,
+      name: details.name,
+      image: getCdnImage(details.images[0], { width: 150, height: 150 }),
+      description: details.description,
       selectedMaterial,
       price,
       quantity: 1,
@@ -79,8 +79,10 @@ const CircleBusinessCard = ({ addToCart }) => {
           >
             <Zoom>
               <img
-                src={mainImage}
-                alt={details.name}
+                src={getCdnImage(details.images[activeImageIndex], { width: 600, height: 450 })}
+                alt={`${details.name} primary view`}
+                width="600"
+                height="450"
                 style={{
                   width: "100%",
                   borderRadius: "12px",
@@ -98,26 +100,30 @@ const CircleBusinessCard = ({ addToCart }) => {
                 mt: 2,
                 overflowX: "auto",
                 "&::-webkit-scrollbar": { display: "none" },
+                scrollbarWidth: "none",
               }}
             >
-              {details.extraImages.map((img, idx) => (
+              {details.images.map((imageName, idx) => (
                 <Paper
                   key={idx}
-                  onClick={() => setMainImage(img)}
+                  onClick={() => setActiveImageIndex(idx)}
                   sx={{
                     p: 1,
                     borderRadius: "10px",
                     cursor: "pointer",
                     border:
-                      mainImage === img ? "2px solid #70CB97" : "2px solid transparent",
+                      activeImageIndex === idx ? "2px solid #70CB97" : "2px solid transparent",
                     "&:hover": { border: "2px solid #70CB97" },
                     flexShrink: 0,
                     transition: "all 0.2s",
                   }}
                 >
                   <img
-                    src={img}
-                    alt={`view ${idx + 1}`}
+                    src={getCdnImage(imageName, { width: 90, height: 90 })}
+                    alt={`${details.name} thumbnail view ${idx + 1}`}
+                    width="90"
+                    height="90"
+                    loading="lazy"
                     style={{
                       width: "90px",
                       height: "90px",

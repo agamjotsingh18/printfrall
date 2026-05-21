@@ -18,15 +18,9 @@ import {
   WorkspacePremium,
   AutoAwesome,
 } from "@mui/icons-material";
+import { getCdnImage } from "../utils/imageLoader";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
-
-// Import your actual gold foiling sticker images – replace with real variants if available
-import goldFoilingStickersImg from "../assets/gold-foiling-stickers.png";
-import goldFoilingStickersImg2 from "../assets/gold-foiling-stickers-1.png";
-import goldFoilingStickersImg3 from "../assets/gold-foiling-stickers-2.png";
-import goldFoilingStickersImg4 from "../assets/gold-foiling-stickers-3.png";
-// import goldFoilingStickersImg5 from "../assets/gold-foiling-stickers.png";
 
 const GoldFoilingStickers = ({ addToCart }) => {
   // Price mapping for premium foiling range
@@ -42,7 +36,7 @@ const GoldFoilingStickers = ({ addToCart }) => {
   const [selectedMaterial, setSelectedMaterial] = useState("Standard Gold Foil");
   const [selectedShape, setSelectedShape] = useState("Circle");
   const [selectedSize, setSelectedSize] = useState("2x2\"");
-  const [mainImage, setMainImage] = useState(goldFoilingStickersImg);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   const unitPrice = priceMapping[selectedMaterial];
@@ -62,21 +56,19 @@ const GoldFoilingStickers = ({ addToCart }) => {
       "Vibrant high-definition metallic reflection",
       "Order as low as 50 units",
     ],
+    images: [
+      "gold-foiling-stickers.png",
+      "gold-foiling-stickers-1.png",
+      "gold-foiling-stickers-2.png",
+      "gold-foiling-stickers-3.png"
+    ],
     tags: ["Luxury Finish", "Metallic Gold", "Premium Brand"],
   };
-
-  const thumbnailImages = [
-    goldFoilingStickersImg,
-    goldFoilingStickersImg2,
-    goldFoilingStickersImg3,
-    goldFoilingStickersImg4,
-    // goldFoilingStickersImg5,
-  ];
 
   const handleAddToCart = () => {
     const item = {
       name: productDetails.name,
-      image: mainImage,
+      image: getCdnImage(productDetails.images[0], { width: 150, height: 150 }),
       description: productDetails.description,
       selectedMaterial,
       selectedShape,
@@ -147,8 +139,10 @@ const GoldFoilingStickers = ({ addToCart }) => {
 
             <Zoom>
               <img
-                src={mainImage}
-                alt={productDetails.name}
+                src={getCdnImage(productDetails.images[activeImageIndex], { width: 600, height: 450 })}
+                alt={`${productDetails.name} primary view`}
+                width="600"
+                height="450"
                 style={{
                   width: "100%",
                   borderRadius: "12px",
@@ -166,27 +160,31 @@ const GoldFoilingStickers = ({ addToCart }) => {
                 mt: 2,
                 overflowX: "auto",
                 "&::-webkit-scrollbar": { display: "none" },
+                scrollbarWidth: "none",
               }}
             >
-              {thumbnailImages.map((image, index) => (
+              {productDetails.images.map((imageName, index) => (
                 <Paper
                   key={index}
-                  onClick={() => setMainImage(image)}
+                  onClick={() => setActiveImageIndex(index)}
                   sx={{
                     p: 1,
                     borderRadius: "12px",
                     cursor: "pointer",
                     border:
-                      mainImage === image ? "2px solid #70CB97" : "1px solid #e0e7ed",
+                      activeImageIndex === index ? "2px solid #70CB97" : "1px solid #e0e7ed",
                     flexShrink: 0,
                     transition: "all 0.2s",
                     "&:hover": { transform: "translateY(-2px)" },
                   }}
                 >
                   <img
-                    src={image}
-                    alt={`View ${index + 1}`}
-                    style={{ width: "80px", height: "80px", objectFit: "cover" }}
+                    src={getCdnImage(imageName, { width: 80, height: 80 })}
+                    alt={`${productDetails.name} thumbnail view ${index + 1}`}
+                    width="80"
+                    height="80"
+                    loading="lazy"
+                    style={{ width: "80px", height: "80px", objectFit: "cover", borderRadius: "8px" }}
                   />
                 </Paper>
               ))}

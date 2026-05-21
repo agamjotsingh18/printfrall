@@ -20,14 +20,9 @@ import {
   Inventory,
   AutoAwesome,
 } from "@mui/icons-material";
+import { getCdnImage } from "../utils/imageLoader";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
-
-// Asset paths kept exactly as requested
-import triFoldBrochureImg from "../assets/tri-fold-brochure.png";
-import triFoldBrochureImg2 from "../assets/tri-fold-brochure-1.png";
-import triFoldBrochureImg3 from "../assets/tri-fold-brochure-2.png";
-import triFoldBrochureImg4 from "../assets/tri-fold-brochure-3.png";
 
 const TriFoldBrochure = ({ addToCart }) => {
   // Size options
@@ -44,29 +39,33 @@ const TriFoldBrochure = ({ addToCart }) => {
     { name: "Laminated Brochures", desc: "Added durability and protection" },
   ];
 
-  // Product features (for specifications panel)
-  const productFeatures = [
-    "Full‑colour CMYK digital printing",
-    "Tri‑fold format – compact yet spacious when opened",
-    "Choice of standard, eco‑friendly, premium textured, or laminated paper",
-    "Crisp folding with precise alignment",
-    "Ideal for corporate profiles, menus, event programs, and product catalogs",
-    "Minimum order: 5 units – perfect for small businesses",
-    "Free design check – we ensure correct bleeds and safety margins",
-  ];
+  const productDetails = {
+    name: "Professional Tri-Fold Brochures",
+    description:
+      "Engage, inform, and inspire with compact yet spacious marketing tools. Our tri-folds are the perfect canvas for corporate presentations, restaurant menus, or event details.",
+    features: [
+      "Full‑colour CMYK digital printing",
+      "Tri‑fold format – compact yet spacious when opened",
+      "Choice of standard, eco‑friendly, premium textured, or laminated paper",
+      "Crisp folding with precise alignment",
+      "Ideal for corporate profiles, menus, event programs, and product catalogs",
+      "Minimum order: 5 units – perfect for small businesses",
+      "Free design check – we ensure correct bleeds and safety margins",
+    ],
+    images: [
+      "tri-fold-brochure.png",
+      "tri-fold-brochure-1.png",
+      "tri-fold-brochure-2.png",
+      "tri-fold-brochure-3.png"
+    ],
+    tags: ["FULL COLOR"]
+  };
 
   // State
   const [selectedSize, setSelectedSize] = useState(sizeOptions[0]); // A4 default
   const [selectedPaper, setSelectedPaper] = useState(paperCategories[0]);
-  const [mainImage, setMainImage] = useState(triFoldBrochureImg);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
-
-  const thumbnailImages = [
-    triFoldBrochureImg,
-    triFoldBrochureImg2,
-    triFoldBrochureImg3,
-    triFoldBrochureImg4,
-  ];
 
   const handleAddToCart = () => {
     const item = {
@@ -76,7 +75,7 @@ const TriFoldBrochure = ({ addToCart }) => {
       paperType: selectedPaper.name,
       price: selectedSize.price,
       quantity: selectedSize.moq,
-      image: mainImage,
+      image: getCdnImage(productDetails.images[0], { width: 150, height: 150 }),
     };
     addToCart(item);
     setSnackbarOpen(true);
@@ -105,16 +104,7 @@ const TriFoldBrochure = ({ addToCart }) => {
               position: "relative",
             }}
           >
-            <Box
-              sx={{
-                position: "absolute",
-                top: 20,
-                left: 20,
-                zIndex: 10,
-                display: "flex",
-                gap: 1,
-              }}
-            >
+            <Box sx={{ display: "flex", gap: 1, mb: 2 }}>
               <Chip
                 label={`MOQ: ${selectedSize.moq} UNITS`}
                 size="small"
@@ -126,23 +116,28 @@ const TriFoldBrochure = ({ addToCart }) => {
                   borderRadius: "40px",
                 }}
               />
-              <Chip
-                label="FULL COLOR"
-                size="small"
-                icon={<AutoAwesome />}
-                sx={{
-                  bgcolor: "#70CB97",
-                  color: "white",
-                  fontWeight: "bold",
-                  borderRadius: "40px",
-                }}
-              />
+              {productDetails.tags.map((tag, idx) => (
+                <Chip
+                  key={idx}
+                  label={tag}
+                  size="small"
+                  icon={<AutoAwesome />}
+                  sx={{
+                    backgroundColor: "rgba(112, 203, 151, 0.1)",
+                    color: "#70CB97",
+                    fontWeight: "bold",
+                    borderRadius: 2,
+                  }}
+                />
+              ))}
             </Box>
 
             <Zoom>
               <img
-                src={mainImage}
-                alt="Tri-Fold Brochure Preview"
+                src={getCdnImage(productDetails.images[activeImageIndex], { width: 600, height: 450 })}
+                alt={`${productDetails.name} primary view`}
+                width="600"
+                height="450"
                 style={{
                   width: "100%",
                   borderRadius: "12px",
@@ -160,29 +155,33 @@ const TriFoldBrochure = ({ addToCart }) => {
                 mt: 2,
                 overflowX: "auto",
                 "&::-webkit-scrollbar": { display: "none" },
+                scrollbarWidth: "none",
               }}
             >
-              {thumbnailImages.map((image, index) => (
+              {productDetails.images.map((imageName, index) => (
                 <Paper
                   key={index}
-                  onClick={() => setMainImage(image)}
+                  onClick={() => setActiveImageIndex(index)}
                   sx={{
                     p: 1,
                     borderRadius: "12px",
                     cursor: "pointer",
                     border:
-                      mainImage === image ? "2px solid #70CB97" : "1px solid #e0e7ed",
+                      activeImageIndex === index ? "2px solid #70CB97" : "1px solid #e0e7ed",
                     flexShrink: 0,
                     transition: "all 0.2s",
                     "&:hover": { transform: "translateY(-2px)" },
                   }}
                 >
                   <img
-                    src={image}
-                    alt={`View ${index + 1}`}
+                    src={getCdnImage(imageName, { width: 90, height: 90 })}
+                    alt={`${productDetails.name} thumbnail view ${index + 1}`}
+                    width="90"
+                    height="90"
+                    loading="lazy"
                     style={{
-                      width: "80px",
-                      height: "80px",
+                      width: "90px",
+                      height: "90px",
                       objectFit: "cover",
                       borderRadius: "8px",
                     }}
@@ -192,7 +191,7 @@ const TriFoldBrochure = ({ addToCart }) => {
             </Box>
           </Paper>
 
-          {/* Design Guidelines Note (green‑themed) */}
+          {/* Design Guidelines Note */}
           <Paper
             sx={{
               p: 2,
@@ -235,7 +234,7 @@ const TriFoldBrochure = ({ addToCart }) => {
               fontSize: { xs: "1.8rem", md: "2.5rem" },
             }}
           >
-            Professional Tri-Fold Brochures
+            {productDetails.name}
           </Typography>
 
           <Box sx={{ display: "flex", alignItems: "baseline", gap: 2, flexWrap: "wrap", mb: 1 }}>
@@ -248,13 +247,12 @@ const TriFoldBrochure = ({ addToCart }) => {
           </Box>
 
           <Typography variant="body1" sx={{ mb: 3, color: "#1e2a32", lineHeight: 1.6 }}>
-            Engage, inform, and inspire with compact yet spacious marketing tools. Our tri-folds are
-            the perfect canvas for corporate presentations, restaurant menus, or event details.
+            {productDetails.description}
           </Typography>
 
           <Divider sx={{ mb: 3 }} />
 
-          {/* Size Selection (pill‑shaped) */}
+          {/* Size Selection */}
           <Typography
             variant="h6"
             sx={{
@@ -273,7 +271,10 @@ const TriFoldBrochure = ({ addToCart }) => {
             {sizeOptions.map((size) => (
               <Paper
                 key={size.id}
-                onClick={() => setSelectedSize(size)}
+                onClick={() => {
+                  setSelectedSize(size);
+                  setActiveImageIndex(0);
+                }}
                 sx={{
                   flex: 1,
                   p: 1.5,
@@ -301,7 +302,7 @@ const TriFoldBrochure = ({ addToCart }) => {
             ))}
           </Box>
 
-          {/* Paper Type & Material (pill‑shaped cards) */}
+          {/* Paper Type & Material */}
           <Typography
             variant="h6"
             sx={{ fontWeight: 600, mb: 2, color: "#19485D", fontSize: "1.1rem" }}
@@ -312,7 +313,10 @@ const TriFoldBrochure = ({ addToCart }) => {
             {paperCategories.map((paper) => (
               <Paper
                 key={paper.name}
-                onClick={() => setSelectedPaper(paper)}
+                onClick={() => {
+                  setSelectedPaper(paper);
+                  setActiveImageIndex(0);
+                }}
                 sx={{
                   flex: "1 1 calc(50% - 12px)",
                   p: 1.5,
@@ -354,7 +358,7 @@ const TriFoldBrochure = ({ addToCart }) => {
             <Typography variant="subtitle1" sx={{ fontWeight: 700, mb: 2, color: "#19485D" }}>
               Printing Specifications:
             </Typography>
-            {productFeatures.map((feature, i) => (
+            {productDetails.features.map((feature, i) => (
               <Box key={i} sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
                 <Inventory sx={{ fontSize: 16, color: "#70CB97" }} />
                 <Typography variant="body2" sx={{ color: "#5a6e7a" }}>

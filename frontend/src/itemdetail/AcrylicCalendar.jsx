@@ -10,19 +10,11 @@ import {
   IconButton,
 } from "@mui/material";
 import { AddShoppingCart, Close } from "@mui/icons-material";
+import { getCdnImage } from "../utils/imageLoader";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
 
-// ========== YOUR GENERATED ACRYLIC CALENDAR IMAGES ==========
-import mainImg from "../assets/acrylic-calendar-1-standing.png";
-import img2 from "../assets/acrylic-calendar-2-standing-m.png";
-import img3 from "../assets/acrylic-calendar-3-desk.png";
-import img4 from "../assets/acrylic-calendar-4-stack.png";
-import img5 from "../assets/acrylic-calendar-5-closeup.png";
-// ============================================================
-
 const AcrylicCalendar = ({ addToCart }) => {
-  // Price mapping for each size and material combination
   const priceMapping = {
     "Small (8x12 inches)": { "Clear Acrylic": 300, "Frosted Acrylic": 350, "Colored Acrylic": 400 },
     "Medium (12x18 inches)": { "Clear Acrylic": 450, "Frosted Acrylic": 500, "Colored Acrylic": 550 },
@@ -34,12 +26,11 @@ const AcrylicCalendar = ({ addToCart }) => {
 
   const [selectedSize, setSelectedSize] = useState(defaultSize);
   const [selectedMaterial, setSelectedMaterial] = useState(defaultMaterial);
-  const [mainImage, setMainImage] = useState(mainImg);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   const details = {
     name: "Acrylic Calendar",
-    image: mainImg,
     description:
       "Stay organized in style with our premium acrylic calendars. Sleek, modern, and durable, these calendars are perfect for offices, homes, and personal use.",
     features: [
@@ -50,14 +41,22 @@ const AcrylicCalendar = ({ addToCart }) => {
     ],
     sizes: ["Small (8x12 inches)", "Medium (12x18 inches)", "Large (18x24 inches)"],
     materials: ["Clear Acrylic", "Frosted Acrylic", "Colored Acrylic"],
-    extraImages: [img2, img3, img4, img5],
+    images: [
+      "acrylic-calendar-1-standing.png",
+      "acrylic-calendar-2-standing-m.png",
+      "acrylic-calendar-3-desk.png",
+      "acrylic-calendar-4-stack.png",
+      "acrylic-calendar-5-closeup.png"
+    ],
   };
 
   const price = priceMapping[selectedSize][selectedMaterial];
 
   const handleAddToCart = () => {
     const item = {
-      ...details,
+      name: details.name,
+      image: getCdnImage(details.images[0], { width: 150, height: 150 }),
+      description: details.description,
       selectedSize,
       selectedMaterial,
       price,
@@ -84,8 +83,10 @@ const AcrylicCalendar = ({ addToCart }) => {
           >
             <Zoom>
               <img
-                src={mainImage}
-                alt={details.name}
+                src={getCdnImage(details.images[activeImageIndex], { width: 600, height: 450 })}
+                alt={`${details.name} primary view`}
+                width="600"
+                height="450"
                 style={{
                   width: "100%",
                   borderRadius: "12px",
@@ -103,26 +104,30 @@ const AcrylicCalendar = ({ addToCart }) => {
                 mt: 2,
                 overflowX: "auto",
                 "&::-webkit-scrollbar": { display: "none" },
+                scrollbarWidth: "none",
               }}
             >
-              {details.extraImages.map((img, idx) => (
+              {details.images.map((imageName, idx) => (
                 <Paper
                   key={idx}
-                  onClick={() => setMainImage(img)}
+                  onClick={() => setActiveImageIndex(idx)}
                   sx={{
                     p: 1,
                     borderRadius: "10px",
                     cursor: "pointer",
                     border:
-                      mainImage === img ? "2px solid #70CB97" : "2px solid transparent",
+                      activeImageIndex === idx ? "2px solid #70CB97" : "2px solid transparent",
                     "&:hover": { border: "2px solid #70CB97" },
                     flexShrink: 0,
                     transition: "all 0.2s",
                   }}
                 >
                   <img
-                    src={img}
-                    alt={`view ${idx + 1}`}
+                    src={getCdnImage(imageName, { width: 90, height: 90 })}
+                    alt={`${details.name} thumbnail view ${idx + 1}`}
+                    width="90"
+                    height="90"
+                    loading="lazy"
                     style={{
                       width: "90px",
                       height: "90px",
@@ -288,4 +293,4 @@ const AcrylicCalendar = ({ addToCart }) => {
   );
 };
 
-export default AcrylicCalendar; 
+export default AcrylicCalendar;

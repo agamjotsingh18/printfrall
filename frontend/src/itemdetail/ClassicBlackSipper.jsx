@@ -11,36 +11,26 @@ import {
   Chip,
 } from "@mui/material";
 import { AddShoppingCart, Close, WorkspacePremium } from "@mui/icons-material";
+import { getCdnImage } from "../utils/imageLoader";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
 
-// ========== MAIN BOTTLE IMAGE ==========
-import mainImg from "../assets/classic-sipper-4.png";
-
-// ========== EXTRA ANGLES ==========
-import img2 from "../assets/classic-sipper-2.png";
-import img3 from "../assets/classic-sipper-3.png";
-import img4 from "../assets/classic-sipper-1.png";
-
 const ClassicBlackSipper = ({ addToCart }) => {
-  // Price mapping
   const priceMapping = {
     "750ml": 650,
   };
 
-  // Available options
   const availableColors = ["Elegant Black", "Pure White", "Paramount Blue"];
   const defaultSize = "750ml";
   const defaultColor = "Elegant Black";
 
   const [selectedSize] = useState(defaultSize);
   const [selectedColor, setSelectedColor] = useState(defaultColor);
-  const [mainImage, setMainImage] = useState(mainImg);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   const sipperDetails = {
     name: "Classic Black Sipper",
-    image: mainImg,
     description:
       "An elegant and professional stainless steel bottle designed for the modern workplace. Crafted with premium non-toxic materials, it offers a sleek canvas for your custom logo or text.",
     features: [
@@ -54,7 +44,12 @@ const ClassicBlackSipper = ({ addToCart }) => {
     ],
     sizes: ["750ml"],
     colors: availableColors,
-    extraImages: [img2, img3, img4],
+    images: [
+      "classic-sipper-4.png",
+      "classic-sipper-2.png",
+      "classic-sipper-3.png",
+      "classic-sipper-1.png"
+    ],
     tags: ["Professional", "BPA Free", "Premium"],
   };
 
@@ -62,7 +57,9 @@ const ClassicBlackSipper = ({ addToCart }) => {
 
   const handleAddToCart = () => {
     const item = {
-      ...sipperDetails,
+      name: sipperDetails.name,
+      image: getCdnImage(sipperDetails.images[0], { width: 150, height: 150 }),
+      description: sipperDetails.description,
       selectedSize,
       selectedColor,
       price,
@@ -114,8 +111,10 @@ const ClassicBlackSipper = ({ addToCart }) => {
 
             <Zoom>
               <img
-                src={mainImage}
-                alt={sipperDetails.name}
+                src={getCdnImage(sipperDetails.images[activeImageIndex], { width: 600, height: 450 })}
+                alt={`${sipperDetails.name} primary view`}
+                width="600"
+                height="450"
                 style={{
                   width: "100%",
                   borderRadius: "12px",
@@ -134,26 +133,30 @@ const ClassicBlackSipper = ({ addToCart }) => {
                 mt: 2,
                 overflowX: "auto",
                 "&::-webkit-scrollbar": { display: "none" },
+                scrollbarWidth: "none",
               }}
             >
-              {sipperDetails.extraImages.map((img, idx) => (
+              {sipperDetails.images.map((imageName, idx) => (
                 <Paper
                   key={idx}
-                  onClick={() => setMainImage(img)}
+                  onClick={() => setActiveImageIndex(idx)}
                   sx={{
                     p: 1,
                     borderRadius: "10px",
                     cursor: "pointer",
                     border:
-                      mainImage === img ? "2px solid #70CB97" : "2px solid transparent",
+                      activeImageIndex === idx ? "2px solid #70CB97" : "2px solid transparent",
                     "&:hover": { border: "2px solid #70CB97" },
                     flexShrink: 0,
                     transition: "all 0.2s",
                   }}
                 >
                   <img
-                    src={img}
-                    alt={`view ${idx + 1}`}
+                    src={getCdnImage(imageName, { width: 90, height: 90 })}
+                    alt={`${sipperDetails.name} thumbnail view ${idx + 1}`}
+                    width="90"
+                    height="90"
+                    loading="lazy"
                     style={{
                       width: "90px",
                       height: "90px",

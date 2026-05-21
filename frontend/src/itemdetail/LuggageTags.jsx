@@ -13,16 +13,9 @@ import {
   InputAdornment,
 } from "@mui/material";
 import { AddShoppingCart, Close, Luggage, WorkspacePremium } from "@mui/icons-material";
+import { getCdnImage } from "../utils/imageLoader";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
-
-// ========== MAIN PRODUCT IMAGE ==========
-import mainImg from "../assets/luggage-tags.png";
-
-// ========== EXTRA ANGLES ==========
-import img2 from "../assets/luggage-tags.png";
-import img3 from "../assets/luggage-tags-1.png";
-import img4 from "../assets/luggage-tags-2.png";
 
 const LuggageTags = ({ addToCart }) => {
   // Pack options with quantity and price
@@ -38,7 +31,7 @@ const LuggageTags = ({ addToCart }) => {
   const [selectedOption, setSelectedOption] = useState(packOptions[0]);
   const [customQuantity, setCustomQuantity] = useState(1);
   const [selectedColor, setSelectedColor] = useState("Vintage Tan");
-  const [mainImage, setMainImage] = useState(mainImg);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   const getTotalPrice = () => {
@@ -59,7 +52,6 @@ const LuggageTags = ({ addToCart }) => {
 
   const productDetails = {
     name: "Premium Personalized Luggage Tags",
-    image: mainImg,
     description:
       "Travel with style and identity. Our premium leather luggage tags are crafted for easy identification, maximum durability, and professional personality. Perfect for business travelers and corporate gifting.",
     features: [
@@ -73,7 +65,11 @@ const LuggageTags = ({ addToCart }) => {
     ],
     sizes: ["Single", "Pack of 3", "Pack of 5"],
     colors: ["Classic Black", "Vintage Tan", "Rustic Red", "Deep Brown", "Maroon"],
-    extraImages: [img2, img3, img4],
+    images: [
+      "luggage-tags.png",
+      "luggage-tags-1.png",
+      "luggage-tags-2.png"
+    ],
     tags: ["Leather", "Laser Engraved", "Executive"],
   };
 
@@ -81,8 +77,8 @@ const LuggageTags = ({ addToCart }) => {
     let item;
     if (selectedOption.value === "Custom") {
       item = {
-        name: "Premium Personalized Luggage Tags",
-        image: mainImg,
+        name: productDetails.name,
+        image: getCdnImage(productDetails.images[0], { width: 150, height: 150 }),
         description: productDetails.description,
         features: productDetails.features,
         tags: productDetails.tags,
@@ -94,7 +90,11 @@ const LuggageTags = ({ addToCart }) => {
       };
     } else {
       item = {
-        ...productDetails,
+        name: productDetails.name,
+        image: getCdnImage(productDetails.images[0], { width: 150, height: 150 }),
+        description: productDetails.description,
+        features: productDetails.features,
+        tags: productDetails.tags,
         selectedSize: selectedOption.label,
         selectedMaterial: selectedColor,
         selectedColor,
@@ -140,8 +140,10 @@ const LuggageTags = ({ addToCart }) => {
 
             <Zoom>
               <img
-                src={mainImage}
-                alt={productDetails.name}
+                src={getCdnImage(productDetails.images[activeImageIndex], { width: 600, height: 450 })}
+                alt={`${productDetails.name} primary view`}
+                width="600"
+                height="450"
                 style={{
                   width: "100%",
                   borderRadius: "12px",
@@ -160,26 +162,30 @@ const LuggageTags = ({ addToCart }) => {
                 mt: 2,
                 overflowX: "auto",
                 "&::-webkit-scrollbar": { display: "none" },
+                scrollbarWidth: "none",
               }}
             >
-              {productDetails.extraImages.map((img, idx) => (
+              {productDetails.images.map((imageName, idx) => (
                 <Paper
                   key={idx}
-                  onClick={() => setMainImage(img)}
+                  onClick={() => setActiveImageIndex(idx)}
                   sx={{
                     p: 1,
                     borderRadius: "10px",
                     cursor: "pointer",
                     border:
-                      mainImage === img ? "2px solid #70CB97" : "2px solid transparent",
+                      activeImageIndex === idx ? "2px solid #70CB97" : "2px solid transparent",
                     "&:hover": { border: "2px solid #70CB97" },
                     flexShrink: 0,
                     transition: "all 0.2s",
                   }}
                 >
                   <img
-                    src={img}
-                    alt={`view ${idx + 1}`}
+                    src={getCdnImage(imageName, { width: 90, height: 90 })}
+                    alt={`${productDetails.name} thumbnail view ${idx + 1}`}
+                    width="90"
+                    height="90"
+                    loading="lazy"
                     style={{
                       width: "90px",
                       height: "90px",

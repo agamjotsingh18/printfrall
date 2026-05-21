@@ -1,26 +1,24 @@
 import React from "react";
 import { Box, Typography, Card, CardContent, CardMedia } from "@mui/material";
 import "../styles/Blog.css";
-import ThreeDPrinting from "../assets/3d-printing.avif"
-import EcoPrinting from  "../assets/eco-printing.webp";
-import BusinessCardDesign from  "../assets/business-card-design.webp";
+import { getCdnImage } from "../utils/imageLoader";
 
 const blogPosts = [
   {
     title: "The Future of 3D Printing",
-    image: ThreeDPrinting,
+    image: "3d-printing.avif",
     description: "How 3D printing is revolutionizing the manufacturing industry.",
     link: "/blog/future-of-3D-printing",
   },
   {
     title: "Eco-Friendly Printing Solutions",
-    image: EcoPrinting,
+    image: "eco-printing.webp",
     description: "Sustainable printing methods that help save the environment.",
     link: "/blog/eco-friendly-printing-solutions",
   },
   {
     title: "Top Business Card Designs in 2025",
-    image: BusinessCardDesign,
+    image: "business-card-design.webp",
     description: "Explore the latest trends in business card design for professionals.",
     link: "/blog/business-card-trends",
   },
@@ -35,7 +33,13 @@ const Blog = () => {
       <Box className="blog-container" sx={{ marginTop: "50px" }}>
         {blogPosts.map((post, index) => (
           <Card className="blog-card" key={index}>
-            <CardMedia component="img" image={post.image} alt={post.title} className="blog-image" />
+            <CardMedia 
+              component="img" 
+              image={getCdnImage(post.image, { width: 600, quality: 80 })} 
+              alt={post.title} 
+              className="blog-image" 
+              loading="lazy"
+            />
             <CardContent>
               <Typography className="blog-heading">{post.title}</Typography>
               <Typography className="blog-description">{post.description}</Typography>

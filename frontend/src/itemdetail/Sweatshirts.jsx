@@ -18,15 +18,9 @@ import {
   VerifiedUser,
   AutoAwesome,
 } from "@mui/icons-material";
+import { getCdnImage } from "../utils/imageLoader";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
-
-// Import your actual sweatshirt images – replace with real variants if available
-import sweatshirtImg from "../assets/sweatshirt.png";
-import sweatshirtImg2 from "../assets/sweatshirt-1.png";
-import sweatshirtImg3 from "../assets/sweatshirt-2.jpeg";
-import sweatshirtImg4 from "../assets/sweatshirt-3.jpeg";
-import sweatshirtImg5 from "../assets/sweatshirt.png";
 
 const Sweatshirts = ({ addToCart }) => {
   // Price mapping for premium sponge fleece range
@@ -39,15 +33,6 @@ const Sweatshirts = ({ addToCart }) => {
 
   const availableColors = ["Black", "Grey Acid", "Navy", "Dark Grey Marble", "White", "Red"];
   const availableSizes = ["XS", "S", "M", "L", "XL", "2XL", "3XL"];
-
-  const [selectedMaterial, setSelectedMaterial] = useState("Sponge Fleece (8.2 oz)");
-  const [selectedColor, setSelectedColor] = useState("Black");
-  const [selectedSize, setSelectedSize] = useState("M");
-  const [mainImage, setMainImage] = useState(sweatshirtImg);
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-
-  const unitPrice = priceMapping[selectedMaterial];
-  const totalPrice = unitPrice; // Single item
 
   const productDetails = {
     name: "Unisex Sponge Fleece Crewneck",
@@ -62,22 +47,32 @@ const Sweatshirts = ({ addToCart }) => {
       "Tear-away label for added comfort",
       "Specialized Acid Wash finishes available (Pre-shrunk)",
     ],
+    images: [
+      "sweatshirt.png",
+      "sweatshirt-1.png",
+      "sweatshirt-2.jpeg",
+      "sweatshirt-3.jpeg",
+      "sweatshirt.png"
+    ],
     tags: ["Ultra Soft", "Retail Fit", "8.2 oz Heavyweight"],
   };
 
-  const thumbnailImages = [
-    sweatshirtImg,
-    sweatshirtImg2,
-    sweatshirtImg3,
-    sweatshirtImg4,
-    sweatshirtImg5,
-  ];
+  const [selectedMaterial, setSelectedMaterial] = useState("Sponge Fleece (8.2 oz)");
+  const [selectedColor, setSelectedColor] = useState("Black");
+  const [selectedSize, setSelectedSize] = useState("M");
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+
+  const unitPrice = priceMapping[selectedMaterial];
+  const totalPrice = unitPrice; // Single item
 
   const handleAddToCart = () => {
     const item = {
       name: productDetails.name,
-      image: mainImage,
+      image: getCdnImage(productDetails.images[0], { width: 150, height: 150 }),
       description: productDetails.description,
+      features: productDetails.features,
+      tags: productDetails.tags,
       selectedMaterial,
       selectedColor,
       selectedSize,
@@ -111,44 +106,29 @@ const Sweatshirts = ({ addToCart }) => {
               position: "relative",
             }}
           >
-            <Box
-              sx={{
-                position: "absolute",
-                top: 20,
-                left: 20,
-                zIndex: 10,
-                display: "flex",
-                gap: 1,
-              }}
-            >
-              <Chip
-                label="ULTRA SOFT"
-                size="small"
-                icon={<VerifiedUser />}
-                sx={{
-                  bgcolor: "#19485D",
-                  color: "white",
-                  fontWeight: "bold",
-                  borderRadius: "40px",
-                }}
-              />
-              <Chip
-                label="RETAIL FIT"
-                size="small"
-                icon={<AutoAwesome />}
-                sx={{
-                  bgcolor: "#70CB97",
-                  color: "white",
-                  fontWeight: "bold",
-                  borderRadius: "40px",
-                }}
-              />
+            <Box sx={{ display: "flex", gap: 1, mb: 2 }}>
+              {productDetails.tags.map((tag, idx) => (
+                <Chip
+                  key={idx}
+                  label={tag}
+                  size="small"
+                  icon={tag === "Ultra Soft" ? <VerifiedUser fontSize="small" /> : <AutoAwesome fontSize="small" />}
+                  sx={{
+                    backgroundColor: "rgba(112, 203, 151, 0.1)",
+                    color: "#70CB97",
+                    fontWeight: "bold",
+                    borderRadius: 2,
+                  }}
+                />
+              ))}
             </Box>
 
             <Zoom>
               <img
-                src={mainImage}
-                alt={productDetails.name}
+                src={getCdnImage(productDetails.images[activeImageIndex], { width: 600, height: 450 })}
+                alt={`${productDetails.name} primary view`}
+                width="600"
+                height="450"
                 style={{
                   width: "100%",
                   borderRadius: "12px",
@@ -158,7 +138,7 @@ const Sweatshirts = ({ addToCart }) => {
               />
             </Zoom>
 
-            {/* Thumbnails */}
+            {/* Thumbnail Gallery */}
             <Box
               sx={{
                 display: "flex",
@@ -166,27 +146,31 @@ const Sweatshirts = ({ addToCart }) => {
                 mt: 2,
                 overflowX: "auto",
                 "&::-webkit-scrollbar": { display: "none" },
+                scrollbarWidth: "none",
               }}
             >
-              {thumbnailImages.map((image, index) => (
+              {productDetails.images.map((imageName, index) => (
                 <Paper
                   key={index}
-                  onClick={() => setMainImage(image)}
+                  onClick={() => setActiveImageIndex(index)}
                   sx={{
                     p: 1,
-                    borderRadius: "12px",
+                    borderRadius: "10px",
                     cursor: "pointer",
                     border:
-                      mainImage === image ? "2px solid #70CB97" : "1px solid #e0e7ed",
+                      activeImageIndex === index ? "2px solid #70CB97" : "2px solid transparent",
+                    "&:hover": { border: "2px solid #70CB97" },
                     flexShrink: 0,
                     transition: "all 0.2s",
-                    "&:hover": { transform: "translateY(-2px)" },
                   }}
                 >
                   <img
-                    src={image}
-                    alt={`View ${index + 1}`}
-                    style={{ width: "80px", height: "80px", objectFit: "cover", borderRadius: "8px" }}
+                    src={getCdnImage(imageName, { width: 90, height: 90 })}
+                    alt={`${productDetails.name} thumbnail view ${index + 1}`}
+                    width="90"
+                    height="90"
+                    loading="lazy"
+                    style={{ width: "90px", height: "90px", objectFit: "cover", borderRadius: "8px" }}
                   />
                 </Paper>
               ))}
@@ -234,7 +218,10 @@ const Sweatshirts = ({ addToCart }) => {
             {Object.keys(priceMapping).map((material) => (
               <Paper
                 key={material}
-                onClick={() => setSelectedMaterial(material)}
+                onClick={() => {
+                  setSelectedMaterial(material);
+                  setActiveImageIndex(0);
+                }}
                 sx={{
                   p: 1,
                   px: 2.5,
@@ -258,7 +245,7 @@ const Sweatshirts = ({ addToCart }) => {
             ))}
           </Box>
 
-          {/* Color Selection (NEW) */}
+          {/* Color Selection */}
           <Typography
             variant="h6"
             sx={{ fontWeight: 600, mb: 2, color: "#19485D", fontSize: "1.1rem" }}
@@ -269,7 +256,10 @@ const Sweatshirts = ({ addToCart }) => {
             {availableColors.map((color) => (
               <Paper
                 key={color}
-                onClick={() => setSelectedColor(color)}
+                onClick={() => {
+                  setSelectedColor(color);
+                  setActiveImageIndex(0);
+                }}
                 sx={{
                   p: 1,
                   px: 2.5,

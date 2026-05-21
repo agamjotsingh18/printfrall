@@ -3,29 +3,28 @@ import { Link } from "react-router-dom";
 import "../styles/Flyers.css";
 import { IconButton } from "@mui/material";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
-
-// Import images for each flyer type
-import offerFlyers from "../assets/offer-flyer.png";
-import businessFlyers from "../assets/business-flyer.png";
-import productCatalogFlyers from "../assets/product-catalog-flyer.png";
-import a4Flyers from "../assets/a4-flyer-printing.png";
-import a5Flyers from "../assets/a5-flyer-printing.png";
-import dlFlyers from "../assets/dl-flyer-printing.png";
+import { getCdnImage } from "../utils/imageLoader";
 
 const flyerTypes = [
-  { name: "Offer Flyers", image: offerFlyers, price: 20, route: "/services/marketing-materials/flyers/offer-flyers" },
-  { name: "Business Flyers", image: businessFlyers, price: 25, route: "/services/marketing-materials/flyers/business-flyers" },
-  { name: "Product Catalog Flyers", image: productCatalogFlyers, price: 30, route: "/services/marketing-materials/flyers/product-catalog-flyers" },
-  { name: "A4 Flyer Printing", image: a4Flyers, price: 15, route: "/services/marketing-materials/flyers/a4-flyer-printing" },
-  { name: "A5 Flyer Printing", image: a5Flyers, price: 10, route: "/services/marketing-materials/flyers/a5-flyer-printing" },
-  { name: "DL Flyer Printing", image: dlFlyers, price: 12, route: "/services/marketing-materials/flyers/dl-flyer-printing" },
+  { name: "Offer Flyers", image: "offer-flyer.png", price: 20, route: "/services/marketing-materials/flyers/offer-flyers" },
+  { name: "Business Flyers", image: "business-flyer.png", price: 25, route: "/services/marketing-materials/flyers/business-flyers" },
+  { name: "Product Catalog Flyers", image: "product-catalog-flyer.png", price: 30, route: "/services/marketing-materials/flyers/product-catalog-flyers" },
+  { name: "A4 Flyer Printing", image: "a4-flyer-printing.png", price: 15, route: "/services/marketing-materials/flyers/a4-flyer-printing" },
+  { name: "A5 Flyer Printing", image: "a5-flyer-printing.png", price: 10, route: "/services/marketing-materials/flyers/a5-flyer-printing" },
+  { name: "DL Flyer Printing", image: "dl-flyer-printing.png", price: 12, route: "/services/marketing-materials/flyers/dl-flyer-printing" },
 ];
 
 const Flyers = ({ addToCart }) => {
   const handleAddToCart = (item, e) => {
     e?.preventDefault();
     e?.stopPropagation();
-    addToCart(item);
+    
+    const cartItem = {
+      ...item,
+      image: getCdnImage(item.image, { width: 150, height: 150 }),
+      quantity: 1
+    };
+    addToCart(cartItem);
   };
 
   return (
@@ -35,21 +34,22 @@ const Flyers = ({ addToCart }) => {
       <div className="flyers-container" aria-label="Flyer types">
         {flyerTypes.map((flyer, index) => (
           <div className="flyer-item" key={index} aria-label={`Product: ${flyer.name}`}>
-            {/* Wrap flyer details in a Link */}
             <Link 
               to={flyer.route} 
               className="flyer-link"
               aria-label={`View details of ${flyer.name}`}
             >
               <img 
-                src={flyer.image} 
+                src={getCdnImage(flyer.image, { width: 350, height: 350 })} 
                 alt={flyer.name} 
                 className="flyer-image" 
+                width="350"
+                height="350"
+                loading="lazy"
               />
               <p className="flyer-name">{flyer.name}</p>
               <p className="flyer-price" aria-label={`Price: ₹${flyer.price}`}>₹{flyer.price}</p>
             </Link>
-            {/* Add to Cart Button */}
             <IconButton
               aria-label={`Add ${flyer.name} to cart`}
               sx={{

@@ -11,15 +11,9 @@ import {
   Chip,
 } from "@mui/material";
 import { AddShoppingCart, Close, WorkspacePremium } from "@mui/icons-material";
+import { getCdnImage } from "../utils/imageLoader";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
-
-// ========== MAIN BOTTLE IMAGE ==========
-import mainImg from "../assets/pure-copper-bottle.png";
-
-// ========== EXTRA ANGLES ==========
-import img2 from "../assets/pure-copper-bottle.png";
-import img3 from "../assets/pure-copper-bottle-1.png";
 
 const PureCopperBottle = ({ addToCart }) => {
   // Price mapping
@@ -34,12 +28,11 @@ const PureCopperBottle = ({ addToCart }) => {
 
   const [selectedSize] = useState(defaultSize);
   const [selectedColor, setSelectedColor] = useState(defaultColor);
-  const [mainImage, setMainImage] = useState(mainImg);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   const bottleDetails = {
     name: "Pure Copper Water Bottle",
-    image: mainImg,
     description:
       "Authentic pure copper water bottle designed for elegance and well-being. Handcrafted for reliability, this bottle is perfect for home, office, or as a thoughtful corporate gift that lasts a lifetime.",
     features: [
@@ -53,7 +46,10 @@ const PureCopperBottle = ({ addToCart }) => {
     ],
     sizes: ["1000ml"],
     colors: availableColors,
-    extraImages: [img2, img3],
+    images: [
+      "pure-copper-bottle.png",
+      "pure-copper-bottle-1.png"
+    ],
     tags: ["Handcrafted", "Health-Focused", "Pure Copper"],
   };
 
@@ -61,7 +57,11 @@ const PureCopperBottle = ({ addToCart }) => {
 
   const handleAddToCart = () => {
     const item = {
-      ...bottleDetails,
+      name: bottleDetails.name,
+      image: getCdnImage(bottleDetails.images[0], { width: 150, height: 150 }),
+      description: bottleDetails.description,
+      features: bottleDetails.features,
+      tags: bottleDetails.tags,
       selectedSize,
       selectedColor,
       price,
@@ -88,8 +88,10 @@ const PureCopperBottle = ({ addToCart }) => {
           >
             <Zoom>
               <img
-                src={mainImage}
-                alt={bottleDetails.name}
+                src={getCdnImage(bottleDetails.images[activeImageIndex], { width: 600, height: 450 })}
+                alt={`${bottleDetails.name} primary view`}
+                width="600"
+                height="450"
                 style={{
                   width: "100%",
                   borderRadius: "12px",
@@ -108,26 +110,30 @@ const PureCopperBottle = ({ addToCart }) => {
                 mt: 2,
                 overflowX: "auto",
                 "&::-webkit-scrollbar": { display: "none" },
+                scrollbarWidth: "none",
               }}
             >
-              {bottleDetails.extraImages.map((img, idx) => (
+              {bottleDetails.images.map((imageName, idx) => (
                 <Paper
                   key={idx}
-                  onClick={() => setMainImage(img)}
+                  onClick={() => setActiveImageIndex(idx)}
                   sx={{
                     p: 1,
                     borderRadius: "10px",
                     cursor: "pointer",
                     border:
-                      mainImage === img ? "2px solid #70CB97" : "2px solid transparent",
+                      activeImageIndex === idx ? "2px solid #70CB97" : "2px solid transparent",
                     "&:hover": { border: "2px solid #70CB97" },
                     flexShrink: 0,
                     transition: "all 0.2s",
                   }}
                 >
                   <img
-                    src={img}
-                    alt={`view ${idx + 1}`}
+                    src={getCdnImage(imageName, { width: 90, height: 90 })}
+                    alt={`${bottleDetails.name} thumbnail view ${idx + 1}`}
+                    width="90"
+                    height="90"
+                    loading="lazy"
                     style={{
                       width: "90px",
                       height: "90px",

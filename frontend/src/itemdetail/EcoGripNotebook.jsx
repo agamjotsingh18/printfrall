@@ -13,20 +13,9 @@ import {
   InputAdornment,
 } from "@mui/material";
 import { AddShoppingCart, Close, Nature, Style } from "@mui/icons-material";
+import { getCdnImage } from "../utils/imageLoader";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
-
-// ========== MAIN PRODUCT IMAGE ==========
-import mainImg from "../assets/eco-grip-notebook.png";
-
-// ========== EXTRA ANGLES ==========
-import img2 from "../assets/eco-grip-notebook.png";
-import img3 from "../assets/eco-grip-notebook-1.png";
-import img4 from "../assets/eco-grip-notebook-2.png";
-
-// ========== INCLUDED ITEMS ==========
-import kraftPenImg from "../assets/kraft-pen.png";
-import stickyNotesImg from "../assets/sticky-notes.png";
 
 const EcoGripNotebook = ({ addToCart }) => {
   // Pack options with quantity and price
@@ -41,7 +30,7 @@ const EcoGripNotebook = ({ addToCart }) => {
 
   const [selectedOption, setSelectedOption] = useState(packOptions[0]);
   const [customQuantity, setCustomQuantity] = useState(1);
-  const [mainImage, setMainImage] = useState(mainImg);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   const getTotalPrice = () => {
@@ -62,7 +51,6 @@ const EcoGripNotebook = ({ addToCart }) => {
 
   const productDetails = {
     name: "EcoGrip Notebook",
-    image: mainImg,
     description:
       "A sustainable all-in-one productivity tool featuring an eco-friendly construction. This notebook blends versatile organization with a high-quality writing experience, ideal for the modern, conscious professional.",
     features: [
@@ -75,10 +63,14 @@ const EcoGripNotebook = ({ addToCart }) => {
       "Compact spiral binding for easy portability",
     ],
     sizes: ["Single", "Pack of 5", "Pack of 10"],
-    extraImages: [img2, img3, img4],
+    images: [
+      "eco-grip-notebook.png",
+      "eco-grip-notebook-1.png",
+      "eco-grip-notebook-2.png"
+    ],
     includedItems: [
-      { name: "Cardboard Pen", image: kraftPenImg },
-      { name: "Sticky Notes", image: stickyNotesImg },
+      { name: "Cardboard Pen", image: "kraft-pen.png" },
+      { name: "Sticky Notes", image: "sticky-notes.png" },
     ],
     tags: ["Eco-Friendly", "Sustainable", "70GSM Paper"],
   };
@@ -88,7 +80,7 @@ const EcoGripNotebook = ({ addToCart }) => {
     if (selectedOption.value === "Custom") {
       item = {
         name: "EcoGrip Notebook",
-        image: mainImg,
+        image: getCdnImage(productDetails.images[0], { width: 150, height: 150 }),
         description: productDetails.description,
         features: productDetails.features,
         tags: productDetails.tags,
@@ -99,7 +91,11 @@ const EcoGripNotebook = ({ addToCart }) => {
       };
     } else {
       item = {
-        ...productDetails,
+        name: productDetails.name,
+        image: getCdnImage(productDetails.images[0], { width: 150, height: 150 }),
+        description: productDetails.description,
+        features: productDetails.features,
+        tags: productDetails.tags,
         selectedSize: selectedOption.label,
         selectedMaterial: "Eco-Friendly Paper",
         price: selectedOption.price,
@@ -144,8 +140,10 @@ const EcoGripNotebook = ({ addToCart }) => {
 
             <Zoom>
               <img
-                src={mainImage}
-                alt={productDetails.name}
+                src={getCdnImage(productDetails.images[activeImageIndex], { width: 600, height: 450 })}
+                alt={`${productDetails.name} primary view`}
+                width="600"
+                height="450"
                 style={{
                   width: "100%",
                   borderRadius: "12px",
@@ -164,26 +162,30 @@ const EcoGripNotebook = ({ addToCart }) => {
                 mt: 2,
                 overflowX: "auto",
                 "&::-webkit-scrollbar": { display: "none" },
+                scrollbarWidth: "none",
               }}
             >
-              {productDetails.extraImages.map((img, idx) => (
+              {productDetails.images.map((imageName, idx) => (
                 <Paper
                   key={idx}
-                  onClick={() => setMainImage(img)}
+                  onClick={() => setActiveImageIndex(idx)}
                   sx={{
                     p: 1,
                     borderRadius: "10px",
                     cursor: "pointer",
                     border:
-                      mainImage === img ? "2px solid #70CB97" : "2px solid transparent",
+                      activeImageIndex === idx ? "2px solid #70CB97" : "2px solid transparent",
                     "&:hover": { border: "2px solid #70CB97" },
                     flexShrink: 0,
                     transition: "all 0.2s",
                   }}
                 >
                   <img
-                    src={img}
-                    alt={`view ${idx + 1}`}
+                    src={getCdnImage(imageName, { width: 90, height: 90 })}
+                    alt={`${productDetails.name} thumbnail view ${idx + 1}`}
+                    width="90"
+                    height="90"
+                    loading="lazy"
                     style={{
                       width: "90px",
                       height: "90px",
@@ -331,8 +333,11 @@ const EcoGripNotebook = ({ addToCart }) => {
                 }}
               >
                 <img
-                  src={item.image}
-                  alt={item.name}
+                  src={getCdnImage(item.image, { width: 50, height: 50 })}
+                  alt={`${item.name} accessary option`}
+                  width="50"
+                  height="50"
+                  loading="lazy"
                   style={{ width: "35px", height: "35px", objectFit: "contain", marginRight: "10px" }}
                 />
                 <Typography variant="body2" sx={{ fontWeight: 600, color: "#19485D" }}>

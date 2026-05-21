@@ -14,23 +14,13 @@ import {
   IconButton as MuiIconButton,
 } from "@mui/material";
 import { AddShoppingCart, Close, Security, OpenInFull, PlayCircleOutline } from "@mui/icons-material";
+import { getCdnImage } from "../utils/imageLoader";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
 
-// ========== MAIN BAG IMAGE ==========
-import mainImg from "../assets/vanguard-laptop-bag.png";
-
-// ========== EXTRA ANGLES (images + one video) ==========
-import img2 from "../assets/vanguard-laptop-bag.png";
-import video1 from "../assets/vanguard-laptop-bag-01.mp4";
-import img4 from "../assets/vanguard-laptop-bag-1.png";
-import img5 from "../assets/vanguard-laptop-bag-2.png";
-import img6 from "../assets/vanguard-laptop-bag-3.png";
-import img7 from "../assets/vanguard-laptop-bag-4.png";
-
 // Helper to check if a file is a video
 const isVideoFile = (src) => {
-  return src && (src.endsWith('.mp4') || src.endsWith('.webm') || src.endsWith('.ogg'));
+  return src && (src.endsWith(".mp4") || src.endsWith(".webm") || src.endsWith(".ogg"));
 };
 
 const VanguardLaptopBag = ({ addToCart }) => {
@@ -42,15 +32,8 @@ const VanguardLaptopBag = ({ addToCart }) => {
   const defaultSize = "30 Litres";
   const defaultColor = "Stealth Black";
 
-  const [selectedSize] = useState(defaultSize);
-  const [selectedColor, setSelectedColor] = useState(defaultColor);
-  const [mainMedia, setMainMedia] = useState(mainImg);
-  const [lightboxOpen, setLightboxOpen] = useState(false);
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-
-  const bagDetails = {
+  const productDetails = {
     name: "Vanguard Laptop Bag",
-    image: mainImg,
     description:
       "A versatile 30L powerhouse designed for the modern commuter. Featuring a 180° fully opening main compartment, this bag offers complete access for effortless packing of your laptop, iPad, and daily essentials.",
     features: [
@@ -64,18 +47,33 @@ const VanguardLaptopBag = ({ addToCart }) => {
     ],
     sizes: ["30 Litres"],
     colors: availableColors,
-    extraImages: [img2, video1, img4, img5, img6, img7],
+    images: [
+      "vanguard-laptop-bag.png",
+      "vanguard-laptop-bag-01.mp4", // Kept in array structure as requested for video handling
+      "vanguard-laptop-bag-1.png",
+      "vanguard-laptop-bag-2.png",
+      "vanguard-laptop-bag-3.png",
+      "vanguard-laptop-bag-4.png",
+    ],
     tags: ["Anti-Theft", "30L Capacity", "180° Open"],
   };
 
-  // const allImages = bagDetails.extraImages.filter(src => !isVideoFile(src));
-  const allMedia = bagDetails.extraImages;
+  const [selectedSize] = useState(defaultSize);
+  const [selectedColor, setSelectedColor] = useState(defaultColor);
+  const [activeMediaIndex, setActiveMediaIndex] = useState(0);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   const price = priceMapping[selectedSize];
+  const currentMedia = productDetails.images[activeMediaIndex];
 
   const handleAddToCart = () => {
     const item = {
-      ...bagDetails,
+      name: productDetails.name,
+      image: getCdnImage(productDetails.images[0], { width: 150, height: 150 }),
+      description: productDetails.description,
+      features: productDetails.features,
+      tags: productDetails.tags,
       selectedSize,
       selectedMaterial: selectedColor,
       selectedColor,
@@ -87,18 +85,23 @@ const VanguardLaptopBag = ({ addToCart }) => {
   };
 
   const handleCloseSnackbar = () => setSnackbarOpen(false);
-  const openLightbox = () => setLightboxOpen(true);
+  const openLightbox = () => {
+    if (!isVideoFile(currentMedia)) {
+      setLightboxOpen(true);
+    }
+  };
   const closeLightbox = () => setLightboxOpen(false);
 
   // Render main media (image with Zoom and click lightbox, or video with controls)
   const renderMainMedia = () => {
-    if (isVideoFile(mainMedia)) {
+    if (isVideoFile(currentMedia)) {
       return (
         <video
           controls
           autoPlay
           muted
           loop
+          key={currentMedia}
           style={{
             width: "100%",
             borderRadius: "12px",
@@ -106,7 +109,7 @@ const VanguardLaptopBag = ({ addToCart }) => {
             objectFit: "contain",
           }}
         >
-          <source src={mainMedia} type="video/mp4" />
+          <source src={getCdnImage(currentMedia)} type="video/mp4" />
           Your browser does not support the video tag.
         </video>
       );
@@ -123,8 +126,10 @@ const VanguardLaptopBag = ({ addToCart }) => {
               }}
             >
               <img
-                src={mainMedia}
-                alt={bagDetails.name}
+                src={getCdnImage(currentMedia, { width: 600, height: 450 })}
+                alt={`${productDetails.name} primary view`}
+                width="600"
+                height="450"
                 style={{
                   width: "100%",
                   height: "auto",
@@ -155,7 +160,7 @@ const VanguardLaptopBag = ({ addToCart }) => {
             }}
           >
             <Box sx={{ display: "flex", gap: 1, mb: 2 }}>
-              {bagDetails.tags.map((tag, idx) => (
+              {productDetails.tags.map((tag, idx) => (
                 <Chip
                   key={idx}
                   label={tag}
@@ -188,20 +193,21 @@ const VanguardLaptopBag = ({ addToCart }) => {
                 mt: 2,
                 overflowX: "auto",
                 "&::-webkit-scrollbar": { display: "none" },
+                scrollbarWidth: "none",
               }}
             >
-              {allMedia.map((media, idx) => {
-                const isVideo = isVideoFile(media);
+              {productDetails.images.map((mediaName, idx) => {
+                const isVideo = isVideoFile(mediaName);
                 return (
                   <Paper
                     key={idx}
-                    onClick={() => setMainMedia(media)}
+                    onClick={() => setActiveMediaIndex(idx)}
                     sx={{
                       p: 1,
                       borderRadius: "10px",
                       cursor: "pointer",
                       border:
-                        mainMedia === media ? "2px solid #70CB97" : "2px solid transparent",
+                        activeMediaIndex === idx ? "2px solid #70CB97" : "2px solid transparent",
                       "&:hover": { border: "2px solid #70CB97" },
                       flexShrink: 0,
                       transition: "all 0.2s",
@@ -211,7 +217,7 @@ const VanguardLaptopBag = ({ addToCart }) => {
                     {isVideo ? (
                       <>
                         <video
-                          src={media}
+                          src={getCdnImage(mediaName)}
                           style={{
                             width: "90px",
                             height: "90px",
@@ -235,8 +241,11 @@ const VanguardLaptopBag = ({ addToCart }) => {
                       </>
                     ) : (
                       <img
-                        src={media}
-                        alt={`view ${idx + 1}`}
+                        src={getCdnImage(mediaName, { width: 90, height: 90 })}
+                        alt={`${productDetails.name} view ${idx + 1}`}
+                        width="90"
+                        height="90"
+                        loading="lazy"
                         style={{
                           width: "90px",
                           height: "90px",
@@ -289,8 +298,8 @@ const VanguardLaptopBag = ({ addToCart }) => {
                   <Close />
                 </MuiIconButton>
                 <img
-                  src={mainMedia}
-                  alt="Full size"
+                  src={getCdnImage(currentMedia, { width: 1200 })}
+                  alt="Full size view"
                   style={{
                     maxWidth: "90%",
                     maxHeight: "80vh",
@@ -305,13 +314,13 @@ const VanguardLaptopBag = ({ addToCart }) => {
           </Paper>
         </Grid>
 
-        {/* Product Details (unchanged) */}
+        {/* Product Details */}
         <Grid item xs={12} md={6}>
           <Typography
             variant="h4"
             sx={{ fontWeight: 700, mb: 1, color: "#19485D", fontSize: { xs: "1.8rem", md: "2.5rem" } }}
           >
-            {bagDetails.name}
+            {productDetails.name}
           </Typography>
 
           <Typography
@@ -325,7 +334,7 @@ const VanguardLaptopBag = ({ addToCart }) => {
             variant="body1"
             sx={{ mb: 3, color: "#1e2a32", lineHeight: 1.6 }}
           >
-            {bagDetails.description}
+            {productDetails.description}
           </Typography>
 
           <Typography
@@ -335,7 +344,7 @@ const VanguardLaptopBag = ({ addToCart }) => {
             Key Highlights:
           </Typography>
           <Box component="ul" sx={{ ml: 2, mb: 3, listStyleType: "none", p: 0 }}>
-            {bagDetails.features.map((feature, idx) => (
+            {productDetails.features.map((feature, idx) => (
               <li key={idx} style={{ marginBottom: "8px" }}>
                 <Typography variant="body1" sx={{ display: "flex", alignItems: "center", color: "#5a6e7a" }}>
                   <span
@@ -384,10 +393,13 @@ const VanguardLaptopBag = ({ addToCart }) => {
             Color Options:
           </Typography>
           <Box sx={{ display: "flex", gap: 2, mb: 4, flexWrap: "wrap" }}>
-            {bagDetails.colors.map((color, idx) => (
+            {productDetails.colors.map((color, idx) => (
               <Paper
                 key={idx}
-                onClick={() => setSelectedColor(color)}
+                onClick={() => {
+                  setSelectedColor(color);
+                  setActiveMediaIndex(0);
+                }}
                 sx={{
                   p: 1.5,
                   px: 2.5,

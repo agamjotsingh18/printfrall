@@ -10,16 +10,9 @@ import {
   IconButton,
 } from "@mui/material";
 import { AddShoppingCart, Close } from "@mui/icons-material";
+import { getCdnImage } from "../utils/imageLoader";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
-
-// ========== YOUR GENERATED CLEAR STICKER IMAGES ==========
-import mainImg from "../assets/clear-sticker-1.png";
-import img2 from "../assets/clear-sticker-2.png";
-import img3 from "../assets/clear-sticker-3.png";
-import img4 from "../assets/clear-sticker-4.png";
-import img5 from "../assets/clear-sticker-5.png";
-// ========================================================
 
 const ClearStickers = ({ addToCart }) => {
   const priceMapping = {
@@ -30,12 +23,11 @@ const ClearStickers = ({ addToCart }) => {
 
   const defaultMaterial = "Standard Clear";
   const [selectedMaterial, setSelectedMaterial] = useState(defaultMaterial);
-  const [mainImage, setMainImage] = useState(mainImg);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   const details = {
     name: "Clear Stickers",
-    image: mainImg,
     description:
       "Our Clear Stickers are perfect for adding a sleek and transparent look to your branding. These stickers are durable and ideal for both indoor and outdoor use.",
     features: [
@@ -45,14 +37,22 @@ const ClearStickers = ({ addToCart }) => {
       "Available in multiple materials",
     ],
     materials: ["Standard Clear", "Premium Clear", "Recycled Clear"],
-    extraImages: [img2, img3, img4, img5],
+    images: [
+      "clear-sticker-1.png",
+      "clear-sticker-2.png",
+      "clear-sticker-3.png",
+      "clear-sticker-4.png",
+      "clear-sticker-5.png"
+    ],
   };
 
   const price = priceMapping[selectedMaterial];
 
   const handleAddToCart = () => {
     const item = {
-      ...details,
+      name: details.name,
+      image: getCdnImage(details.images[0], { width: 150, height: 150 }),
+      description: details.description,
       selectedMaterial,
       price,
       quantity: 1,
@@ -78,8 +78,10 @@ const ClearStickers = ({ addToCart }) => {
           >
             <Zoom>
               <img
-                src={mainImage}
-                alt={details.name}
+                src={getCdnImage(details.images[activeImageIndex], { width: 600, height: 450 })}
+                alt={`${details.name} primary view`}
+                width="600"
+                height="450"
                 style={{
                   width: "100%",
                   borderRadius: "12px",
@@ -97,26 +99,30 @@ const ClearStickers = ({ addToCart }) => {
                 mt: 2,
                 overflowX: "auto",
                 "&::-webkit-scrollbar": { display: "none" },
+                scrollbarWidth: "none",
               }}
             >
-              {details.extraImages.map((img, idx) => (
+              {details.images.map((imageName, idx) => (
                 <Paper
                   key={idx}
-                  onClick={() => setMainImage(img)}
+                  onClick={() => setActiveImageIndex(idx)}
                   sx={{
                     p: 1,
                     borderRadius: "10px",
                     cursor: "pointer",
                     border:
-                      mainImage === img ? "2px solid #70CB97" : "2px solid transparent",
+                      activeImageIndex === idx ? "2px solid #70CB97" : "2px solid transparent",
                     "&:hover": { border: "2px solid #70CB97" },
                     flexShrink: 0,
                     transition: "all 0.2s",
                   }}
                 >
                   <img
-                    src={img}
-                    alt={`view ${idx + 1}`}
+                    src={getCdnImage(imageName, { width: 90, height: 90 })}
+                    alt={`${details.name} thumbnail view ${idx + 1}`}
+                    width="90"
+                    height="90"
+                    loading="lazy"
                     style={{
                       width: "90px",
                       height: "90px",

@@ -18,15 +18,9 @@ import {
   Lightbulb,
   WorkspacePremium,
 } from "@mui/icons-material";
+import { getCdnImage } from "../utils/imageLoader";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
-
-// Import your actual LED frame images – replace with real variants if available
-import photoWithLedFrameImg from "../assets/photo-with-led-frame.png";
-import photoWithLedFrameImg2 from "../assets/photo-with-led-frame-1.png";
-import photoWithLedFrameImg3 from "../assets/photo-with-led-frame-2.png";
-import photoWithLedFrameImg4 from "../assets/photo-with-led-frame-3.png";
-// import photoWithLedFrameImg5 from "../assets/photo-with-led-frame.png";
 
 const PhotoWithLedFrames = ({ addToCart }) => {
   // LED animation modes
@@ -41,7 +35,7 @@ const PhotoWithLedFrames = ({ addToCart }) => {
 
   const [selectedMaterial, setSelectedMaterial] = useState("Standard Acrylic");
   const [selectedLightMode, setSelectedLightMode] = useState("Static");
-  const [mainImage, setMainImage] = useState(photoWithLedFrameImg);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   const unitPrice = priceMapping[selectedMaterial];
@@ -60,21 +54,19 @@ const PhotoWithLedFrames = ({ addToCart }) => {
       "Ideal for trade shows, outdoor events, and storefronts",
       "Affordable investment for long-term brand visibility",
     ],
+    images: [
+      "photo-with-led-frame.png",
+      "photo-with-led-frame-1.png",
+      "photo-with-led-frame-2.png",
+      "photo-with-led-frame-3.png"
+    ],
     tags: ["LED Integrated", "Custom Graphics", "Premium Acrylic"],
   };
-
-  const thumbnailImages = [
-    photoWithLedFrameImg,
-    photoWithLedFrameImg2,
-    photoWithLedFrameImg3,
-    photoWithLedFrameImg4,
-    // photoWithLedFrameImg5,
-  ];
 
   const handleAddToCart = () => {
     const item = {
       name: signDetails.name,
-      image: mainImage,
+      image: getCdnImage(signDetails.images[0], { width: 150, height: 150 }),
       description: signDetails.description,
       selectedMaterial,
       selectedLightMode,
@@ -144,8 +136,10 @@ const PhotoWithLedFrames = ({ addToCart }) => {
 
             <Zoom>
               <img
-                src={mainImage}
-                alt={signDetails.name}
+                src={getCdnImage(signDetails.images[activeImageIndex], { width: 600, height: 450 })}
+                alt={`${signDetails.name} primary view`}
+                width="600"
+                height="450"
                 style={{
                   width: "100%",
                   borderRadius: "12px",
@@ -163,26 +157,30 @@ const PhotoWithLedFrames = ({ addToCart }) => {
                 mt: 2,
                 overflowX: "auto",
                 "&::-webkit-scrollbar": { display: "none" },
+                scrollbarWidth: "none",
               }}
             >
-              {thumbnailImages.map((image, index) => (
+              {signDetails.images.map((imageName, index) => (
                 <Paper
                   key={index}
-                  onClick={() => setMainImage(image)}
+                  onClick={() => setActiveImageIndex(index)}
                   sx={{
                     p: 1,
                     borderRadius: "12px",
                     cursor: "pointer",
                     border:
-                      mainImage === image ? "2px solid #70CB97" : "1px solid #e0e7ed",
+                      activeImageIndex === index ? "2px solid #70CB97" : "1px solid #e0e7ed",
                     flexShrink: 0,
                     transition: "all 0.2s",
                     "&:hover": { transform: "translateY(-2px)" },
                   }}
                 >
                   <img
-                    src={image}
-                    alt={`View ${index + 1}`}
+                    src={getCdnImage(imageName, { width: 80, height: 80 })}
+                    alt={`${signDetails.name} thumbnail view ${index + 1}`}
+                    width="80"
+                    height="80"
+                    loading="lazy"
                     style={{ width: "80px", height: "80px", objectFit: "cover", borderRadius: "8px" }}
                   />
                 </Paper>
@@ -231,7 +229,10 @@ const PhotoWithLedFrames = ({ addToCart }) => {
             {Object.keys(priceMapping).map((material) => (
               <Paper
                 key={material}
-                onClick={() => setSelectedMaterial(material)}
+                onClick={() => {
+                  setSelectedMaterial(material);
+                  setActiveImageIndex(0);
+                }}
                 sx={{
                   p: 1.5,
                   px: 3,
@@ -345,6 +346,7 @@ const PhotoWithLedFrames = ({ addToCart }) => {
         </Grid>
       </Grid>
 
+      {/* Snackbar */}
       <Snackbar
         open={snackbarOpen}
         autoHideDuration={3000}

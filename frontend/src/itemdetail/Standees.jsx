@@ -18,15 +18,9 @@ import {
   WorkspacePremium,
   Inventory,
 } from "@mui/icons-material";
+import { getCdnImage } from "../utils/imageLoader";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
-
-// Asset paths kept exactly as requested
-import standeeImg from "../assets/standees.png";
-import standeeImg2 from "../assets/standees-1.png";
-import standeeImg3 from "../assets/standees-2.png";
-import standeeImg4 from "../assets/standees-3.png";
-import standeeImg5 from "../assets/standees-4.png";
 
 const Standees = ({ addToCart }) => {
   // Size options
@@ -36,41 +30,39 @@ const Standees = ({ addToCart }) => {
     { label: "3 x 6 ft", basePrice: 1950 },
   ];
 
-  // Product features (full list for specifications panel)
-  const productFeatures = [
-    "Material: 180GSM Photomatt PP Film (Non‑tearable)",
-    "Base: Portable Standard Aluminum Roll‑up Stand",
-    "Print Type: High‑vibrancy Inkjet Digital Printing",
-    "Setup: User‑friendly roll‑up design for quick assembly",
-    "Usage: Optimized for indoor events (1‑2 day duration)",
-    "Finish: Sophisticated matte finish for high readability",
-    "Customization: Full‑color vibrant graphics",
-    "Includes carrying case for easy transport",
-  ];
-
-  // State
-  const [selectedSize, setSelectedSize] = useState(sizeOptions[1]); // 2.5x6 ft default
-  const [mainImage, setMainImage] = useState(standeeImg);
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-
   const productDetails = {
     name: "Event Standees",
     description:
       "Budget‑friendly yet impactful solutions for showcasing your brand or events. Printed on high‑quality 180GSM photo‑matte, non‑tearable PP film, these roll‑up standees offer a sophisticated zero‑glare finish. Designed for portability, the standard aluminum base allows for effortless setup in restaurants, retail stores, or trade shows.",
+    features: [
+      "Material: 180GSM Photomatt PP Film (Non‑tearable)",
+      "Base: Portable Standard Aluminum Roll‑up Stand",
+      "Print Type: High‑vibrancy Inkjet Digital Printing",
+      "Setup: User‑friendly roll‑up design for quick assembly",
+      "Usage: Optimized for indoor events (1‑2 day duration)",
+      "Finish: Sophisticated matte finish for high readability",
+      "Customization: Full‑color vibrant graphics",
+      "Includes carrying case for easy transport",
+    ],
+    images: [
+      "standees.png",
+      "standees-1.png",
+      "standees-2.png",
+      "standees-3.png",
+      "standees-4.png"
+    ],
+    tags: ["180GSM PP FILM", "INDOOR USE"]
   };
 
-  const thumbnailImages = [
-    standeeImg,
-    standeeImg2,
-    standeeImg3,
-    standeeImg4,
-    standeeImg5,
-  ];
+  // State
+  const [selectedSize, setSelectedSize] = useState(sizeOptions[1]); // 2.5x6 ft default
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   const handleAddToCart = () => {
     const item = {
       name: productDetails.name,
-      image: mainImage,
+      image: getCdnImage(productDetails.images[0], { width: 150, height: 150 }),
       description: productDetails.description,
       selectedSize: selectedSize.label,
       material: "180GSM Photomatt PP film",
@@ -104,44 +96,29 @@ const Standees = ({ addToCart }) => {
               position: "relative",
             }}
           >
-            <Box
-              sx={{
-                position: "absolute",
-                top: 20,
-                left: 20,
-                zIndex: 10,
-                display: "flex",
-                gap: 1,
-              }}
-            >
-              <Chip
-                label="180GSM PP FILM"
-                size="small"
-                icon={<WorkspacePremium />}
-                sx={{
-                  bgcolor: "#19485D",
-                  color: "white",
-                  fontWeight: "bold",
-                  borderRadius: "40px",
-                }}
-              />
-              <Chip
-                label="INDOOR USE"
-                size="small"
-                icon={<EventAvailable />}
-                sx={{
-                  bgcolor: "#70CB97",
-                  color: "white",
-                  fontWeight: "bold",
-                  borderRadius: "40px",
-                }}
-              />
+            <Box sx={{ display: "flex", gap: 1, mb: 2 }}>
+              {productDetails.tags.map((tag, idx) => (
+                <Chip
+                  key={idx}
+                  label={tag}
+                  size="small"
+                  icon={tag === "180GSM PP FILM" ? <WorkspacePremium fontSize="small" /> : <EventAvailable fontSize="small" />}
+                  sx={{
+                    backgroundColor: "rgba(112, 203, 151, 0.1)",
+                    color: "#70CB97",
+                    fontWeight: "bold",
+                    borderRadius: 2,
+                  }}
+                />
+              ))}
             </Box>
 
             <Zoom>
               <img
-                src={mainImage}
-                alt="Event Standee Preview"
+                src={getCdnImage(productDetails.images[activeImageIndex], { width: 600, height: 450 })}
+                alt={`${productDetails.name} primary view`}
+                width="600"
+                height="450"
                 style={{
                   width: "100%",
                   borderRadius: "12px",
@@ -159,31 +136,35 @@ const Standees = ({ addToCart }) => {
                 mt: 2,
                 overflowX: "auto",
                 "&::-webkit-scrollbar": { display: "none" },
+                scrollbarWidth: "none",
               }}
             >
-              {thumbnailImages.map((image, index) => (
+              {productDetails.images.map((imageName, index) => (
                 <Paper
                   key={index}
-                  onClick={() => setMainImage(image)}
+                  onClick={() => setActiveImageIndex(index)}
                   sx={{
                     p: 1,
-                    borderRadius: "12px",
+                    borderRadius: "10px",
                     cursor: "pointer",
                     border:
-                      mainImage === image ? "2px solid #70CB97" : "1px solid #e0e7ed",
+                      activeImageIndex === index ? "2px solid #70CB97" : "2px solid transparent",
+                    "&:hover": { border: "2px solid #70CB97" },
                     flexShrink: 0,
                     transition: "all 0.2s",
-                    "&:hover": { transform: "translateY(-2px)" },
                   }}
                 >
                   <img
-                    src={image}
-                    alt={`View ${index + 1}`}
+                    src={getCdnImage(imageName, { width: 90, height: 90 })}
+                    alt={`${productDetails.name} thumbnail view ${index + 1}`}
+                    width="90"
+                    height="90"
+                    loading="lazy"
                     style={{
-                      width: "80px",
-                      height: "80px",
-                      objectFit: "cover",
+                      width: "90px",
+                      height: "90px",
                       borderRadius: "8px",
+                      objectFit: "cover",
                     }}
                   />
                 </Paper>
@@ -232,7 +213,10 @@ const Standees = ({ addToCart }) => {
             {sizeOptions.map((size) => (
               <Paper
                 key={size.label}
-                onClick={() => setSelectedSize(size)}
+                onClick={() => {
+                  setSelectedSize(size);
+                  setActiveImageIndex(0);
+                }}
                 sx={{
                   flex: 1,
                   p: 1.5,
@@ -254,6 +238,8 @@ const Standees = ({ addToCart }) => {
               </Paper>
             ))}
           </Box>
+
+          {/* Specifications Panel */}
           <Paper
             sx={{
               p: 3,
@@ -266,7 +252,7 @@ const Standees = ({ addToCart }) => {
             <Typography variant="subtitle1" sx={{ fontWeight: 700, mb: 2, color: "#19485D" }}>
               Key Features:
             </Typography>
-            {productFeatures.map((feature, i) => (
+            {productDetails.features.map((feature, i) => (
               <Box key={i} sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
                 <Inventory sx={{ fontSize: 16, color: "#70CB97" }} />
                 <Typography variant="body2" sx={{ color: "#5a6e7a" }}>

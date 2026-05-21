@@ -13,17 +13,9 @@ import {
   InputAdornment,
 } from "@mui/material";
 import { AddShoppingCart, Close, Mouse, WorkspacePremium } from "@mui/icons-material";
+import { getCdnImage } from "../utils/imageLoader";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
-
-// ========== MAIN PRODUCT IMAGE ==========
-import mainImg from "../assets/mousepad.png";
-
-// ========== EXTRA ANGLES ==========
-import img2 from "../assets/mousepad.png";
-import img3 from "../assets/mousepad-1.png";
-import img4 from "../assets/mousepad-2.png";
-import img5 from "../assets/mousepad-3.png";
 
 const Mousepad = ({ addToCart }) => {
   // Pack options with quantity and price
@@ -37,7 +29,7 @@ const Mousepad = ({ addToCart }) => {
 
   const [selectedOption, setSelectedOption] = useState(packOptions[0]);
   const [customQuantity, setCustomQuantity] = useState(1);
-  const [mainImage, setMainImage] = useState(mainImg);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   const getTotalPrice = () => {
@@ -58,7 +50,6 @@ const Mousepad = ({ addToCart }) => {
 
   const productDetails = {
     name: "Custom Branding Mouse Pad",
-    image: mainImg,
     description:
       "Upgrade your workspace with premium custom mouse pads. Featuring a non-slip rubber base and a high-quality fabric surface, these pads are designed for smooth, accurate movement and long-lasting print clarity.",
     features: [
@@ -71,7 +62,12 @@ const Mousepad = ({ addToCart }) => {
       "Set of 10 option available in one neat box",
     ],
     options: ["Single Unit", "Set of 10 (Bulk Pack)"],
-    extraImages: [img2, img3, img4, img5],
+    images: [
+      "mousepad.png",
+      "mousepad-1.png",
+      "mousepad-2.png",
+      "mousepad-3.png"
+    ],
     tags: ["Non-Slip", "Vibrant Print", "Corporate Gift"],
   };
 
@@ -79,8 +75,8 @@ const Mousepad = ({ addToCart }) => {
     let item;
     if (selectedOption.value === "Custom") {
       item = {
-        name: "Custom Branding Mouse Pad",
-        image: mainImg,
+        name: productDetails.name,
+        image: getCdnImage(productDetails.images[0], { width: 150, height: 150 }),
         description: productDetails.description,
         features: productDetails.features,
         tags: productDetails.tags,
@@ -91,7 +87,11 @@ const Mousepad = ({ addToCart }) => {
       };
     } else {
       item = {
-        ...productDetails,
+        name: productDetails.name,
+        image: getCdnImage(productDetails.images[0], { width: 150, height: 150 }),
+        description: productDetails.description,
+        features: productDetails.features,
+        tags: productDetails.tags,
         selectedSize: selectedOption.label,
         selectedMaterial: "Standard Size",
         price: selectedOption.price,
@@ -136,8 +136,10 @@ const Mousepad = ({ addToCart }) => {
 
             <Zoom>
               <img
-                src={mainImage}
-                alt={productDetails.name}
+                src={getCdnImage(productDetails.images[activeImageIndex], { width: 600, height: 450 })}
+                alt={`${productDetails.name} primary view`}
+                width="600"
+                height="450"
                 style={{
                   width: "100%",
                   borderRadius: "12px",
@@ -156,26 +158,30 @@ const Mousepad = ({ addToCart }) => {
                 mt: 2,
                 overflowX: "auto",
                 "&::-webkit-scrollbar": { display: "none" },
+                scrollbarWidth: "none",
               }}
             >
-              {productDetails.extraImages.map((img, idx) => (
+              {productDetails.images.map((imageName, idx) => (
                 <Paper
                   key={idx}
-                  onClick={() => setMainImage(img)}
+                  onClick={() => setActiveImageIndex(idx)}
                   sx={{
                     p: 1,
                     borderRadius: "10px",
                     cursor: "pointer",
                     border:
-                      mainImage === img ? "2px solid #70CB97" : "2px solid transparent",
+                      activeImageIndex === idx ? "2px solid #70CB97" : "2px solid transparent",
                     "&:hover": { border: "2px solid #70CB97" },
                     flexShrink: 0,
                     transition: "all 0.2s",
                   }}
                 >
                   <img
-                    src={img}
-                    alt={`view ${idx + 1}`}
+                    src={getCdnImage(imageName, { width: 90, height: 90 })}
+                    alt={`${productDetails.name} thumbnail view ${idx + 1}`}
+                    width="90"
+                    height="90"
+                    loading="lazy"
                     style={{
                       width: "90px",
                       height: "90px",

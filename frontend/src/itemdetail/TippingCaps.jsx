@@ -13,20 +13,9 @@ import {
   InputAdornment,
 } from "@mui/material";
 import { AddShoppingCart, Close, Verified, Checkroom } from "@mui/icons-material";
+import { getCdnImage } from "../utils/imageLoader";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
-
-// ========== MAIN PRODUCT IMAGE ==========
-import mainImg from "../assets/tipping-cap.png";
-
-// ========== EXTRA ANGLES ==========
-import img2 from "../assets/tipping-cap.png";
-import img3 from "../assets/tipping-cap-1.png";
-import img4 from "../assets/tipping-cap-2.png";
-import img5 from "../assets/tipping-cap-3.png";
-import img6 from "../assets/tipping-cap-4.png";
-import img7 from "../assets/tipping-cap-5.png";
-import img8 from "../assets/tipping-cap-6.png";
 
 const TippingCaps = ({ addToCart }) => {
   const priceMapping = {
@@ -48,10 +37,37 @@ const TippingCaps = ({ addToCart }) => {
   const defaultColor = "Navy Blue with White";
   const defaultPanel = "6 Panels";
 
+  const productDetails = {
+    name: "Custom Tipping Caps",
+    description:
+      "Make your logo pop with a twist of style. These structure caps feature a bold visor tip accent and are crafted from 100% sturdy cotton. Perfect for campaigns, work crews, and events where your brand needs to stand out.",
+    features: [
+      "100% Cotton Build: Durable, breathable, and made to last",
+      "Bold Tipped Visor Detail for a dash of edge",
+      "Universal size with adjustable Velcro strap fit",
+      "Embroidery-Ready canvas for crisp logos and taglines",
+      "Available in 5-panel or 6-panel structured designs",
+      "High-stitch detail options for professional branding",
+      "Fade-resistant fabric that holds shape over time",
+    ],
+    images: [
+      "tipping-cap.png",
+      "tipping-cap-1.png",
+      "tipping-cap-2.png",
+      "tipping-cap-3.png",
+      "tipping-cap-4.png",
+      "tipping-cap-5.png",
+      "tipping-cap-6.png"
+    ],
+    tags: ["Tipped Visor", "Cotton", "Adjustable"],
+    colors: availableColors,
+    panelOptions: panelOptions,
+  };
+
   const [selectedMaterial] = useState(defaultMaterial);
   const [selectedColor, setSelectedColor] = useState(defaultColor);
   const [selectedPanel, setSelectedPanel] = useState(defaultPanel);
-  const [mainImage, setMainImage] = useState(mainImg);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   // Custom quantity state
@@ -84,35 +100,15 @@ const TippingCaps = ({ addToCart }) => {
     }
   };
 
-  const capDetails = {
-    name: "Custom Tipping Caps",
-    image: mainImg,
-    description:
-      "Make your logo pop with a twist of style. These structure caps feature a bold visor tip accent and are crafted from 100% sturdy cotton. Perfect for campaigns, work crews, and events where your brand needs to stand out.",
-    features: [
-      "100% Cotton Build: Durable, breathable, and made to last",
-      "Bold Tipped Visor Detail for a dash of edge",
-      "Universal size with adjustable Velcro strap fit",
-      "Embroidery-Ready canvas for crisp logos and taglines",
-      "Available in 5-panel or 6-panel structured designs",
-      "High-stitch detail options for professional branding",
-      "Fade-resistant fabric that holds shape over time",
-    ],
-    tags: ["Tipped Visor", "Cotton", "Adjustable"],
-    colors: availableColors,
-    panelOptions: panelOptions,
-    extraImages: [img2, img3, img4, img5, img6, img7, img8],
-  };
-
   const handleAddToCart = () => {
     let item;
     if (selectedOption === "Custom") {
       item = {
-        name: "Custom Tipping Caps",
-        image: mainImg,
-        description: capDetails.description,
-        features: capDetails.features,
-        tags: capDetails.tags,
+        name: productDetails.name,
+        image: getCdnImage(productDetails.images[0], { width: 150, height: 150 }),
+        description: productDetails.description,
+        features: productDetails.features,
+        tags: productDetails.tags,
         selectedSize: `${customQuantity} caps`,
         selectedMaterial: `${selectedMaterial} | ${selectedColor} | ${selectedPanel}`,
         selectedColor,
@@ -124,7 +120,11 @@ const TippingCaps = ({ addToCart }) => {
     } else {
       const option = packOptions.find((opt) => opt.value === selectedOption);
       item = {
-        ...capDetails,
+        name: productDetails.name,
+        image: getCdnImage(productDetails.images[0], { width: 150, height: 150 }),
+        description: productDetails.description,
+        features: productDetails.features,
+        tags: productDetails.tags,
         selectedSize: option.label,
         selectedMaterial: `${selectedMaterial} | ${selectedColor} | ${selectedPanel}`,
         selectedColor,
@@ -154,7 +154,7 @@ const TippingCaps = ({ addToCart }) => {
             }}
           >
             <Box sx={{ display: "flex", gap: 1, mb: 2 }}>
-              {capDetails.tags.map((tag, idx) => (
+              {productDetails.tags.map((tag, idx) => (
                 <Chip
                   key={idx}
                   label={tag}
@@ -172,8 +172,10 @@ const TippingCaps = ({ addToCart }) => {
 
             <Zoom>
               <img
-                src={mainImage}
-                alt={capDetails.name}
+                src={getCdnImage(productDetails.images[activeImageIndex], { width: 600, height: 450 })}
+                alt={`${productDetails.name} primary view`}
+                width="600"
+                height="450"
                 style={{
                   width: "100%",
                   borderRadius: "12px",
@@ -192,26 +194,30 @@ const TippingCaps = ({ addToCart }) => {
                 mt: 2,
                 overflowX: "auto",
                 "&::-webkit-scrollbar": { display: "none" },
+                scrollbarWidth: "none",
               }}
             >
-              {capDetails.extraImages.map((img, idx) => (
+              {productDetails.images.map((imageName, idx) => (
                 <Paper
                   key={idx}
-                  onClick={() => setMainImage(img)}
+                  onClick={() => setActiveImageIndex(idx)}
                   sx={{
                     p: 1,
                     borderRadius: "10px",
                     cursor: "pointer",
                     border:
-                      mainImage === img ? "2px solid #70CB97" : "2px solid transparent",
+                      activeImageIndex === idx ? "2px solid #70CB97" : "2px solid transparent",
                     "&:hover": { border: "2px solid #70CB97" },
                     flexShrink: 0,
                     transition: "all 0.2s",
                   }}
                 >
                   <img
-                    src={img}
-                    alt={`view ${idx + 1}`}
+                    src={getCdnImage(imageName, { width: 90, height: 90 })}
+                    alt={`${productDetails.name} thumbnail view ${idx + 1}`}
+                    width="90"
+                    height="90"
+                    loading="lazy"
                     style={{
                       width: "90px",
                       height: "90px",
@@ -231,7 +237,7 @@ const TippingCaps = ({ addToCart }) => {
             variant="h4"
             sx={{ fontWeight: 700, mb: 1, color: "#19485D", fontSize: { xs: "1.8rem", md: "2.5rem" } }}
           >
-            {capDetails.name}
+            {productDetails.name}
           </Typography>
 
           <Typography
@@ -245,7 +251,7 @@ const TippingCaps = ({ addToCart }) => {
             variant="body1"
             sx={{ mb: 3, color: "#1e2a32", lineHeight: 1.6 }}
           >
-            {capDetails.description}
+            {productDetails.description}
           </Typography>
 
           <Typography
@@ -255,7 +261,7 @@ const TippingCaps = ({ addToCart }) => {
             Key Highlights:
           </Typography>
           <Box component="ul" sx={{ ml: 2, mb: 3, listStyleType: "none", p: 0 }}>
-            {capDetails.features.map((feature, idx) => (
+            {productDetails.features.map((feature, idx) => (
               <li key={idx} style={{ marginBottom: "8px" }}>
                 <Typography variant="body1" sx={{ display: "flex", alignItems: "center", color: "#5a6e7a" }}>
                   <span
@@ -345,7 +351,7 @@ const TippingCaps = ({ addToCart }) => {
             Cap Construction:
           </Typography>
           <Box sx={{ display: "flex", gap: 2, mb: 4, flexWrap: "wrap" }}>
-            {capDetails.panelOptions.map((panel) => (
+            {productDetails.panelOptions.map((panel) => (
               <Paper
                 key={panel}
                 onClick={() => setSelectedPanel(panel)}
@@ -404,7 +410,7 @@ const TippingCaps = ({ addToCart }) => {
             Select Tipping Combo:
           </Typography>
           <Box sx={{ display: "flex", gap: 1, mb: 4, flexWrap: "wrap" }}>
-            {capDetails.colors.map((color) => (
+            {productDetails.colors.map((color) => (
               <Paper
                 key={color}
                 onClick={() => setSelectedColor(color)}

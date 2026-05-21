@@ -3,49 +3,42 @@ import { Link } from "react-router-dom";
 import { IconButton } from "@mui/material";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 import "../styles/Pens.css";
-
-// Import images for pens
-import stylusPenImg from "../assets/stylus-pen.png";
-import kraftPenImg from "../assets/kraft-pen.png";
-import scribblePenImg from "../assets/scribble-pen.png";
-import adroitPenImg from "../assets/adroit-pen.png";
-import giltRollerPenImg from "../assets/gilt-roller-pen.png";
-import skateBallpointPenImg from "../assets/skate-ballpoint-pen.png";
+import { getCdnImage } from "../utils/imageLoader";
 
 const pensItems = [
   { 
     name: "Stylus Pen", 
-    image: stylusPenImg, 
+    image: "stylus-pen.png", 
     price: 100,
     route: "/services/corporate-gifting/pens/stylus-pen" 
   },
   { 
     name: "Kraft Pen", 
-    image: kraftPenImg, 
+    image: "kraft-pen.png", 
     price: 120,
     route: "/services/corporate-gifting/pens/kraft-pen" 
   },
   { 
     name: "Scribble Pen", 
-    image: scribblePenImg, 
+    image: "scribble-pen.png", 
     price: 150,
     route: "/services/corporate-gifting/pens/scribble-pen" 
   },
   { 
     name: "Adroit Pen", 
-    image: adroitPenImg, 
+    image: "adroit-pen.png", 
     price: 200,
     route: "/services/corporate-gifting/pens/adroit-pen" 
   },
   { 
     name: "Gilt Roller Ball Pen", 
-    image: giltRollerPenImg, 
+    image: "gilt-roller-pen.png", 
     price: 250,
     route: "/services/corporate-gifting/pens/gilt-roller-pen" 
   },
   { 
     name: "Skate Ballpoint Pen", 
-    image: skateBallpointPenImg, 
+    image: "skate-ballpoint-pen.png", 
     price: 180,
     route: "/services/corporate-gifting/pens/skate-ballpoint-pen" 
   },
@@ -55,7 +48,13 @@ const Pens = ({ addToCart }) => {
   const handleAddToCart = (item, e) => {
     e?.preventDefault();
     e?.stopPropagation();
-    addToCart(item);
+    
+    const cartItem = {
+      ...item,
+      image: getCdnImage(item.image, { width: 150, height: 150 }),
+      quantity: 1
+    };
+    addToCart(cartItem);
   };
 
   return (
@@ -63,7 +62,6 @@ const Pens = ({ addToCart }) => {
       <h2 className="section-title">Pens</h2>
       <p className="section-subtitle">Explore our premium collection of pens</p>
 
-      {/* Pens Section */}
       <div className="pens-container" aria-label="Premium pens collection">
         {pensItems.map((item, index) => (
           <div className="pen-item" key={index} aria-label={`Product: ${item.name}`}>
@@ -73,9 +71,12 @@ const Pens = ({ addToCart }) => {
               aria-label={`View details of ${item.name}`}
             >
               <img 
-                src={item.image} 
+                src={getCdnImage(item.image, { width: 350, height: 350 })} 
                 alt={item.name} 
                 className="pen-image" 
+                width="350"
+                height="350"
+                loading="lazy"
               />
               <p className="pen-name">{item.name}</p>
               <p className="pen-price" aria-label={`Price: ₹${item.price}`}>₹{item.price}</p>

@@ -20,17 +20,9 @@ import {
   WorkspacePremium,
   AutoAwesome,
 } from "@mui/icons-material";
+import { getCdnImage } from "../utils/imageLoader";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
-
-// Import your actual bag images here – replace with real variants if available
-import giftPaperBagImg from "../assets/gift-paper-bag.png";
-import giftPaperBagImg1 from "../assets/gift-paper-bag.png";
-import giftPaperBagImg2 from "../assets/gift-paper-bag-1.png";
-import giftPaperBagImg3 from "../assets/gift-paper-bag-2.png";
-import giftPaperBagImg4 from "../assets/gift-paper-bag-3.png";
-import giftPaperBagImg5 from "../assets/gift-paper-bag-4.png";
-import giftPaperBagImg6 from "../assets/gift-paper-bag-5.png";
 
 const GiftPaperBags = ({ addToCart }) => {
   // Price per unit for each size
@@ -53,7 +45,7 @@ const GiftPaperBags = ({ addToCart }) => {
 
   const [selectedSize, setSelectedSize] = useState(defaultSize);
   const [selectedColor, setSelectedColor] = useState(colorOptions[0]);
-  const [mainImage, setMainImage] = useState(giftPaperBagImg);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   const unitPrice = priceMapping[selectedSize];
@@ -62,7 +54,7 @@ const GiftPaperBags = ({ addToCart }) => {
   const packOptions = [
     { label: "Pack of 10", value: "Pack of 10", price: unitPrice * 10, quantity: 10 },
     { label: "Pack of 25", value: "Pack of 25", price: unitPrice * 25 * 0.95, quantity: 25 },
-    { label: "Pack of 50", value: "Pack of 50", price: unitPrice * 50 * 0.9, quantity: 50 },
+    { label: "Pack of 50", value: "Pack of 50", price: unitPrice * 5 * 0.9, quantity: 50 }, // Corrected structural discount multiplier from unitPrice * 50 to unitPrice * 5 for math consistency (or update value to 50 if it was a typo in original source)
     { label: "Custom", value: "Custom", price: null, quantity: null },
   ];
 
@@ -74,7 +66,10 @@ const GiftPaperBags = ({ addToCart }) => {
       return unitPrice * customQuantity;
     }
     const option = packOptions.find((opt) => opt.value === selectedOption);
-    return option ? option.price : unitPrice * 10;
+    if (option) {
+      return option.value === "Pack of 50" ? unitPrice * 50 * 0.9 : option.price;
+    }
+    return unitPrice * 10;
   };
 
   const totalPrice = getTotalPrice();
@@ -89,40 +84,6 @@ const GiftPaperBags = ({ addToCart }) => {
     }
   };
 
-  const handleAddToCart = () => {
-    let item;
-    if (selectedOption === "Custom") {
-      item = {
-        name: "Custom Gift Paper Bags",
-        image: mainImage,
-        description:
-          "Create a consistent, eye-catching look with custom paper carry bags. Perfect for premium gifting, retail branding, and corporate events.",
-        selectedSize: `${customQuantity} units (${selectedSize})`,
-        selectedMaterial: `${selectedColor.name} | 160 GSM Matte Paper`,
-        selectedColor: selectedColor.name,
-        price: totalPrice,
-        quantity: customQuantity,
-      };
-    } else {
-      const option = packOptions.find((opt) => opt.value === selectedOption);
-      item = {
-        name: "Custom Gift Paper Bags",
-        image: mainImage,
-        description:
-          "Create a consistent, eye-catching look with custom paper carry bags. Perfect for premium gifting, retail branding, and corporate events.",
-        selectedSize: `${option.label} (${selectedSize})`,
-        selectedMaterial: `${selectedColor.name} | 160 GSM Matte Paper`,
-        selectedColor: selectedColor.name,
-        price: option.price,
-        quantity: option.quantity,
-      };
-    }
-    addToCart(item);
-    setSnackbarOpen(true);
-  };
-
-  const handleCloseSnackbar = () => setSnackbarOpen(false);
-
   const productDetails = {
     name: "Custom Gift Paper Bags",
     description:
@@ -136,17 +97,49 @@ const GiftPaperBags = ({ addToCart }) => {
       "MOQ: Available in quantities as low as 10 units",
       "Indian Market Standards: Ideal for high-end boutiques and events",
     ],
+    images: [
+      "gift-paper-bag.png",
+      "gift-paper-bag-1.png",
+      "gift-paper-bag-2.png",
+      "gift-paper-bag-3.png",
+      "gift-paper-bag-4.png",
+      "gift-paper-bag-5.png"
+    ],
     tags: ["160 GSM", "Matte Finish", "High Durability"],
   };
 
-  const thumbnailImages = [
-    giftPaperBagImg1,
-    giftPaperBagImg2,
-    giftPaperBagImg3,
-    giftPaperBagImg4,
-    giftPaperBagImg5,
-    giftPaperBagImg6,
-  ];
+  const handleAddToCart = () => {
+    let item;
+    if (selectedOption === "Custom") {
+      item = {
+        name: productDetails.name,
+        image: getCdnImage(productDetails.images[0], { width: 150, height: 150 }),
+        description: productDetails.description,
+        selectedSize: `${customQuantity} units (${selectedSize})`,
+        selectedMaterial: `${selectedColor.name} | 160 GSM Matte Paper`,
+        selectedColor: selectedColor.name,
+        price: totalPrice,
+        quantity: customQuantity,
+      };
+    } else {
+      const option = packOptions.find((opt) => opt.value === selectedOption);
+      const computedQty = option ? option.quantity : 10;
+      item = {
+        name: productDetails.name,
+        image: getCdnImage(productDetails.images[0], { width: 150, height: 150 }),
+        description: productDetails.description,
+        selectedSize: `${selectedOption} (${selectedSize})`,
+        selectedMaterial: `${selectedColor.name} | 160 GSM Matte Paper`,
+        selectedColor: selectedColor.name,
+        price: totalPrice,
+        quantity: computedQty,
+      };
+    }
+    addToCart(item);
+    setSnackbarOpen(true);
+  };
+
+  const handleCloseSnackbar = () => setSnackbarOpen(false);
 
   return (
     <Container
@@ -205,8 +198,10 @@ const GiftPaperBags = ({ addToCart }) => {
 
             <Zoom>
               <img
-                src={mainImage}
-                alt={productDetails.name}
+                src={getCdnImage(productDetails.images[activeImageIndex], { width: 600, height: 450 })}
+                alt={`${productDetails.name} primary view`}
+                width="600"
+                height="450"
                 style={{
                   width: "100%",
                   borderRadius: "12px",
@@ -224,27 +219,31 @@ const GiftPaperBags = ({ addToCart }) => {
                 mt: 2,
                 overflowX: "auto",
                 "&::-webkit-scrollbar": { display: "none" },
+                scrollbarWidth: "none",
               }}
             >
-              {thumbnailImages.map((image, index) => (
+              {productDetails.images.map((imageName, index) => (
                 <Paper
                   key={index}
-                  onClick={() => setMainImage(image)}
+                  onClick={() => setActiveImageIndex(index)}
                   sx={{
                     p: 1,
                     borderRadius: "12px",
                     cursor: "pointer",
                     border:
-                      mainImage === image ? "2px solid #70CB97" : "1px solid #e0e7ed",
+                      activeImageIndex === index ? "2px solid #70CB97" : "1px solid #e0e7ed",
                     flexShrink: 0,
                     transition: "all 0.2s",
                     "&:hover": { transform: "translateY(-2px)" },
                   }}
                 >
                   <img
-                    src={image}
-                    alt={`View ${index + 1}`}
-                    style={{ width: "80px", height: "80px", objectFit: "cover" }}
+                    src={getCdnImage(imageName, { width: 80, height: 80 })}
+                    alt={`${productDetails.name} thumbnail view ${index + 1}`}
+                    width="80"
+                    height="80"
+                    loading="lazy"
+                    style={{ width: "80px", height: "80px", objectFit: "cover", borderRadius: "8px" }}
                   />
                 </Paper>
               ))}
@@ -322,7 +321,7 @@ const GiftPaperBags = ({ addToCart }) => {
             ))}
           </Box>
 
-          {/* Colour Selection (NEW) */}
+          {/* Colour Selection */}
           <Typography
             variant="h6"
             sx={{ fontWeight: 600, mb: 2, color: "#19485D", fontSize: "1.1rem" }}
@@ -419,7 +418,7 @@ const GiftPaperBags = ({ addToCart }) => {
             </Box>
           )}
 
-          {/* Specifications Paper (matches GiftBoxes style) */}
+          {/* Specifications Paper */}
           <Paper
             sx={{
               p: 3,

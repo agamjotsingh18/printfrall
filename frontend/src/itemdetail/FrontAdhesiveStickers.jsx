@@ -13,21 +13,13 @@ import {
   InputAdornment,
 } from "@mui/material";
 import { AddShoppingCart, Close, Window, WorkspacePremium } from "@mui/icons-material";
+import { getCdnImage } from "../utils/imageLoader";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
 
-// ========== MAIN PRODUCT IMAGE ==========
-import mainImg from "../assets/front-adhesive-stickers.png";
-
-// ========== EXTRA ANGLES ==========
-import img2 from "../assets/front-adhesive-stickers.png";
-import img3 from "../assets/front-adhesive-stickers-1.png";
-import img4 from "../assets/front-adhesive-stickers-2.png";
-import img5 from "../assets/front-adhesive-stickers-3.png";
-
 const FrontAdhesiveStickers = ({ addToCart }) => {
   const priceMapping = {
-    "Transparent Vinyl": 12,   // per sticker (adjusted from ₹120 to ₹12 for bulk pricing; keep your actual per-unit price)
+    "Transparent Vinyl": 12, // per sticker
   };
 
   const shapes = ["Circle", "Oval", "Square", "Rectangle", "Rounded Corner", "Custom", "Leaf"];
@@ -36,7 +28,7 @@ const FrontAdhesiveStickers = ({ addToCart }) => {
 
   const [selectedMaterial] = useState(defaultMaterial);
   const [selectedShape, setSelectedShape] = useState(defaultShape);
-  const [mainImage, setMainImage] = useState(mainImg);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   // Custom quantity / pack options
@@ -71,7 +63,6 @@ const FrontAdhesiveStickers = ({ addToCart }) => {
 
   const productDetails = {
     name: "Front Adhesive Stickers",
-    image: mainImg,
     description:
       "Turn heads with Front Adhesive Stickers designed specifically for storefronts and glass windows. With the adhesive applied directly to the design area, these transparent vinyl stickers ensure a vibrant, high-visibility display from the outside while being protected on the inside.",
     features: [
@@ -85,15 +76,20 @@ const FrontAdhesiveStickers = ({ addToCart }) => {
     ],
     tags: ["Window Display", "Transparent Vinyl", "Waterproof"],
     shapes: shapes,
-    extraImages: [img2, img3, img4, img5],
+    images: [
+      "front-adhesive-stickers.png",
+      "front-adhesive-stickers-1.png",
+      "front-adhesive-stickers-2.png",
+      "front-adhesive-stickers-3.png"
+    ],
   };
 
   const handleAddToCart = () => {
     let item;
     if (selectedOption === "Custom") {
       item = {
-        name: "Front Adhesive Stickers",
-        image: mainImg,
+        name: productDetails.name,
+        image: getCdnImage(productDetails.images[0], { width: 150, height: 150 }),
         description: productDetails.description,
         features: productDetails.features,
         tags: productDetails.tags,
@@ -106,7 +102,11 @@ const FrontAdhesiveStickers = ({ addToCart }) => {
     } else {
       const option = packOptions.find((opt) => opt.value === selectedOption);
       item = {
-        ...productDetails,
+        name: productDetails.name,
+        image: getCdnImage(productDetails.images[0], { width: 150, height: 150 }),
+        description: productDetails.description,
+        features: productDetails.features,
+        tags: productDetails.tags,
         selectedSize: `${option.label} (${selectedShape})`,
         selectedMaterial: `${selectedMaterial} | ${selectedShape}`,
         shape: selectedShape,
@@ -152,8 +152,10 @@ const FrontAdhesiveStickers = ({ addToCart }) => {
 
             <Zoom>
               <img
-                src={mainImage}
-                alt={productDetails.name}
+                src={getCdnImage(productDetails.images[activeImageIndex], { width: 600, height: 450 })}
+                alt={`${productDetails.name} primary view`}
+                width="600"
+                height="450"
                 style={{
                   width: "100%",
                   borderRadius: "12px",
@@ -172,26 +174,30 @@ const FrontAdhesiveStickers = ({ addToCart }) => {
                 mt: 2,
                 overflowX: "auto",
                 "&::-webkit-scrollbar": { display: "none" },
+                scrollbarWidth: "none",
               }}
             >
-              {productDetails.extraImages.map((img, idx) => (
+              {productDetails.images.map((imageName, idx) => (
                 <Paper
                   key={idx}
-                  onClick={() => setMainImage(img)}
+                  onClick={() => setActiveImageIndex(idx)}
                   sx={{
                     p: 1,
                     borderRadius: "10px",
                     cursor: "pointer",
                     border:
-                      mainImage === img ? "2px solid #70CB97" : "2px solid transparent",
+                      activeImageIndex === idx ? "2px solid #70CB97" : "2px solid transparent",
                     "&:hover": { border: "2px solid #70CB97" },
                     flexShrink: 0,
                     transition: "all 0.2s",
                   }}
                 >
                   <img
-                    src={img}
-                    alt={`view ${idx + 1}`}
+                    src={getCdnImage(imageName, { width: 90, height: 90 })}
+                    alt={`${productDetails.name} thumbnail view ${idx + 1}`}
+                    width="90"
+                    height="90"
+                    loading="lazy"
                     style={{
                       width: "90px",
                       height: "90px",
@@ -352,7 +358,7 @@ const FrontAdhesiveStickers = ({ addToCart }) => {
             </Box>
           )}
 
-          {/* Material (only one, display as pill) */}
+          {/* Material */}
           <Typography
             variant="h6"
             sx={{ fontWeight: 600, mb: 2, color: "#19485D", fontSize: { xs: "1.2rem", md: "1.5rem" } }}

@@ -10,16 +10,9 @@ import {
   IconButton,
 } from "@mui/material";
 import { AddShoppingCart, Close } from "@mui/icons-material";
+import { getCdnImage } from "../utils/imageLoader";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
-
-// ========== YOUR GENERATED ACRYLIC COASTER IMAGES ==========
-import mainImg from "../assets/acrylic-coaster-1-stack.png";
-import img2 from "../assets/acrylic-coaster-2-top.png";
-import img3 from "../assets/acrylic-coaster-3-tilted.png";
-import img4 from "../assets/acrylic-coaster-4-set.png";
-import img5 from "../assets/acrylic-coaster-5-closeup.png";
-// ============================================================
 
 const AcrylicCoasters = ({ addToCart }) => {
   // Price mapping for each size and material combination
@@ -34,12 +27,11 @@ const AcrylicCoasters = ({ addToCart }) => {
 
   const [selectedSize, setSelectedSize] = useState(defaultSize);
   const [selectedMaterial, setSelectedMaterial] = useState(defaultMaterial);
-  const [mainImage, setMainImage] = useState(mainImg);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   const details = {
     name: "Acrylic Coasters",
-    image: mainImg,
     description:
       "Protect your surfaces in style with our premium acrylic coasters. Sleek, modern, and durable, these coasters are perfect for homes, offices, and events.",
     features: [
@@ -50,14 +42,22 @@ const AcrylicCoasters = ({ addToCart }) => {
     ],
     sizes: ["Small (3x3 inches)", "Medium (4x4 inches)", "Large (5x5 inches)"],
     materials: ["Clear Acrylic", "Frosted Acrylic", "Colored Acrylic"],
-    extraImages: [img2, img3, img4, img5],
+    images: [
+      "acrylic-coaster-1-stack.png",
+      "acrylic-coaster-2-top.png",
+      "acrylic-coaster-3-tilted.png",
+      "acrylic-coaster-4-set.png",
+      "acrylic-coaster-5-closeup.png"
+    ],
   };
 
   const price = priceMapping[selectedSize][selectedMaterial];
 
   const handleAddToCart = () => {
     const item = {
-      ...details,
+      name: details.name,
+      image: getCdnImage(details.images[0], { width: 150, height: 150 }),
+      description: details.description,
       selectedSize,
       selectedMaterial,
       price,
@@ -84,8 +84,10 @@ const AcrylicCoasters = ({ addToCart }) => {
           >
             <Zoom>
               <img
-                src={mainImage}
-                alt={details.name}
+                src={getCdnImage(details.images[activeImageIndex], { width: 600, height: 450 })}
+                alt={`${details.name} primary view`}
+                width="600"
+                height="450"
                 style={{
                   width: "100%",
                   borderRadius: "12px",
@@ -103,26 +105,30 @@ const AcrylicCoasters = ({ addToCart }) => {
                 mt: 2,
                 overflowX: "auto",
                 "&::-webkit-scrollbar": { display: "none" },
+                scrollbarWidth: "none",
               }}
             >
-              {details.extraImages.map((img, idx) => (
+              {details.images.map((imageName, idx) => (
                 <Paper
                   key={idx}
-                  onClick={() => setMainImage(img)}
+                  onClick={() => setActiveImageIndex(idx)}
                   sx={{
                     p: 1,
                     borderRadius: "10px",
                     cursor: "pointer",
                     border:
-                      mainImage === img ? "2px solid #70CB97" : "2px solid transparent",
+                      activeImageIndex === idx ? "2px solid #70CB97" : "2px solid transparent",
                     "&:hover": { border: "2px solid #70CB97" },
                     flexShrink: 0,
                     transition: "all 0.2s",
                   }}
                 >
                   <img
-                    src={img}
-                    alt={`view ${idx + 1}`}
+                    src={getCdnImage(imageName, { width: 90, height: 90 })}
+                    alt={`${details.name} thumbnail view ${idx + 1}`}
+                    width="90"
+                    height="90"
+                    loading="lazy"
                     style={{
                       width: "90px",
                       height: "90px",

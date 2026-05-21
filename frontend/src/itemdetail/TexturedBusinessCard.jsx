@@ -19,14 +19,9 @@ import {
   Style,
   AutoAwesome,
 } from "@mui/icons-material";
+import { getCdnImage } from "../utils/imageLoader";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
-
-// Asset paths
-import texturedBusinessCardImg from "../assets/textured-business-card.png";
-import texturedBusinessCardImg2 from "../assets/textured-business-card-1.png";
-import texturedBusinessCardImg3 from "../assets/textured-business-card-2.jpeg";
-import texturedBusinessCardImg4 from "../assets/textured-business-card-3.png";
 
 const TexturedBusinessCard = ({ addToCart }) => {
   const paperStocks = [
@@ -38,7 +33,7 @@ const TexturedBusinessCard = ({ addToCart }) => {
 
   const sideOptions = ["Single-sided", "Double-sided"];
 
-  const cardDetails = {
+  const productDetails = {
     name: "Textured Business Cards",
     description:
       "Impress with quality you can feel. Our textured cards offer a tactile experience that sets your brand apart, making every physical interaction a memorable one. Ideal for luxury, fashion, and high-end hospitality branding.",
@@ -51,33 +46,32 @@ const TexturedBusinessCard = ({ addToCart }) => {
       "Quantity: Pack of 50 cards (MOQ)",
       "Perfect for luxury brands, fashion, hospitality, and creative agencies",
     ],
+    images: [
+      "textured-business-card.png",
+      "textured-business-card-1.png",
+      "textured-business-card-2.jpeg",
+      "textured-business-card-3.png"
+    ],
     tags: ["Tactile Finish", "Premium Stock", "Textured"],
   };
 
   const [selectedPaper, setSelectedPaper] = useState(paperStocks[0]);
   const [selectedSide, setSelectedSide] = useState("Single-sided");
-  const [mainImage, setMainImage] = useState(texturedBusinessCardImg);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   const totalPrice = selectedPaper.price + (selectedSide === "Double-sided" ? 120 : 0);
   const moq = 50;
 
-  const thumbnailImages = [
-    texturedBusinessCardImg,
-    texturedBusinessCardImg2,
-    texturedBusinessCardImg3,
-    texturedBusinessCardImg4,
-  ];
-
   const handleAddToCart = () => {
     const item = {
-      name: cardDetails.name,
+      name: productDetails.name,
       size: "3.5 x 2 inches",
       material: selectedPaper.name,
       sides: selectedSide,
       price: totalPrice,
       quantity: moq,
-      image: mainImage,
+      image: getCdnImage(productDetails.images[0], { width: 150, height: 150 }),
     };
     addToCart(item);
     setSnackbarOpen(true);
@@ -107,7 +101,7 @@ const TexturedBusinessCard = ({ addToCart }) => {
           >
             {/* Inline chips (no absolute positioning) */}
             <Box sx={{ display: "flex", gap: 1, mb: 2 }}>
-              {cardDetails.tags.map((tag, idx) => (
+              {productDetails.tags.map((tag, idx) => (
                 <Chip
                   key={idx}
                   label={tag}
@@ -133,8 +127,10 @@ const TexturedBusinessCard = ({ addToCart }) => {
 
             <Zoom>
               <img
-                src={mainImage}
-                alt="Textured Card Preview"
+                src={getCdnImage(productDetails.images[activeImageIndex], { width: 600, height: 450 })}
+                alt={`${productDetails.name} primary view`}
+                width="600"
+                height="450"
                 style={{
                   width: "100%",
                   borderRadius: "12px",
@@ -153,26 +149,30 @@ const TexturedBusinessCard = ({ addToCart }) => {
                 mt: 2,
                 overflowX: "auto",
                 "&::-webkit-scrollbar": { display: "none" },
+                scrollbarWidth: "none",
               }}
             >
-              {thumbnailImages.map((img, idx) => (
+              {productDetails.images.map((imageName, idx) => (
                 <Paper
                   key={idx}
-                  onClick={() => setMainImage(img)}
+                  onClick={() => setActiveImageIndex(idx)}
                   sx={{
                     p: 1,
                     borderRadius: "10px",
                     cursor: "pointer",
                     border:
-                      mainImage === img ? "2px solid #70CB97" : "2px solid transparent",
+                      activeImageIndex === idx ? "2px solid #70CB97" : "2px solid transparent",
                     "&:hover": { border: "2px solid #70CB97" },
                     flexShrink: 0,
                     transition: "all 0.2s",
                   }}
                 >
                   <img
-                    src={img}
-                    alt={`view ${idx + 1}`}
+                    src={getCdnImage(imageName, { width: 90, height: 90 })}
+                    alt={`${productDetails.name} thumbnail view ${idx + 1}`}
+                    width="90"
+                    height="90"
+                    loading="lazy"
                     style={{
                       width: "90px",
                       height: "90px",
@@ -197,7 +197,7 @@ const TexturedBusinessCard = ({ addToCart }) => {
               fontSize: { xs: "1.8rem", md: "2.5rem" },
             }}
           >
-            {cardDetails.name}
+            {productDetails.name}
           </Typography>
 
           <Typography
@@ -213,12 +213,12 @@ const TexturedBusinessCard = ({ addToCart }) => {
           </Typography>
 
           <Typography variant="body1" sx={{ mb: 3, color: "#1e2a32", lineHeight: 1.6 }}>
-            {cardDetails.description}
+            {productDetails.description}
           </Typography>
 
           <Divider sx={{ mb: 3 }} />
 
-          {/* Textured Stock Selection (pill‑shaped grid) */}
+          {/* Textured Stock Selection */}
           <Typography
             variant="h6"
             sx={{
@@ -237,7 +237,10 @@ const TexturedBusinessCard = ({ addToCart }) => {
             {paperStocks.map((paper) => (
               <Grid item xs={6} key={paper.name}>
                 <Paper
-                  onClick={() => setSelectedPaper(paper)}
+                  onClick={() => {
+                    setSelectedPaper(paper);
+                    setActiveImageIndex(0);
+                  }}
                   sx={{
                     p: 1.5,
                     textAlign: "center",
@@ -264,7 +267,7 @@ const TexturedBusinessCard = ({ addToCart }) => {
             ))}
           </Grid>
 
-          {/* Print Options (pill‑shaped) */}
+          {/* Print Options */}
           <Typography
             variant="h6"
             sx={{ fontWeight: 600, mb: 2, color: "#19485D", fontSize: "1.1rem" }}
@@ -311,7 +314,7 @@ const TexturedBusinessCard = ({ addToCart }) => {
             <Typography variant="subtitle1" sx={{ fontWeight: 700, mb: 2, color: "#19485D" }}>
               Product Specifications:
             </Typography>
-            {cardDetails.features.map((feature, i) => (
+            {productDetails.features.map((feature, i) => (
               <Box key={i} sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
                 <span
                   style={{

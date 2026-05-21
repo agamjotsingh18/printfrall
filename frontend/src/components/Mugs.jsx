@@ -3,29 +3,28 @@ import { Link } from "react-router-dom";
 import "../styles/Mugs.css";
 import { IconButton } from "@mui/material";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
-
-// Import images for mugs (replace with actual image paths)
-import standardMugImg from "../assets/mug.png";
-import miniMugImg from "../assets/mini-mug.png";
-import shimmerDarkGreyMugImg from "../assets/shimmer-dark-grey-mug.png";
-import regalBlackMugImg from "../assets/regal-black-mug.png";
-import travelerBlackMugImg from "../assets/traveler-black-mug.png";
-import sleekBlackMugImg from "../assets/sleek-black-mug.png";
+import { getCdnImage } from "../utils/imageLoader";
 
 const mugsItems = [
-  { name: "Mug (Standard)", image: standardMugImg, price: 200, route: "/services/personalized-gifts/mugs/standard-mug" },
-  { name: "Mini Mug", image: miniMugImg, price: 150, route: "/services/personalized-gifts/mugs/mini-mug" },
-  { name: "Shimmer Dark Grey Mug", image: shimmerDarkGreyMugImg, price: 250, route: "/services/personalized-gifts/mugs/shimmer-dark-grey-mug" },
-  { name: "Regal Black Mug", image: regalBlackMugImg, price: 300, route: "/services/personalized-gifts/mugs/regal-black-mug" },
-  { name: "Traveler Black Mug", image: travelerBlackMugImg, price: 220, route: "/services/personalized-gifts/mugs/traveler-black-mug" },
-  { name: "Sleek Black Mug", image: sleekBlackMugImg, price: 180, route: "/services/personalized-gifts/mugs/sleek-black-mug" },
+  { name: "Mug (Standard)", image: "mug.png", price: 200, route: "/services/personalized-gifts/mugs/standard-mug" },
+  { name: "Mini Mug", image: "mini-mug.png", price: 150, route: "/services/personalized-gifts/mugs/mini-mug" },
+  { name: "Shimmer Dark Grey Mug", image: "shimmer-dark-grey-mug.png", price: 250, route: "/services/personalized-gifts/mugs/shimmer-dark-grey-mug" },
+  { name: "Regal Black Mug", image: "regal-black-mug.png", price: 300, route: "/services/personalized-gifts/mugs/regal-black-mug" },
+  { name: "Traveler Black Mug", image: "traveler-black-mug.png", price: 220, route: "/services/personalized-gifts/mugs/traveler-black-mug" },
+  { name: "Sleek Black Mug", image: "sleek-black-mug.png", price: 180, route: "/services/personalized-gifts/mugs/sleek-black-mug" },
 ];
 
 const Mugs = ({ addToCart }) => {
   const handleAddToCart = (item, e) => {
     e?.preventDefault();
     e?.stopPropagation();
-    addToCart(item);
+    
+    const cartItem = {
+      ...item,
+      image: getCdnImage(item.image, { width: 150, height: 150 }),
+      quantity: 1
+    };
+    addToCart(cartItem);
   };
 
   return (
@@ -33,25 +32,25 @@ const Mugs = ({ addToCart }) => {
       <h2 className="section-title">Mugs</h2>
       <p className="section-subtitle">Explore our premium collection of mugs</p>
 
-      {/* Mugs Section */}
       <div className="mugs-container" aria-label="Premium mugs collection">
         {mugsItems.map((item, index) => (
           <div className="mug-item" key={index} aria-label={`Product: ${item.name}`}>
-            {/* Wrap mug details in a Link */}
             <Link 
               to={item.route} 
               className="mug-link"
               aria-label={`View details of ${item.name}`}
             >
               <img 
-                src={item.image} 
+                src={getCdnImage(item.image, { width: 350, height: 350 })} 
                 alt={item.name} 
                 className="mug-image" 
+                width="350"
+                height="350"
+                loading="lazy"
               />
               <p className="mug-name">{item.name}</p>
               <p className="mug-price" aria-label={`Price: ₹${item.price}`}>₹{item.price}</p>
             </Link>
-            {/* Add to Cart Button */}
             <IconButton
               aria-label={`Add ${item.name} to cart`}
               sx={{

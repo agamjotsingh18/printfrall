@@ -13,11 +13,10 @@ const ToastNotification = ({ message, onClose, severity = "success" }) => {
     return () => clearTimeout(timer);
   }, [onClose]);
 
-  // Set colors based on severity
   const getBackgroundColor = () => {
     switch (severity) {
       case "success":
-        return "#1a6e44"; // Darker green for better contrast
+        return "#1a6e44";
       case "error":
         return "#d32f2f";
       case "warning":

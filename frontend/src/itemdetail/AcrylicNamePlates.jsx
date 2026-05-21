@@ -10,15 +10,9 @@ import {
   IconButton,
 } from "@mui/material";
 import { AddShoppingCart, Close } from "@mui/icons-material";
+import { getCdnImage } from "../utils/imageLoader";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
-
-import mainImg from "../assets/acrylic-nameplate-0-design.png";
-import img1 from "../assets/acrylic-nameplate-1-desk.png";
-import img2 from "../assets/acrylic-nameplate-2-tilted.png";
-import img3 from "../assets/acrylic-nameplate-3-door.png";
-import img4 from "../assets/acrylic-nameplate-4-stack.png";
-import img5 from "../assets/acrylic-nameplate-5-closeup.png";
 
 const AcrylicNamePlates = ({ addToCart }) => {
   const priceMapping = {
@@ -32,12 +26,11 @@ const AcrylicNamePlates = ({ addToCart }) => {
 
   const [selectedSize, setSelectedSize] = useState(defaultSize);
   const [selectedMaterial, setSelectedMaterial] = useState(defaultMaterial);
-  const [mainImage, setMainImage] = useState(mainImg);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   const details = {
     name: "Acrylic Name Plates",
-    image: mainImg,
     description:
       "Add a touch of elegance to your workspace with our premium acrylic name plates. Sleek, modern, and durable, these name plates are perfect for offices, desks, and doors.",
     features: [
@@ -48,14 +41,23 @@ const AcrylicNamePlates = ({ addToCart }) => {
     ],
     sizes: ["Small (6x4 inches)", "Medium (8x6 inches)", "Large (12x8 inches)"],
     materials: ["Clear Acrylic", "Frosted Acrylic", "Colored Acrylic"],
-    extraImages: [img1, img2, img3, img5, img4],
+    images: [
+      "acrylic-nameplate-0-design.png",
+      "acrylic-nameplate-1-desk.png",
+      "acrylic-nameplate-2-tilted.png",
+      "acrylic-nameplate-3-door.png",
+      "acrylic-nameplate-4-stack.png",
+      "acrylic-nameplate-5-closeup.png"
+    ],
   };
 
   const price = priceMapping[selectedSize][selectedMaterial];
 
   const handleAddToCart = () => {
     const item = {
-      ...details,
+      name: details.name,
+      image: getCdnImage(details.images[0], { width: 150, height: 150 }),
+      description: details.description,
       selectedSize,
       selectedMaterial,
       price,
@@ -82,8 +84,10 @@ const AcrylicNamePlates = ({ addToCart }) => {
           >
             <Zoom>
               <img
-                src={mainImage}
-                alt={details.name}
+                src={getCdnImage(details.images[activeImageIndex], { width: 600, height: 450 })}
+                alt={`${details.name} primary view`}
+                width="600"
+                height="450"
                 style={{
                   width: "100%",
                   borderRadius: "12px",
@@ -101,26 +105,30 @@ const AcrylicNamePlates = ({ addToCart }) => {
                 mt: 2,
                 overflowX: "auto",
                 "&::-webkit-scrollbar": { display: "none" },
+                scrollbarWidth: "none",
               }}
             >
-              {details.extraImages.map((img, idx) => (
+              {details.images.map((imageName, idx) => (
                 <Paper
                   key={idx}
-                  onClick={() => setMainImage(img)}
+                  onClick={() => setActiveImageIndex(idx)}
                   sx={{
                     p: 1,
                     borderRadius: "10px",
                     cursor: "pointer",
                     border:
-                      mainImage === img ? "2px solid #70CB97" : "2px solid transparent",
+                      activeImageIndex === idx ? "2px solid #70CB97" : "2px solid transparent",
                     "&:hover": { border: "2px solid #70CB97" },
                     flexShrink: 0,
                     transition: "all 0.2s",
                   }}
                 >
                   <img
-                    src={img}
-                    alt={`view ${idx + 1}`}
+                    src={getCdnImage(imageName, { width: 90, height: 90 })}
+                    alt={`${details.name} thumbnail view ${idx + 1}`}
+                    width="90"
+                    height="90"
+                    loading="lazy"
                     style={{
                       width: "90px",
                       height: "90px",

@@ -11,29 +11,17 @@ import {
   Chip,
 } from "@mui/material";
 import { AddShoppingCart, Close, Public } from "@mui/icons-material";
+import { getCdnImage } from "../utils/imageLoader";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
-
-// ========== MAIN PRODUCT IMAGE ==========
-import mainImg from "../assets/traveler-black-mug.png";
-
-// ========== EXTRA ANGLES ==========
-import img2 from "../assets/traveler-black-mug.png";
-import img3 from "../assets/traveler-black-mug-1.png";
-import img4 from "../assets/traveler-black-mug-2.png";
 
 const TravelerBlackMug = ({ addToCart }) => {
   const price = 599;
   const availableDesigns = ["World Map", "Compass", "Landmarks"];
   const defaultDesign = "World Map";
 
-  const [selectedDesign, setSelectedDesign] = useState(defaultDesign);
-  const [mainImage, setMainImage] = useState(mainImg);
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-
-  const travelerMugDetails = {
+  const productDetails = {
     name: "Traveler Black Mug",
-    image: mainImg,
     description:
       "A premium ceramic travel mug featuring inspirational global designs for the modern professional. Built for elegance and comfort, it's the perfect companion for your home office or global journey.",
     features: [
@@ -45,13 +33,25 @@ const TravelerBlackMug = ({ addToCart }) => {
       "Premium gift box packaging included",
       "Lead-free and eco-friendly materials",
     ],
-    extraImages: [img2, img3, img4],
+    images: [
+      "traveler-black-mug.png",
+      "traveler-black-mug-1.png",
+      "traveler-black-mug-2.png"
+    ],
     tags: ["Global", "Inspirational", "Premium"],
   };
 
+  const [selectedDesign, setSelectedDesign] = useState(defaultDesign);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+
   const handleAddToCart = () => {
     const item = {
-      ...travelerMugDetails,
+      name: productDetails.name,
+      image: getCdnImage(productDetails.images[0], { width: 150, height: 150 }),
+      description: productDetails.description,
+      features: productDetails.features,
+      tags: productDetails.tags,
       selectedMaterial: selectedDesign,   // for cart display
       selectedDesign,
       price,
@@ -84,7 +84,7 @@ const TravelerBlackMug = ({ addToCart }) => {
             }}
           >
             <Box sx={{ display: "flex", gap: 1, mb: 2 }}>
-              {travelerMugDetails.tags.map((tag, idx) => (
+              {productDetails.tags.map((tag, idx) => (
                 <Chip
                   key={idx}
                   label={tag}
@@ -102,8 +102,10 @@ const TravelerBlackMug = ({ addToCart }) => {
 
             <Zoom>
               <img
-                src={mainImage}
-                alt={travelerMugDetails.name}
+                src={getCdnImage(productDetails.images[activeImageIndex], { width: 600, height: 450 })}
+                alt={`${productDetails.name} primary view`}
+                width="600"
+                height="450"
                 style={{
                   width: "100%",
                   borderRadius: "12px",
@@ -122,26 +124,30 @@ const TravelerBlackMug = ({ addToCart }) => {
                 mt: 2,
                 overflowX: "auto",
                 "&::-webkit-scrollbar": { display: "none" },
+                scrollbarWidth: "none",
               }}
             >
-              {travelerMugDetails.extraImages.map((img, idx) => (
+              {productDetails.images.map((imageName, idx) => (
                 <Paper
                   key={idx}
-                  onClick={() => setMainImage(img)}
+                  onClick={() => setActiveImageIndex(idx)}
                   sx={{
                     p: 1,
                     borderRadius: "10px",
                     cursor: "pointer",
                     border:
-                      mainImage === img ? "2px solid #70CB97" : "2px solid transparent",
+                      activeImageIndex === idx ? "2px solid #70CB97" : "2px solid transparent",
                     "&:hover": { border: "2px solid #70CB97" },
                     flexShrink: 0,
                     transition: "all 0.2s",
                   }}
                 >
                   <img
-                    src={img}
-                    alt={`view ${idx + 1}`}
+                    src={getCdnImage(imageName, { width: 90, height: 90 })}
+                    alt={`${productDetails.name} thumbnail view ${idx + 1}`}
+                    width="90"
+                    height="90"
+                    loading="lazy"
                     style={{
                       width: "90px",
                       height: "90px",
@@ -161,7 +167,7 @@ const TravelerBlackMug = ({ addToCart }) => {
             variant="h4"
             sx={{ fontWeight: 700, mb: 1, color: "#19485D", fontSize: { xs: "1.8rem", md: "2.5rem" } }}
           >
-            {travelerMugDetails.name}
+            {productDetails.name}
           </Typography>
 
           <Typography
@@ -175,7 +181,7 @@ const TravelerBlackMug = ({ addToCart }) => {
             variant="body1"
             sx={{ mb: 3, color: "#1e2a32", lineHeight: 1.6 }}
           >
-            {travelerMugDetails.description}
+            {productDetails.description}
           </Typography>
 
           {/* Key Features */}
@@ -186,7 +192,7 @@ const TravelerBlackMug = ({ addToCart }) => {
             Key Features:
           </Typography>
           <Box component="ul" sx={{ ml: 2, mb: 3, listStyleType: "none", p: 0 }}>
-            {travelerMugDetails.features.map((feature, idx) => (
+            {productDetails.features.map((feature, idx) => (
               <li key={idx} style={{ marginBottom: "8px" }}>
                 <Typography variant="body1" sx={{ display: "flex", alignItems: "center", color: "#5a6e7a" }}>
                   <span
@@ -216,7 +222,10 @@ const TravelerBlackMug = ({ addToCart }) => {
             {availableDesigns.map((design, idx) => (
               <Paper
                 key={idx}
-                onClick={() => setSelectedDesign(design)}
+                onClick={() => {
+                  setSelectedDesign(design);
+                  setActiveImageIndex(0);
+                }}
                 sx={{
                   p: 1.5,
                   px: 2.5,

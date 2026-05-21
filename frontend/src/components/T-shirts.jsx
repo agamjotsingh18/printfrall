@@ -3,23 +3,25 @@ import { Link } from "react-router-dom";
 import "../styles/T-shirts.css";
 import { IconButton } from "@mui/material";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
-
-// Import images for each T-shirt type
-import roundNeckTShirts from "../assets/round-neck-t-shirt.png";
-import poloTShirts from "../assets/polo-t-shirt.png";
-import vNeckTShirts from "../assets/v-neck-t-shirt.png";
+import { getCdnImage } from "../utils/imageLoader";
 
 const tShirtTypes = [
-  { name: "Round Neck T-shirts", image: roundNeckTShirts, price: 300, route: "/services/personalized-gifts/tshirts/round-neck-t-shirts" },
-  { name: "Polo T-shirts", image: poloTShirts, price: 400, route: "/services/personalized-gifts/tshirts/polo-t-shirts" },
-  { name: "V-Neck T-shirts", image: vNeckTShirts, price: 350, route: "/services/personalized-gifts/tshirts/v-neck-t-shirts" },
+  { name: "Round Neck T-shirts", image: "round-neck-t-shirt.png", price: 300, route: "/services/personalized-gifts/tshirts/round-neck-t-shirts" },
+  { name: "Polo T-shirts", image: "polo-t-shirt.png", price: 400, route: "/services/personalized-gifts/tshirts/polo-t-shirts" },
+  { name: "V-Neck T-shirts", image: "v-neck-t-shirt.png", price: 350, route: "/services/personalized-gifts/tshirts/v-neck-t-shirts" },
 ];
 
 const TShirts = ({ addToCart }) => {
   const handleAddToCart = (item, e) => {
     e?.preventDefault();
     e?.stopPropagation();
-    addToCart(item);
+    
+    const cartItem = {
+      ...item,
+      image: getCdnImage(item.image, { width: 150, height: 150 }),
+      quantity: 1
+    };
+    addToCart(cartItem);
   };
 
   return (
@@ -29,21 +31,22 @@ const TShirts = ({ addToCart }) => {
       <div className="t-shirts-container" aria-label="T-shirt styles collection">
         {tShirtTypes.map((tshirt, index) => (
           <div className="tshirt-item" key={index} aria-label={`Product: ${tshirt.name}`}>
-            {/* Wrap T-shirt details in a Link */}
             <Link 
               to={tshirt.route} 
               className="tshirt-link"
               aria-label={`View details of ${tshirt.name}`}
             >
               <img 
-                src={tshirt.image} 
+                src={getCdnImage(tshirt.image, { width: 350, height: 350 })} 
                 alt={tshirt.name} 
                 className="tshirt-image" 
+                width="350"
+                height="350"
+                loading="lazy"
               />
               <p className="tshirt-name">{tshirt.name}</p>
               <p className="tshirt-price" aria-label={`Price: ₹${tshirt.price}`}>₹{tshirt.price}</p>
             </Link>
-            {/* Add to Cart Button */}
             <IconButton
               aria-label={`Add ${tshirt.name} to cart`}
               sx={{

@@ -13,16 +13,9 @@ import {
   InputAdornment,
 } from "@mui/material";
 import { AddShoppingCart, Close, WorkspacePremium, Create } from "@mui/icons-material";
+import { getCdnImage } from "../utils/imageLoader";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
-
-// ========== MAIN PEN IMAGE ==========
-import mainImg from "../assets/scribble-pen.png";
-
-// ========== EXTRA ANGLES ==========
-import img2 from "../assets/scribble-pen.png";
-import img3 from "../assets/scribble-pen-1.png";
-import img4 from "../assets/scribble-pen-2.png";
 
 const ScribblePen = ({ addToCart }) => {
   // Predefined pack options with total prices
@@ -35,10 +28,33 @@ const ScribblePen = ({ addToCart }) => {
 
   const unitPrice = 150; // Price per single pen
 
+  const productDetails = {
+    name: "Scribble Ballpoint Pen",
+    description:
+      "Experience the excellence of a metallic ballpoint pen crafted to perfection. The Scribble series features a sophisticated matte black exterior and precision metal construction for an uncompromising writing experience.",
+    features: [
+      "Premium metallic body for a balanced feel",
+      "Sophisticated Matte Black finish",
+      "Precision ballpoint tip for smooth ink flow",
+      "Customizable with high-quality laser engraving",
+      "Engraving Area: 45 x 7 mm",
+      "Durable clip for professional portability",
+      "Ideal for corporate gifting and executive branding",
+    ],
+    sizes: ["Single", "Set of 3", "Set of 10"],
+    colors: ["Matte Black"],
+    images: [
+      "scribble-pen.png",
+      "scribble-pen-1.png",
+      "scribble-pen-2.png"
+    ],
+    tags: ["Metallic", "Engravable", "Premium"],
+  };
+
   const [selectedOption, setSelectedOption] = useState(packOptions[0]);
   const [customQuantity, setCustomQuantity] = useState(1);
   const [selectedColor, setSelectedColor] = useState("Matte Black");
-  const [mainImage, setMainImage] = useState(mainImg);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   // Calculate total price
@@ -62,11 +78,11 @@ const ScribblePen = ({ addToCart }) => {
     let item;
     if (selectedOption.value === "Custom") {
       item = {
-        name: "Scribble Ballpoint Pen",
-        image: mainImg,
-        description: scribbleDetails.description,
-        features: scribbleDetails.features,
-        tags: scribbleDetails.tags,
+        name: productDetails.name,
+        image: getCdnImage(productDetails.images[0], { width: 150, height: 150 }),
+        description: productDetails.description,
+        features: productDetails.features,
+        tags: productDetails.tags,
         selectedSize: `${customQuantity} pens`,
         selectedMaterial: selectedColor,
         selectedColor,
@@ -75,7 +91,11 @@ const ScribblePen = ({ addToCart }) => {
       };
     } else {
       item = {
-        ...scribbleDetails,
+        name: productDetails.name,
+        image: getCdnImage(productDetails.images[0], { width: 150, height: 150 }),
+        description: productDetails.description,
+        features: productDetails.features,
+        tags: productDetails.tags,
         selectedSize: selectedOption.label,
         selectedMaterial: selectedColor,
         selectedColor,
@@ -85,26 +105,6 @@ const ScribblePen = ({ addToCart }) => {
     }
     addToCart(item);
     setSnackbarOpen(true);
-  };
-
-  const scribbleDetails = {
-    name: "Scribble Ballpoint Pen",
-    image: mainImg,
-    description:
-      "Experience the excellence of a metallic ballpoint pen crafted to perfection. The Scribble series features a sophisticated matte black exterior and precision metal construction for an uncompromising writing experience.",
-    features: [
-      "Premium metallic body for a balanced feel",
-      "Sophisticated Matte Black finish",
-      "Precision ballpoint tip for smooth ink flow",
-      "Customizable with high-quality laser engraving",
-      "Engraving Area: 45 x 7 mm",
-      "Durable clip for professional portability",
-      "Ideal for corporate gifting and executive branding",
-    ],
-    sizes: ["Single", "Set of 3", "Set of 10"],
-    colors: ["Matte Black"],
-    extraImages: [img2, img3, img4],
-    tags: ["Metallic", "Engravable", "Premium"],
   };
 
   const handleCloseSnackbar = () => setSnackbarOpen(false);
@@ -123,7 +123,7 @@ const ScribblePen = ({ addToCart }) => {
             }}
           >
             <Box sx={{ display: "flex", gap: 1, mb: 2 }}>
-              {scribbleDetails.tags.map((tag, idx) => (
+              {productDetails.tags.map((tag, idx) => (
                 <Chip
                   key={idx}
                   label={tag}
@@ -141,8 +141,10 @@ const ScribblePen = ({ addToCart }) => {
 
             <Zoom>
               <img
-                src={mainImage}
-                alt={scribbleDetails.name}
+                src={getCdnImage(productDetails.images[activeImageIndex], { width: 600, height: 450 })}
+                alt={`${productDetails.name} primary view`}
+                width="600"
+                height="450"
                 style={{
                   width: "100%",
                   borderRadius: "12px",
@@ -160,25 +162,30 @@ const ScribblePen = ({ addToCart }) => {
                 mt: 2,
                 overflowX: "auto",
                 "&::-webkit-scrollbar": { display: "none" },
+                scrollbarWidth: "none",
               }}
             >
-              {scribbleDetails.extraImages.map((img, idx) => (
+              {productDetails.images.map((imageName, idx) => (
                 <Paper
                   key={idx}
-                  onClick={() => setMainImage(img)}
+                  onClick={() => setActiveImageIndex(idx)}
                   sx={{
                     p: 1,
                     borderRadius: "10px",
                     cursor: "pointer",
                     border:
-                      mainImage === img ? "2px solid #70CB97" : "2px solid transparent",
+                      activeImageIndex === idx ? "2px solid #70CB97" : "2px solid transparent",
                     "&:hover": { border: "2px solid #70CB97" },
                     flexShrink: 0,
+                    transition: "all 0.2s",
                   }}
                 >
                   <img
-                    src={img}
-                    alt={`view ${idx + 1}`}
+                    src={getCdnImage(imageName, { width: 90, height: 90 })}
+                    alt={`${productDetails.name} thumbnail view ${idx + 1}`}
+                    width="90"
+                    height="90"
+                    loading="lazy"
                     style={{
                       width: "90px",
                       height: "90px",
@@ -198,7 +205,7 @@ const ScribblePen = ({ addToCart }) => {
             variant="h4"
             sx={{ fontWeight: 700, mb: 1, color: "#19485D", fontSize: { xs: "1.8rem", md: "2.5rem" } }}
           >
-            {scribbleDetails.name}
+            {productDetails.name}
           </Typography>
 
           <Typography
@@ -212,7 +219,7 @@ const ScribblePen = ({ addToCart }) => {
             variant="body1"
             sx={{ mb: 3, color: "#1e2a32", lineHeight: 1.6 }}
           >
-            {scribbleDetails.description}
+            {productDetails.description}
           </Typography>
 
           <Typography
@@ -222,7 +229,7 @@ const ScribblePen = ({ addToCart }) => {
             Key Highlights:
           </Typography>
           <Box component="ul" sx={{ ml: 2, mb: 3, listStyleType: "none", p: 0 }}>
-            {scribbleDetails.features.map((feature, idx) => (
+            {productDetails.features.map((feature, idx) => (
               <li key={idx} style={{ marginBottom: "8px" }}>
                 <Typography variant="body1" sx={{ display: "flex", alignItems: "center", color: "#5a6e7a" }}>
                   <span
@@ -304,7 +311,7 @@ const ScribblePen = ({ addToCart }) => {
             </Box>
           )}
 
-          {/* Color Options (only one, but keep consistent) */}
+          {/* Color Options */}
           <Typography
             variant="h6"
             sx={{ fontWeight: 600, mb: 2, color: "#19485D", fontSize: { xs: "1.2rem", md: "1.5rem" } }}
@@ -312,7 +319,7 @@ const ScribblePen = ({ addToCart }) => {
             Color Options:
           </Typography>
           <Box sx={{ display: "flex", gap: 2, mb: 4, flexWrap: "wrap" }}>
-            {scribbleDetails.colors.map((color, idx) => (
+            {productDetails.colors.map((color, idx) => (
               <Paper
                 key={idx}
                 onClick={() => setSelectedColor(color)}
@@ -367,6 +374,7 @@ const ScribblePen = ({ addToCart }) => {
         </Grid>
       </Grid>
 
+      {/* Snackbar */}
       <Snackbar
         open={snackbarOpen}
         autoHideDuration={3000}

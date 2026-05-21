@@ -18,16 +18,9 @@ import {
   PhotoFilter,
   AutoAwesome,
 } from "@mui/icons-material";
+import { getCdnImage } from "../utils/imageLoader";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
-
-// Import your matte frame images – replace with real variants
-import mattePhotoWithFrameImg from "../assets/matte-photo-with-frame.png";
-import mattePhotoWithFrameImg2 from "../assets/matte-photo-with-frame-1.png";
-import mattePhotoWithFrameImg3 from "../assets/matte-photo-with-frame-2.png";
-import mattePhotoWithFrameImg4 from "../assets/matte-photo-with-frame-3.png";
-import mattePhotoWithFrameImg5 from "../assets/matte-photo-with-frame-4.png";
-import mattePhotoWithFrameImg6 from "../assets/matte-photo-with-frame-5.png";
 
 const MattePhotoWithFrames = ({ addToCart }) => {
   // Frame styles and pricing
@@ -41,7 +34,7 @@ const MattePhotoWithFrames = ({ addToCart }) => {
   };
 
   const [selectedStyle, setSelectedStyle] = useState("Classic Black");
-  const [mainImage, setMainImage] = useState(mattePhotoWithFrameImg);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   const unitPrice = priceMapping[selectedStyle];
@@ -60,22 +53,21 @@ const MattePhotoWithFrames = ({ addToCart }) => {
       "Ready to Hang: Includes pre-installed mounting hooks",
       "Personalized: Available in 4 distinct premium frame styles",
     ],
+    images: [
+      "matte-photo-with-frame.png",
+      "matte-photo-with-frame-1.png",
+      "matte-photo-with-frame-2.png",
+      "matte-photo-with-frame-3.png",
+      "matte-photo-with-frame-4.png",
+      "matte-photo-with-frame-5.png"
+    ],
     tags: ["Matte Vinyl", "Non-Reflective", "Art Gallery Quality"],
   };
-
-  const thumbnailImages = [
-    mattePhotoWithFrameImg,
-    mattePhotoWithFrameImg2,
-    mattePhotoWithFrameImg3,
-    mattePhotoWithFrameImg4,
-    mattePhotoWithFrameImg5,
-    mattePhotoWithFrameImg6,
-  ];
 
   const handleAddToCart = () => {
     const item = {
       name: productDetails.name,
-      image: mainImage,
+      image: getCdnImage(productDetails.images[0], { width: 150, height: 150 }),
       description: productDetails.description,
       selectedStyle,
       price: totalPrice,
@@ -144,8 +136,10 @@ const MattePhotoWithFrames = ({ addToCart }) => {
 
             <Zoom>
               <img
-                src={mainImage}
-                alt={productDetails.name}
+                src={getCdnImage(productDetails.images[activeImageIndex], { width: 600, height: 450 })}
+                alt={`${productDetails.name} primary view`}
+                width="600"
+                height="450"
                 style={{
                   width: "100%",
                   borderRadius: "12px",
@@ -163,26 +157,30 @@ const MattePhotoWithFrames = ({ addToCart }) => {
                 mt: 2,
                 overflowX: "auto",
                 "&::-webkit-scrollbar": { display: "none" },
+                scrollbarWidth: "none",
               }}
             >
-              {thumbnailImages.map((image, index) => (
+              {productDetails.images.map((imageName, index) => (
                 <Paper
                   key={index}
-                  onClick={() => setMainImage(image)}
+                  onClick={() => setActiveImageIndex(index)}
                   sx={{
                     p: 1,
                     borderRadius: "12px",
                     cursor: "pointer",
                     border:
-                      mainImage === image ? "2px solid #70CB97" : "1px solid #e0e7ed",
+                      activeImageIndex === index ? "2px solid #70CB97" : "1px solid #e0e7ed",
                     flexShrink: 0,
                     transition: "all 0.2s",
                     "&:hover": { transform: "translateY(-2px)" },
                   }}
                 >
                   <img
-                    src={image}
-                    alt={`View ${index + 1}`}
+                    src={getCdnImage(imageName, { width: 80, height: 80 })}
+                    alt={`${productDetails.name} thumbnail view ${index + 1}`}
+                    width="80"
+                    height="80"
+                    loading="lazy"
                     style={{ width: "80px", height: "80px", objectFit: "cover", borderRadius: "8px" }}
                   />
                 </Paper>
@@ -220,7 +218,7 @@ const MattePhotoWithFrames = ({ addToCart }) => {
 
           <Divider sx={{ mb: 3 }} />
 
-          {/* Frame Style Selection (pill‑shaped) */}
+          {/* Frame Style Selection */}
           <Typography
             variant="h6"
             sx={{ fontWeight: 600, mb: 2, color: "#19485D", fontSize: "1.1rem" }}

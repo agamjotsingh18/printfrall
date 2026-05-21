@@ -13,17 +13,9 @@ import {
   InputAdornment,
 } from "@mui/material";
 import { AddShoppingCart, Close, Checkroom, VerifiedUser } from "@mui/icons-material";
+import { getCdnImage } from "../utils/imageLoader";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
-
-// ========== MAIN PRODUCT IMAGE ==========
-import mainImg from "../assets/custom-printed-zipper-hoodie.png";
-
-// ========== EXTRA ANGLES ==========
-import img2 from "../assets/custom-printed-zipper-hoodie.png";
-import img3 from "../assets/custom-printed-zipper-hoodie-1.png";
-import img4 from "../assets/custom-printed-zipper-hoodie-2.png";
-import img5 from "../assets/custom-printed-zipper-hoodie-3.png";
 
 const CustomPrintedZipperHoodies = ({ addToCart }) => {
   const priceMapping = {
@@ -44,7 +36,7 @@ const CustomPrintedZipperHoodies = ({ addToCart }) => {
   const [selectedMaterial, setSelectedMaterial] = useState(defaultMaterial);
   const [selectedColor, setSelectedColor] = useState(defaultColor);
   const [selectedSize, setSelectedSize] = useState(defaultSize);
-  const [mainImage, setMainImage] = useState(mainImg);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   // Custom quantity state
@@ -79,7 +71,6 @@ const CustomPrintedZipperHoodies = ({ addToCart }) => {
 
   const productDetails = {
     name: "Custom Printed Zipper Hoodie",
-    image: mainImg,
     description:
       "A premium Gildan-style heavy blend zip-through hood designed for both comfort and high-impact branding. Crafted with air jet spun yarn for a softer feel and reduced pilling, it features a covered metal zipper specifically designed to allow for seamless full chest printing.",
     features: [
@@ -95,7 +86,12 @@ const CustomPrintedZipperHoodies = ({ addToCart }) => {
     colors: availableColors,
     sizes: availableSizes,
     materials: ["Heavy Blend Cotton", "Premium Poly-Blend"],
-    extraImages: [img2, img3, img4, img5],
+    images: [
+      "custom-printed-zipper-hoodie.png",
+      "custom-printed-zipper-hoodie-1.png",
+      "custom-printed-zipper-hoodie-2.png",
+      "custom-printed-zipper-hoodie-3.png"
+    ],
   };
 
   const handleAddToCart = () => {
@@ -103,7 +99,7 @@ const CustomPrintedZipperHoodies = ({ addToCart }) => {
     if (selectedOption === "Custom") {
       item = {
         name: "Custom Printed Zipper Hoodie",
-        image: mainImg,
+        image: getCdnImage(productDetails.images[0], { width: 150, height: 150 }),
         description: productDetails.description,
         features: productDetails.features,
         tags: productDetails.tags,
@@ -118,7 +114,11 @@ const CustomPrintedZipperHoodies = ({ addToCart }) => {
     } else {
       const option = packOptions.find((opt) => opt.value === selectedOption);
       item = {
-        ...productDetails,
+        name: productDetails.name,
+        image: getCdnImage(productDetails.images[0], { width: 150, height: 150 }),
+        description: productDetails.description,
+        features: productDetails.features,
+        tags: productDetails.tags,
         selectedSize: option.label,
         selectedMaterial: `${selectedMaterial} | ${selectedColor} | Size ${selectedSize}`,
         selectedColor,
@@ -166,8 +166,10 @@ const CustomPrintedZipperHoodies = ({ addToCart }) => {
 
             <Zoom>
               <img
-                src={mainImage}
-                alt={productDetails.name}
+                src={getCdnImage(productDetails.images[activeImageIndex], { width: 600, height: 450 })}
+                alt={`${productDetails.name} primary view`}
+                width="600"
+                height="450"
                 style={{
                   width: "100%",
                   borderRadius: "12px",
@@ -186,26 +188,30 @@ const CustomPrintedZipperHoodies = ({ addToCart }) => {
                 mt: 2,
                 overflowX: "auto",
                 "&::-webkit-scrollbar": { display: "none" },
+                scrollbarWidth: "none",
               }}
             >
-              {productDetails.extraImages.map((img, idx) => (
+              {productDetails.images.map((imageName, idx) => (
                 <Paper
                   key={idx}
-                  onClick={() => setMainImage(img)}
+                  onClick={() => setActiveImageIndex(idx)}
                   sx={{
                     p: 1,
                     borderRadius: "10px",
                     cursor: "pointer",
                     border:
-                      mainImage === img ? "2px solid #70CB97" : "2px solid transparent",
+                      activeImageIndex === idx ? "2px solid #70CB97" : "2px solid transparent",
                     "&:hover": { border: "2px solid #70CB97" },
                     flexShrink: 0,
                     transition: "all 0.2s",
                   }}
                 >
                   <img
-                    src={img}
-                    alt={`view ${idx + 1}`}
+                    src={getCdnImage(imageName, { width: 90, height: 90 })}
+                    alt={`${productDetails.name} thumbnail view ${idx + 1}`}
+                    width="90"
+                    height="90"
+                    loading="lazy"
                     style={{
                       width: "90px",
                       height: "90px",

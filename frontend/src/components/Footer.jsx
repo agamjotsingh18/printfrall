@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Box, Typography, Snackbar, Alert } from "@mui/material";
 import { FaInstagram, FaEnvelope, FaFacebookF, FaLinkedinIn, FaPinterestP, FaPhoneAlt, FaYoutube } from "react-icons/fa";
-import logo from "../assets/long-white.svg";
+import { getCdnImage } from "../utils/imageLoader";
 import "../styles/Footer.css";
 
 const Footer = () => {
@@ -69,10 +69,9 @@ const Footer = () => {
   return (
     <Box className="footer" aria-label="Footer">
       <Box className="footer-container">
-        {/* Logo Section with Tagline */}
         <Box className="footer-logo-container">
           <img 
-            src={logo} 
+            src={getCdnImage("long-white.svg")} 
             alt="PrintfrAll Logo" 
             className="footer-logo"   
             width="160" 
@@ -82,7 +81,6 @@ const Footer = () => {
           <Typography className="footer-tagline">Your Printing Partner</Typography>
         </Box>
 
-        {/* Our Company */}
         <Box className="footer-column" aria-label="Company information">
           <Typography className="footer-heading" aria-label="Company section heading">Our Company</Typography>
           <a href="/about" aria-label="About us page">About us</a>
@@ -90,7 +88,6 @@ const Footer = () => {
           <a href="/blog" aria-label="Blog page">Blog</a>
         </Box>
 
-        {/* Important Links */}
         <Box className="footer-column" aria-label="Important legal links">
           <Typography className="footer-heading" aria-label="Important links section heading">Important Links</Typography>
           <a href="/privacy-policy" aria-label="Privacy policy page">Privacy Policy</a>
@@ -98,7 +95,6 @@ const Footer = () => {
           <a href="/terms-conditions" aria-label="Terms and conditions page">Terms & Conditions</a>
         </Box>
 
-        {/* Contact Info & Social Media */}
         <Box className="footer-column contact-info" aria-label="Contact information">
           <Typography className="footer-heading" aria-label="Contact section heading">Contact</Typography>
           <Box className="contact-item">
@@ -124,7 +120,6 @@ const Footer = () => {
           </Box>
         </Box>
 
-        {/* Newsletter Section */}
         <Box className="footer-column newsletter-column" aria-label="Newsletter subscription">
           <Typography className="footer-heading" aria-label="Newsletter section heading">Subscribe to our Newsletter</Typography>
           <form className="newsletter-form" onSubmit={handleSubscribe} aria-label="Newsletter subscription form">
@@ -168,12 +163,10 @@ const Footer = () => {
         </Box>
       </Box>
 
-      {/* Copyright Section */}
       <Typography className="footer-text" aria-label="Copyright information">
         © {new Date().getFullYear()} <a href="/" className="footer-brand" aria-label="PrintfrAll home page">PrintfrAll</a>. All rights reserved.
       </Typography>
 
-      {/* Fixed Snackbar configuration */}
       <Snackbar
         open={snackbarOpen}
         autoHideDuration={4000}

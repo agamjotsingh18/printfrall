@@ -13,16 +13,9 @@ import {
   InputAdornment,
 } from "@mui/material";
 import { AddShoppingCart, Close, Waves, WorkspacePremium } from "@mui/icons-material";
+import { getCdnImage } from "../utils/imageLoader";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
-
-// ========== MAIN PRODUCT IMAGE ==========
-import mainImg from "../assets/wave-texture-diaries.png";
-
-// ========== EXTRA ANGLES ==========
-import img2 from "../assets/wave-texture-diaries.png";
-import img3 from "../assets/wave-texture-diaries-1.png";
-import img4 from "../assets/wave-texture-diaries-2.png";
 
 const WaveTextureDiaries = ({ addToCart }) => {
   // Pack options with quantity and price (based on 80-sheet default, adjust as needed)
@@ -36,17 +29,35 @@ const WaveTextureDiaries = ({ addToCart }) => {
   // Unit price is based on the 80-sheet option
   const unitPrice = 750;
 
+  const productDetails = {
+    name: "Ripple Textured Notebook",
+    description:
+      "A standout business notebook featuring high-definition digital printing on both covers. Designed for corporate branding and professional note-taking, the ripple texture adds a distinctive tactile layer to your daily brainstorming.",
+    features: [
+      "Custom Digital Printing on both front and back covers",
+      "Nano Dot & Chic White textured softcover finishes",
+      "80 Sheets (160 pages) of premium 90 GSM NS Maplitho paper",
+      "Perfect-bound design for a sleek, professional appearance",
+      "Available in classic A5 business size",
+      "Ideal for onboarding kits, client gifts, and giveaways",
+      "Order from as low as 1 unit",
+    ],
+    sizes: ["80 Sheets"],
+    finishes: ["Nano Dot Textured", "Chic White Textured", "Linen Textured"],
+    images: [
+      "wave-texture-diaries.png",
+      "wave-texture-diaries-1.png",
+      "wave-texture-diaries-2.png"
+    ],
+    tags: ["Digital Printed", "Ripple Texture", "Branded"],
+  };
+
   const [selectedOption, setSelectedOption] = useState(packOptions[0]);
   const [customQuantity, setCustomQuantity] = useState(1);
   const [selectedSheets, setSelectedSheets] = useState("80 Sheets");
   const [selectedFinish, setSelectedFinish] = useState("Nano Dot Textured");
-  const [mainImage, setMainImage] = useState(mainImg);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
-
-  // const priceMapping = {
-  //   "40 Sheets": 600,
-  //   "80 Sheets": 750,
-  // };
 
   const getTotalPrice = () => {
     if (selectedOption.value === "Custom") {
@@ -64,32 +75,12 @@ const WaveTextureDiaries = ({ addToCart }) => {
     }
   };
 
-  const productDetails = {
-    name: "Ripple Textured Notebook",
-    image: mainImg,
-    description:
-      "A standout business notebook featuring high-definition digital printing on both covers. Designed for corporate branding and professional note-taking, the ripple texture adds a distinctive tactile layer to your daily brainstorming.",
-    features: [
-      "Custom Digital Printing on both front and back covers",
-      "Nano Dot & Chic White textured softcover finishes",
-      "80 Sheets (160 pages) of premium 90 GSM NS Maplitho paper",
-      "Perfect-bound design for a sleek, professional appearance",
-      "Available in classic A5 business size",
-      "Ideal for onboarding kits, client gifts, and giveaways",
-      "Order from as low as 1 unit",
-    ],
-    sizes: ["80 Sheets"],
-    finishes: ["Nano Dot Textured", "Chic White Textured", "Linen Textured"],
-    extraImages: [img2, img3, img4],
-    tags: ["Digital Printed", "Ripple Texture", "Branded"],
-  };
-
   const handleAddToCart = () => {
     let item;
     if (selectedOption.value === "Custom") {
       item = {
-        name: "Ripple Textured Notebook",
-        image: mainImg,
+        name: productDetails.name,
+        image: getCdnImage(productDetails.images[0], { width: 150, height: 150 }),
         description: productDetails.description,
         features: productDetails.features,
         tags: productDetails.tags,
@@ -102,7 +93,11 @@ const WaveTextureDiaries = ({ addToCart }) => {
       };
     } else {
       item = {
-        ...productDetails,
+        name: productDetails.name,
+        image: getCdnImage(productDetails.images[0], { width: 150, height: 150 }),
+        description: productDetails.description,
+        features: productDetails.features,
+        tags: productDetails.tags,
         selectedSize: selectedOption.label,
         selectedMaterial: `${selectedSheets} | ${selectedFinish}`,
         selectedSheets,
@@ -149,8 +144,10 @@ const WaveTextureDiaries = ({ addToCart }) => {
 
             <Zoom>
               <img
-                src={mainImage}
-                alt={productDetails.name}
+                src={getCdnImage(productDetails.images[activeImageIndex], { width: 600, height: 450 })}
+                alt={`${productDetails.name} primary view`}
+                width="600"
+                height="450"
                 style={{
                   width: "100%",
                   borderRadius: "12px",
@@ -169,26 +166,30 @@ const WaveTextureDiaries = ({ addToCart }) => {
                 mt: 2,
                 overflowX: "auto",
                 "&::-webkit-scrollbar": { display: "none" },
+                scrollbarWidth: "none",
               }}
             >
-              {productDetails.extraImages.map((img, idx) => (
+              {productDetails.images.map((imageName, idx) => (
                 <Paper
                   key={idx}
-                  onClick={() => setMainImage(img)}
+                  onClick={() => setActiveImageIndex(idx)}
                   sx={{
                     p: 1,
                     borderRadius: "10px",
                     cursor: "pointer",
                     border:
-                      mainImage === img ? "2px solid #70CB97" : "2px solid transparent",
+                      activeImageIndex === idx ? "2px solid #70CB97" : "2px solid transparent",
                     "&:hover": { border: "2px solid #70CB97" },
                     flexShrink: 0,
                     transition: "all 0.2s",
                   }}
                 >
                   <img
-                    src={img}
-                    alt={`view ${idx + 1}`}
+                    src={getCdnImage(imageName, { width: 90, height: 90 })}
+                    alt={`${productDetails.name} thumbnail view ${idx + 1}`}
+                    width="90"
+                    height="90"
+                    loading="lazy"
                     style={{
                       width: "90px",
                       height: "90px",
@@ -325,7 +326,10 @@ const WaveTextureDiaries = ({ addToCart }) => {
             {productDetails.sizes.map((size, idx) => (
               <Paper
                 key={idx}
-                onClick={() => setSelectedSheets(size)}
+                onClick={() => {
+                  setSelectedSheets(size);
+                  setActiveImageIndex(0);
+                }}
                 sx={{
                   p: 1.5,
                   px: 2.5,
@@ -359,7 +363,10 @@ const WaveTextureDiaries = ({ addToCart }) => {
             {productDetails.finishes.map((finish, idx) => (
               <Paper
                 key={idx}
-                onClick={() => setSelectedFinish(finish)}
+                onClick={() => {
+                  setSelectedFinish(finish);
+                  setActiveImageIndex(0);
+                }}
                 sx={{
                   p: 1.5,
                   px: 2.5,
@@ -411,6 +418,7 @@ const WaveTextureDiaries = ({ addToCart }) => {
         </Grid>
       </Grid>
 
+      {/* Snackbar */}
       <Snackbar
         open={snackbarOpen}
         autoHideDuration={3000}

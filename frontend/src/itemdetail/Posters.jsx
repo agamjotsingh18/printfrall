@@ -19,16 +19,9 @@ import {
   PhotoSizeSelectActual,
   Inventory,
 } from "@mui/icons-material";
+import { getCdnImage } from "../utils/imageLoader";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
-
-// Asset paths kept exactly as requested
-import posterImg from "../assets/poster.png";
-import posterImg2 from "../assets/poster-1.png";
-import posterImg3 from "../assets/poster-11.png";
-import posterImg4 from "../assets/poster-2.png";
-import posterImg5 from "../assets/poster-3.png";
-import posterImg6 from "../assets/poster-4.png";
 
 const Posters = ({ addToCart }) => {
   // Size options
@@ -50,45 +43,47 @@ const Posters = ({ addToCart }) => {
     { name: "Matte", desc: "Zero-glare, rich texture" },
   ];
 
-  // Product features (for specifications panel)
-  const productFeatures = [
-    "High‑resolution digital printing (CMYK)",
-    "Vivid colours with sharp detail and smooth gradients",
-    "Choice of 170 GSM (lightweight) or 220 GSM (premium) paper",
-    "Glossy or matte finish – perfect for any environment",
-    "Standard sizes: A4, A3, and A3+ (12x18 in)",
-    "Suitable for indoor and outdoor applications",
-    "Ideal for branding, events, home decor, and retail displays",
-  ];
+  const productDetails = {
+    name: "Standard Posters",
+    description:
+      "Simple to design, impossible to ignore. Our posters are printed on long-lasting material designed to imprint a long‑lasting memory — perfect for marketing your brand or decorating your space.",
+    features: [
+      "High‑resolution digital printing (CMYK)",
+      "Vivid colours with sharp detail and smooth gradients",
+      "Choice of 170 GSM (lightweight) or 220 GSM (premium) paper",
+      "Glossy or matte finish – perfect for any environment",
+      "Standard sizes: A4, A3, and A3+ (12x18 in)",
+      "Suitable for indoor and outdoor applications",
+      "Ideal for branding, events, home decor, and retail displays",
+    ],
+    images: [
+      "poster.png",
+      "poster-1.png",
+      "poster-11.png",
+      "poster-2.png",
+      "poster-3.png",
+      "poster-4.png"
+    ],
+  };
 
   // State
   const [selectedSize, setSelectedSize] = useState(sizeOptions[1]); // A3 default
   const [selectedMaterial, setSelectedMaterial] = useState(materialOptions[0]);
   const [selectedFinish, setSelectedFinish] = useState(finishOptions[0]);
-  const [mainImage, setMainImage] = useState(posterImg);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   // Price calculation
   const totalPrice = selectedSize.basePrice + selectedMaterial.premium;
 
-  // Thumbnails array
-  const thumbnailImages = [
-    posterImg,
-    posterImg2,
-    posterImg3,
-    posterImg4,
-    posterImg5,
-    posterImg6,
-  ];
-
   const handleAddToCart = () => {
     const item = {
-      name: "Standard Poster",
+      name: productDetails.name,
       size: selectedSize.label,
       material: `${selectedMaterial.name} (${selectedFinish.name})`,
       price: totalPrice,
       quantity: 1,
-      image: mainImage,
+      image: getCdnImage(productDetails.images[0], { width: 150, height: 150 }),
     };
     addToCart(item);
     setSnackbarOpen(true);
@@ -153,8 +148,10 @@ const Posters = ({ addToCart }) => {
 
             <Zoom>
               <img
-                src={mainImage}
-                alt="Poster Preview"
+                src={getCdnImage(productDetails.images[activeImageIndex], { width: 600, height: 450 })}
+                alt={`${productDetails.name} primary view`}
+                width="600"
+                height="450"
                 style={{
                   width: "100%",
                   borderRadius: "12px",
@@ -172,26 +169,30 @@ const Posters = ({ addToCart }) => {
                 mt: 2,
                 overflowX: "auto",
                 "&::-webkit-scrollbar": { display: "none" },
+                scrollbarWidth: "none",
               }}
             >
-              {thumbnailImages.map((image, index) => (
+              {productDetails.images.map((imageName, index) => (
                 <Paper
                   key={index}
-                  onClick={() => setMainImage(image)}
+                  onClick={() => setActiveImageIndex(index)}
                   sx={{
                     p: 1,
                     borderRadius: "12px",
                     cursor: "pointer",
                     border:
-                      mainImage === image ? "2px solid #70CB97" : "1px solid #e0e7ed",
+                      activeImageIndex === index ? "2px solid #70CB97" : "1px solid #e0e7ed",
                     flexShrink: 0,
                     transition: "all 0.2s",
                     "&:hover": { transform: "translateY(-2px)" },
                   }}
                 >
                   <img
-                    src={image}
-                    alt={`View ${index + 1}`}
+                    src={getCdnImage(imageName, { width: 80, height: 80 })}
+                    alt={`${productDetails.name} thumbnail view ${index + 1}`}
+                    width="80"
+                    height="80"
+                    loading="lazy"
                     style={{
                       width: "80px",
                       height: "80px",
@@ -205,7 +206,7 @@ const Posters = ({ addToCart }) => {
           </Paper>
         </Grid>
 
-        {/* Right Side: Customization */}
+        {/* Right Side: Details */}
         <Grid item xs={12} md={6}>
           <Typography
             variant="h4"
@@ -216,7 +217,7 @@ const Posters = ({ addToCart }) => {
               fontSize: { xs: "1.8rem", md: "2.5rem" },
             }}
           >
-            Standard Posters
+            {productDetails.name}
           </Typography>
 
           <Box sx={{ display: "flex", alignItems: "baseline", gap: 2, flexWrap: "wrap", mb: 1 }}>
@@ -229,14 +230,12 @@ const Posters = ({ addToCart }) => {
           </Box>
 
           <Typography variant="body1" sx={{ mb: 3, color: "#1e2a32", lineHeight: 1.6 }}>
-            Simple to design, impossible to ignore. Our posters are printed on long-lasting material
-            designed to imprint a long‑lasting memory — perfect for marketing your brand or
-            decorating your space.
+            {productDetails.description}
           </Typography>
 
           <Divider sx={{ mb: 3 }} />
 
-          {/* Size Selection (pill‑shaped) */}
+          {/* Size Selection */}
           <Typography
             variant="h6"
             sx={{
@@ -278,7 +277,7 @@ const Posters = ({ addToCart }) => {
             ))}
           </Box>
 
-          {/* Material Selection (pill‑shaped) */}
+          {/* Material Selection */}
           <Typography
             variant="h6"
             sx={{ fontWeight: 600, mb: 2, color: "#19485D", fontSize: "1.1rem" }}
@@ -289,7 +288,10 @@ const Posters = ({ addToCart }) => {
             {materialOptions.map((mat) => (
               <Paper
                 key={mat.name}
-                onClick={() => setSelectedMaterial(mat)}
+                onClick={() => {
+                  setSelectedMaterial(mat);
+                  setActiveImageIndex(0);
+                }}
                 sx={{
                   flex: 1,
                   p: 1.5,
@@ -318,7 +320,7 @@ const Posters = ({ addToCart }) => {
             ))}
           </Box>
 
-          {/* Finish Selection (pill‑shaped) */}
+          {/* Finish Selection */}
           <Typography
             variant="h6"
             sx={{ fontWeight: 600, mb: 2, color: "#19485D", fontSize: "1.1rem" }}
@@ -371,7 +373,7 @@ const Posters = ({ addToCart }) => {
             <Typography variant="subtitle1" sx={{ fontWeight: 700, mb: 2, color: "#19485D" }}>
               Printing Specifications:
             </Typography>
-            {productFeatures.map((feature, i) => (
+            {productDetails.features.map((feature, i) => (
               <Box key={i} sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
                 <Inventory sx={{ fontSize: 16, color: "#70CB97" }} />
                 <Typography variant="body2" sx={{ color: "#5a6e7a" }}>

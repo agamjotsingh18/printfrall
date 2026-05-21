@@ -13,17 +13,9 @@ import {
   InputAdornment,
 } from "@mui/material";
 import { AddShoppingCart, Close, AdsClick, TabletMac } from "@mui/icons-material";
+import { getCdnImage } from "../utils/imageLoader";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
-
-// ========== MAIN PEN IMAGE ==========
-import mainImg from "../assets/stylus-pen.png";
-
-// ========== EXTRA ANGLES ==========
-import img2 from "../assets/stylus-pen.png";
-import img3 from "../assets/stylus-pen-1.png";
-import img4 from "../assets/stylus-pen-2.png";
-import img5 from "../assets/stylus-pen-3.png";
 
 const StylusPen = ({ addToCart }) => {
   // Predefined pack options with total prices
@@ -36,10 +28,34 @@ const StylusPen = ({ addToCart }) => {
 
   const unitPrice = 150; // Price per single pen
 
+  const productDetails = {
+    name: "Stylus Pen",
+    description:
+      "A sensitive and precise digital tool designed for the modern professional. This ultra-fine 1.5mm point tip provides an accurate and superior writing experience across all your touch-screen devices.",
+    features: [
+      "Ultra-Fine 1.5mm point tip for precision",
+      "Works on all capacitive touch screen devices",
+      "Sleek design with a durable stainless steel body",
+      "Durable and resistant nib - No lag or slip",
+      "Compact, lightweight, and portable with pocket clip",
+      "Perfect for multi-touch dependent smartphone/tablet apps",
+      "Safe and easy for users of all ages",
+    ],
+    sizes: ["Single", "Pack of 3", "Pack of 10"],
+    colors: ["Sleek Black", "Stainless Steel"],
+    images: [
+      "stylus-pen.png",
+      "stylus-pen-1.png",
+      "stylus-pen-2.png",
+      "stylus-pen-3.png"
+    ],
+    tags: ["High Precision", "Universal", "Metal Body"],
+  };
+
   const [selectedOption, setSelectedOption] = useState(packOptions[0]);
   const [customQuantity, setCustomQuantity] = useState(1);
   const [selectedColor, setSelectedColor] = useState("Sleek Black");
-  const [mainImage, setMainImage] = useState(mainImg);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   // Calculate total price
@@ -63,11 +79,11 @@ const StylusPen = ({ addToCart }) => {
     let item;
     if (selectedOption.value === "Custom") {
       item = {
-        name: "Stylus Pen",
-        image: mainImg,
-        description: stylusDetails.description,
-        features: stylusDetails.features,
-        tags: stylusDetails.tags,
+        name: productDetails.name,
+        image: getCdnImage(productDetails.images[0], { width: 150, height: 150 }),
+        description: productDetails.description,
+        features: productDetails.features,
+        tags: productDetails.tags,
         selectedSize: `${customQuantity} pens`,
         selectedMaterial: selectedColor,
         selectedColor,
@@ -76,7 +92,11 @@ const StylusPen = ({ addToCart }) => {
       };
     } else {
       item = {
-        ...stylusDetails,
+        name: productDetails.name,
+        image: getCdnImage(productDetails.images[0], { width: 150, height: 150 }),
+        description: productDetails.description,
+        features: productDetails.features,
+        tags: productDetails.tags,
         selectedSize: selectedOption.label,
         selectedMaterial: selectedColor,
         selectedColor,
@@ -86,26 +106,6 @@ const StylusPen = ({ addToCart }) => {
     }
     addToCart(item);
     setSnackbarOpen(true);
-  };
-
-  const stylusDetails = {
-    name: "Stylus Pen",
-    image: mainImg,
-    description:
-      "A sensitive and precise digital tool designed for the modern professional. This ultra-fine 1.5mm point tip provides an accurate and superior writing experience across all your touch-screen devices.",
-    features: [
-      "Ultra-Fine 1.5mm point tip for precision",
-      "Works on all capacitive touch screen devices",
-      "Sleek design with a durable stainless steel body",
-      "Durable and resistant nib - No lag or slip",
-      "Compact, lightweight, and portable with pocket clip",
-      "Perfect for multi-touch dependent smartphone/tablet apps",
-      "Safe and easy for users of all ages",
-    ],
-    sizes: ["Single", "Pack of 3", "Pack of 10"],
-    colors: ["Sleek Black", "Stainless Steel"],
-    extraImages: [img2, img3, img4, img5],
-    tags: ["High Precision", "Universal", "Metal Body"],
   };
 
   const handleCloseSnackbar = () => setSnackbarOpen(false);
@@ -124,7 +124,7 @@ const StylusPen = ({ addToCart }) => {
             }}
           >
             <Box sx={{ display: "flex", gap: 1, mb: 2 }}>
-              {stylusDetails.tags.map((tag, idx) => (
+              {productDetails.tags.map((tag, idx) => (
                 <Chip
                   key={idx}
                   label={tag}
@@ -148,8 +148,10 @@ const StylusPen = ({ addToCart }) => {
 
             <Zoom>
               <img
-                src={mainImage}
-                alt={stylusDetails.name}
+                src={getCdnImage(productDetails.images[activeImageIndex], { width: 600, height: 450 })}
+                alt={`${productDetails.name} primary view`}
+                width="600"
+                height="450"
                 style={{
                   width: "100%",
                   borderRadius: "12px",
@@ -168,26 +170,30 @@ const StylusPen = ({ addToCart }) => {
                 mt: 2,
                 overflowX: "auto",
                 "&::-webkit-scrollbar": { display: "none" },
+                scrollbarWidth: "none",
               }}
             >
-              {stylusDetails.extraImages.map((img, idx) => (
+              {productDetails.images.map((imageName, idx) => (
                 <Paper
                   key={idx}
-                  onClick={() => setMainImage(img)}
+                  onClick={() => setActiveImageIndex(idx)}
                   sx={{
                     p: 1,
                     borderRadius: "10px",
                     cursor: "pointer",
                     border:
-                      mainImage === img ? "2px solid #70CB97" : "2px solid transparent",
+                      activeImageIndex === idx ? "2px solid #70CB97" : "2px solid transparent",
                     "&:hover": { border: "2px solid #70CB97" },
                     flexShrink: 0,
                     transition: "all 0.2s",
                   }}
                 >
                   <img
-                    src={img}
-                    alt={`view ${idx + 1}`}
+                    src={getCdnImage(imageName, { width: 90, height: 90 })}
+                    alt={`${productDetails.name} thumbnail view ${idx + 1}`}
+                    width="90"
+                    height="90"
+                    loading="lazy"
                     style={{
                       width: "90px",
                       height: "90px",
@@ -207,7 +213,7 @@ const StylusPen = ({ addToCart }) => {
             variant="h4"
             sx={{ fontWeight: 700, mb: 1, color: "#19485D", fontSize: { xs: "1.8rem", md: "2.5rem" } }}
           >
-            {stylusDetails.name}
+            {productDetails.name}
           </Typography>
 
           <Typography
@@ -221,7 +227,7 @@ const StylusPen = ({ addToCart }) => {
             variant="body1"
             sx={{ mb: 3, color: "#1e2a32", lineHeight: 1.6 }}
           >
-            {stylusDetails.description}
+            {productDetails.description}
           </Typography>
 
           <Typography
@@ -231,7 +237,7 @@ const StylusPen = ({ addToCart }) => {
             Technical Highlights:
           </Typography>
           <Box component="ul" sx={{ ml: 2, mb: 3, listStyleType: "none", p: 0 }}>
-            {stylusDetails.features.map((feature, idx) => (
+            {productDetails.features.map((feature, idx) => (
               <li key={idx} style={{ marginBottom: "8px" }}>
                 <Typography variant="body1" sx={{ display: "flex", alignItems: "center", color: "#5a6e7a" }}>
                   <span
@@ -321,10 +327,13 @@ const StylusPen = ({ addToCart }) => {
             Color Options:
           </Typography>
           <Box sx={{ display: "flex", gap: 2, mb: 4, flexWrap: "wrap" }}>
-            {stylusDetails.colors.map((color, idx) => (
+            {productDetails.colors.map((color, idx) => (
               <Paper
                 key={idx}
-                onClick={() => setSelectedColor(color)}
+                onClick={() => {
+                  setSelectedColor(color);
+                  setActiveImageIndex(0);
+                }}
                 sx={{
                   p: 1.5,
                   px: 2.5,

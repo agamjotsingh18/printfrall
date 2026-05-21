@@ -25,8 +25,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import CloseIcon from "@mui/icons-material/Close";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import products from "../data/AllProducts";
-import logo from "../assets/long-white.svg";
-import logop from "../assets/long.png";
+import { getCdnImage } from "../utils/imageLoader";
 import { useTheme } from '@mui/material/styles';
 
 const Navbar = ({ cartItems, addToCart, removeFromCart }) => {
@@ -120,7 +119,7 @@ const Navbar = ({ cartItems, addToCart, removeFromCart }) => {
           aria-label="Go to home page"
         >
           <img 
-            src={logop} 
+            src={getCdnImage("long.png")} 
             alt="Printfrall Logo" 
             style={{ height: "20px", width: "auto", display: "block" }} 
             width="120"
@@ -313,7 +312,7 @@ const Navbar = ({ cartItems, addToCart, removeFromCart }) => {
             button
             component={Link}
             to="/about"
-            sx={{ "&:hover": { background: theme.palette.secondary.main, color: "white" } }}
+            sx={{ "&:hover": {記錄: theme.palette.secondary.main, color: "white" } }}
             onClick={() => setIsDrawerOpen(false)}
             aria-label="Learn more about us"
           >
@@ -344,7 +343,6 @@ const Navbar = ({ cartItems, addToCart, removeFromCart }) => {
           px: { xs: 2, sm: 3, md: 4, lg: 6 }
         }}>
           
-          {/* Logo Section - Wrapped inside Link to point back home */}
           <Box sx={{ display: "flex", alignItems: "center" }}>
             <Link 
               to="/" 
@@ -352,7 +350,7 @@ const Navbar = ({ cartItems, addToCart, removeFromCart }) => {
               aria-label="Go to home page"
             >
               <img 
-                src={logo} 
+                src={getCdnImage("long-white.svg")} 
                 alt="PrintfrAll Logo" 
                 width="120"
                 height="26" 
@@ -361,7 +359,6 @@ const Navbar = ({ cartItems, addToCart, removeFromCart }) => {
             </Link>
           </Box>
 
-          {/* Mobile Menu Icons */}
           <Box sx={{ display: { xs: "flex", md: "none" }, alignItems: "center", gap: 1 }}>
             <IconButton
               aria-label={`Cart with ${cartItems.length} items`}
@@ -384,7 +381,6 @@ const Navbar = ({ cartItems, addToCart, removeFromCart }) => {
             </IconButton>
           </Box>
 
-          {/* Desktop Navigation Links - Centered */}
           <Box
             sx={{
               display: { xs: "none", md: "flex" },
@@ -453,7 +449,6 @@ const Navbar = ({ cartItems, addToCart, removeFromCart }) => {
             </Button>
           </Box>
 
-          {/* Desktop Right Section */}
           <Box
             sx={{
               display: { xs: "none", md: "flex" },

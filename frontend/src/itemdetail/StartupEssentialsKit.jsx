@@ -38,48 +38,31 @@ import {
   Build,
   VerifiedUser,
 } from "@mui/icons-material";
+import { getCdnImage } from "../utils/imageLoader";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
 import { motion } from "framer-motion";
-
-// ========== MAIN KIT IMAGE ==========
-import startupEssentialsKitImg from "../assets/startup-kit-1.png";
-
-// ========== EXTRA ANGLES (generate with DALL·E prompts below) ==========
-import extraImg1 from "../assets/startup-kit-2.png";
-import extraImg2 from "../assets/startup-kit-3.png";
-import extraImg3 from "../assets/startup-kit-4.png";
-// import extraImg4 from "../assets/startup-kit-4-bookmarks.png";
-// import extraImg5 from "../assets/startup-kit-5-closeup.png";
-
-// ========== INCLUDED ITEMS ==========
-import matteFinishDiaryImg from "../assets/matte-finish-diaries.png";
-import stylusPenImg from "../assets/stylus-pen.png";
-import customBookmarksImg from "../assets/thank-you-card.png";
-import a5StickerSheetImg from "../assets/sticker.png";
-import standardMugImg from "../assets/mug.png";
-import thankYouCardImg from "../assets/thank-you-card.png";
 
 // ========== TESTIMONIALS ==========
 const testimonials = [
   {
     name: "Kavya Singh",
-    role: "Co-founder, BrewStart",
-    avatar: "https://randomuser.me/api/portraits/women/10.jpg",
+    role: "Co-founder, Kreofill",
+    avatar: "testimonial-kavya.png", // Updated to ImageKit path
     text: "The Startup Essentials Kit gave our team everything we needed to look professional. The mug and diary are daily favourites.",
     rating: 5,
   },
   {
     name: "Rajat Verma",
-    role: "Founder, CodeCanvas",
-    avatar: "https://randomuser.me/api/portraits/men/11.jpg",
+    role: "Founder, Logivolve",
+    avatar: "testimonial-rajat.png", // Updated to ImageKit path
     text: "Great value for money. The stylus pen and bookmarks are clever additions. Highly recommended for early-stage startups.",
     rating: 4,
   },
   {
     name: "Meera Iyer",
-    role: "Marketing Lead, GrowthStack",
-    avatar: "https://randomuser.me/api/portraits/women/12.jpg",
+    role: "Marketing Lead, OnyxPack",
+    avatar: "testimonial-meera.png", // Updated to ImageKit path
     text: "We ordered 20 kits for our team offsite. Everyone loved the branded stickers and thank you cards. Will order again.",
     rating: 5,
   },
@@ -87,58 +70,61 @@ const testimonials = [
 
 const StartupEssentialsKit = ({ addToCart }) => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [mainImage, setMainImage] = useState(startupEssentialsKitImg);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [lightboxOpen, setLightboxOpen] = useState(false);
-  const [lightboxIndex, setLightboxIndex] = useState(0);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   const kitDetails = {
     name: "Startup Essentials Kit",
-    image: startupEssentialsKitImg,
     price: 1800,
     description:
       "Everything a growing startup needs to make a great impression, featuring practical and professional items for your team and clients.",
     items: [
       {
         name: "Matte Finish Diary",
-        image: matteFinishDiaryImg,
+        image: "matte-finish-diaries.png",
         description: "Sleek professional notebook with premium matte cover",
         price: 350,
       },
       {
         name: "Stylus Pen",
-        image: stylusPenImg,
+        image: "stylus-pen.png",
         description: "Dual-purpose stylus and ballpoint pen",
         price: 200,
       },
       {
         name: "Custom Bookmarks",
-        image: customBookmarksImg,
+        image: "thank-you-card.png",
         description: "Personalized bookmarks with your branding",
         price: 100,
       },
       {
         name: "A5 Sticker Sheet",
-        image: a5StickerSheetImg,
+        image: "sticker.png",
         description: "Branded stickers for packaging and promotions",
         price: 150,
       },
       {
         name: "Standard Mug",
-        image: standardMugImg,
+        image: "mug.png",
         description: "Classic ceramic mug with print area",
         price: 300,
       },
       {
         name: "Thank You Card",
-        image: thankYouCardImg,
+        image: "thank-you-card.png",
         description: "Elegant cards for client appreciation",
         price: 50,
       },
     ],
     tags: ["Practical", "Professional", "Versatile", "Branded"],
-    extraImages: [extraImg1, extraImg2, extraImg3],
+    images: [
+      "startup-kit-1.png",
+      "startup-kit-2.png",
+      "startup-kit-3.png",
+      "startup-kit-4.png"
+    ],
     highlights: [
       {
         icon: "🚀",
@@ -179,27 +165,21 @@ const StartupEssentialsKit = ({ addToCart }) => {
     warranty: "6 months against manufacturing defects",
   };
 
-  const allImages = [kitDetails.image, ...kitDetails.extraImages];
-
   const handleAddToCart = () => {
     addToCart({
-      ...kitDetails,
+      name: kitDetails.name,
+      image: getCdnImage(kitDetails.images[0], { width: 150, height: 150 }),
+      price: kitDetails.price,
+      description: kitDetails.description,
+      tags: kitDetails.tags,
       type: "Startup Essentials Kit",
+      quantity: 1,
     });
     setSnackbarOpen(true);
   };
 
   const handleCloseSnackbar = () => {
     setSnackbarOpen(false);
-  };
-
-  const openLightbox = (index) => {
-    setLightboxIndex(index);
-    setLightboxOpen(true);
-  };
-
-  const closeLightbox = () => {
-    setLightboxOpen(false);
   };
 
   return (
@@ -289,7 +269,7 @@ const StartupEssentialsKit = ({ addToCart }) => {
 
             {/* Main Image with Zoom */}
             <Box
-              onClick={() => openLightbox(allImages.indexOf(mainImage))}
+              onClick={() => setLightboxOpen(true)}
               sx={{ cursor: "pointer" }}
             >
               <Zoom zoomMargin={40}>
@@ -302,8 +282,10 @@ const StartupEssentialsKit = ({ addToCart }) => {
                   }}
                 >
                   <img
-                    src={mainImage}
-                    alt={kitDetails.name}
+                    src={getCdnImage(kitDetails.images[activeImageIndex], { width: 600, height: 450 })}
+                    alt={`${kitDetails.name} primary view`}
+                    width="600"
+                    height="450"
                     style={{
                       width: "100%",
                       height: "auto",
@@ -328,24 +310,27 @@ const StartupEssentialsKit = ({ addToCart }) => {
                 scrollbarWidth: "none",
               }}
             >
-              {allImages.map((img, idx) => (
+              {kitDetails.images.map((imageName, idx) => (
                 <Paper
                   key={idx}
-                  onClick={() => setMainImage(img)}
+                  onClick={() => setActiveImageIndex(idx)}
                   sx={{
                     p: 1,
                     borderRadius: 2,
                     cursor: "pointer",
                     border:
-                      mainImage === img ? "2px solid #70CB97" : "1px solid #e2e8f0",
+                      activeImageIndex === idx ? "2px solid #70CB97" : "1px solid #e2e8f0",
                     "&:hover": { border: "2px solid #70CB97" },
                     flexShrink: 0,
                     transition: "all 0.2s",
                   }}
                 >
                   <img
-                    src={img}
-                    alt={`view ${idx + 1}`}
+                    src={getCdnImage(imageName, { width: 80, height: 80 })}
+                    alt={`${kitDetails.name} thumbnail view ${idx + 1}`}
+                    width="80"
+                    height="80"
+                    loading="lazy"
                     style={{
                       width: "80px",
                       height: "80px",
@@ -357,10 +342,10 @@ const StartupEssentialsKit = ({ addToCart }) => {
               ))}
             </Box>
 
-            {/* Lightbox Dialog - Fixed */}
+            {/* Lightbox Dialog */}
             <Dialog
               open={lightboxOpen}
-              onClose={closeLightbox}
+              onClose={() => setLightboxOpen(false)}
               maxWidth="lg"
               fullWidth
               scroll="paper"
@@ -383,7 +368,7 @@ const StartupEssentialsKit = ({ addToCart }) => {
                 }}
               >
                 <MuiIconButton
-                  onClick={closeLightbox}
+                  onClick={() => setLightboxOpen(false)}
                   sx={{
                     position: "absolute",
                     top: 16,
@@ -397,8 +382,8 @@ const StartupEssentialsKit = ({ addToCart }) => {
                   <Close />
                 </MuiIconButton>
                 <img
-                  src={allImages[lightboxIndex]}
-                  alt="Full size"
+                  src={getCdnImage(kitDetails.images[activeImageIndex], { width: 1024, height: 768 })}
+                  alt={`${kitDetails.name} full view`}
                   style={{
                     maxWidth: "90%",
                     maxHeight: "80vh",
@@ -540,8 +525,8 @@ const StartupEssentialsKit = ({ addToCart }) => {
                       >
                         <CardMedia
                           component="img"
-                          image={item.image}
-                          alt={item.name}
+                          image={getCdnImage(item.image, { width: 120, height: 100 })}
+                          alt={`${item.name} custom infrastructure preview`}
                           sx={{
                             width: "auto",
                             maxWidth: "100%",
@@ -675,7 +660,10 @@ const StartupEssentialsKit = ({ addToCart }) => {
                 }}
               >
                 <Stack direction="row" spacing={2} alignItems="center" mb={2}>
-                  <Avatar src={t.avatar} sx={{ width: 56, height: 56 }} />
+                  <Avatar 
+                    src={getCdnImage(t.avatar, { width: 56, height: 56 })} 
+                    sx={{ width: 56, height: 56 }} 
+                  />
                   <Box>
                     <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
                       {t.name}

@@ -19,14 +19,9 @@ import {
   Style,
   AutoAwesome,
 } from "@mui/icons-material";
+import { getCdnImage } from "../utils/imageLoader";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
-
-// Asset paths
-import metallicBusinessCardImg from "../assets/metallic-business-card.png";
-import metallicBusinessCardImg2 from "../assets/metallic-business-card-1.png";
-import metallicBusinessCardImg3 from "../assets/metallic-business-card-2.png";
-import metallicBusinessCardImg4 from "../assets/metallic-business-card-3.png";
 
 const MetallicBusinessCard = ({ addToCart }) => {
   const materialOptions = [
@@ -53,24 +48,23 @@ const MetallicBusinessCard = ({ addToCart }) => {
       "Quantity: Pack of 50 cards (MOQ)",
       "Perfect for luxury branding, executives, and premium events",
     ],
+    images: [
+      "metallic-business-card.png",
+      "metallic-business-card-1.png",
+      "metallic-business-card-2.png",
+      "metallic-business-card-3.png"
+    ],
     tags: ["Metal Stock", "Luxury Finish", "Premium Card"],
   };
 
   const [selectedMaterial, setSelectedMaterial] = useState(materialOptions[0]);
   const [selectedFinish, setSelectedFinish] = useState(finishOptions[0]);
-  const [mainImage, setMainImage] = useState(metallicBusinessCardImg);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   const moq = 50;
   const unitPrice = selectedMaterial.price;
   const totalPrice = unitPrice * moq;
-
-  const thumbnailImages = [
-    metallicBusinessCardImg,
-    metallicBusinessCardImg2,
-    metallicBusinessCardImg3,
-    metallicBusinessCardImg4,
-  ];
 
   const handleAddToCart = () => {
     const item = {
@@ -80,7 +74,7 @@ const MetallicBusinessCard = ({ addToCart }) => {
       finish: selectedFinish.label,
       price: unitPrice,
       quantity: moq,
-      image: mainImage,
+      image: getCdnImage(cardDetails.images[0], { width: 150, height: 150 }),
     };
     addToCart(item);
     setSnackbarOpen(true);
@@ -136,8 +130,10 @@ const MetallicBusinessCard = ({ addToCart }) => {
 
             <Zoom>
               <img
-                src={mainImage}
-                alt="Metallic Business Card Preview"
+                src={getCdnImage(cardDetails.images[activeImageIndex], { width: 600, height: 450 })}
+                alt={`${cardDetails.name} primary view`}
+                width="600"
+                height="450"
                 style={{
                   width: "100%",
                   borderRadius: "12px",
@@ -156,26 +152,30 @@ const MetallicBusinessCard = ({ addToCart }) => {
                 mt: 2,
                 overflowX: "auto",
                 "&::-webkit-scrollbar": { display: "none" },
+                scrollbarWidth: "none",
               }}
             >
-              {thumbnailImages.map((img, idx) => (
+              {cardDetails.images.map((imageName, idx) => (
                 <Paper
                   key={idx}
-                  onClick={() => setMainImage(img)}
+                  onClick={() => setActiveImageIndex(idx)}
                   sx={{
                     p: 1,
                     borderRadius: "10px",
                     cursor: "pointer",
                     border:
-                      mainImage === img ? "2px solid #70CB97" : "2px solid transparent",
+                      activeImageIndex === idx ? "2px solid #70CB97" : "2px solid transparent",
                     "&:hover": { border: "2px solid #70CB97" },
                     flexShrink: 0,
                     transition: "all 0.2s",
                   }}
                 >
                   <img
-                    src={img}
-                    alt={`view ${idx + 1}`}
+                    src={getCdnImage(imageName, { width: 90, height: 90 })}
+                    alt={`${cardDetails.name} thumbnail view ${idx + 1}`}
+                    width="90"
+                    height="90"
+                    loading="lazy"
                     style={{
                       width: "90px",
                       height: "90px",

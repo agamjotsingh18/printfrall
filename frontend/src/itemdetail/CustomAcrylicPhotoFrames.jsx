@@ -19,16 +19,9 @@ import {
   DesktopWindows,
   Wallpaper,
 } from "@mui/icons-material";
+import { getCdnImage } from "../utils/imageLoader";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
-
-// Import your frame images – replace with real variants
-import customAcrylicPhotoFrameImg from "../assets/custom-acrylic-photo-frame.png";
-import customAcrylicPhotoFrameImg2 from "../assets/custom-acrylic-photo-frame-1.png";
-import customAcrylicPhotoFrameImg3 from "../assets/custom-acrylic-photo-frame-2.png";
-import customAcrylicPhotoFrameImg4 from "../assets/custom-acrylic-photo-frame-3.png";
-import customAcrylicPhotoFrameImg5 from "../assets/custom-acrylic-photo-frame-4.png";
-import customAcrylicPhotoFrameImg6 from "../assets/custom-acrylic-photo-frame-5.png";
 
 const CustomAcrylicPhotoFrames = ({ addToCart }) => {
   // Frame types (material + tech)
@@ -71,19 +64,19 @@ const CustomAcrylicPhotoFrames = ({ addToCart }) => {
   // State
   const [selectedType, setSelectedType] = useState(frameTypes[0]);
   const [selectedSize, setSelectedSize] = useState(sizeCategories[0]);
-  const [mainImage, setMainImage] = useState(customAcrylicPhotoFrameImg);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   // Price calculation
   const totalPrice = Math.round(selectedSize.basePrice * selectedType.priceMultiplier);
 
-  const thumbnailImages = [
-    customAcrylicPhotoFrameImg,
-    customAcrylicPhotoFrameImg2,
-    customAcrylicPhotoFrameImg3,
-    customAcrylicPhotoFrameImg4,
-    customAcrylicPhotoFrameImg5,
-    customAcrylicPhotoFrameImg6
+  const images = [
+    "custom-acrylic-photo-frame.png",
+    "custom-acrylic-photo-frame-1.png",
+    "custom-acrylic-photo-frame-2.png",
+    "custom-acrylic-photo-frame-3.png",
+    "custom-acrylic-photo-frame-4.png",
+    "custom-acrylic-photo-frame-5.png"
   ];
 
   const handleAddToCart = () => {
@@ -93,7 +86,7 @@ const CustomAcrylicPhotoFrames = ({ addToCart }) => {
       spec: `${selectedType.tech} | ${selectedType.back}`,
       price: totalPrice,
       quantity: 1,
-      image: mainImage,
+      image: getCdnImage(images[0], { width: 150, height: 150 }),
     };
     addToCart(item);
     setSnackbarOpen(true);
@@ -158,8 +151,10 @@ const CustomAcrylicPhotoFrames = ({ addToCart }) => {
 
             <Zoom>
               <img
-                src={mainImage}
+                src={getCdnImage(images[activeImageIndex], { width: 600, height: 450 })}
                 alt="Acrylic Frame Preview"
+                width="600"
+                height="450"
                 style={{
                   width: "100%",
                   borderRadius: "12px",
@@ -177,26 +172,30 @@ const CustomAcrylicPhotoFrames = ({ addToCart }) => {
                 mt: 2,
                 overflowX: "auto",
                 "&::-webkit-scrollbar": { display: "none" },
+                scrollbarWidth: "none",
               }}
             >
-              {thumbnailImages.map((image, index) => (
+              {images.map((imageName, index) => (
                 <Paper
                   key={index}
-                  onClick={() => setMainImage(image)}
+                  onClick={() => setActiveImageIndex(index)}
                   sx={{
                     p: 1,
                     borderRadius: "12px",
                     cursor: "pointer",
                     border:
-                      mainImage === image ? "2px solid #70CB97" : "1px solid #e0e7ed",
+                      activeImageIndex === index ? "2px solid #70CB97" : "1px solid #e0e7ed",
                     flexShrink: 0,
                     transition: "all 0.2s",
                     "&:hover": { transform: "translateY(-2px)" },
                   }}
                 >
                   <img
-                    src={image}
-                    alt={`View ${index + 1}`}
+                    src={getCdnImage(imageName, { width: 80, height: 80 })}
+                    alt={`View variant ${index + 1}`}
+                    width="80"
+                    height="80"
+                    loading="lazy"
                     style={{ width: "80px", height: "80px", objectFit: "cover", borderRadius: "8px" }}
                   />
                 </Paper>
@@ -236,7 +235,7 @@ const CustomAcrylicPhotoFrames = ({ addToCart }) => {
 
           <Divider sx={{ mb: 3 }} />
 
-          {/* Material Thickness & Tech (pill‑shaped) */}
+          {/* Material Thickness & Tech */}
           <Typography
             variant="h6"
             sx={{ fontWeight: 600, mb: 2, color: "#19485D", fontSize: "1.1rem" }}
@@ -276,7 +275,7 @@ const CustomAcrylicPhotoFrames = ({ addToCart }) => {
             ))}
           </Box>
 
-          {/* Size Selection (pill‑shaped) */}
+          {/* Size Selection */}
           <Typography
             variant="h6"
             sx={{ fontWeight: 600, mb: 2, color: "#19485D", fontSize: "1.1rem" }}

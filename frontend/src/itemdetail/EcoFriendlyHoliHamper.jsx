@@ -38,47 +38,41 @@ import {
   Build,
   VerifiedUser,
 } from "@mui/icons-material";
+import { getCdnImage } from "../utils/imageLoader";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
 import { motion } from "framer-motion";
 
-import mainImg from "../assets/eco-hamper.png";
-import extraImg1 from "../assets/eco-hamper-1.jpeg";
-import extraImg2 from "../assets/eco-hamper-2.png";
-
-import ecoKraftDiaryImg from "../assets/eco-kraft-cover-diaries.png";
-import kraftPenImg from "../assets/kraft-pen.png";
-import roundNeckTShirtImg from "../assets/round-neck-t-shirt.png";
-import holographicStickersImg from "../assets/holographic-stickers.png";
-
 const testimonials = [
-  { name: "Rohit Sharma", role: "CSR Lead, GreenFuture", avatar: "https://randomuser.me/api/portraits/men/16.jpg", text: "The eco‑friendly kit aligns perfectly with our sustainability goals. High quality and thoughtful.", rating: 5 },
-  { name: "Priya Desai", role: "Operations Manager, EcoCorp", avatar: "https://randomuser.me/api/portraits/women/17.jpg", text: "Our team loved the kraft diary and pen. A truly green gift.", rating: 5 },
-  { name: "Amit Khanna", role: "Founder, ZeroWaste Store", avatar: "https://randomuser.me/api/portraits/men/18.jpg", text: "The stickers were a hit! Great for branding and eco‑conscious gifting.", rating: 4 },
+  { name: "Rohit Sharma", role: "CSR Lead, BeenFuture", avatar: "testimonial-rohit.png", text: "The eco‑friendly kit aligns perfectly with our sustainability goals. High quality and thoughtful.", rating: 5 },
+  { name: "Priya Desai", role: "Operations Manager, EcoNorp", avatar: "testimonial-priya-d.png", text: "Our team loved the kraft diary and pen. A truly green gift.", rating: 5 },
+  { name: "Gurjoit Singh", role: "Founder, WasteGuard Store", avatar: "testimonial-gurjoit.png", text: "The stickers were a hit! Great for branding and eco‑conscious gifting.", rating: 4 },
 ];
 
 const EcoFriendlyHoliHamper = ({ addToCart }) => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [mainImage, setMainImage] = useState(mainImg);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [lightboxOpen, setLightboxOpen] = useState(false);
-  const [lightboxIndex, setLightboxIndex] = useState(0);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   const hamperDetails = {
     name: "Eco-Friendly Holi Hamper",
-    image: mainImg,
     price: 2000,
     description:
       "Celebrate Holi the green way with our Eco‑Friendly Hamper. Packed with sustainable products – an eco kraft diary, kraft pen, round neck t‑shirt, and holographic stickers – perfect for environmentally conscious corporate gifting.",
     items: [
-      { name: "Eco Kraft Cover Diary", image: ecoKraftDiaryImg, description: "Recycled paper notebook", price: 350 },
-      { name: "Kraft Pen", image: kraftPenImg, description: "Biodegradable pen", price: 150 },
-      { name: "Round Neck T-shirt", image: roundNeckTShirtImg, description: "100% organic cotton", price: 500 },
-      { name: "Holographic Stickers", image: holographicStickersImg, description: "Eco‑friendly vinyl stickers", price: 100 },
+      { name: "Eco Kraft Cover Diary", image: "eco-kraft-cover-diaries.png", description: "Recycled paper notebook", price: 350 },
+      { name: "Kraft Pen", image: "kraft-pen.png", description: "Biodegradable pen", price: 150 },
+      { name: "Round Neck T-shirt", image: "round-neck-t-shirt.png", description: "100% organic cotton", price: 500 },
+      { name: "Holographic Stickers", image: "holographic-stickers.png", description: "Eco‑friendly vinyl stickers", price: 100 },
     ],
     tags: ["Sustainable", "Eco‑Friendly", "Green Gifting"],
-    extraImages: [extraImg1, extraImg2],
+    images: [
+      "eco-hamper.png",
+      "eco-hamper-1.jpeg",
+      "eco-hamper-2.png"
+    ],
     highlights: [
       { icon: "🌱", title: "100% Eco‑Friendly", description: "All items made from recycled or biodegradable materials" },
       { icon: "♻️", title: "Zero Waste", description: "Plastic‑free packaging" },
@@ -101,15 +95,19 @@ const EcoFriendlyHoliHamper = ({ addToCart }) => {
     warranty: "6 months against manufacturing defects",
   };
 
-  const allImages = [hamperDetails.image, ...hamperDetails.extraImages];
-
   const handleAddToCart = () => {
-    addToCart({ ...hamperDetails, type: "Eco-Friendly Holi Hamper", quantity: 1 });
+    addToCart({
+      name: hamperDetails.name,
+      image: getCdnImage(hamperDetails.images[0], { width: 150, height: 150 }),
+      description: hamperDetails.description,
+      price: hamperDetails.price,
+      type: "Eco-Friendly Holi Hamper",
+      quantity: 1,
+    });
     setSnackbarOpen(true);
   };
+
   const handleCloseSnackbar = () => setSnackbarOpen(false);
-  const openLightbox = (index) => { setLightboxIndex(index); setLightboxOpen(true); };
-  const closeLightbox = () => setLightboxOpen(false);
 
   return (
     <Container maxWidth="xl" sx={{ py: 8, px: isMobile ? 2 : 4, backgroundColor: "#f8fafc" }}>
@@ -121,28 +119,47 @@ const EcoFriendlyHoliHamper = ({ addToCart }) => {
       </Box>
 
       <Grid container spacing={6}>
+        {/* Image Gallery */}
         <Grid item xs={12} md={6}>
           <Paper sx={{ p: 3, borderRadius: 4, boxShadow: "0px 20px 40px rgba(0,0,0,0.05)", bgcolor: "white", position: "relative" }}>
             <Chip label="Eco Certified" size="medium" sx={{ position: "absolute", top: 20, right: 20, zIndex: 2, fontWeight: 700, backgroundColor: "#70CB97", color: "white" }} />
-            <Box onClick={() => openLightbox(allImages.indexOf(mainImage))} sx={{ cursor: "pointer" }}>
-              <Zoom zoomMargin={40}><Box sx={{ borderRadius: 3, overflow: "hidden", boxShadow: "0 8px 24px rgba(0,0,0,0.1)", border: "1px solid #e2e8f0" }}><img src={mainImage} alt={hamperDetails.name} style={{ width: "100%", height: "auto", maxHeight: "500px", objectFit: "contain", display: "block", pointerEvents: "none" }} /></Box></Zoom>
+            <Box onClick={() => setLightboxOpen(true)} sx={{ cursor: "pointer" }}>
+              <Zoom zoomMargin={40}>
+                <Box sx={{ borderRadius: 3, overflow: "hidden", boxShadow: "0 8px 24px rgba(0,0,0,0.1)", border: "1px solid #e2e8f0" }}>
+                  <img 
+                    src={getCdnImage(hamperDetails.images[activeImageIndex], { width: 600, height: 450 })} 
+                    alt={`${hamperDetails.name} primary view`} 
+                    width="600"
+                    height="450"
+                    style={{ width: "100%", height: "auto", maxHeight: "500px", objectFit: "contain", display: "block" }} 
+                  />
+                </Box>
+              </Zoom>
             </Box>
-            <Box sx={{ display: "flex", gap: 2, mt: 3, overflowX: "auto" }}>
-              {allImages.map((img, idx) => (
-                <Paper key={idx} onClick={() => setMainImage(img)} sx={{ p: 1, borderRadius: 2, cursor: "pointer", border: mainImage === img ? "2px solid #70CB97" : "1px solid #e2e8f0", "&:hover": { border: "2px solid #70CB97" }, flexShrink: 0 }}>
-                  <img src={img} alt={`view ${idx + 1}`} style={{ width: "80px", height: "80px", borderRadius: "8px", objectFit: "cover" }} />
+            <Box sx={{ display: "flex", gap: 2, mt: 3, overflowX: "auto", "&::-webkit-scrollbar": { display: "none" }, scrollbarWidth: "none" }}>
+              {hamperDetails.images.map((imageName, idx) => (
+                <Paper key={idx} onClick={() => setActiveImageIndex(idx)} sx={{ p: 1, borderRadius: 2, cursor: "pointer", border: activeImageIndex === idx ? "2px solid #70CB97" : "1px solid #e2e8f0", "&:hover": { border: "2px solid #70CB97" }, flexShrink: 0 }}>
+                  <img 
+                    src={getCdnImage(imageName, { width: 80, height: 80 })} 
+                    alt={`${hamperDetails.name} thumbnail view ${idx + 1}`} 
+                    width="80"
+                    height="80"
+                    loading="lazy"
+                    style={{ width: "80px", height: "80px", borderRadius: "8px", objectFit: "cover" }} 
+                  />
                 </Paper>
               ))}
             </Box>
-            <Dialog open={lightboxOpen} onClose={closeLightbox} maxWidth="lg" fullWidth PaperProps={{ sx: { bgcolor: "rgba(0,0,0,0.9)" } }}>
+            <Dialog open={lightboxOpen} onClose={() => setLightboxOpen(false)} maxWidth="lg" fullWidth PaperProps={{ sx: { bgcolor: "rgba(0,0,0,0.9)" } }}>
               <DialogContent sx={{ p: 0, position: "relative", minHeight: "60vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                <MuiIconButton onClick={closeLightbox} sx={{ position: "absolute", top: 16, right: 16, color: "white", bgcolor: "rgba(0,0,0,0.5)" }}><Close /></MuiIconButton>
-                <img src={allImages[lightboxIndex]} alt="Full size" style={{ maxWidth: "90%", maxHeight: "80vh", borderRadius: "8px" }} />
+                <MuiIconButton onClick={() => setLightboxOpen(false)} sx={{ position: "absolute", top: 16, right: 16, color: "white", bgcolor: "rgba(0,0,0,0.5)", "&:hover": { bgcolor: "rgba(0,0,0,0.7)" } }}><Close /></MuiIconButton>
+                <img src={getCdnImage(hamperDetails.images[activeImageIndex], { width: 1000, height: 750 })} alt="Full size display" style={{ maxWidth: "90%", maxHeight: "80vh", borderRadius: "8px" }} />
               </DialogContent>
             </Dialog>
           </Paper>
         </Grid>
 
+        {/* Product Details */}
         <Grid item xs={12} md={6}>
           <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
             <Stack direction="row" justifyContent="space-between" alignItems="center" mb={3} flexWrap="wrap" gap={2}>
@@ -163,9 +180,14 @@ const EcoFriendlyHoliHamper = ({ addToCart }) => {
               <Grid container spacing={2}>
                 {hamperDetails.items.map((item, idx) => (
                   <Grid item xs={6} sm={4} key={idx}>
-                    <Card sx={{ height: "100%", display: "flex", flexDirection: "column", p: 2, borderRadius: 3, bgcolor: "#fff", border: "1px solid #e2e8f0", transition: "all 0.2s", "&:hover": { scale: 1.02 } }}>
+                    <Card sx={{ height: "100%", display: "flex", flexDirection: "column", p: 2, borderRadius: 3, bgcolor: "#fff", border: "1px solid #e2e8f0", transition: "all 0.2s", "&:hover": { scale: 1.02, boxShadow: "0px 8px 24px rgba(0,0,0,0.1)" } }}>
                       <Box sx={{ width: "100%", height: "100px", display: "flex", alignItems: "center", justifyContent: "center", mb: 2, bgcolor: "#f8fafc", borderRadius: 2 }}>
-                        <CardMedia component="img" image={item.image} alt={item.name} sx={{ width: "auto", maxWidth: "100%", height: "70%", objectFit: "contain" }} />
+                        <CardMedia 
+                          component="img" 
+                          image={getCdnImage(item.image, { width: 120, height: 100 })} 
+                          alt={item.name} 
+                          style={{ width: "auto", maxWidth: "100%", height: "70%", objectFit: "contain" }} 
+                        />
                       </Box>
                       <CardContent sx={{ p: 0, flexGrow: 1 }}>
                         <Typography variant="subtitle2" sx={{ fontWeight: 700, color: "#19485D" }}>{item.name}</Typography>
@@ -193,11 +215,32 @@ const EcoFriendlyHoliHamper = ({ addToCart }) => {
         </Grid>
       </Grid>
 
+      {/* Testimonials */}
       <Box sx={{ mt: 10, mb: 8 }}>
         <Typography variant="h3" sx={{ fontWeight: 800, mb: 5, textAlign: "center", color: "#19485D" }}>What Eco‑Conscious Leaders Say</Typography>
-        <Grid container spacing={4}>{testimonials.map((t, idx) => (<Grid item xs={12} md={4} key={idx}><Card sx={{ p: 3, borderRadius: 4, height: "100%", boxShadow: "0 8px 20px rgba(0,0,0,0.05)", border: "1px solid #e2e8f0" }}><Stack direction="row" spacing={2} alignItems="center" mb={2}><Avatar src={t.avatar} sx={{ width: 56, height: 56 }} /><Box><Typography variant="subtitle1" sx={{ fontWeight: 700 }}>{t.name}</Typography><Typography variant="body2" sx={{ color: "#64748b" }}>{t.role}</Typography></Box></Stack><Rating value={t.rating} readOnly sx={{ mb: 2, color: "#E7C727" }} /><Typography variant="body2" sx={{ fontStyle: "italic", color: "#334155" }}>“{t.text}”</Typography></Card></Grid>))}</Grid>
+        <Grid container spacing={4}>
+          {testimonials.map((t, idx) => (
+            <Grid item xs={12} md={4} key={idx}>
+              <Card sx={{ p: 3, borderRadius: 4, height: "100%", boxShadow: "0 8px 20px rgba(0,0,0,0.05)", border: "1px solid #e2e8f0" }}>
+                <Stack direction="row" spacing={2} alignItems="center" mb={2}>
+                  <Avatar 
+                    src={getCdnImage(t.avatar, { width: 56, height: 56 })} 
+                    sx={{ width: 56, height: 56 }} 
+                  />
+                  <Box>
+                    <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>{t.name}</Typography>
+                    <Typography variant="body2" sx={{ color: "#64748b" }}>{t.role}</Typography>
+                  </Box>
+                </Stack>
+                <Rating value={t.rating} readOnly sx={{ mb: 2, color: "#E7C727" }} />
+                <Typography variant="body2" sx={{ fontStyle: "italic", color: "#334155" }}>“{t.text}”</Typography>
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
       </Box>
 
+      {/* Highlights & Delivery */}
       <Box sx={{ mt: 6, p: { xs: 4, md: 6 }, bgcolor: "white", borderRadius: 4, boxShadow: "0 8px 32px rgba(0,0,0,0.05)", border: "1px solid #e2e8f0" }}>
         <Typography variant="h3" sx={{ fontWeight: 800, mb: 6, textAlign: "center", color: "#19485D" }}>Why Go Green with This Hamper?</Typography>
         <Grid container spacing={4}>{hamperDetails.highlights.map((feature, idx) => (<Grid item xs={12} sm={6} md={3} key={idx}><Box sx={{ p: 3, textAlign: "center", bgcolor: "#f8fafc", borderRadius: 3, border: "1px solid #e2e8f0", transition: "all 0.3s", "&:hover": { transform: "translateY(-5px)", borderColor: "#70CB97" } }}><Typography variant="h2" sx={{ mb: 2, fontSize: "3rem" }}>{feature.icon}</Typography><Typography variant="h6" sx={{ fontWeight: 700, mb: 1, color: "#19485D" }}>{feature.title}</Typography><Typography variant="body2" sx={{ color: "#64748b" }}>{feature.description}</Typography></Box></Grid>))}</Grid>

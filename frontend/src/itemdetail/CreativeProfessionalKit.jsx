@@ -38,49 +38,30 @@ import {
   Build,
   VerifiedUser,
 } from "@mui/icons-material";
+import { getCdnImage } from "../utils/imageLoader";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
 import { motion } from "framer-motion";
 
-// ========== MAIN KIT IMAGE ==========
-import creativeKitMainImg from "../assets/creative-kit-1.png";
-
-// ========== EXTRA ANGLES (generate with DALL·E prompts) ==========
-// import extraImg1 from "../assets/creative-kit-1.png";
-import extraImg2 from "../assets/creative-kit-2.png";
-import extraImg3 from "../assets/creative-kit-3.png";
-// import extraImg4 from "../assets/creative-kit-4-open.png";
-// import extraImg5 from "../assets/creative-kit-5-closeup.png";
-
-// ========== INCLUDED ITEMS ==========
-import eliteHorizonLaptopBagImg from "../assets/laptop-bag.png";
-import roundNeckTShirtImg from "../assets/round-neck-t-shirt.png";
-import leatherNotebookImg from "../assets/faux-leather-diaries.png";
-import steelBottleImg from "../assets/multicolor-steel-bottle.png";
-import adroitPenImg from "../assets/adroit-pen.png";
-import popSocketImg from "../assets/pop-socket.png";
-import stickerPackImg from "../assets/sticker.png";
-
-// ========== TESTIMONIALS ==========
 const testimonials = [
   {
     name: "Sneha Kapoor",
-    role: "Creative Director, Design Studio",
-    avatar: "https://randomuser.me/api/portraits/women/4.jpg",
+    role: "Creative Director, ZentrixKit",
+    avatar: "testimonial-sneha.png", 
     text: "The Creative Professional Kit is a game-changer. Every item is thoughtfully curated and built to last. My team loves them!",
     rating: 5,
   },
   {
     name: "Vikram Singh",
-    role: "Lead Designer, UI/UX Agency",
-    avatar: "https://randomuser.me/api/portraits/men/5.jpg",
+    role: "Lead Designer, NoveAura",
+    avatar: "testimonial-vikram.png", 
     text: "From the laptop bag to the notebook – everything screams quality. Highly recommended for any creative professional.",
     rating: 5,
   },
   {
     name: "Anjali Mehta",
     role: "Freelance Illustrator",
-    avatar: "https://randomuser.me/api/portraits/women/6.jpg",
+    avatar: "testimonial-anjali.png", 
     text: "The custom pop socket and sticker pack are my favourites. Great value for money!",
     rating: 4,
   },
@@ -88,64 +69,66 @@ const testimonials = [
 
 const CreativeProfessionalKit = ({ addToCart }) => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [mainImage, setMainImage] = useState(creativeKitMainImg);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [lightboxOpen, setLightboxOpen] = useState(false);
-  const [lightboxIndex, setLightboxIndex] = useState(0);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   const kitDetails = {
     name: "Creative Professional Kit",
-    image: creativeKitMainImg,
     price: 3000,
     description:
       "Premium collection for creative professionals featuring high-quality, design-forward items that inspire innovation and productivity in your daily workflow.",
     items: [
       {
         name: "Elite Horizon Laptop Bag",
-        image: eliteHorizonLaptopBagImg,
+        image: "laptop-bag.png",
         description: "Ergonomic backpack with dedicated laptop compartment",
         price: 1200,
       },
       {
         name: "Premium Round Neck T-Shirt",
-        image: roundNeckTShirtImg,
+        image: "round-neck-t-shirt.png",
         description: "100% cotton with custom artwork print",
         price: 600,
       },
       {
         name: "Genuine Leather Notebook",
-        image: leatherNotebookImg,
+        image: "faux-leather-diaries.png",
         description: "Handcrafted with premium leather cover",
         price: 500,
       },
       {
         name: "Stainless Steel Designer Bottle",
-        image: steelBottleImg,
+        image: "multicolor-steel-bottle.png",
         description: "750ml capacity with temperature retention",
         price: 800,
       },
       {
         name: "Executive Rollerball Pen",
-        image: adroitPenImg,
+        image: "adroit-pen.png",
         description: "Weighted, balanced writing instrument",
         price: 250,
       },
       {
         name: "Custom Mobile Pop Socket",
-        image: popSocketImg,
+        image: "pop-socket.png",
         description: "Personalizable grip with premium finish",
         price: 200,
       },
       {
         name: "Premium Sticker Pack",
-        image: stickerPackImg,
+        image: "sticker.png",
         description: "Set of 25 high-quality vinyl stickers",
         price: 150,
       },
     ],
     tags: ["Trendy", "Premium", "Designer", "Eco-Friendly"],
-    extraImages: [extraImg2, extraImg3],
+    images: [
+      "creative-kit-1.png",
+      "creative-kit-2.png",
+      "creative-kit-3.png"
+    ],
     highlights: [
       {
         icon: "🛡️",
@@ -185,27 +168,21 @@ const CreativeProfessionalKit = ({ addToCart }) => {
     warranty: "1 year against manufacturing defects on all items",
   };
 
-  const allImages = [kitDetails.image, ...kitDetails.extraImages];
-
   const handleAddToCart = () => {
     addToCart({
-      ...kitDetails,
+      name: kitDetails.name,
+      image: getCdnImage(kitDetails.images[0], { width: 150, height: 150 }),
+      price: kitDetails.price,
+      description: kitDetails.description,
+      tags: kitDetails.tags,
       type: "Creative Professional Kit",
+      quantity: 1,
     });
     setSnackbarOpen(true);
   };
 
   const handleCloseSnackbar = () => {
     setSnackbarOpen(false);
-  };
-
-  const openLightbox = (index) => {
-    setLightboxIndex(index);
-    setLightboxOpen(true);
-  };
-
-  const closeLightbox = () => {
-    setLightboxOpen(false);
   };
 
   return (
@@ -295,7 +272,7 @@ const CreativeProfessionalKit = ({ addToCart }) => {
 
             {/* Main Image with Zoom */}
             <Box
-              onClick={() => openLightbox(allImages.indexOf(mainImage))}
+              onClick={() => setLightboxOpen(true)}
               sx={{ cursor: "pointer" }}
             >
               <Zoom zoomMargin={40}>
@@ -308,22 +285,23 @@ const CreativeProfessionalKit = ({ addToCart }) => {
                   }}
                 >
                   <img
-                    src={mainImage}
-                    alt={kitDetails.name}
+                    src={getCdnImage(kitDetails.images[activeImageIndex], { width: 600, height: 450 })}
+                    alt={`${kitDetails.name} primary view`}
+                    width="600"
+                    height="450"
                     style={{
                       width: "100%",
                       height: "auto",
                       maxHeight: "500px",
                       objectFit: "contain",
                       display: "block",
-                      pointerEvents: "none", // Prevents Zoom from capturing clicks
+                      pointerEvents: "none",
                     }}
                   />
                 </Box>
               </Zoom>
             </Box>
 
-            {/* Thumbnail Gallery */}
             <Box
               sx={{
                 display: "flex",
@@ -334,24 +312,27 @@ const CreativeProfessionalKit = ({ addToCart }) => {
                 scrollbarWidth: "none",
               }}
             >
-              {allImages.map((img, idx) => (
+              {kitDetails.images.map((imageName, idx) => (
                 <Paper
                   key={idx}
-                  onClick={() => setMainImage(img)}
+                  onClick={() => setActiveImageIndex(idx)}
                   sx={{
                     p: 1,
                     borderRadius: 2,
                     cursor: "pointer",
                     border:
-                      mainImage === img ? "2px solid #70CB97" : "1px solid #e2e8f0",
+                      activeImageIndex === idx ? "2px solid #70CB97" : "1px solid #e2e8f0",
                     "&:hover": { border: "2px solid #70CB97" },
                     flexShrink: 0,
                     transition: "all 0.2s",
                   }}
                 >
                   <img
-                    src={img}
-                    alt={`view ${idx + 1}`}
+                    src={getCdnImage(imageName, { width: 80, height: 80 })}
+                    alt={`${kitDetails.name} thumbnail view ${idx + 1}`}
+                    width="80"
+                    height="80"
+                    loading="lazy"
                     style={{
                       width: "80px",
                       height: "80px",
@@ -363,10 +344,9 @@ const CreativeProfessionalKit = ({ addToCart }) => {
               ))}
             </Box>
 
-            {/* Lightbox Dialog - Fixed */}
             <Dialog
               open={lightboxOpen}
-              onClose={closeLightbox}
+              onClose={() => setLightboxOpen(false)}
               maxWidth="lg"
               fullWidth
               scroll="paper"
@@ -389,7 +369,7 @@ const CreativeProfessionalKit = ({ addToCart }) => {
                 }}
               >
                 <MuiIconButton
-                  onClick={closeLightbox}
+                  onClick={() => setLightboxOpen(false)}
                   sx={{
                     position: "absolute",
                     top: 16,
@@ -403,8 +383,8 @@ const CreativeProfessionalKit = ({ addToCart }) => {
                   <Close />
                 </MuiIconButton>
                 <img
-                  src={allImages[lightboxIndex]}
-                  alt="Full size"
+                  src={getCdnImage(kitDetails.images[activeImageIndex], { width: 1024, height: 768 })}
+                  alt={`${kitDetails.name} full view`}
                   style={{
                     maxWidth: "90%",
                     maxHeight: "80vh",
@@ -546,8 +526,8 @@ const CreativeProfessionalKit = ({ addToCart }) => {
                       >
                         <CardMedia
                           component="img"
-                          image={item.image}
-                          alt={item.name}
+                          image={getCdnImage(item.image, { width: 120, height: 100 })}
+                          alt={`${item.name} build preview`}
                           sx={{
                             width: "auto",
                             maxWidth: "100%",
@@ -658,7 +638,6 @@ const CreativeProfessionalKit = ({ addToCart }) => {
         </Grid>
       </Grid>
 
-      {/* Testimonials Section */}
       <Box sx={{ mt: 10, mb: 8 }}>
         <Typography
           variant="h3"
@@ -681,7 +660,10 @@ const CreativeProfessionalKit = ({ addToCart }) => {
                 }}
               >
                 <Stack direction="row" spacing={2} alignItems="center" mb={2}>
-                  <Avatar src={t.avatar} sx={{ width: 56, height: 56 }} />
+                  <Avatar 
+                    src={getCdnImage(t.avatar, { width: 56, height: 56 })} 
+                    sx={{ width: 56, height: 56 }} 
+                  />
                   <Box>
                     <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
                       {t.name}
@@ -701,7 +683,6 @@ const CreativeProfessionalKit = ({ addToCart }) => {
         </Grid>
       </Box>
 
-      {/* Highlights & Corporate Benefits */}
       <Box
         sx={{
           mt: 6,

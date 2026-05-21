@@ -38,44 +38,30 @@ import {
   Build,
   VerifiedUser,
 } from "@mui/icons-material";
+import { getCdnImage } from "../utils/imageLoader";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
 import { motion } from "framer-motion";
 
-// ========== MAIN HAMPER IMAGE ==========
-import mainImg from "../assets/color-splash-hamper.png";
-
-// ========== EXTRA ANGLES (generate with DALL·E prompts) ==========
-import extraImg1 from "../assets/color-splash-hamper-1.png";
-import extraImg2 from "../assets/color-splash-hamper-2.png";
-import extraImg3 from "../assets/color-splash-hamper-3.png";
-
-// ========== INCLUDED ITEMS ==========
-import fauxLeatherDiaryImg from "../assets/faux-leather-diaries.png";
-import scribblePenImg from "../assets/scribble-pen.png";
-import poloTShirtImg from "../assets/polo-t-shirt.png";
-import eliteLaptopBagImg from "../assets/laptop-bag.png";
-
-// ========== TESTIMONIALS ==========
 const testimonials = [
   {
     name: "Anjali Mehta",
-    role: "Event Manager, ColorFest",
-    avatar: "https://randomuser.me/api/portraits/women/13.jpg",
+    role: "Event Manager, ColoryFest",
+    avatar: "testimonial-anjali-m.png", // Updated to ImageKit path
     text: "The Color Splash Hamper was a huge hit at our Holi corporate event. High quality items, beautiful packaging.",
     rating: 5,
   },
   {
     name: "Vikram Seth",
-    role: "HR Head, CreativeZone",
-    avatar: "https://randomuser.me/api/portraits/men/14.jpg",
+    role: "HR Head, CreateYourZone",
+    avatar: "testimonial-vikram-s.png", // Updated to ImageKit path
     text: "Our team loved the polo t‑shirt and laptop bag. Excellent value for money.",
     rating: 4,
   },
   {
     name: "Neha Gupta",
-    role: "Founder, HoliGifts",
-    avatar: "https://randomuser.me/api/portraits/women/15.jpg",
+    role: "Founder, Jiknix",
+    avatar: "testimonial-neha-gup.png", // Updated to ImageKit path
     text: "Perfect gifting solution for clients. The diary and pen are elegant.",
     rating: 5,
   },
@@ -83,46 +69,49 @@ const testimonials = [
 
 const ColorSplashHamper = ({ addToCart }) => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [mainImage, setMainImage] = useState(mainImg);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [lightboxOpen, setLightboxOpen] = useState(false);
-  const [lightboxIndex, setLightboxIndex] = useState(0);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   const hamperDetails = {
     name: "Color Splash Hamper",
-    image: mainImg,
     price: 1500,
     description:
       "Brighten up your Holi celebrations with our vibrant Color Splash Hamper. Packed with high‑quality essentials – a faux leather diary, scribble pen, polo t‑shirt, and an elite laptop bag – perfect for employees, clients, and festive gifting.",
     items: [
       {
         name: "Faux Leather Diary",
-        image: fauxLeatherDiaryImg,
+        image: "faux-leather-diaries.png",
         description: "Premium notebook with 192 pages",
         price: 450,
       },
       {
         name: "Scribble Pen",
-        image: scribblePenImg,
+        image: "scribble-pen.png",
         description: "Smooth writing ballpoint pen",
         price: 150,
       },
       {
         name: "Polo T-shirt",
-        image: poloTShirtImg,
+        image: "polo-t-shirt.png",
         description: "Premium cotton polo with custom embroidery",
         price: 600,
       },
       {
         name: "Elite Horizon Laptop Bag",
-        image: eliteLaptopBagImg,
+        image: "laptop-bag.png",
         description: "Professional laptop bag with multiple compartments",
         price: 1200,
       },
     ],
     tags: ["Vibrant", "Festive", "Executive"],
-    extraImages: [extraImg1, extraImg2, extraImg3],
+    images: [
+      "color-splash-hamper.png",
+      "color-splash-hamper-1.png",
+      "color-splash-hamper-2.png",
+      "color-splash-hamper-3.png"
+    ],
     highlights: [
       {
         icon: "🎨",
@@ -161,11 +150,12 @@ const ColorSplashHamper = ({ addToCart }) => {
     warranty: "1 year against manufacturing defects",
   };
 
-  const allImages = [hamperDetails.image, ...hamperDetails.extraImages];
-
   const handleAddToCart = () => {
     addToCart({
-      ...hamperDetails,
+      name: hamperDetails.name,
+      image: getCdnImage(hamperDetails.images[0], { width: 150, height: 150 }),
+      description: hamperDetails.description,
+      price: hamperDetails.price,
       type: "Color Splash Hamper",
       quantity: 1,
     });
@@ -173,13 +163,6 @@ const ColorSplashHamper = ({ addToCart }) => {
   };
 
   const handleCloseSnackbar = () => setSnackbarOpen(false);
-
-  const openLightbox = (index) => {
-    setLightboxIndex(index);
-    setLightboxOpen(true);
-  };
-
-  const closeLightbox = () => setLightboxOpen(false);
 
   return (
     <Container maxWidth="xl" sx={{ py: 8, px: isMobile ? 2 : 4, backgroundColor: "#f8fafc" }}>
@@ -210,24 +193,37 @@ const ColorSplashHamper = ({ addToCart }) => {
         <Grid item xs={12} md={6}>
           <Paper sx={{ p: 3, borderRadius: 4, boxShadow: "0px 20px 40px rgba(0,0,0,0.05)", bgcolor: "white", position: "relative" }}>
             <Chip label="Festive Special" size="medium" sx={{ position: "absolute", top: 20, right: 20, zIndex: 2, fontWeight: 700, backgroundColor: "#70CB97", color: "white" }} />
-            <Box onClick={() => openLightbox(allImages.indexOf(mainImage))} sx={{ cursor: "pointer" }}>
+            <Box onClick={() => setLightboxOpen(true)} sx={{ cursor: "pointer" }}>
               <Zoom zoomMargin={40}>
                 <Box sx={{ borderRadius: 3, overflow: "hidden", boxShadow: "0 8px 24px rgba(0,0,0,0.1)", border: "1px solid #e2e8f0" }}>
-                  <img src={mainImage} alt={hamperDetails.name} style={{ width: "100%", height: "auto", maxHeight: "500px", objectFit: "contain", display: "block", pointerEvents: "none" }} />
+                  <img 
+                    src={getCdnImage(hamperDetails.images[activeImageIndex], { width: 600, height: 450 })} 
+                    alt={`${hamperDetails.name} primary view`} 
+                    width="600"
+                    height="450"
+                    style={{ width: "100%", height: "auto", maxHeight: "500px", objectFit: "contain", display: "block" }} 
+                  />
                 </Box>
               </Zoom>
             </Box>
-            <Box sx={{ display: "flex", gap: 2, mt: 3, overflowX: "auto", "&::-webkit-scrollbar": { display: "none" } }}>
-              {allImages.map((img, idx) => (
-                <Paper key={idx} onClick={() => setMainImage(img)} sx={{ p: 1, borderRadius: 2, cursor: "pointer", border: mainImage === img ? "2px solid #70CB97" : "1px solid #e2e8f0", "&:hover": { border: "2px solid #70CB97" }, flexShrink: 0 }}>
-                  <img src={img} alt={`view ${idx + 1}`} style={{ width: "80px", height: "80px", borderRadius: "8px", objectFit: "cover" }} />
+            <Box sx={{ display: "flex", gap: 2, mt: 3, overflowX: "auto", "&::-webkit-scrollbar": { display: "none" }, scrollbarWidth: "none" }}>
+              {hamperDetails.images.map((imageName, idx) => (
+                <Paper key={idx} onClick={() => setActiveImageIndex(idx)} sx={{ p: 1, borderRadius: 2, cursor: "pointer", border: activeImageIndex === idx ? "2px solid #70CB97" : "1px solid #e2e8f0", "&:hover": { border: "2px solid #70CB97" }, flexShrink: 0 }}>
+                  <img 
+                    src={getCdnImage(imageName, { width: 80, height: 80 })} 
+                    alt={`${hamperDetails.name} thumbnail view ${idx + 1}`} 
+                    width="80"
+                    height="80"
+                    loading="lazy"
+                    style={{ width: "80px", height: "80px", borderRadius: "8px", objectFit: "cover" }} 
+                  />
                 </Paper>
               ))}
             </Box>
-            <Dialog open={lightboxOpen} onClose={closeLightbox} maxWidth="lg" fullWidth scroll="paper" PaperProps={{ sx: { bgcolor: "rgba(0,0,0,0.9)" } }}>
+            <Dialog open={lightboxOpen} onClose={() => setLightboxOpen(false)} maxWidth="lg" fullWidth scroll="paper" PaperProps={{ sx: { bgcolor: "rgba(0,0,0,0.9)" } }}>
               <DialogContent sx={{ p: 0, position: "relative", minHeight: "60vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                <MuiIconButton onClick={closeLightbox} sx={{ position: "absolute", top: 16, right: 16, color: "white", bgcolor: "rgba(0,0,0,0.5)", "&:hover": { bgcolor: "rgba(0,0,0,0.7)" } }}><Close /></MuiIconButton>
-                <img src={allImages[lightboxIndex]} alt="Full size" style={{ maxWidth: "90%", maxHeight: "80vh", borderRadius: "8px" }} />
+                <MuiIconButton onClick={() => setLightboxOpen(false)} sx={{ position: "absolute", top: 16, right: 16, color: "white", bgcolor: "rgba(0,0,0,0.5)", "&:hover": { bgcolor: "rgba(0,0,0,0.7)" } }}><Close /></MuiIconButton>
+                <img src={getCdnImage(hamperDetails.images[activeImageIndex], { width: 1000, height: 750 })} alt="Full size display" style={{ maxWidth: "90%", maxHeight: "80vh", borderRadius: "8px" }} />
               </DialogContent>
             </Dialog>
           </Paper>
@@ -261,7 +257,12 @@ const ColorSplashHamper = ({ addToCart }) => {
                   <Grid item xs={6} sm={4} key={idx}>
                     <Card sx={{ height: "100%", display: "flex", flexDirection: "column", p: 2, borderRadius: 3, bgcolor: "#fff", border: "1px solid #e2e8f0", transition: "all 0.2s", "&:hover": { scale: 1.02, boxShadow: "0px 8px 24px rgba(0,0,0,0.1)" } }}>
                       <Box sx={{ width: "100%", height: "100px", display: "flex", alignItems: "center", justifyContent: "center", mb: 2, bgcolor: "#f8fafc", borderRadius: 2 }}>
-                        <CardMedia component="img" image={item.image} alt={item.name} sx={{ width: "auto", maxWidth: "100%", height: "70%", objectFit: "contain" }} />
+                        <CardMedia 
+                          component="img" 
+                          image={getCdnImage(item.image, { width: 120, height: 100 })} 
+                          alt={item.name} 
+                          style={{ width: "auto", maxWidth: "100%", height: "70%", objectFit: "contain" }} 
+                        />
                       </Box>
                       <CardContent sx={{ p: 0, flexGrow: 1 }}>
                         <Typography variant="subtitle2" sx={{ fontWeight: 700, color: "#19485D" }}>{item.name}</Typography>
@@ -311,7 +312,10 @@ const ColorSplashHamper = ({ addToCart }) => {
             <Grid item xs={12} md={4} key={idx}>
               <Card sx={{ p: 3, borderRadius: 4, height: "100%", boxShadow: "0 8px 20px rgba(0,0,0,0.05)", border: "1px solid #e2e8f0" }}>
                 <Stack direction="row" spacing={2} alignItems="center" mb={2}>
-                  <Avatar src={t.avatar} sx={{ width: 56, height: 56 }} />
+                  <Avatar 
+                    src={getCdnImage(t.avatar, { width: 56, height: 56 })} 
+                    sx={{ width: 56, height: 56 }} 
+                  />
                   <Box><Typography variant="subtitle1" sx={{ fontWeight: 700 }}>{t.name}</Typography><Typography variant="body2" sx={{ color: "#64748b" }}>{t.role}</Typography></Box>
                 </Stack>
                 <Rating value={t.rating} readOnly sx={{ mb: 2, color: "#E7C727" }} />

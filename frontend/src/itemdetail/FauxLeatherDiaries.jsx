@@ -13,16 +13,9 @@ import {
   InputAdornment,
 } from "@mui/material";
 import { AddShoppingCart, Close, AutoStories, WorkspacePremium } from "@mui/icons-material";
+import { getCdnImage } from "../utils/imageLoader";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
-
-// ========== MAIN PRODUCT IMAGE ==========
-import mainImg from "../assets/faux-leather-diaries.png";
-
-// ========== EXTRA ANGLES ==========
-import img2 from "../assets/faux-leather-diaries.png";
-import img3 from "../assets/faux-leather-diaries-1.png";
-import img4 from "../assets/faux-leather-diaries-2.png";
 
 const FauxLeatherDiaries = ({ addToCart }) => {
   // Pack options with quantity and price
@@ -38,7 +31,7 @@ const FauxLeatherDiaries = ({ addToCart }) => {
   const [selectedOption, setSelectedOption] = useState(packOptions[0]);
   const [customQuantity, setCustomQuantity] = useState(1);
   const [selectedColor, setSelectedColor] = useState("Classic Brown");
-  const [mainImage, setMainImage] = useState(mainImg);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   const getTotalPrice = () => {
@@ -59,7 +52,6 @@ const FauxLeatherDiaries = ({ addToCart }) => {
 
   const productDetails = {
     name: "Faux Leather Diaries",
-    image: mainImg,
     description:
       "A premium PU leather-bound business journal designed for the professional on the move. Exceptional non-bleeding paper and a thoughtful hard-cover design ensure an effortless, fatigue-free writing experience.",
     features: [
@@ -73,7 +65,11 @@ const FauxLeatherDiaries = ({ addToCart }) => {
     ],
     sizes: ["A5"],
     colors: ["Classic Brown", "Professional Black", "Deep Navy"],
-    extraImages: [img2, img3, img4],
+    images: [
+      "faux-leather-diaries.png",
+      "faux-leather-diaries-1.png",
+      "faux-leather-diaries-2.png"
+    ],
     tags: ["High-Quality Paper", "Balanced Perfection", "Corporate Gift"],
   };
 
@@ -82,7 +78,7 @@ const FauxLeatherDiaries = ({ addToCart }) => {
     if (selectedOption.value === "Custom") {
       item = {
         name: "Faux Leather Diaries",
-        image: mainImg,
+        image: getCdnImage(productDetails.images[0], { width: 150, height: 150 }),
         description: productDetails.description,
         features: productDetails.features,
         tags: productDetails.tags,
@@ -94,7 +90,11 @@ const FauxLeatherDiaries = ({ addToCart }) => {
       };
     } else {
       item = {
-        ...productDetails,
+        name: productDetails.name,
+        image: getCdnImage(productDetails.images[0], { width: 150, height: 150 }),
+        description: productDetails.description,
+        features: productDetails.features,
+        tags: productDetails.tags,
         selectedSize: selectedOption.label,
         selectedMaterial: selectedColor,
         selectedColor,
@@ -140,8 +140,10 @@ const FauxLeatherDiaries = ({ addToCart }) => {
 
             <Zoom>
               <img
-                src={mainImage}
-                alt={productDetails.name}
+                src={getCdnImage(productDetails.images[activeImageIndex], { width: 600, height: 450 })}
+                alt={`${productDetails.name} primary view`}
+                width="600"
+                height="450"
                 style={{
                   width: "100%",
                   borderRadius: "12px",
@@ -160,26 +162,30 @@ const FauxLeatherDiaries = ({ addToCart }) => {
                 mt: 2,
                 overflowX: "auto",
                 "&::-webkit-scrollbar": { display: "none" },
+                scrollbarWidth: "none",
               }}
             >
-              {productDetails.extraImages.map((img, idx) => (
+              {productDetails.images.map((imageName, idx) => (
                 <Paper
                   key={idx}
-                  onClick={() => setMainImage(img)}
+                  onClick={() => setActiveImageIndex(idx)}
                   sx={{
                     p: 1,
                     borderRadius: "10px",
                     cursor: "pointer",
                     border:
-                      mainImage === img ? "2px solid #70CB97" : "2px solid transparent",
+                      activeImageIndex === idx ? "2px solid #70CB97" : "2px solid transparent",
                     "&:hover": { border: "2px solid #70CB97" },
                     flexShrink: 0,
                     transition: "all 0.2s",
                   }}
                 >
                   <img
-                    src={img}
-                    alt={`view ${idx + 1}`}
+                    src={getCdnImage(imageName, { width: 90, height: 90 })}
+                    alt={`${productDetails.name} thumbnail view ${idx + 1}`}
+                    width="90"
+                    height="90"
+                    loading="lazy"
                     style={{
                       width: "90px",
                       height: "90px",

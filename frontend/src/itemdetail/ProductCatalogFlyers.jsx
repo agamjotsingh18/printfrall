@@ -18,15 +18,9 @@ import {
   Inventory,
   AutoAwesome,
 } from "@mui/icons-material";
+import { getCdnImage } from "../utils/imageLoader";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
-
-// Asset paths kept exactly as requested
-import productCatalogFlyerImg from "../assets/product-catalog-flyer.png";
-import productCatalogFlyerImg2 from "../assets/product-catalog-flyer-1.png";
-import productCatalogFlyerImg3 from "../assets/product-catalog-flyer-2.png";
-import productCatalogFlyerImg4 from "../assets/product-catalog-flyer-3.png";
-import productCatalogFlyerImg5 from "../assets/product-catalog-flyer-4.png";
 
 const ProductCatalogFlyers = ({ addToCart }) => {
   // Product configuration data
@@ -39,26 +33,37 @@ const ProductCatalogFlyers = ({ addToCart }) => {
   const paperOptions = ["170 GSM Coated", "300 GSM Coated"];
   const pageCounts = [8, 12, 16, 24, 32, 64];
 
-  // Product features (for specifications panel)
-  const productFeatures = [
-    "Full‑colour multicolor printing (CMYK)",
-    "Premium coated paper – 170 GSM or 300 GSM",
-    "Choice of staple, wire‑o, or perfect binding",
-    "Multiple standard sizes: A4, A5, DL, 6×6, 8×8",
-    "Page counts from 8 to 64 pages",
-    "Ideal for product catalogues, portfolios, lookbooks",
-    "Minimum order: 5 units – perfect for small brands",
-  ];
+  const productDetails = {
+    name: "Custom Product Catalogs",
+    description:
+      "Showcase your products with impact. Our multicolor catalogs are tailored for clothing, electronics, and portfolios, using premium coated paper and professional binding styles.",
+    features: [
+      "Full‑colour multicolor printing (CMYK)",
+      "Premium coated paper – 170 GSM or 300 GSM",
+      "Choice of staple, wire‑o, or perfect binding",
+      "Multiple standard sizes: A4, A5, DL, 6×6, 8×8",
+      "Page counts from 8 to 64 pages",
+      "Ideal for product catalogues, portfolios, lookbooks",
+      "Minimum order: 5 units – perfect for small brands",
+    ],
+    images: [
+      "product-catalog-flyer.png",
+      "product-catalog-flyer-1.png",
+      "product-catalog-flyer-2.png",
+      "product-catalog-flyer-3.png",
+      "product-catalog-flyer-4.png"
+    ]
+  };
 
   // State
   const [selectedSize, setSelectedSize] = useState("A4");
   const [selectedBinding, setSelectedBinding] = useState("Staple Binding");
   const [selectedPaper, setSelectedPaper] = useState("170 GSM Coated");
   const [selectedPages, setSelectedPages] = useState(16);
-  const [mainImage, setMainImage] = useState(productCatalogFlyerImg);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
-  // Pricing logic (original)
+  // Pricing logic
   const calculatePrice = () => {
     let base = selectedPaper.includes("300") ? 150 : 100;
     if (selectedBinding === "Perfect Binding") base += 50;
@@ -67,15 +72,6 @@ const ProductCatalogFlyers = ({ addToCart }) => {
   const unitPrice = calculatePrice();
   const moq = 5;
   const totalPrice = unitPrice * moq;
-
-  // Thumbnails array
-  const thumbnailImages = [
-    productCatalogFlyerImg,
-    productCatalogFlyerImg2,
-    productCatalogFlyerImg3,
-    productCatalogFlyerImg4,
-    productCatalogFlyerImg5,
-  ];
 
   const handleAddToCart = () => {
     const item = {
@@ -86,7 +82,7 @@ const ProductCatalogFlyers = ({ addToCart }) => {
       pages: selectedPages,
       price: unitPrice,
       quantity: moq,
-      image: mainImage,
+      image: getCdnImage(productDetails.images[0], { width: 150, height: 150 }),
     };
     addToCart(item);
     setSnackbarOpen(true);
@@ -151,8 +147,10 @@ const ProductCatalogFlyers = ({ addToCart }) => {
 
             <Zoom>
               <img
-                src={mainImage}
-                alt="Product Catalog Preview"
+                src={getCdnImage(productDetails.images[activeImageIndex], { width: 600, height: 450 })}
+                alt={`${productDetails.name} primary view`}
+                width="600"
+                height="450"
                 style={{
                   width: "100%",
                   borderRadius: "12px",
@@ -170,26 +168,30 @@ const ProductCatalogFlyers = ({ addToCart }) => {
                 mt: 2,
                 overflowX: "auto",
                 "&::-webkit-scrollbar": { display: "none" },
+                scrollbarWidth: "none",
               }}
             >
-              {thumbnailImages.map((image, index) => (
+              {productDetails.images.map((imageName, index) => (
                 <Paper
                   key={index}
-                  onClick={() => setMainImage(image)}
+                  onClick={() => setActiveImageIndex(index)}
                   sx={{
                     p: 1,
                     borderRadius: "12px",
                     cursor: "pointer",
                     border:
-                      mainImage === image ? "2px solid #70CB97" : "1px solid #e0e7ed",
+                      activeImageIndex === index ? "2px solid #70CB97" : "1px solid #e0e7ed",
                     flexShrink: 0,
                     transition: "all 0.2s",
                     "&:hover": { transform: "translateY(-2px)" },
                   }}
                 >
                   <img
-                    src={image}
-                    alt={`View ${index + 1}`}
+                    src={getCdnImage(imageName, { width: 80, height: 80 })}
+                    alt={`${productDetails.name} thumbnail view ${index + 1}`}
+                    width="80"
+                    height="80"
+                    loading="lazy"
                     style={{
                       width: "80px",
                       height: "80px",
@@ -214,7 +216,7 @@ const ProductCatalogFlyers = ({ addToCart }) => {
               fontSize: { xs: "1.8rem", md: "2.5rem" },
             }}
           >
-            Custom Product Catalogs
+            {productDetails.name}
           </Typography>
 
           <Box sx={{ display: "flex", alignItems: "baseline", gap: 2, flexWrap: "wrap", mb: 1 }}>
@@ -227,13 +229,12 @@ const ProductCatalogFlyers = ({ addToCart }) => {
           </Box>
 
           <Typography variant="body1" sx={{ mb: 3, color: "#1e2a32", lineHeight: 1.6 }}>
-            Showcase your products with impact. Our multicolor catalogs are tailored for clothing,
-            electronics, and portfolios, using premium coated paper and professional binding styles.
+            {productDetails.description}
           </Typography>
 
           <Divider sx={{ mb: 3 }} />
 
-          {/* Format Size (pill‑shaped) */}
+          {/* Format Size */}
           <Typography
             variant="h6"
             sx={{ fontWeight: 600, mb: 2, color: "#19485D", fontSize: "1.1rem" }}
@@ -244,7 +245,10 @@ const ProductCatalogFlyers = ({ addToCart }) => {
             {sizes.map((size) => (
               <Paper
                 key={size}
-                onClick={() => setSelectedSize(size)}
+                onClick={() => {
+                  setSelectedSize(size);
+                  setActiveImageIndex(0);
+                }}
                 sx={{
                   p: 1,
                   px: 2.5,
@@ -267,7 +271,7 @@ const ProductCatalogFlyers = ({ addToCart }) => {
             ))}
           </Box>
 
-          {/* Page Count (pill‑shaped) */}
+          {/* Page Count */}
           <Typography
             variant="h6"
             sx={{ fontWeight: 600, mb: 2, color: "#19485D", fontSize: "1.1rem" }}
@@ -301,7 +305,7 @@ const ProductCatalogFlyers = ({ addToCart }) => {
             ))}
           </Box>
 
-          {/* Binding Style (pill‑shaped cards) */}
+          {/* Binding Style */}
           <Typography
             variant="h6"
             sx={{ fontWeight: 600, mb: 2, color: "#19485D", fontSize: "1.1rem" }}
@@ -341,7 +345,7 @@ const ProductCatalogFlyers = ({ addToCart }) => {
             ))}
           </Box>
 
-          {/* Paper Thickness (pill‑shaped) */}
+          {/* Paper Thickness */}
           <Typography
             variant="h6"
             sx={{ fontWeight: 600, mb: 2, color: "#19485D", fontSize: "1.1rem" }}
@@ -389,7 +393,7 @@ const ProductCatalogFlyers = ({ addToCart }) => {
             <Typography variant="subtitle1" sx={{ fontWeight: 700, mb: 2, color: "#19485D" }}>
               Catalog Specifications:
             </Typography>
-            {productFeatures.map((feature, i) => (
+            {productDetails.features.map((feature, i) => (
               <Box key={i} sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
                 <Inventory sx={{ fontSize: 16, color: "#70CB97" }} />
                 <Typography variant="body2" sx={{ color: "#5a6e7a" }}>

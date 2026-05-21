@@ -10,18 +10,9 @@ import {
   IconButton,
 } from "@mui/material";
 import { AddShoppingCart, Close } from "@mui/icons-material";
+import { getCdnImage } from "../utils/imageLoader";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
-
-// ========== YOUR GENERATED CLEAR LABEL IMAGES ==========
-import mainImg from "../assets/clear-label-1.png";
-import img2 from "../assets/clear-label-2.png";
-import img3 from "../assets/clear-label-3.png";
-import img4 from "../assets/clear-label-4.png";
-import img5 from "../assets/clear-label-5.png";
-import img6 from "../assets/clear-label-6.png";
-import img7 from "../assets/clear-label-7.png";
-// ======================================================
 
 const ClearLabels = ({ addToCart }) => {
   const priceMapping = {
@@ -32,12 +23,11 @@ const ClearLabels = ({ addToCart }) => {
 
   const defaultMaterial = "Standard Clear";
   const [selectedMaterial, setSelectedMaterial] = useState(defaultMaterial);
-  const [mainImage, setMainImage] = useState(mainImg);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   const details = {
     name: "Clear Labels",
-    image: mainImg,
     description:
       "Our Clear Labels are perfect for adding a sleek and transparent look to your branding. These labels are durable and ideal for both indoor and outdoor use.",
     features: [
@@ -47,14 +37,24 @@ const ClearLabels = ({ addToCart }) => {
       "Available in multiple materials",
     ],
     materials: ["Standard Clear", "Premium Clear", "Recycled Clear"],
-    extraImages: [img2, img3, img4, img5, img6, img7],
+    images: [
+      "clear-label-1.png",
+      "clear-label-2.png",
+      "clear-label-3.png",
+      "clear-label-4.png",
+      "clear-label-5.png",
+      "clear-label-6.png",
+      "clear-label-7.png"
+    ],
   };
 
   const price = priceMapping[selectedMaterial];
 
   const handleAddToCart = () => {
     const item = {
-      ...details,
+      name: details.name,
+      image: getCdnImage(details.images[0], { width: 150, height: 150 }),
+      description: details.description,
       selectedMaterial,
       price,
       quantity: 1,
@@ -80,8 +80,10 @@ const ClearLabels = ({ addToCart }) => {
           >
             <Zoom>
               <img
-                src={mainImage}
-                alt={details.name}
+                src={getCdnImage(details.images[activeImageIndex], { width: 600, height: 450 })}
+                alt={`${details.name} primary view`}
+                width="600"
+                height="450"
                 style={{
                   width: "100%",
                   borderRadius: "12px",
@@ -99,26 +101,30 @@ const ClearLabels = ({ addToCart }) => {
                 mt: 2,
                 overflowX: "auto",
                 "&::-webkit-scrollbar": { display: "none" },
+                scrollbarWidth: "none",
               }}
             >
-              {details.extraImages.map((img, idx) => (
+              {details.images.map((imageName, idx) => (
                 <Paper
                   key={idx}
-                  onClick={() => setMainImage(img)}
+                  onClick={() => setActiveImageIndex(idx)}
                   sx={{
                     p: 1,
                     borderRadius: "10px",
                     cursor: "pointer",
                     border:
-                      mainImage === img ? "2px solid #70CB97" : "2px solid transparent",
+                      activeImageIndex === idx ? "2px solid #70CB97" : "2px solid transparent",
                     "&:hover": { border: "2px solid #70CB97" },
                     flexShrink: 0,
                     transition: "all 0.2s",
                   }}
                 >
                   <img
-                    src={img}
-                    alt={`view ${idx + 1}`}
+                    src={getCdnImage(imageName, { width: 90, height: 90 })}
+                    alt={`${details.name} thumbnail view ${idx + 1}`}
+                    width="90"
+                    height="90"
+                    loading="lazy"
                     style={{
                       width: "90px",
                       height: "90px",
@@ -205,7 +211,8 @@ const ClearLabels = ({ addToCart }) => {
                   border: "1px solid #e0e7ed",
                   transition: "all 0.2s",
                   "&:hover": {
-                    bgcolor: selectedMaterial === material ? "#5cb67f" : "#f0f9f3",
+                    backgroundColor:
+                      selectedMaterial === material ? "#5cb67f" : "#f0f9f3",
                     transform: "translateY(-2px)",
                   },
                 }}

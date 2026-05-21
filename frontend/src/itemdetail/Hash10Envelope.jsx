@@ -13,17 +13,9 @@ import {
   InputAdornment,
 } from "@mui/material";
 import { AddShoppingCart, Close, MarkEmailRead, WorkspacePremium } from "@mui/icons-material";
+import { getCdnImage } from "../utils/imageLoader";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
-
-// ========== MAIN PRODUCT IMAGE ==========
-import mainImg from "../assets/envelope-10-long.png";
-
-// ========== EXTRA ANGLES ==========
-import img2 from "../assets/envelope-10-long.png";
-import img3 from "../assets/envelope-10-long-1.png";
-import img4 from "../assets/envelope-10-long-2.png";
-import img5 from "../assets/envelope-10-long-3.png";
 
 const Hash10Envelope = ({ addToCart }) => {
   const priceMapping = {
@@ -34,7 +26,7 @@ const Hash10Envelope = ({ addToCart }) => {
 
   const defaultMaterial = "90 GSM Standard White";
   const [selectedMaterial, setSelectedMaterial] = useState(defaultMaterial);
-  const [mainImage, setMainImage] = useState(mainImg);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   // Custom quantity / pack options
@@ -69,7 +61,6 @@ const Hash10Envelope = ({ addToCart }) => {
 
   const productDetails = {
     name: "#10 Envelope (Long)",
-    image: mainImg,
     description:
       "Cater to your professional business needs with personalised #10 envelopes. These standard long-sized envelopes are printed using high-quality offset technology on durable 90 GSM paper, ensuring your correspondence makes a premium impression.",
     features: [
@@ -82,7 +73,12 @@ const Hash10Envelope = ({ addToCart }) => {
       "Compatible with standard business stationery",
     ],
     materials: ["90 GSM Standard White", "90 GSM Premium Ivory", "90 GSM Eco-Recycled"],
-    extraImages: [img2, img3, img4, img5],
+    images: [
+      "envelope-10-long.png",
+      "envelope-10-long-1.png",
+      "envelope-10-long-2.png",
+      "envelope-10-long-3.png"
+    ],
     tags: ["Business Standard", "Offset Printed", "90 GSM"],
   };
 
@@ -91,7 +87,7 @@ const Hash10Envelope = ({ addToCart }) => {
     if (selectedOption === "Custom") {
       item = {
         name: "#10 Envelope (Long)",
-        image: mainImg,
+        image: getCdnImage(productDetails.images[0], { width: 150, height: 150 }),
         description: productDetails.description,
         features: productDetails.features,
         tags: productDetails.tags,
@@ -103,7 +99,11 @@ const Hash10Envelope = ({ addToCart }) => {
     } else {
       const option = packOptions.find((opt) => opt.value === selectedOption);
       item = {
-        ...productDetails,
+        name: productDetails.name,
+        image: getCdnImage(productDetails.images[0], { width: 150, height: 150 }),
+        description: productDetails.description,
+        features: productDetails.features,
+        tags: productDetails.tags,
         selectedSize: option.label,
         selectedMaterial: selectedMaterial,
         price: Math.round(option.price),
@@ -148,8 +148,10 @@ const Hash10Envelope = ({ addToCart }) => {
 
             <Zoom>
               <img
-                src={mainImage}
-                alt={productDetails.name}
+                src={getCdnImage(productDetails.images[activeImageIndex], { width: 600, height: 450 })}
+                alt={`${productDetails.name} primary view`}
+                width="600"
+                height="450"
                 style={{
                   width: "100%",
                   borderRadius: "12px",
@@ -168,26 +170,30 @@ const Hash10Envelope = ({ addToCart }) => {
                 mt: 2,
                 overflowX: "auto",
                 "&::-webkit-scrollbar": { display: "none" },
+                scrollbarWidth: "none",
               }}
             >
-              {productDetails.extraImages.map((img, idx) => (
+              {productDetails.images.map((imageName, idx) => (
                 <Paper
                   key={idx}
-                  onClick={() => setMainImage(img)}
+                  onClick={() => setActiveImageIndex(idx)}
                   sx={{
                     p: 1,
                     borderRadius: "10px",
                     cursor: "pointer",
                     border:
-                      mainImage === img ? "2px solid #70CB97" : "2px solid transparent",
+                      activeImageIndex === idx ? "2px solid #70CB97" : "2px solid transparent",
                     "&:hover": { border: "2px solid #70CB97" },
                     flexShrink: 0,
                     transition: "all 0.2s",
                   }}
                 >
                   <img
-                    src={img}
-                    alt={`view ${idx + 1}`}
+                    src={getCdnImage(imageName, { width: 90, height: 90 })}
+                    alt={`${productDetails.name} thumbnail view ${idx + 1}`}
+                    width="90"
+                    height="90"
+                    loading="lazy"
                     style={{
                       width: "90px",
                       height: "90px",

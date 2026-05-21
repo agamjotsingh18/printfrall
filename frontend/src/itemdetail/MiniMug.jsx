@@ -11,17 +11,9 @@ import {
   Chip,
 } from "@mui/material";
 import { AddShoppingCart, Close, Coffee } from "@mui/icons-material";
+import { getCdnImage } from "../utils/imageLoader";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
-
-// ========== MAIN PRODUCT IMAGE ==========
-import mainImg from "../assets/mini-mug.png";
-
-// ========== EXTRA ANGLES ==========
-import img2 from "../assets/mini-mug.png";
-import img3 from "../assets/mini-mug-1.png";
-import img4 from "../assets/mini-mug-2.png";
-import img5 from "../assets/mini-mug-3.jpeg";
 
 const MiniMug = ({ addToCart }) => {
   const priceMapping = {
@@ -32,12 +24,11 @@ const MiniMug = ({ addToCart }) => {
 
   const defaultMaterial = "Ceramic";
   const [selectedMaterial, setSelectedMaterial] = useState(defaultMaterial);
-  const [mainImage, setMainImage] = useState(mainImg);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   const miniMugDetails = {
     name: "Photo Mini Mug",
-    image: mainImg,
     description:
       "Mini Mugs: Quick Sips, Big Impact. These compact ceramic mugs are designed for tea lovers and espresso enthusiasts who appreciate a sleek, personalized touch.",
     features: [
@@ -49,7 +40,12 @@ const MiniMug = ({ addToCart }) => {
       "Ideal for quick sips or unique gifting",
     ],
     materials: ["Ceramic", "Porcelain", "Stoneware"],
-    extraImages: [img2,img5, img3, img4],
+    images: [
+      "mini-mug.png",
+      "mini-mug-3.jpeg",
+      "mini-mug-1.png",
+      "mini-mug-2.png"
+    ],
     tags: ["Compact", "Custom Photo", "Eco-Friendly"],
   };
 
@@ -57,7 +53,11 @@ const MiniMug = ({ addToCart }) => {
 
   const handleAddToCart = () => {
     const item = {
-      ...miniMugDetails,
+      name: miniMugDetails.name,
+      image: getCdnImage(miniMugDetails.images[0], { width: 150, height: 150 }),
+      description: miniMugDetails.description,
+      features: miniMugDetails.features,
+      tags: miniMugDetails.tags,
       selectedMaterial,
       selectedSize: "175ml",
       price,
@@ -108,8 +108,10 @@ const MiniMug = ({ addToCart }) => {
 
             <Zoom>
               <img
-                src={mainImage}
-                alt={miniMugDetails.name}
+                src={getCdnImage(miniMugDetails.images[activeImageIndex], { width: 600, height: 450 })}
+                alt={`${miniMugDetails.name} primary view`}
+                width="600"
+                height="450"
                 style={{
                   width: "100%",
                   borderRadius: "12px",
@@ -128,26 +130,30 @@ const MiniMug = ({ addToCart }) => {
                 mt: 2,
                 overflowX: "auto",
                 "&::-webkit-scrollbar": { display: "none" },
+                scrollbarWidth: "none",
               }}
             >
-              {miniMugDetails.extraImages.map((img, idx) => (
+              {miniMugDetails.images.map((imageName, idx) => (
                 <Paper
                   key={idx}
-                  onClick={() => setMainImage(img)}
+                  onClick={() => setActiveImageIndex(idx)}
                   sx={{
                     p: 1,
                     borderRadius: "10px",
                     cursor: "pointer",
                     border:
-                      mainImage === img ? "2px solid #70CB97" : "2px solid transparent",
+                      activeImageIndex === idx ? "2px solid #70CB97" : "2px solid transparent",
                     "&:hover": { border: "2px solid #70CB97" },
                     flexShrink: 0,
                     transition: "all 0.2s",
                   }}
                 >
                   <img
-                    src={img}
-                    alt={`view ${idx + 1}`}
+                    src={getCdnImage(imageName, { width: 90, height: 90 })}
+                    alt={`${miniMugDetails.name} thumbnail view ${idx + 1}`}
+                    width="90"
+                    height="90"
+                    loading="lazy"
                     style={{
                       width: "90px",
                       height: "90px",

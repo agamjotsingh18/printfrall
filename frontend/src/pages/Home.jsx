@@ -7,7 +7,6 @@ const Home = ({ addToCart }) => {
   return (
     <>
       <Hero />
-      {/* Pass addToCart to Services */}
       <Services addToCart={addToCart} />
       <Portfolio />
     </>

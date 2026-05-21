@@ -18,15 +18,9 @@ import {
   VerifiedUser,
   WaterDrop,
 } from "@mui/icons-material";
+import { getCdnImage } from "../utils/imageLoader";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
-
-// Import your actual jacket images – replace with real variants if available
-import jacketImg from "../assets/jacket.png";
-import jacketImg2 from "../assets/jacket-1.png";
-import jacketImg3 from "../assets/jacket-2.png";
-import jacketImg4 from "../assets/jacket-3.png";
-import jacketImg5 from "../assets/jacket-4.png";
 
 const Jackets = ({ addToCart }) => {
   // Premium Corporate Jacket Pricing (only one option)
@@ -42,7 +36,7 @@ const Jackets = ({ addToCart }) => {
   const [selectedMaterial, setSelectedMaterial] = useState("65% Polyester / 35% Viscose");
   const [selectedSize, setSelectedSize] = useState("M");
   const [selectedColor, setSelectedColor] = useState("Black");
-  const [mainImage, setMainImage] = useState(jacketImg);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   const unitPrice = priceMapping[selectedMaterial];
@@ -61,21 +55,20 @@ const Jackets = ({ addToCart }) => {
       "Sizes: Available from XS up to 4XL",
       "Style: Modern professional black finish",
     ],
+    images: [
+      "jacket.png",
+      "jacket-1.png",
+      "jacket-2.png",
+      "jacket-3.png",
+      "jacket-4.png"
+    ],
     tags: ["Water Resistant", "Corporate Wear", "240 GSM"],
   };
-
-  const thumbnailImages = [
-    jacketImg,
-    jacketImg2,
-    jacketImg3,
-    jacketImg4,
-    jacketImg5,
-  ];
 
   const handleAddToCart = () => {
     const item = {
       name: jacketDetails.name,
-      image: mainImage,
+      image: getCdnImage(jacketDetails.images[0], { width: 150, height: 150 }),
       description: jacketDetails.description,
       selectedMaterial,
       selectedColor,
@@ -146,8 +139,10 @@ const Jackets = ({ addToCart }) => {
 
             <Zoom>
               <img
-                src={mainImage}
-                alt={jacketDetails.name}
+                src={getCdnImage(jacketDetails.images[activeImageIndex], { width: 600, height: 450 })}
+                alt={`${jacketDetails.name} primary view`}
+                width="600"
+                height="450"
                 style={{
                   width: "100%",
                   borderRadius: "12px",
@@ -165,26 +160,30 @@ const Jackets = ({ addToCart }) => {
                 mt: 2,
                 overflowX: "auto",
                 "&::-webkit-scrollbar": { display: "none" },
+                scrollbarWidth: "none",
               }}
             >
-              {thumbnailImages.map((image, index) => (
+              {jacketDetails.images.map((imageName, index) => (
                 <Paper
                   key={index}
-                  onClick={() => setMainImage(image)}
+                  onClick={() => setActiveImageIndex(index)}
                   sx={{
                     p: 1,
                     borderRadius: "12px",
                     cursor: "pointer",
                     border:
-                      mainImage === image ? "2px solid #70CB97" : "1px solid #e0e7ed",
+                      activeImageIndex === index ? "2px solid #70CB97" : "1px solid #e0e7ed",
                     flexShrink: 0,
                     transition: "all 0.2s",
                     "&:hover": { transform: "translateY(-2px)" },
                   }}
                 >
                   <img
-                    src={image}
-                    alt={`View ${index + 1}`}
+                    src={getCdnImage(imageName, { width: 80, height: 80 })}
+                    alt={`${jacketDetails.name} thumbnail view ${index + 1}`}
+                    width="80"
+                    height="80"
+                    loading="lazy"
                     style={{ width: "80px", height: "80px", objectFit: "cover", borderRadius: "8px" }}
                   />
                 </Paper>

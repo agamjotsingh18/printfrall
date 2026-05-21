@@ -18,14 +18,9 @@ import {
   Style,
   AutoAwesome,
 } from "@mui/icons-material";
+import { getCdnImage } from "../utils/imageLoader";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
-
-// Asset paths
-import uShapedBusinessCardImg from "../assets/u-shaped-business-card.png";
-import uShapedBusinessCardImg2 from "../assets/u-shaped-business-card-1.png";
-import uShapedBusinessCardImg3 from "../assets/u-shaped-business-card-2.png";
-import uShapedBusinessCardImg4 from "../assets/u-shaped-business-card-3.png";
 
 const UShapedBusinessCard = ({ addToCart }) => {
   const paperOptions = [
@@ -36,7 +31,7 @@ const UShapedBusinessCard = ({ addToCart }) => {
 
   const sideOptions = ["Single-sided", "Double-sided"];
 
-  const cardDetails = {
+  const productDetails = {
     name: "U-Shaped Business Cards",
     description:
       "Stand out with innovation. Our U-shaped cards blend elegance with originality, offering a unique platform to showcase your creativity. Crafted from Premium 350 GSM Ninbo Star art paper for a stiff, professional, and durable feel.",
@@ -49,33 +44,32 @@ const UShapedBusinessCard = ({ addToCart }) => {
       "Ideal for photographers, designers, event planners, and creative brands",
       "Sharp digital print with vibrant colour reproduction",
     ],
+    images: [
+      "u-shaped-business-card.png",
+      "u-shaped-business-card-1.png",
+      "u-shaped-business-card-2.png",
+      "u-shaped-business-card-3.png"
+    ],
     tags: ["Unique Die-Cut", "350 GSM", "Creative Shape"],
   };
 
   const [selectedPaper, setSelectedPaper] = useState(paperOptions[1]); // Matte
   const [selectedSide, setSelectedSide] = useState("Single-sided");
-  const [mainImage, setMainImage] = useState(uShapedBusinessCardImg);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   const moq = 50;
   const totalPrice = selectedPaper.price + (selectedSide === "Double-sided" ? 150 : 0);
 
-  const thumbnailImages = [
-    uShapedBusinessCardImg,
-    uShapedBusinessCardImg2,
-    uShapedBusinessCardImg3,
-    uShapedBusinessCardImg4,
-  ];
-
   const handleAddToCart = () => {
     const item = {
-      name: cardDetails.name,
+      name: productDetails.name,
       size: "3.5 x 2 inches",
       material: selectedPaper.name,
       sides: selectedSide,
       price: totalPrice,
       quantity: moq,
-      image: mainImage,
+      image: getCdnImage(productDetails.images[0], { width: 150, height: 150 }),
     };
     addToCart(item);
     setSnackbarOpen(true);
@@ -103,9 +97,9 @@ const UShapedBusinessCard = ({ addToCart }) => {
               bgcolor: "#fff",
             }}
           >
-            {/* Inline chips (no absolute positioning) */}
+            {/* Inline chips */}
             <Box sx={{ display: "flex", gap: 1, mb: 2 }}>
-              {cardDetails.tags.map((tag, idx) => (
+              {productDetails.tags.map((tag, idx) => (
                 <Chip
                   key={idx}
                   label={tag}
@@ -131,8 +125,10 @@ const UShapedBusinessCard = ({ addToCart }) => {
 
             <Zoom>
               <img
-                src={mainImage}
-                alt="U-Shape Business Card Preview"
+                src={getCdnImage(productDetails.images[activeImageIndex], { width: 600, height: 450 })}
+                alt={`${productDetails.name} primary view`}
+                width="600"
+                height="450"
                 style={{
                   width: "100%",
                   borderRadius: "12px",
@@ -151,26 +147,30 @@ const UShapedBusinessCard = ({ addToCart }) => {
                 mt: 2,
                 overflowX: "auto",
                 "&::-webkit-scrollbar": { display: "none" },
+                scrollbarWidth: "none",
               }}
             >
-              {thumbnailImages.map((img, idx) => (
+              {productDetails.images.map((imageName, idx) => (
                 <Paper
                   key={idx}
-                  onClick={() => setMainImage(img)}
+                  onClick={() => setActiveImageIndex(idx)}
                   sx={{
                     p: 1,
                     borderRadius: "10px",
                     cursor: "pointer",
                     border:
-                      mainImage === img ? "2px solid #70CB97" : "2px solid transparent",
+                      activeImageIndex === idx ? "2px solid #70CB97" : "2px solid transparent",
                     "&:hover": { border: "2px solid #70CB97" },
                     flexShrink: 0,
                     transition: "all 0.2s",
                   }}
                 >
                   <img
-                    src={img}
-                    alt={`view ${idx + 1}`}
+                    src={getCdnImage(imageName, { width: 90, height: 90 })}
+                    alt={`${productDetails.name} thumbnail view ${idx + 1}`}
+                    width="90"
+                    height="90"
+                    loading="lazy"
                     style={{
                       width: "90px",
                       height: "90px",
@@ -195,7 +195,7 @@ const UShapedBusinessCard = ({ addToCart }) => {
               fontSize: { xs: "1.8rem", md: "2.5rem" },
             }}
           >
-            {cardDetails.name}
+            {productDetails.name}
           </Typography>
 
           <Typography
@@ -211,12 +211,12 @@ const UShapedBusinessCard = ({ addToCart }) => {
           </Typography>
 
           <Typography variant="body1" sx={{ mb: 3, color: "#1e2a32", lineHeight: 1.6 }}>
-            {cardDetails.description}
+            {productDetails.description}
           </Typography>
 
           <Divider sx={{ mb: 3 }} />
 
-          {/* Paper Finish Selection (pill‑shaped) */}
+          {/* Paper Finish Selection */}
           <Typography
             variant="h6"
             sx={{
@@ -235,7 +235,10 @@ const UShapedBusinessCard = ({ addToCart }) => {
             {paperOptions.map((paper) => (
               <Paper
                 key={paper.name}
-                onClick={() => setSelectedPaper(paper)}
+                onClick={() => {
+                  setSelectedPaper(paper);
+                  setActiveImageIndex(0);
+                }}
                 sx={{
                   flex: 1,
                   p: 1.5,
@@ -263,7 +266,7 @@ const UShapedBusinessCard = ({ addToCart }) => {
             ))}
           </Box>
 
-          {/* Printing Options (pill‑shaped) */}
+          {/* Printing Options */}
           <Typography
             variant="h6"
             sx={{ fontWeight: 600, mb: 2, color: "#19485D", fontSize: "1.1rem" }}
@@ -310,7 +313,7 @@ const UShapedBusinessCard = ({ addToCart }) => {
             <Typography variant="subtitle1" sx={{ fontWeight: 700, mb: 2, color: "#19485D" }}>
               Product Specifications:
             </Typography>
-            {cardDetails.features.map((feature, i) => (
+            {productDetails.features.map((feature, i) => (
               <Box key={i} sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
                 <span
                   style={{

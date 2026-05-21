@@ -3,27 +3,25 @@ import { Link } from "react-router-dom";
 import "../styles/AcrylicSignBoard.css";
 import { IconButton } from "@mui/material";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
-
-// Import images for each acrylic product
-import acrylicPhotoFrames from "../assets/acrylic-photo-frame.png";
-import acrylicNamePlates from "../assets/acrylic-name-plate.png";
-import acrylicCalendar from "../assets/acrylic-calendar.jpg";
-import acrylicMagnets from "../assets/acrylic-magnet.png";
-import acrylicKeychains from "../assets/acrylic-keychain.png";
-import acrylicCoasters from "../assets/acrylic-coaster.png";
+import { getCdnImage } from "../utils/imageLoader";
 
 const acrylicProducts = [
-  { name: "Acrylic Photo Frames", image: acrylicPhotoFrames, price: 200, route: "/services/marketing-materials/acrylic-sign-board/acrylic-photo-frames" },
-  { name: "Acrylic Name Plates", image: acrylicNamePlates, price: 150, route: "/services/marketing-materials/acrylic-sign-board/acrylic-name-plates" },
-  { name: "Acrylic Calendar", image: acrylicCalendar, price: 100, route: "/services/marketing-materials/acrylic-sign-board/acrylic-calendar" },
-  { name: "Acrylic Magnets", image: acrylicMagnets, price: 50, route: "/services/marketing-materials/acrylic-sign-board/acrylic-magnets" },
-  { name: "Acrylic Keychains", image: acrylicKeychains, price: 30, route: "/services/marketing-materials/acrylic-sign-board/acrylic-keychains" },
-  { name: "Acrylic Coasters", image: acrylicCoasters, price: 80, route: "/services/marketing-materials/acrylic-sign-board/acrylic-coasters" },
+  { name: "Acrylic Photo Frames", image: "acrylic-photo-frame.png", price: 200, route: "/services/marketing-materials/acrylic-sign-board/acrylic-photo-frames" },
+  { name: "Acrylic Name Plates", image: "acrylic-name-plate.png", price: 150, route: "/services/marketing-materials/acrylic-sign-board/acrylic-name-plates" },
+  { name: "Acrylic Calendar", image: "acrylic-calendar.jpg", price: 100, route: "/services/marketing-materials/acrylic-sign-board/acrylic-calendar" },
+  { name: "Acrylic Magnets", image: "acrylic-magnet.png", price: 50, route: "/services/marketing-materials/acrylic-sign-board/acrylic-magnets" },
+  { name: "Acrylic Keychains", image: "acrylic-keychain.png", price: 30, route: "/services/marketing-materials/acrylic-sign-board/acrylic-keychains" },
+  { name: "Acrylic Coasters", image: "acrylic-coaster.png", price: 80, route: "/services/marketing-materials/acrylic-sign-board/acrylic-coasters" },
 ];
 
 const AcrylicSignBoard = ({ addToCart }) => {
-  const handleAddToCart = (item) => {
-    addToCart(item); 
+  const handleAddToCart = (product) => {
+    const cartItem = {
+      ...product,
+      image: getCdnImage(product.image, { width: 150, height: 150 }),
+      quantity: 1
+    };
+    addToCart(cartItem); 
   };
 
   return (
@@ -35,7 +33,7 @@ const AcrylicSignBoard = ({ addToCart }) => {
           <div className="acrylic-item" key={index}>
             {/* Wrap product details in a Link */}
             <Link to={product.route} className="acrylic-link" aria-label={`View details of ${product.name}`}>
-              <img src={product.image} alt={product.name} className="acrylic-image" />
+              <img src={getCdnImage(product.image, { width: 400, height: 400 })} alt={product.name} className="acrylic-image" loading="lazy"/>
               <p className="acrylic-name">{product.name}</p>
               <p className="acrylic-price">₹{product.price}</p>
             </Link>

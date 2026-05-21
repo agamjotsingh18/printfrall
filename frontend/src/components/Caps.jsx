@@ -3,25 +3,26 @@ import { Link } from "react-router-dom";
 import "../styles/Caps.css";
 import { IconButton } from "@mui/material";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
-
-// Import images for each cap type
-import printedPlainCaps from "../assets/cap.png";
-import lineStitchingCaps from "../assets/line-stitching-cap.png";
-import pipingCaps from "../assets/piping-cap.png";
-import tippingCaps from "../assets/tipping-cap.png";
+import { getCdnImage } from "../utils/imageLoader";
 
 const capTypes = [
-  { name: "Printed Plain Caps", image: printedPlainCaps, price: 200, route: "/services/tshirt-printing/caps/printed-plain-caps" },
-  { name: "Line Stitching Caps", image: lineStitchingCaps, price: 250, route: "/services/tshirt-printing/caps/line-stitching-caps" },
-  { name: "Piping Caps", image: pipingCaps, price: 300, route: "/services/tshirt-printing/caps/piping-caps" },
-  { name: "Tipping Caps", image: tippingCaps, price: 350, route: "/services/tshirt-printing/caps/tipping-caps" },
+  { name: "Printed Plain Caps", image: "cap.png", price: 200, route: "/services/tshirt-printing/caps/printed-plain-caps" },
+  { name: "Line Stitching Caps", image: "line-stitching-cap.png", price: 250, route: "/services/tshirt-printing/caps/line-stitching-caps" },
+  { name: "Piping Caps", image: "piping-cap.png", price: 300, route: "/services/tshirt-printing/caps/piping-caps" },
+  { name: "Tipping Caps", image: "tipping-cap.png", price: 350, route: "/services/tshirt-printing/caps/tipping-caps" },
 ];
 
 const Caps = ({ addToCart }) => {
   const handleAddToCart = (item, e) => {
     e?.preventDefault();
     e?.stopPropagation();
-    addToCart(item);
+    
+    const cartItem = {
+      ...item,
+      image: getCdnImage(item.image, { width: 150, height: 150 }),
+      quantity: 1
+    };
+    addToCart(cartItem);
   };
 
   return (
@@ -31,21 +32,22 @@ const Caps = ({ addToCart }) => {
       <div className="caps-container">
         {capTypes.map((cap, index) => (
           <div className="cap-item" key={index}>
-            {/* Wrap cap details in a Link */}
             <Link 
               to={cap.route} 
               className="cap-link"
               aria-label={`View details of ${cap.name}`}
             >
               <img 
-                src={cap.image} 
+                src={getCdnImage(cap.image, { width: 350, height: 350 })} 
                 alt={cap.name} 
                 className="cap-image" 
+                width="350"
+                height="350"
+                loading="lazy"
               />
               <p className="cap-name">{cap.name}</p>
               <p className="cap-price">₹{cap.price}</p>
             </Link>
-            {/* Add to Cart Button */}
             <IconButton
               aria-label={`Add ${cap.name} to cart`}
               sx={{
