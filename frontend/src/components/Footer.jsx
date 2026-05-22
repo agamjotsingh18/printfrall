@@ -106,20 +106,23 @@ const Footer = () => {
             <a href="mailto:printfrall@gmail.com" aria-label="Email us at printfrall@gmail.com">printfrall@gmail.com</a>
           </Box>
 <Box className="map-container" sx={{ mt: 2, borderRadius: "8px", overflow: "hidden", height: "150px" }}>
-  <a 
-    href="https://www.google.com/maps/search/?api=1&query=PrintfrAll+Uttam+Nagar+Delhi" 
-    target="_blank" 
-    rel="noopener noreferrer"
-    aria-label="View PrintfrAll location on Google Maps"
-    style={{ display: "block", height: "100%" }}
-  >
+ <a 
+  href="https://www.google.com/maps/search/?api=1&query=PrintfrAll+Uttam+Nagar+Delhi" 
+  target="_blank" 
+  rel="noopener noreferrer"
+  aria-label="View PrintfrAll location on Google Maps"
+  style={{ display: "block", height: "100%" }}
+>
     <img
       src={`https://maps.googleapis.com/maps/api/staticmap?center=28.6186,77.0543&zoom=15&size=600x300&markers=color:red%7C28.6186,77.0543&key=${process.env.REACT_APP_GOOGLE_MAPS_KEY}`}
       alt="Map showing PrintfrAll location in Uttam Nagar, New Delhi"
       width="600"
       height="300"
       loading="lazy"
-      onError={(e) => { e.target.style.display = 'none'; console.error("Map failed to load. Check API Key."); }}
+    onError={(e) => {
+    e.target.style.display = 'none';
+    console.error("Map Error: Ensure Maps Static API is enabled and Billing is active.");
+  }}
       style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
     />
   </a>
