@@ -84,6 +84,7 @@ const [mainImage, setMainImage] = useState("acrylic-keychain-1-flatlay.png");
               <img
                src={getCdnImage(mainImage, { width: 600, quality: 85 })}
                 alt={details.name}
+                fetchpriority="high"
                 style={{
                   width: "100%",
                   borderRadius: "12px",
@@ -121,6 +122,7 @@ const [mainImage, setMainImage] = useState("acrylic-keychain-1-flatlay.png");
                   <img
                    src={getCdnImage(img, { width: 90, height: 90 })}
                     alt={`view ${idx + 1}`}
+                    
                     style={{
                       width: "90px",
                       height: "90px",

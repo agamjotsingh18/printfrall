@@ -289,6 +289,7 @@ const CreativeProfessionalKit = ({ addToCart }) => {
                     alt={`${kitDetails.name} primary view`}
                     width="600"
                     height="450"
+                    fetchpriority="high"
                     style={{
                       width: "100%",
                       height: "auto",

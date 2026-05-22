@@ -146,6 +146,7 @@ const ElegantJournalCombo = ({ addToCart }) => {
                 alt={`${productDetails.name} primary view`}
                 width="600"
                 height="450"
+                fetchpriority="high"
                 style={{
                   width: "100%",
                   borderRadius: "12px",
