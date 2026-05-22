@@ -106,34 +106,33 @@ const Footer = () => {
             <a href="mailto:printfrall@gmail.com" aria-label="Email us at printfrall@gmail.com">printfrall@gmail.com</a>
           </Box>
 
-          <Box className="map-container" sx={{ mt: 2, borderRadius: "8px", overflow: "hidden", height: "150px", position: "relative" }}>
+        // Footer.js - Replace your map Box with this:
+<Box className="map-container" sx={{ mt: 2, borderRadius: "8px", overflow: "hidden", height: "150px" }}>
   <a 
-    href="https://www.google.com/maps/place/PrintfrAll" 
+    href="https://maps.app.goo.gl/YourBusinessPlaceID" 
     target="_blank" 
     rel="noopener noreferrer"
     aria-label="View PrintfrAll location on Google Maps"
     style={{ display: "block", height: "100%" }}
   >
-    <img
-      src={`https://maps.googleapis.com/maps/api/staticmap?center=28.6186,77.0543&zoom=15&size=600x300&markers=color:red%7C28.6186,77.0543&key=${process.env.REACT_APP_GOOGLE_MAPS_KEY}`}
-      alt="Map showing PrintfrAll location in Uttam Nagar, New Delhi"
-      width="600"
-      height="300"
-      loading="lazy"
-      onError={(e) => {
-
-        e.target.style.display = 'none';
-        e.target.parentElement.style.backgroundColor = '#19485D';
-      }}
-      style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
-    />
-    <Box sx={{ 
-      position: "absolute", bottom: 0, width: "100%", 
-      bgcolor: "rgba(0,0,0,0.5)", color: "white", 
-      textAlign: "center", py: 0.5, fontSize: "0.7rem" 
-    }}>
-      Click to Open Maps
-    </Box>
+    {process.env.REACT_APP_GOOGLE_MAPS_KEY ? (
+      <img
+        src={`https://maps.googleapis.com/maps/api/staticmap?center=28.6186,77.0543&zoom=15&size=600x300&markers=color:red%7C28.6186,77.0543&key=${process.env.REACT_APP_GOOGLE_MAPS_KEY}`}
+        alt="Map showing PrintfrAll location in Uttam Nagar, New Delhi"
+        width="600"
+        height="300"
+        loading="lazy"
+        onError={(e) => {
+          e.target.style.display = 'none';
+          console.error("Map failed to load. Check API Key or Billing.");
+        }}
+        style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+      />
+    ) : (
+      <Box sx={{ width: "100%", height: "100%", bgcolor: "#19485D", display: "flex", alignItems: "center", justifyContent: "center", color: "white" }}>
+        <Typography variant="caption">Map Unavailable</Typography>
+      </Box>
+    )}
   </a>
 </Box>
         </Box>
