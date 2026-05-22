@@ -67,7 +67,6 @@ const Hero = () => {
           <SwiperSlide key={idx}>
             <div className="hero-slide-modern">
               {idx === 0 ? (
-                // First image - eager loaded with fetchpriority
                 <img
                   src={getCdnImage(slide.src, { width: imageWidth, quality: imageQuality })}
                   alt={slide.alt}

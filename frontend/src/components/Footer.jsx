@@ -105,8 +105,6 @@ const Footer = () => {
             <FaEnvelope className="contact-icon" aria-hidden="true" />
             <a href="mailto:printfrall@gmail.com" aria-label="Email us at printfrall@gmail.com">printfrall@gmail.com</a>
           </Box>
-
-        // Footer.js - Replace your map Box with this:
 <Box className="map-container" sx={{ mt: 2, borderRadius: "8px", overflow: "hidden", height: "150px" }}>
   <a 
     href="https://maps.app.goo.gl/YourBusinessPlaceID" 
