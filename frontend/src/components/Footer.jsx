@@ -106,33 +106,16 @@ const Footer = () => {
             <a href="mailto:printfrall@gmail.com" aria-label="Email us at printfrall@gmail.com">printfrall@gmail.com</a>
           </Box>
 <Box className="map-container" sx={{ mt: 2, borderRadius: "8px", overflow: "hidden", height: "150px" }}>
-  <a 
-    // This is the correct, searchable format
-    href="https://www.google.com/maps/search/?api=1&query=PrintfrAll+Uttam+Nagar+Delhi" 
-    target="_blank" 
-    rel="noopener noreferrer"
-    aria-label="View PrintfrAll location on Google Maps"
-    style={{ display: "block", height: "100%" }}
-  >
-    {process.env.REACT_APP_GOOGLE_MAPS_KEY ? (
-      <img
-        src={`https://maps.googleapis.com/maps/api/staticmap?center=28.6186,77.0543&zoom=15&size=600x300&markers=color:red%7C28.6186,77.0543&key=${process.env.REACT_APP_GOOGLE_MAPS_KEY}`}
-        alt="Map showing PrintfrAll location"
-        width="600"
-        height="300"
-        loading="lazy"
-        onError={(e) => {
-          e.target.style.display = 'none';
-          console.error("Map failed to load. Check your API Key restriction for this domain.");
-        }}
-        style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
-      />
-    ) : (
-      <Box sx={{ width: "100%", height: "100%", bgcolor: "#19485D", display: "flex", alignItems: "center", justifyContent: "center", color: "white" }}>
-        <Typography variant="caption">Map Loading...</Typography>
-      </Box>
-    )}
-  </a>
+  <iframe
+    title="PrintfrAll Location"
+    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3502.090778197788!2d77.03669107514273!3d28.627041275667736!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390d05362adfb89b%3A0x8f8e3e7bb27db4d0!2sPrintfrAll!5e0!3m2!1sen!2sin!4v1779552945294!5m2!1sen!2sin"
+    width="100%"
+    height="100%"
+    style={{ border: 0 }}
+    allowFullScreen=""
+    loading="lazy"
+    referrerPolicy="no-referrer-when-downgrade"
+  />
 </Box>
         </Box>
 
