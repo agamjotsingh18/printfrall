@@ -107,7 +107,8 @@ const Footer = () => {
           </Box>
 <Box className="map-container" sx={{ mt: 2, borderRadius: "8px", overflow: "hidden", height: "150px" }}>
   <a 
-    href="https://maps.app.goo.gl/YourBusinessPlaceID" 
+    // This is the correct, searchable format
+    href="https://www.google.com/maps/search/?api=1&query=PrintfrAll+Uttam+Nagar+Delhi" 
     target="_blank" 
     rel="noopener noreferrer"
     aria-label="View PrintfrAll location on Google Maps"
@@ -116,19 +117,19 @@ const Footer = () => {
     {process.env.REACT_APP_GOOGLE_MAPS_KEY ? (
       <img
         src={`https://maps.googleapis.com/maps/api/staticmap?center=28.6186,77.0543&zoom=15&size=600x300&markers=color:red%7C28.6186,77.0543&key=${process.env.REACT_APP_GOOGLE_MAPS_KEY}`}
-        alt="Map showing PrintfrAll location in Uttam Nagar, New Delhi"
+        alt="Map showing PrintfrAll location"
         width="600"
         height="300"
         loading="lazy"
         onError={(e) => {
           e.target.style.display = 'none';
-          console.error("Map failed to load. Check API Key or Billing.");
+          console.error("Map failed to load. Check your API Key restriction for this domain.");
         }}
         style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
       />
     ) : (
       <Box sx={{ width: "100%", height: "100%", bgcolor: "#19485D", display: "flex", alignItems: "center", justifyContent: "center", color: "white" }}>
-        <Typography variant="caption">Map Unavailable</Typography>
+        <Typography variant="caption">Map Loading...</Typography>
       </Box>
     )}
   </a>
