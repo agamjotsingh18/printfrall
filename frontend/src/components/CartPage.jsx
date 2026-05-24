@@ -1,7 +1,8 @@
 import React from "react";
 import { Box, Typography, Button, IconButton, Paper, Container } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import EmptyCartPage from "./EmptyCartPage"; 
+import EmptyCartPage from "./EmptyCartPage";
+import { getCdnImage } from "../utils/imageLoader";
 
 const CartPage = ({ cartItems, removeFromCart }) => {
 
@@ -40,6 +41,14 @@ const CartPage = ({ cartItems, removeFromCart }) => {
     return `https://wa.me/919319042075?text=${message}`;
   };
 
+  const getOptimizedImage = (imageUrl) => {
+    if (!imageUrl) return "";
+    if (imageUrl.includes("ik.imagekit.io")) {
+      return imageUrl;
+    }
+    return getCdnImage(imageUrl, { width: 150, height: 150 });
+  };
+
   return (
     <Container sx={{ p: 3, maxWidth: 1200, margin: "0 auto" }} aria-label="Shopping cart">
       {cartItems.length === 0 ? (
@@ -62,6 +71,8 @@ const CartPage = ({ cartItems, removeFromCart }) => {
           {cartItems.map((item, index) => {
             const finish = getDisplayFinish(item);
             const unitPrice = getUnitPrice(item);
+            const optimizedImage = getOptimizedImage(item.image);
+            
             return (
               <Paper
                 key={index}
@@ -73,14 +84,23 @@ const CartPage = ({ cartItems, removeFromCart }) => {
                   mb: 3,
                   borderRadius: "10px",
                   boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.1)",
+                  flexWrap: { xs: "wrap", sm: "nowrap" },
                 }}
                 role="article"
                 aria-label={`Cart item: ${item.name}`}
               >
                 <img
-                  src={item.image}
+                  src={optimizedImage}
                   alt={item.name}
-                  style={{ width: "100px", height: "100px", borderRadius: "10px", objectFit: "cover" }}
+                  width="100"
+                  height="100"
+                  style={{ 
+                    width: "100px", 
+                    height: "100px", 
+                    borderRadius: "10px", 
+                    objectFit: "cover" 
+                  }}
+                  loading="lazy"
                 />
                 <Box sx={{ flex: 1 }}>
                   <Typography variant="h6" sx={{ fontWeight: "bold", color: "#19485D" }}>
@@ -120,7 +140,7 @@ const CartPage = ({ cartItems, removeFromCart }) => {
 
           <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 4 }}>
             <Typography variant="h6" sx={{ fontWeight: "bold", mr: 2, color: "#19485D" }}>
-              Total: ₹{cartItems.reduce((total, item) => total + item.price * item.quantity, 0)}
+              Total: ₹{cartItems.reduce((total, item) => total + (item.price || 0), 0)}
             </Typography>
           </Box>
 
