@@ -13,7 +13,7 @@ sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 // Middleware
 app.use(cors({
-  origin: ['http://localhost:3000', 'https://printfrall.vercel.app', 'https://printfrall.onrender.com'],
+  origin: ['http://localhost:3000', 'https://printfrall.vercel.app','https://printfrall.com','https://www.printfrall.com'],
   credentials: true
 }));
 app.use(express.json());
@@ -151,7 +151,7 @@ P.S. Check out our website for amazing printing deals!`,
               <li>🚀 New product launches</li>
             </ul>
             <p style="text-align: center;">
-              <a href="https://printfrall.vercel.app" class="button">Visit Our Website</a>
+              <a href="https://printfrall.com" class="button">Visit Our Website</a>
             </p>
             <p>Best regards,<br><strong>PrintfrAll Team</strong></p>
           </div>
@@ -288,7 +288,7 @@ Your message: "${message.substring(0, 100)}${message.length > 100 ? '...' : ''}"
 Best regards,
 PrintfrAll Team
 
-Visit our website: https://printfrall.vercel.app`,
+Visit our website: https://printfrall.com`,
     html: `
       <!DOCTYPE html>
       <html>
@@ -316,7 +316,7 @@ Visit our website: https://printfrall.vercel.app`,
               <p>${message.replace(/\n/g, '<br>')}</p>
             </div>
             <p style="text-align: center;">
-              <a href="https://printfrall.vercel.app" class="button">Visit Our Website</a>
+              <a href="https://printfrall.com" class="button">Visit Our Website</a>
             </p>
             <p>Best regards,<br><strong>PrintfrAll Team</strong></p>
           </div>
