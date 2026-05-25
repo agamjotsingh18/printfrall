@@ -19,8 +19,8 @@ const Payment = ({ cartItems, totalAmount }) => {
         customer_name: "Customer Name",
         customer_email: "customer@example.com",
         customer_phone: "1234567890",
-        return_url: "http://yourwebsite.com/payment-success",
-        cancel_url: "http://yourwebsite.com/payment-cancel",
+        return_url: "https://yourwebsite.com/payment-success",
+        cancel_url: "https://yourwebsite.com/payment-cancel",
       });
 
       if (response.data && response.data.payment_url) {
