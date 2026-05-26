@@ -53,6 +53,7 @@ app.post("/subscribe", async (req, res) => {
 });
 
 app.post("/send-email", async (req, res) => {
+  console.log("🚀 Received request at /send-email");
   const { name, email, message } = req.body;
 
   try {
