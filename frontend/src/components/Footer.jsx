@@ -84,7 +84,7 @@ const Footer = () => {
         <Box className="footer-column" aria-label="Company information">
           <Typography className="footer-heading" aria-label="Company section heading">Our Company</Typography>
           <a href="/about" aria-label="About us page">About us</a>
-          <a href="mailto:printfrall@gmail.com?subject=Job Application" aria-label="Careers - email us for job opportunities">Careers</a>
+          <a href="mailto:support@printfrall.com?subject=Job Application" aria-label="Careers - email us for job opportunities">Careers</a>
           <a href="/blog" aria-label="Blog page">Blog</a>
         </Box>
 
@@ -103,7 +103,7 @@ const Footer = () => {
           </Box>
           <Box className="contact-item">
             <FaEnvelope className="contact-icon" aria-hidden="true" />
-            <a href="mailto:printfrall@gmail.com" aria-label="Email us at printfrall@gmail.com">printfrall@gmail.com</a>
+            <a href="mailto:support@printfrall.com" aria-label="Email us at support@printfrall.com">support@printfrall.com</a>
           </Box>
 <Box className="map-container" sx={{ mt: 2, borderRadius: "8px", overflow: "hidden", height: "150px" }}>
   <iframe

@@ -93,7 +93,7 @@ const Contact = () => {
 
             <Box className="panel-info-item">
               <FaEnvelope className="panel-info-icon" />
-              <a href="mailto:printfrall@gmail.com" aria-label="Email us at printfrall@gmail.com">printfrall@gmail.com</a>
+              <a href="mailto:support@printfrall.com" aria-label="Email us at support@printfrall.com">support@printfrall.com</a>
             </Box>
           </Box>
 

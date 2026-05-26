@@ -72,7 +72,7 @@ const Navbar = ({ cartItems, addToCart, removeFromCart }) => {
 
   const handleEmailClick = (event) => {
     event.stopPropagation();
-    window.location.href = "mailto:printfrall@gmail.com";
+    window.location.href = "mailto:support@printfrall.com";
   };
 
   useEffect(() => {
@@ -292,11 +292,11 @@ const Navbar = ({ cartItems, addToCart, removeFromCart }) => {
         <Box
           sx={{ display: "flex", alignItems: "center", gap: 1, cursor: "pointer" }}
           onClick={handleEmailClick}
-          aria-label="Email us at printfrall@gmail.com"
+          aria-label="Email us at support@printfrall.com"
         >
           <EmailIcon sx={{ color: "#333" }} aria-hidden="true" />
           <Typography variant="body1" sx={{ color: "#333" }}>
-            printfrall@gmail.com
+            support@printfrall.com
           </Typography>
         </Box>
       </Box>
