@@ -20,8 +20,11 @@ const transporter = nodemailer.createTransport({
 
 app.use(cors({
   origin: ['http://localhost:3000', 'https://printfrall.vercel.app', 'https://printfrall.com', 'https://www.printfrall.com'],
+  methods: ['GET', 'POST', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true
 }));
+app.options('*', cors());
 app.use(express.json());
 
 // Helper to send emails via Nodemailer
