@@ -9,11 +9,12 @@ const PORT = process.env.PORT || 5000;
 // Configure Transporter (Do not change this)
 const transporter = nodemailer.createTransport({
   host: 'smtp-relay.brevo.com',
-  port: 587,
-  secure: false,
+  port: 465, // Use 465
+  secure: true, // true for 465
+  connectionTimeout: 10000, 
   auth: {
-    user: process.env.BREVO_USER, // Set to printfrall@gmail.com
-    pass: process.env.BREVO_KEY   // Set to your Brevo SMTP Key
+    user: process.env.BREVO_USER,
+    pass: process.env.BREVO_KEY 
   }
 });
 
