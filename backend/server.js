@@ -14,43 +14,115 @@ app.use(cors({
 }));
 app.use(express.json());
 
-// Brevo API Configuration - Using the Transactional Emails API directly
+// Brevo API Configuration - Fix the API key format
 const brevoApiKey = process.env.BREVO_KEY;
 const brevoBaseUrl = 'https://api.brevo.com/v3';
 
-// Helper function to send emails via Brevo
+console.log('🔑 Brevo API Key loaded:', brevoApiKey ? 'Yes (starts with ' + brevoApiKey.substring(0, 10) + '...)' : 'NO - MISSING!');
+
+// Helper function to send emails via Brevo using the correct header
 async function sendBrevoEmail(emailData) {
+  console.log('📤 Sending email...');
+  
   try {
     const response = await fetch(`${brevoBaseUrl}/smtp/email`, {
       method: 'POST',
       headers: {
         'accept': 'application/json',
-        'api-key': brevoApiKey,
+        'api-key': brevoApiKey,  // This is correct for Brevo v3 API
         'content-type': 'application/json'
       },
       body: JSON.stringify(emailData)
     });
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.message || 'Failed to send email');
+    // Get response as text first to handle non-JSON responses
+    const responseText = await response.text();
+    console.log('📥 Response status:', response.status);
+    console.log('📥 Response body:', responseText);
+
+    let responseData;
+    try {
+      responseData = JSON.parse(responseText);
+    } catch (e) {
+      responseData = { message: responseText };
     }
 
-    return await response.json();
+    if (!response.ok) {
+      throw new Error(`Brevo API Error (${response.status}): ${JSON.stringify(responseData)}`);
+    }
+
+    return responseData;
   } catch (error) {
-    console.error('Brevo API Error:', error);
+    console.error('❌ Brevo API Error:', error.message);
     throw error;
   }
 }
 
 // Health Check
 app.get("/health", (req, res) => {
-  res.status(200).json({ status: "healthy" });
+  res.status(200).json({ 
+    status: "healthy",
+    brevoKeyConfigured: !!brevoApiKey,
+    brevoKeyPreview: brevoApiKey ? brevoApiKey.substring(0, 10) + '...' : 'not set'
+  });
+});
+
+// Test Brevo API connection
+app.get("/test-brevo", async (req, res) => {
+  console.log('🔍 Testing Brevo API connection...');
+  
+  if (!brevoApiKey) {
+    return res.status(500).json({
+      success: false,
+      error: "Brevo API key is not configured"
+    });
+  }
+
+  try {
+    const response = await fetch('https://api.brevo.com/v3/account', {
+      method: 'GET',
+      headers: {
+        'accept': 'application/json',
+        'api-key': brevoApiKey
+      }
+    });
+
+    const responseText = await response.text();
+    console.log('🔍 Test response:', response.status, responseText);
+
+    let data;
+    try {
+      data = JSON.parse(responseText);
+    } catch (e) {
+      data = { raw: responseText };
+    }
+
+    if (response.ok) {
+      res.json({
+        success: true,
+        message: "Brevo API connection successful",
+        account: data
+      });
+    } else {
+      res.status(400).json({
+        success: false,
+        message: "Brevo API connection failed",
+        error: data
+      });
+    }
+  } catch (error) {
+    console.error('❌ Test failed:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
 });
 
 // Send Email Endpoint
 app.post("/send-email", async (req, res) => {
   console.log("🚀 Received request at /send-email");
+  
   const { name, email, message } = req.body;
   
   // Validate input
@@ -70,10 +142,17 @@ app.post("/send-email", async (req, res) => {
     });
   }
 
-  // Email to admin about new contact form submission
-  const adminEmailData = {
+  if (!brevoApiKey) {
+    console.error('❌ Brevo API key missing');
+    return res.status(500).json({ 
+      success: false, 
+      error: "Server configuration error. Please contact support." 
+    });
+  }
+
+  const emailData = {
     sender: { 
-      name: "PrintfrAll Contact Form", 
+      name: "PrintfrAll Contact", 
       email: "support@printfrall.com" 
     },
     to: [{ 
@@ -109,57 +188,7 @@ app.post("/send-email", async (req, res) => {
             <strong>Message:</strong>
             <p>${message.replace(/\n/g, '<br>')}</p>
           </div>
-          <div class="footer">
-            <p>Reply directly to: <a href="mailto:${email}">${email}</a></p>
-          </div>
-        </div>
-      </body>
-      </html>
-    `
-  };
-
-  // Auto-reply to user
-  const autoReplyData = {
-    sender: { 
-      name: "PrintfrAll Team", 
-      email: "support@printfrall.com" 
-    },
-    to: [{ 
-      email: email, 
-      name: name 
-    }],
-    subject: "Thank you for contacting PrintfrAll! 📬",
-    htmlContent: `
-      <!DOCTYPE html>
-      <html>
-      <head>
-        <style>
-          body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-          .container { padding: 20px; max-width: 500px; margin: 0 auto; }
-          .header { background: #70CB97; color: white; padding: 20px; text-align: center; border-radius: 5px 5px 0 0; }
-          .content { padding: 20px; border: 1px solid #ddd; border-top: none; border-radius: 0 0 5px 5px; }
-          .message-box { background: #f5f5f5; padding: 15px; border-radius: 5px; margin: 15px 0; }
-          .button { background: #70CB97; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block; }
-        </style>
-      </head>
-      <body>
-        <div class="container">
-          <div class="header">
-            <h2>Thank You for Contacting Us! 📬</h2>
-          </div>
-          <div class="content">
-            <p>Dear ${name},</p>
-            <p>Thank you for reaching out to PrintfrAll!</p>
-            <p>We have received your message and will get back to you within <strong>24-48 hours</strong>.</p>
-            <div class="message-box">
-              <strong>Your message:</strong>
-              <p>${message.replace(/\n/g, '<br>')}</p>
-            </div>
-            <p style="text-align: center;">
-              <a href="https://printfrall.com" class="button">Visit Our Website</a>
-            </p>
-            <p>Best regards,<br><strong>PrintfrAll Team</strong></p>
-          </div>
+          <p>Reply to: <a href="mailto:${email}">${email}</a></p>
         </div>
       </body>
       </html>
@@ -167,28 +196,21 @@ app.post("/send-email", async (req, res) => {
   };
 
   try {
-    // Send notification to admin
-    await sendBrevoEmail(adminEmailData);
-    console.log('✅ Admin notification sent');
-    
-    // Send auto-reply to user
-    try {
-      await sendBrevoEmail(autoReplyData);
-      console.log('✅ Auto-reply sent to user');
-    } catch (autoReplyError) {
-      console.warn('⚠️ Could not send auto-reply:', autoReplyError.message);
-      // Don't fail the whole request if auto-reply fails
-    }
+    console.log('🔄 Sending contact form email...');
+    const result = await sendBrevoEmail(emailData);
+    console.log('✅ Email sent successfully:', result.messageId);
     
     res.status(200).json({ 
       success: true, 
-      message: "Your message has been sent successfully! We'll get back to you soon." 
+      message: "Your message has been sent successfully! We'll get back to you soon.",
+      messageId: result.messageId
     });
   } catch (error) {
-    console.error('❌ Email sending failed:', error);
+    console.error('❌ Failed to send email:', error.message);
     res.status(500).json({ 
       success: false, 
-      error: "Failed to send message. Please try again later." 
+      error: "Failed to send message. Please try again later.",
+      details: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 });
@@ -198,7 +220,6 @@ app.post("/subscribe", async (req, res) => {
   console.log("📧 Received subscription request");
   const { email } = req.body;
   
-  // Validate email
   if (!email) {
     return res.status(400).json({ 
       success: false, 
@@ -206,7 +227,6 @@ app.post("/subscribe", async (req, res) => {
     });
   }
   
-  // Validate email format
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailRegex.test(email)) {
     return res.status(400).json({ 
@@ -215,8 +235,14 @@ app.post("/subscribe", async (req, res) => {
     });
   }
 
-  // Admin notification for new subscriber
-  const adminEmailData = {
+  if (!brevoApiKey) {
+    return res.status(500).json({ 
+      success: false, 
+      error: "Server configuration error. Please contact support." 
+    });
+  }
+
+  const emailData = {
     sender: { 
       name: "PrintfrAll Newsletter", 
       email: "support@printfrall.com" 
@@ -225,16 +251,16 @@ app.post("/subscribe", async (req, res) => {
       email: "support@printfrall.com", 
       name: "PrintfrAll Support" 
     }],
-    subject: "📧 New Newsletter Subscription - PrintfrAll",
+    subject: "📧 New Newsletter Subscription",
     htmlContent: `
       <!DOCTYPE html>
       <html>
       <head>
         <style>
           body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-          .container { padding: 20px; border: 1px solid #ddd; border-radius: 5px; max-width: 500px; }
+          .container { padding: 20px; max-width: 500px; }
           h2 { color: #70CB97; }
-          .info { background: #f5f5f5; padding: 10px; margin: 10px 0; border-radius: 5px; }
+          .info { background: #f5f5f5; padding: 10px; border-radius: 5px; }
         </style>
       </head>
       <body>
@@ -250,86 +276,27 @@ app.post("/subscribe", async (req, res) => {
     `
   };
 
-  // Welcome email to new subscriber
-  const welcomeEmailData = {
-    sender: { 
-      name: "PrintfrAll Team", 
-      email: "support@printfrall.com" 
-    },
-    to: [{ 
-      email: email 
-    }],
-    subject: "Welcome to PrintfrAll Newsletter! 🎉",
-    htmlContent: `
-      <!DOCTYPE html>
-      <html>
-      <head>
-        <style>
-          body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-          .container { padding: 20px; max-width: 500px; margin: 0 auto; }
-          .header { background: #70CB97; color: white; padding: 20px; text-align: center; border-radius: 5px 5px 0 0; }
-          .content { padding: 20px; border: 1px solid #ddd; border-top: none; border-radius: 0 0 5px 5px; }
-          .button { background: #70CB97; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block; }
-          .footer { margin-top: 20px; font-size: 12px; color: #999; text-align: center; }
-        </style>
-      </head>
-      <body>
-        <div class="container">
-          <div class="header">
-            <h2>Welcome to PrintfrAll! 🎉</h2>
-          </div>
-          <div class="content">
-            <p>Dear Subscriber,</p>
-            <p>Thank you for subscribing to PrintfrAll newsletter!</p>
-            <p>You'll now receive updates about:</p>
-            <ul>
-              <li>✨ Latest printing services</li>
-              <li>🎯 Special offers & discounts</li>
-              <li>💡 Design tips & tricks</li>
-              <li>🚀 New product launches</li>
-            </ul>
-            <p style="text-align: center;">
-              <a href="https://printfrall.com" class="button">Visit Our Website</a>
-            </p>
-            <p>Best regards,<br><strong>PrintfrAll Team</strong></p>
-          </div>
-          <div class="footer">
-            <p>You received this email because you subscribed to our newsletter.</p>
-          </div>
-        </div>
-      </body>
-      </html>
-    `
-  };
-
   try {
-    // Send notification to admin
-    await sendBrevoEmail(adminEmailData);
-    console.log('✅ Admin notified of new subscriber');
-    
-    // Send welcome email to subscriber
-    try {
-      await sendBrevoEmail(welcomeEmailData);
-      console.log('✅ Welcome email sent to subscriber');
-    } catch (welcomeError) {
-      console.warn('⚠️ Could not send welcome email:', welcomeError.message);
-      // Don't fail the subscription if welcome email fails
-    }
+    console.log('🔄 Sending subscription email...');
+    const result = await sendBrevoEmail(emailData);
+    console.log('✅ Subscription email sent:', result.messageId);
     
     res.status(200).json({ 
       success: true, 
-      message: "Successfully subscribed! Welcome to our newsletter." 
+      message: "Successfully subscribed! Welcome to our newsletter.",
+      messageId: result.messageId
     });
   } catch (error) {
-    console.error('❌ Subscription failed:', error);
+    console.error('❌ Subscription failed:', error.message);
     res.status(500).json({ 
       success: false, 
-      error: "Failed to subscribe. Please try again later." 
+      error: "Failed to subscribe. Please try again later.",
+      details: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 });
 
 app.listen(PORT, () => {
   console.log(`✅ Server running on port ${PORT}`);
-  console.log(`📧 Using Brevo API for email delivery`);
-});
+  console.log(`📧 Brevo API Key: ${brevoApiKey ? 'Configured (starts with ' + brevoApiKey.substring(0, 15) + '...)' : 'MISSING!'}`);
+}); 
