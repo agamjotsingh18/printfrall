@@ -146,6 +146,8 @@ import ApexCarryLaptopBag from "./itemdetail/ApexCarryLaptopBag";
 import ColorSplashHamper from "./itemdetail/ColorSplashHamper";
 import EcoFriendlyHoliHamper from "./itemdetail/EcoFriendlyHoliHamper";
 import PremiumHoliHamper from "./itemdetail/PremiumHoliHamper";
+import Letterheads from "./components/Letterheads";
+import Invoices from "./components/Invoices";
 
 
 // === LAZY IMPORTS (Core Pages & Hubs) ===
@@ -313,12 +315,14 @@ const App = () => {
                 <Route path="/services/business-essentials/business-cards/circle-business-card" element={<CircleBusinessCard addToCart={addToCart} />} />
                 <Route path="/services/business-essentials/business-cards/u-shaped-business-card" element={<UShapedBusinessCard addToCart={addToCart} />} />
                 <Route path="/services/business-essentials/envelopes" element={<Envelopes addToCart={addToCart} />} />
+                <Route path="/services/business-essentials/letterheads" element={<Letterheads addToCart={addToCart} />} />
                 <Route path="services/business-essentials/letterheads/custom-letterheads" element={<CustomLetterheads addToCart={addToCart} />} />
                 <Route path="/services/business-essentials/letterheads/prescription-note-pad" element={<PrescriptionNotePad addToCart={addToCart} />} />
                 <Route path="/services/business-essentials/envelopes/hash10-envelope" element={<Envelope10Long addToCart={addToCart} />} />
                 <Route path="/services/business-essentials/envelopes/a5-envelope" element={<A5Envelope addToCart={addToCart} />} />
                 <Route path="/services/business-essentials/envelopes/a6-envelope" element={<A6Envelope addToCart={addToCart} />} />
                 <Route path="/services/business-essentials/envelopes/kraft-envelope" element={<KraftEnvelope addToCart={addToCart} />} />
+                <Route path="/services/business-essentials/invoices" element={<Invoices addToCart={addToCart} />} />
                 <Route path="/services/business-essentials/invoices/full-colour-printed-bill-books" element={<FullColourPrintedBillBooks addToCart={addToCart} />} />
                 <Route path="/services/business-essentials/invoices/black-and-white-printed-bill-books" element={<BlackAndWhitePrintedBillBooks addToCart={addToCart} />} />
 
