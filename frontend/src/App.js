@@ -148,6 +148,8 @@ import EcoFriendlyHoliHamper from "./itemdetail/EcoFriendlyHoliHamper";
 import PremiumHoliHamper from "./itemdetail/PremiumHoliHamper";
 import Letterheads from "./components/Letterheads";
 import Invoices from "./components/Invoices";
+import Brochures from "./components/Brochures";
+import PaperBags from "./components/PaperBags";
 
 
 // === LAZY IMPORTS (Core Pages & Hubs) ===
@@ -345,6 +347,7 @@ const App = () => {
                 <Route path="/services/marketing-materials/posters" element={<Posters addToCart={addToCart} />} />
                 <Route path="/services/marketing-materials/photo-selfie-booth" element={<PhotoSelfieBooth addToCart={addToCart} />} />
                 <Route path="/services/marketing-materials/standees" element={<Standees addToCart={addToCart} />} />
+                <Route path="/services/marketing-materials/brochures" element={<Brochures addToCart={addToCart} />} />
                 <Route path="/services/marketing-materials/brochures/half-fold-brochure" element={<HalfFoldBrochure addToCart={addToCart} />} />
                 <Route path="/services/marketing-materials/brochures/tri-fold-brochure" element={<TriFoldBrochure addToCart={addToCart} />} />
                 <Route path="/services/marketing-materials/custom-standee-cutout" element={<CustomStandeeCutout addToCart={addToCart} />} />
@@ -367,6 +370,7 @@ const App = () => {
                 <Route path="/services/packaging-labels/labels/premium-white-labels" element={<PremiumWhiteLabels addToCart={addToCart} />} />
                 <Route path="/services/packaging-labels/labels/clear-labels" element={<ClearLabels addToCart={addToCart} />} />
                 <Route path="/services/packaging-labels/labels/water-proof-labels" element={<WaterproofLabels addToCart={addToCart} />} />
+                <Route path="/services/packaging-labels/paper-bags" element={<PaperBags addToCart={addToCart} />} />
                 <Route path="/services/packaging-labels/paper-bags/gift-paper-bags" element={<GiftPaperBags addToCart={addToCart} />} />
                 <Route path="/services/packaging-labels/paper-bags/takeout-paper-bags" element={<TakeoutPaperBags addToCart={addToCart} />} />
                 <Route path="/services/packaging-labels/paper-bags/pre-printed-paper-bags" element={<PrePrintedPaperBags addToCart={addToCart} />} />

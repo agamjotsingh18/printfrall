@@ -9,13 +9,13 @@ import { getCdnImage } from "../utils/imageLoader";
 const invoiceItems = [
   { 
     name: "Full Colour Printed Bill Books", 
-    image: "full-colour-bill-book.png", 
+    image: "full-colour-printed-bill-books.png", 
     price: 30, 
     route: "/services/business-essentials/invoices/full-colour-printed-bill-books" 
   },
   { 
     name: "Black and White Printed Bill Books", 
-    image: "black-white-bill-book.png", 
+    image: "billbook-1.png", 
     price: 20, 
     route: "/services/business-essentials/invoices/black-and-white-printed-bill-books" 
   },

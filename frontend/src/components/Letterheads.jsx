@@ -9,7 +9,7 @@ import { getCdnImage } from "../utils/imageLoader";
 const letterheadItems = [
   { 
     name: "Custom Letterheads", 
-    image: "letterhead.avif", 
+    image: "custom-letterheads.png", 
     price: 20, 
     route: "/services/business-essentials/letterheads/custom-letterheads" 
   },
